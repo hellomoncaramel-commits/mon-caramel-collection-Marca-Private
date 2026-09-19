@@ -5,14 +5,15 @@ import { useFavorites } from "./hooks/useFavorites";
 import HomeScreen from "./components/Home/HomeScreen";
 import CatalogScreen from "./components/Catalog/CatalogScreen";
 import MomentScreen from "./components/Moment/MomentScreen";
+import PresenteScreen from "./components/Presente/PresenteScreen";
 import SelectionScreen from "./components/Selection/SelectionScreen";
 import SendModal from "./components/shared/SendModal";
 
 export default function App() {
-  const [screen, setScreen] = useState(null); // null = home, "catalogo", "selecao", or a moment id
+  const [screen, setScreen] = useState(null); // null = home, "catalogo", "selecao", "presente", or a moment id
   const [pendingMessage, setPendingMessage] = useState(null);
   const { favorites, toggleFavorite } = useFavorites();
-  const { selection, addToSelection, removeFromSelection } = useSelection();
+  const { selection, addToSelection, removeFromSelection, isSelected } = useSelection();
 
   const onGoSelection = () => setScreen("selecao");
 
@@ -40,7 +41,20 @@ export default function App() {
         />
       )}
 
-      {screen && screen !== "catalogo" && screen !== "selecao" && (
+      {screen === "presente" && (
+        <PresenteScreen
+          onBack={() => setScreen(null)}
+          onGoCatalog={() => setScreen("catalogo")}
+          onSend={setPendingMessage}
+          selection={selection}
+          addToSelection={addToSelection}
+          removeFromSelection={removeFromSelection}
+          isSelected={isSelected}
+          onOpenSelection={onGoSelection}
+        />
+      )}
+
+      {screen && !["catalogo", "selecao", "presente"].includes(screen) && (
         <MomentScreen
           momentId={screen}
           onBack={() => setScreen(null)}
@@ -61,7 +75,7 @@ export default function App() {
           className="fixed bottom-6 left-6 z-40 rounded-full px-5 py-3 text-sm font-medium text-white bg-brand-caramelDark flex items-center gap-2 shadow-lg"
         >
           <Heart size={15} fill="white" />
-          Minha Seleção ({selection.length})
+          Minha seleção · {selection.length}
         </button>
       )}
 

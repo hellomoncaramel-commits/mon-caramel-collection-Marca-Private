@@ -21,6 +21,16 @@ export const MOMENT_INTRO = {
   festa: "A gente conhece essa história... foi assim que muita festa começou.",
 };
 
+// Short, scannable version of MOMENT_INTRO used on the Home cards — the
+// full text above still shows up inside each moment's own screen.
+export const MOMENT_TAGLINE = {
+  cafe: "Um docinho sempre cabe na mesa.",
+  "dia-dificil": "TPM, segunda-feira ou só um dia difícil.",
+  freezer: "Docinhos que ficam felizes no freezer.",
+  presente: "Presentes feitos para alguém especial.",
+  festa: "A gente conhece essa história...",
+};
+
 // Fixed display order within a moment, when it differs from catalog order.
 export const MOMENT_ORDER = {
   "dia-dificil": ["bala-de-coco", "chocobomb", "cone-trufado", "mini-donut-decorado"],

@@ -41,7 +41,7 @@ export default function CatalogScreen({ onBack, favorites, toggleFavorite, selec
                   </p>
                 </div>
                 <button
-                  onClick={() => addToSelection({ productId: p.id, name: p.name, unit: p.unit, qty: 1, flavors: null })}
+                  onClick={() => addToSelection({ kind: "product", productId: p.id, name: p.name, unit: p.unit, qty: 1, flavors: null })}
                   className="text-xs font-medium rounded-full px-3 py-1.5 shrink-0 border border-brand-caramelDark"
                   style={{ backgroundColor: added ? COLORS.caramelDark : "transparent", color: added ? "white" : COLORS.caramelDark }}
                 >
