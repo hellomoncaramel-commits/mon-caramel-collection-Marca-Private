@@ -9,7 +9,7 @@ export default function HomeScreen({ onSelect, favorites }) {
       </div>
       <h1 className="text-4xl sm:text-5xl mb-4 font-display italic text-brand-ink">Como você está hoje?</h1>
       <p className="mb-9 leading-relaxed text-brand-inkSoft">
-        Test: Conta pra gente o que te trouxe aqui — a gente te mostra o que combina com o seu momento.
+        Conta pra gente o que te trouxe aqui — a gente te mostra o que combina com o seu momento.
       </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
