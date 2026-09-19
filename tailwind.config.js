@@ -1,0 +1,60 @@
+/**
+ * Design tokens — Mon Caramel Collection
+ *
+ * Primary palette (brand.*) comes straight from the official Canva brand kit
+ * (briefing section 2). Neutral tones (ink/inkSoft/muted/border/subtle) are
+ * derived shades used for text and surfaces that aren't in the brand kit
+ * itself, kept identical to the values already validated in the prototype.
+ *
+ * Everything referenced with an arbitrary bracket value in the old prototype
+ * (colors, font sizes, letter spacing, aspect ratio, z-index) has a named
+ * token here instead — see BRIEFING_COMPLETO_CLAUDE_CODE.md section 7.
+ */
+export default {
+  content: ["./index.html", "./src/**/*.{js,jsx}"],
+  theme: {
+    extend: {
+      colors: {
+        brand: {
+          // Official brand kit
+          caramelDark: "#AB6233",
+          caramelLight: "#ECC15C",
+          creamYellow: "#EFC970",
+          beige: "#FFFCF5",
+          cream: "#FFFFFF",
+          black: "#000000",
+          // Derived neutrals (not in the brand kit, kept from the prototype)
+          ink: "#3D2418",
+          inkSoft: "#5B4A3D",
+          muted: "#8A7A68",
+          border: "#EADFC8",
+          subtle: "#F4EBDA",
+        },
+      },
+      fontFamily: {
+        display: ["Fraunces", "serif"],
+        subtitle: ['"Cormorant Garamond"', "serif"],
+        body: ["Roboto", "sans-serif"],
+      },
+      fontSize: {
+        "3xs": ["0.65rem", { lineHeight: "0.9rem" }],
+        "2xs": ["0.7rem", { lineHeight: "1rem" }],
+        "moment-title": ["0.92rem", { lineHeight: "1.3rem" }],
+        "moment-caption": ["0.78rem", { lineHeight: "1.1rem" }],
+      },
+      letterSpacing: {
+        kicker: "0.25em",
+      },
+      aspectRatio: {
+        photo: "4 / 3",
+      },
+      zIndex: {
+        modal: "60",
+      },
+      borderRadius: {
+        card: "1.5rem",
+      },
+    },
+  },
+  plugins: [],
+};
