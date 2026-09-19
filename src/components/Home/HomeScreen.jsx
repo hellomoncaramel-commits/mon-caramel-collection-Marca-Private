@@ -5,7 +5,7 @@ export default function HomeScreen({ onSelect, favorites }) {
   return (
     <div className="max-w-xl mx-auto px-6 pt-14 pb-20 text-center fade-up">
       <div className="mb-6">
-        <Logo size="lg" withTagline />
+        <Logo size="lg" />
       </div>
       <h1 className="text-4xl sm:text-5xl mb-4 font-display italic text-brand-ink">Como você está hoje?</h1>
       <p className="mb-9 leading-relaxed text-brand-inkSoft">
