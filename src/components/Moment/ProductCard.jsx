@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Heart } from "lucide-react";
+import { Heart, Snowflake, Sparkles } from "lucide-react";
 import { COLORS } from "../../styles/colors";
 import { MOMENT_ICON } from "../../data/moments";
 import { photosForMoment, parseQuantityOptions } from "../../utils/products";
@@ -7,9 +7,10 @@ import PhotoCarousel from "../shared/PhotoCarousel";
 import ProductArt from "../shared/ProductArt";
 import FlavorConfigurator from "./FlavorConfigurator";
 
-// A single product card. Doubles as the "Minha Seleção" flavor configurator
-// entry point outside Festa, and as a plain "add to Minha Festa" trigger
-// inside Festa — see briefing section 5 for why these two flows never mix.
+// A single product card — photo first, everything else light. Doubles as
+// the "Minha Seleção" flavor configurator entry point outside Festa, and as
+// a plain "add to Minha Festa" trigger inside Festa (these two flows never
+// mix — see hooks/useParty.js).
 export default function ProductCard({
   p,
   momentId,
@@ -24,12 +25,17 @@ export default function ProductCard({
 }) {
   const isFav = favorites.includes(p.id);
   const isCustomizable = p.customizable === true;
-  const existing = selection.find((it) => it.productId === p.id);
+  const existing = selection.find((it) => it.kind === "product" && it.productId === p.id);
   const [open, setOpen] = useState(false);
   const partyEntry = partyItems?.find((it) => it.id === p.id);
 
+  // Badges are derived straight from real product data — never invented
+  // labels — so a product only wears the ones that are actually true of it.
+  const canFreeze = p.moments.includes("freezer");
+
   const confirmAdd = ({ qty, flavorBreakdown }) => {
     addToSelection({
+      kind: "product",
       productId: p.id,
       name: p.name,
       unit: p.unit,
@@ -66,22 +72,27 @@ export default function ProductCard({
         )}
       </div>
       <div className="p-4 flex flex-col flex-1">
-        <h3 className="text-lg font-display text-brand-ink">
-          {p.name}
-          {!isFesta && <span className="text-xs font-normal text-brand-muted"> · {p.unit}</span>}
-        </h3>
-        {!isFesta && (
-          <span
-            className="inline-flex items-center gap-1 text-3xs font-medium rounded-full px-2 py-0.5 mt-1.5 w-fit"
-            style={{
-              backgroundColor: isCustomizable ? `${COLORS.caramelLight}30` : `${COLORS.border}80`,
-              color: isCustomizable ? COLORS.caramelDark : COLORS.muted,
-            }}
-          >
-            {isCustomizable ? "Escolha seus sabores ✨" : "Sabor fixo"}
-          </span>
+        <h3 className="text-lg font-display text-brand-ink leading-tight">{p.name}</h3>
+        {!isFesta && <p className="text-xs mt-0.5 text-brand-muted">{p.unit}</p>}
+        <p className="text-xs mt-2 leading-relaxed flex-1 text-brand-inkSoft">{p.sensory}</p>
+
+        {!isFesta && (canFreeze || isCustomizable) && (
+          <div className="flex flex-wrap gap-1.5 mt-2.5">
+            {canFreeze && (
+              <span className="inline-flex items-center gap-1 text-3xs font-medium rounded-full px-2 py-1 bg-brand-subtle text-brand-inkSoft">
+                <Snowflake size={10} /> Pode congelar
+              </span>
+            )}
+            {isCustomizable && (
+              <span
+                className="inline-flex items-center gap-1 text-3xs font-medium rounded-full px-2 py-1"
+                style={{ backgroundColor: `${COLORS.caramelLight}30`, color: COLORS.caramelDark }}
+              >
+                <Sparkles size={10} /> Escolha seus sabores
+              </span>
+            )}
+          </div>
         )}
-        <p className="text-xs mt-1.5 leading-relaxed flex-1 text-brand-inkSoft">{p.sensory}</p>
 
         {isFesta ? (
           <button
@@ -100,7 +111,11 @@ export default function ProductCard({
               <span className="text-sm font-medium text-brand-caramelDark">{p.price}</span>
               <button
                 onClick={() =>
-                  isCustomizable ? setOpen((o) => !o) : existing ? removeFromSelection(p.id) : confirmAdd({ qty: defaultQty, flavorBreakdown: [] })
+                  isCustomizable
+                    ? setOpen((o) => !o)
+                    : existing
+                    ? removeFromSelection(existing)
+                    : confirmAdd({ qty: defaultQty, flavorBreakdown: [] })
                 }
                 className="text-xs font-medium rounded-full px-3.5 py-1.5 inline-flex items-center gap-1 border border-brand-caramelDark"
                 style={{ backgroundColor: existing ? COLORS.caramelDark : "transparent", color: existing ? "white" : COLORS.caramelDark }}
@@ -112,7 +127,7 @@ export default function ProductCard({
                     : "Adicionado ✓"
                   : isCustomizable
                   ? "Escolher sabores"
-                  : "Adicionar à minha seleção"}
+                  : "Quero esse"}
               </button>
             </div>
 

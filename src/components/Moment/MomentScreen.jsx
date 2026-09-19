@@ -1,18 +1,19 @@
 import { useMemo, useRef } from "react";
-import { Heart, Sparkles, PartyPopper } from "lucide-react";
+import { Heart, Sparkles } from "lucide-react";
+import { MOMENT_INTRO } from "../../data/moments";
 import { pickForMoment, pickCrossSell } from "../../utils/products";
 import { buildPartyMessage } from "../../utils/messages";
 import { useParty } from "../../hooks/useParty";
 import BackButton from "../shared/BackButton";
 import Toast from "../shared/Toast";
 import ProductCard from "./ProductCard";
-import PresenteSection from "./PresenteSection";
 import PartyPanel from "../Party/PartyPanel";
 import PartyModal from "../Party/PartyModal";
 import PartyFloatingButton from "../Party/PartyFloatingButton";
 
-// Matched products for the chosen moment, plus cross-sell discovery and the
-// "Minha Seleção" / "Minha Festa" baskets (briefing sections 4 and 5).
+// Matched products for the chosen moment (café, dia difícil, freezer or
+// festa — "presente" has its own dedicated PresenteScreen), plus cross-sell
+// discovery and the "Minha Seleção" / "Minha Festa" baskets.
 export default function MomentScreen({
   momentId,
   onBack,
@@ -28,11 +29,6 @@ export default function MomentScreen({
   const matched = useMemo(() => pickForMoment(momentId), [momentId]);
   const crossSell = useMemo(() => pickCrossSell(momentId, matched), [momentId, matched]);
   const isFesta = momentId === "festa";
-  const isPresente = momentId === "presente";
-
-  const presenteCaixas = useMemo(() => matched.filter((p) => !p.presenteGroup || p.presenteGroup === "caixas"), [matched]);
-  const presenteBandejas = useMemo(() => matched.filter((p) => p.presenteGroup === "bandejas"), [matched]);
-  const presenteMimos = useMemo(() => matched.filter((p) => p.presenteGroup === "mimos"), [matched]);
 
   const party = useParty();
   const partyPanelRef = useRef(null);
@@ -52,52 +48,17 @@ export default function MomentScreen({
     <div className="max-w-2xl mx-auto px-6 pt-10 pb-28 fade-up">
       <BackButton onClick={onBack} label="Voltar" />
 
-      {isPresente && (
-        <div className="mt-6 mb-1">
-          <p className="text-lg mb-1 font-display text-brand-ink">Cada caixa é única.</p>
-          <p className="text-sm text-brand-inkSoft">
-            Escolha os doces, as cores e os detalhes que combinam com quem vai receber — e a gente cria algo
-            especial. As fotos abaixo são inspiração: nenhuma caixa sai igual à outra.
-          </p>
-        </div>
+      {MOMENT_INTRO[momentId] && (
+        <p className="text-base leading-relaxed mb-6 font-subtitle italic text-brand-inkSoft">{MOMENT_INTRO[momentId]}</p>
       )}
 
-      {isPresente ? (
-        <>
-          <PresenteSection products={presenteCaixas} momentId={momentId} cardProps={cardProps} />
-          <PresenteSection
-            header={{
-              Icon: PartyPopper,
-              eyebrow: "Bandejas para Celebrar",
-              title: "Uma experiência completa, não só uma caixa.",
-              description:
-                "Bandejas maiores, com balão e decoração — pra aniversário, chá de bebê, formatura ou aquela comemoração que merece mesa própria.",
-            }}
-            products={presenteBandejas}
-            momentId={momentId}
-            cardProps={cardProps}
-          />
-          <PresenteSection
-            header={{
-              Icon: Sparkles,
-              eyebrow: "Mimos",
-              title: "Pequenos, mas cheios de carinho.",
-              description: "Mimos rápidos pra qualquer ocasião — professora, colega, agradecimento. Personalizáveis do jeitinho que você quiser.",
-            }}
-            products={presenteMimos}
-            momentId={momentId}
-            cardProps={cardProps}
-          />
-        </>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
-          {matched.map((p) => (
-            <ProductCard key={p.id} p={p} momentId={momentId} {...cardProps} />
-          ))}
-        </div>
-      )}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {matched.map((p) => (
+          <ProductCard key={p.id} p={p} momentId={momentId} {...cardProps} />
+        ))}
+      </div>
 
-      {crossSell.length > 0 && !isPresente && momentId !== "dia-dificil" && (
+      {crossSell.length > 0 && momentId !== "dia-dificil" && (
         <div className="mt-9">
           <div className="flex items-center gap-2 mb-1 text-brand-caramelDark">
             <Sparkles size={16} />

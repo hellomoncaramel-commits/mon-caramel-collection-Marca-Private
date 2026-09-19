@@ -1,5 +1,10 @@
-import { MOMENTS, MOMENT_INTRO } from "../../data/moments";
+import { MOMENTS, MOMENT_TAGLINE } from "../../data/moments";
+import { COLORS } from "../../styles/colors";
 import Logo from "../shared/Logo";
+
+// Rotating accent tints for the moment badges — purely visual rhythm, so
+// five near-identical cards don't all carry the exact same weight.
+const ACCENTS = [COLORS.caramelDark, COLORS.caramelLight, COLORS.creamYellow, COLORS.caramelDark, COLORS.caramelLight];
 
 export default function HomeScreen({ onSelect, favorites }) {
   return (
@@ -13,17 +18,20 @@ export default function HomeScreen({ onSelect, favorites }) {
       </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {MOMENTS.map((m) => (
+        {MOMENTS.map((m, i) => (
           <button
             key={m.id}
             onClick={() => onSelect(m.id)}
-            className="flex items-center gap-3 p-4 rounded-2xl border border-brand-border bg-white text-left transition-all hover:shadow-md hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-caramelDark"
+            className="flex flex-col items-start gap-2 p-5 rounded-3xl bg-white text-left transition-all shadow-sm hover:shadow-lg hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-caramelDark"
           >
-            <span className="text-2xl shrink-0">{m.emoji}</span>
-            <span>
-              <span className="block text-brand-ink text-moment-title">{m.label}</span>
-              <span className="block mt-0.5 text-brand-muted text-moment-caption">{MOMENT_INTRO[m.id]}</span>
+            <span
+              className="w-11 h-11 rounded-2xl flex items-center justify-center text-xl"
+              style={{ backgroundColor: `${ACCENTS[i]}22` }}
+            >
+              {m.emoji}
             </span>
+            <span className="font-display text-lg text-brand-ink leading-snug">{m.label}</span>
+            <span className="text-sm text-brand-muted">{MOMENT_TAGLINE[m.id]}</span>
           </button>
         ))}
       </div>
