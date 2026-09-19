@@ -1,11 +1,12 @@
 import { MOMENTS, MOMENT_INTRO } from "../../data/moments";
+import Logo from "../shared/Logo";
 
 export default function HomeScreen({ onSelect, favorites }) {
   return (
     <div className="max-w-xl mx-auto px-6 pt-14 pb-20 text-center fade-up">
-      <p className="text-xs tracking-kicker uppercase font-medium mb-3 text-brand-caramelDark">
-        Mon Caramel Collection
-      </p>
+      <div className="mb-6">
+        <Logo size="lg" withTagline />
+      </div>
       <h1 className="text-4xl sm:text-5xl mb-4 font-display italic text-brand-ink">Como você está hoje?</h1>
       <p className="mb-9 leading-relaxed text-brand-inkSoft">
         Conta pra nos o que te trouxe aqui — a gente te mostra o que combina com o seu momento.
