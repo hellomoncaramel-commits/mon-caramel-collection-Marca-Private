@@ -44,42 +44,42 @@ export default {
         "2xs": ["0.7rem", { lineHeight: "1rem" }],
         "moment-title": ["0.92rem", { lineHeight: "1.3rem" }],
         "moment-caption": ["0.78rem", { lineHeight: "1.1rem" }],
-        // Editorial headline size — a real headline at real mobile width
-        // (~28px), with the tight serif line-height that makes it read as
-        // a headline rather than stacked body text.
-        hero: ["1.75rem", { lineHeight: "1.1" }],
-        // Home (V2) typographic scale — a single named hierarchy instead of
-        // ad-hoc text-xs/text-sm choices per component: meta < small < body
-        // < card < section < hero.
-        "mc-meta": ["0.625rem", { lineHeight: "1.3" }],
-        "mc-small": ["0.75rem", { lineHeight: "1.3" }],
-        "mc-body": ["0.875rem", { lineHeight: "1.4" }],
-        "mc-card": ["0.9375rem", { lineHeight: "1.3" }],
-        "mc-section": ["1.25rem", { lineHeight: "1.2" }],
-        "mc-hero": ["1.75rem", { lineHeight: "1.05" }],
+        // Home typographic scale — four real hierarchy levels (main /
+        // section / body / utility), not one size per component. Product
+        // names/prices get their own two entries since they sit between
+        // body and utility.
+        "mc-home-hero": ["24px", { lineHeight: "1.04", letterSpacing: "-0.025em" }],
+        "mc-home-section": ["18px", { lineHeight: "1.1" }],
+        "mc-home-body": ["12.5px", { lineHeight: "1.35" }],
+        "mc-home-card-title": ["13px", { lineHeight: "1.05" }],
+        "mc-home-card-subtitle": ["10px", { lineHeight: "1.1" }],
+        "mc-home-product": ["12px", { lineHeight: "1.2" }],
+        "mc-home-price": ["10px", { lineHeight: "1.2" }],
+        "mc-home-meta": ["9.5px", { lineHeight: "1.2" }],
+        "mc-home-nav-label": ["9px", { lineHeight: "1.1" }],
       },
       letterSpacing: {
         kicker: "0.25em",
       },
       spacing: {
-        // Home (V2) page gutter — every major block aligns to this same
+        // Home page gutter — every major block aligns to this same
         // left/right edge, nothing introduces its own arbitrary inset.
-        gutter: "18px",
+        gutter: "16px",
       },
       aspectRatio: {
         photo: "4 / 3",
-        // Wide editorial banner ratio for the Home hero photo — appetite,
-        // not a catalog thumbnail.
-        hero: "1.9 / 1",
+        // Editorial portrait crop for the Home "Só olha" product preview.
+        "mc-portrait": "4 / 5",
       },
       zIndex: {
         modal: "60",
       },
       borderRadius: {
         card: "1.5rem",
-        // Home (V2) shared radius for cards, hero photo and product
-        // images — one value, not a different roundness per component.
-        mc: "15px",
+        // Home shared radius for the discovery rows and hero photo.
+        mc: "12px",
+        // Home small radius for the "Só olha" product images.
+        "mc-img": "11px",
       },
     },
   },
