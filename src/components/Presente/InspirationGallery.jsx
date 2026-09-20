@@ -1,5 +1,6 @@
 import { Heart } from "lucide-react";
 import { COLORS } from "../../styles/colors";
+import Photo from "../shared/Photo";
 
 // Editorial, Pinterest-style gallery of real photos from past work — pure
 // inspiration, never a catalog of fixed products. No name, no price, no
@@ -13,7 +14,7 @@ export default function InspirationGallery({ items, isSaved, onToggleSave }) {
         return (
           <div key={item.id} className="fade-up">
             <div className="rounded-3xl overflow-hidden aspect-photo">
-              <img src={item.photo} alt={item.caption} className="w-full h-full object-cover" loading="lazy" decoding="async" />
+              <Photo src={item.photo} alt={item.caption} className="w-full h-full object-cover" loading="lazy" />
             </div>
             {item.caption && <p className="text-sm mt-3 leading-relaxed text-brand-inkSoft">{item.caption}</p>}
             <button

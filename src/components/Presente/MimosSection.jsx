@@ -1,6 +1,7 @@
 import { Heart } from "lucide-react";
 import { COLORS } from "../../styles/colors";
 import { getMimos } from "../../data/giftOptions";
+import Photo from "../shared/Photo";
 
 // Small mimos are real, individual products (unlike Caixas/Bandejas, which
 // are inspiration) — so this is the one presente sub-section that reads
@@ -15,7 +16,7 @@ export default function MimosSection({ selection, addToSelection }) {
         return (
           <div key={p.id} className="rounded-2xl overflow-hidden bg-white border border-brand-border flex flex-col">
             <div className="aspect-photo">
-              <img src={p.photos[0]} alt={p.name} className="w-full h-full object-cover" loading="lazy" decoding="async" />
+              <Photo src={p.photos[0]} alt={p.name} className="w-full h-full object-cover" loading="lazy" />
             </div>
             <div className="p-3 flex flex-col flex-1">
               <h4 className="text-sm font-display text-brand-ink leading-tight">{p.name}</h4>
