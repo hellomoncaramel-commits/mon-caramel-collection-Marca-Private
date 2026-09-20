@@ -1,10 +1,7 @@
 const SIZES = {
   sm: 72,
-  // A delicate, compact size for the Home header — measured against the
-  // approved reference's own logo-to-screen-width ratio (~31%), tempered
-  // slightly since our asset carries more built-in padding than the
-  // reference's tighter wordmark crop.
-  home: 84,
+  // Compact Home header logo (spec target: 68-74px displayed width).
+  home: 72,
   md: 120,
   lg: 200,
 };
