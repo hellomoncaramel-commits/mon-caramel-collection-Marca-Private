@@ -76,7 +76,7 @@ export default function HomeScreen({ onSelect }) {
 
       <button onClick={() => onSelect("feed")} className="relative w-full mt-4 rounded-2xl overflow-hidden text-left aspect-hero">
         <Photo
-          src={REAL_PHOTOS.brigadeiroDiaDificil}
+          src={REAL_PHOTOS.casadinhoGoiabada}
           alt=""
           className="absolute inset-0 w-full h-full object-cover"
           loading="eager"
