@@ -29,8 +29,8 @@ export default function HomeScreen({ onSelect }) {
         </button>
       </div>
 
-      <h1 className="text-3xl text-center mb-2 font-display italic text-brand-ink">O que a gente vai adoçar hoje? 💛</h1>
-      <p className="text-sm text-center mb-7 leading-relaxed text-brand-inkSoft">
+      <h1 className="text-3xl mb-2 font-display italic text-brand-ink">O que a gente vai adoçar hoje? 💛</h1>
+      <p className="text-sm mb-7 leading-relaxed text-brand-inkSoft">
         Escolha pelo momento, procure alguma coisa específica ou simplesmente fique olhando...
       </p>
 
