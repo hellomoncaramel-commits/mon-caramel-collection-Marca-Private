@@ -10,64 +10,63 @@ const PATHS = [
   { id: "busca", emoji: "🔎", title: "Já sei o que quero", subtitle: "Me leva pros doces.", solid: false },
 ];
 
-// Three compact, thumb-friendly rows rather than three tall blocks — quick
-// to scan, quick to tap. The photo lives in its own banner below instead of
-// being buried inside a button, so it reads as "look how good this is",
-// not as a background image behind text.
+// Three substantial, thumb-friendly cards — not tall blocks, but not tiny
+// desktop menu rows either. The photo lives in its own large banner below
+// instead of being buried inside a button, so it reads as "look how good
+// this is", not as a background image behind text.
 export default function HomeScreen({ onSelect }) {
   return (
     <div className="max-w-xl mx-auto px-5 pt-8 pb-10 fade-up">
-      <div className="flex items-center justify-between mb-5">
+      <div className="flex items-center justify-between mb-6">
         <div className="w-11" />
-        <Logo size="sm" />
+        <Logo size="md" />
         <button
           onClick={() => onSelect("salvos")}
           aria-label="Ver salvos"
           className="w-11 h-11 flex items-center justify-center"
         >
-          <Heart size={20} className="text-brand-caramelDark" />
+          <Heart size={22} className="text-brand-caramelDark" />
         </button>
       </div>
 
-      <h1 className="text-3xl mb-2 font-display italic text-brand-ink">O que a gente vai adoçar hoje? 💛</h1>
-      <p className="text-sm mb-7 leading-relaxed text-brand-inkSoft">
+      <h1 className="text-4xl mb-3 font-display italic leading-tight text-brand-ink">
+        O que a gente vai adoçar hoje? 💛
+      </h1>
+      <p className="text-base mb-7 leading-relaxed text-brand-inkSoft">
         Escolha pelo momento, procure alguma coisa específica ou simplesmente fique olhando...
       </p>
 
-      <div className="flex flex-col gap-2.5">
+      <div className="flex flex-col gap-3">
         {PATHS.map((p) => (
           <button
             key={p.id}
             onClick={() => onSelect(p.id)}
-            className="flex items-center gap-3 rounded-2xl px-4 py-3.5 text-left min-h-11"
+            className="flex items-center gap-4 rounded-3xl px-5 py-5 text-left min-h-11"
             style={{
               backgroundColor: p.solid ? COLORS.caramelDark : "white",
               border: p.solid ? "none" : `1px solid ${COLORS.border}`,
             }}
           >
             <span
-              className="w-10 h-10 shrink-0 rounded-full flex items-center justify-center text-lg"
+              className="w-12 h-12 shrink-0 rounded-full flex items-center justify-center text-2xl"
               style={{ backgroundColor: p.solid ? "rgba(255,255,255,0.18)" : COLORS.subtle }}
             >
               {p.emoji}
             </span>
             <span className="flex-1 min-w-0">
-              <span className="block font-display text-base" style={{ color: p.solid ? "white" : COLORS.ink }}>
+              <span className="block font-display text-lg" style={{ color: p.solid ? "white" : COLORS.ink }}>
                 {p.title}
               </span>
-              <span className="block text-xs mt-0.5" style={{ color: p.solid ? "rgba(255,255,255,0.85)" : COLORS.muted }}>
+              <span className="block text-sm mt-0.5" style={{ color: p.solid ? "rgba(255,255,255,0.85)" : COLORS.muted }}>
                 {p.subtitle}
               </span>
             </span>
-            <ChevronRight size={18} style={{ color: p.solid ? "rgba(255,255,255,0.85)" : COLORS.muted }} />
+            <ChevronRight size={20} style={{ color: p.solid ? "rgba(255,255,255,0.85)" : COLORS.muted }} />
           </button>
         ))}
       </div>
 
-      <button
-        onClick={() => onSelect("feed")}
-        className="relative w-full mt-5 rounded-3xl overflow-hidden text-left min-h-32 flex items-end p-5"
-      >
+      <button onClick={() => onSelect("feed")} className="relative w-full mt-6 rounded-3xl overflow-hidden text-left aspect-photo">
         <Photo
           src={REAL_PHOTOS.brigadeiroDiaDificil}
           alt=""
@@ -75,9 +74,9 @@ export default function HomeScreen({ onSelect }) {
           loading="eager"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" />
-        <span className="relative flex items-center gap-1.5 text-white font-display text-base">
+        <span className="absolute bottom-5 left-5 flex items-center gap-1.5 text-white font-display text-lg">
           Mais doces dias por aqui
-          <ChevronRight size={16} />
+          <ChevronRight size={18} />
         </span>
       </button>
 
