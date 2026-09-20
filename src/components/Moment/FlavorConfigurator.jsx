@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Heart } from "lucide-react";
+import { Heart, Minus, Plus } from "lucide-react";
 import { COLORS } from "../../styles/colors";
 import { parseQuantityOptions, splitEvenly } from "../../utils/products";
 
@@ -23,26 +23,37 @@ export default function FlavorConfigurator({ product, existing, onConfirm }) {
     return selectedFlavors.map((name, i) => ({ name, qty: parts[i] }));
   }, [selectedFlavors, qty]);
 
+  // Steps through the real cataloged quantities (e.g. 6 → 12 → 24) rather
+  // than an arbitrary ±1 — a customer can never land on a quantity that
+  // isn't actually offered.
+  const qtyIndex = qtyOptions.indexOf(qty);
+  const stepQty = (dir) => setQty(qtyOptions[Math.max(0, Math.min(qtyOptions.length - 1, qtyIndex + dir))]);
+
   return (
     <div className="fade-up">
       {qtyOptions.length > 1 && (
         <>
-          <p className="text-sm font-display text-brand-ink mb-2">Quantos você quer?</p>
-          <div className="flex flex-wrap gap-1.5 mb-4">
-            {qtyOptions.map((n) => (
-              <button
-                key={n}
-                onClick={() => setQty(n)}
-                className="text-xs rounded-full px-3.5 py-1.5 border"
-                style={{
-                  backgroundColor: qty === n ? COLORS.ink : "transparent",
-                  color: qty === n ? "white" : COLORS.ink,
-                  borderColor: qty === n ? COLORS.ink : COLORS.border,
-                }}
-              >
-                {n}
-              </button>
-            ))}
+          <p className="text-sm font-display text-brand-ink mb-2">Quantidade</p>
+          <div className="inline-flex items-center gap-1 rounded-full border border-brand-border mb-4">
+            <button
+              onClick={() => stepQty(-1)}
+              disabled={qtyIndex <= 0}
+              aria-label="Diminuir quantidade"
+              className="w-11 h-11 flex items-center justify-center disabled:opacity-30"
+            >
+              <Minus size={16} className="text-brand-ink" />
+            </button>
+            <span className="w-10 text-center text-base font-medium text-brand-ink" aria-live="polite">
+              {qty}
+            </span>
+            <button
+              onClick={() => stepQty(1)}
+              disabled={qtyIndex >= qtyOptions.length - 1}
+              aria-label="Aumentar quantidade"
+              className="w-11 h-11 flex items-center justify-center disabled:opacity-30"
+            >
+              <Plus size={16} className="text-brand-ink" />
+            </button>
           </div>
         </>
       )}
@@ -92,7 +103,7 @@ export default function FlavorConfigurator({ product, existing, onConfirm }) {
             }}
           >
             <Heart size={12} fill={selectedFlavors.length === 0 ? "none" : "white"} />
-            Quero esse
+            Adicionar à minha seleção
           </button>
         </>
       )}
