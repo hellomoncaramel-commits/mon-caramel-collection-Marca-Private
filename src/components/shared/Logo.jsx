@@ -1,5 +1,10 @@
 const SIZES = {
   sm: 72,
+  // The logo artwork is a square canvas with built-in breathing room
+  // around the mark, so its rendered box needs to run a bit larger than
+  // the mark itself to read as "immediately recognizable" in a compact
+  // header (Home).
+  home: 100,
   md: 120,
   lg: 200,
 };

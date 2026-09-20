@@ -45,7 +45,7 @@ export default function MomentScreen({
   };
 
   return (
-    <div className="max-w-2xl mx-auto px-6 pt-10 pb-28 fade-up">
+    <div className="max-w-2xl mx-auto px-4 pt-10 pb-28 fade-up">
       <BackButton onClick={onBack} label="Voltar" />
 
       {MOMENT_INTRO[momentId] && (

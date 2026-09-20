@@ -44,12 +44,19 @@ export default {
         "2xs": ["0.7rem", { lineHeight: "1rem" }],
         "moment-title": ["0.92rem", { lineHeight: "1.3rem" }],
         "moment-caption": ["0.78rem", { lineHeight: "1.1rem" }],
+        // Editorial headline size — a real headline at real mobile width
+        // (~32px), with the tight serif line-height that makes it read as
+        // a headline rather than stacked body text.
+        hero: ["2rem", { lineHeight: "1.1" }],
       },
       letterSpacing: {
         kicker: "0.25em",
       },
       aspectRatio: {
         photo: "4 / 3",
+        // Wide editorial banner ratio for the Home hero photo — appetite,
+        // not a catalog thumbnail.
+        hero: "16 / 9",
       },
       zIndex: {
         modal: "60",

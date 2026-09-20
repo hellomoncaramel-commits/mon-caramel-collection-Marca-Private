@@ -71,7 +71,7 @@ export default function SearchScreen({ onBack, onGoCatalog, selection, addToSele
     addToSelection({ kind: "product", productId: p.id, name: p.name, unit: p.unit, qty, flavors: null });
 
   return (
-    <div className="max-w-xl mx-auto px-5 pt-8 pb-10 fade-up">
+    <div className="max-w-xl mx-auto px-4 pt-8 pb-10 fade-up">
       <BackButton onClick={onBack} label="Voltar" />
       <h1 className="text-2xl font-display text-brand-ink mb-4">O que você está procurando?</h1>
 

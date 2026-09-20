@@ -27,7 +27,7 @@ export default function FeedScreen({ onBack, favorites, toggleFavorite, selectio
   }, [filter]);
 
   return (
-    <div className="max-w-xl mx-auto px-5 pt-8 pb-10 fade-up">
+    <div className="max-w-xl mx-auto px-4 pt-8 pb-10 fade-up">
       <BackButton onClick={onBack} label="Voltar" />
       <h1 className="text-2xl font-display text-brand-ink mb-1">Só olha... 👀</h1>
       <p className="text-sm mb-5 text-brand-muted">Vai rolando. A gente não conta pra ninguém se você ficar com vontade.</p>
