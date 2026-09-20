@@ -99,7 +99,7 @@ export default function SelectionScreen({ selection, removeFromSelection, onBack
               className="w-full text-sm font-medium text-white bg-brand-caramelDark rounded-full py-3 flex items-center justify-center gap-2"
             >
               <MessageCircle size={15} />
-              Montar meu pedido →
+              Finalizar pelo WhatsApp
             </button>
             <button onClick={onBack} className="w-full text-sm rounded-full py-3 text-brand-muted">
               Continuar escolhendo

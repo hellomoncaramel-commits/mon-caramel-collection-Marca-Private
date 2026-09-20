@@ -77,19 +77,23 @@ export default function ProductCard({
         {!isFesta && <p className="text-xs mt-0.5 text-brand-muted">{p.unit}</p>}
         <p className="text-xs mt-2 leading-relaxed flex-1 text-brand-inkSoft">{p.sensory}</p>
 
-        {!isFesta && (canFreeze || isCustomizable) && (
+        {!isFesta && (
           <div className="flex flex-wrap gap-1.5 mt-2.5">
-            {canFreeze && (
-              <span className="inline-flex items-center gap-1 text-3xs font-medium rounded-full px-2 py-1 bg-brand-subtle text-brand-inkSoft">
-                <Snowflake size={10} /> Pode congelar
-              </span>
-            )}
-            {isCustomizable && (
+            {isCustomizable ? (
               <span
                 className="inline-flex items-center gap-1 text-3xs font-medium rounded-full px-2 py-1"
                 style={{ backgroundColor: `${COLORS.caramelLight}30`, color: COLORS.caramelDark }}
               >
-                <Sparkles size={10} /> Escolha seus sabores
+                <Sparkles size={10} /> Escolha seus sabores ✨
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1 text-3xs font-medium rounded-full px-2 py-1 bg-brand-subtle text-brand-inkSoft">
+                Sabor fixo
+              </span>
+            )}
+            {canFreeze && (
+              <span className="inline-flex items-center gap-1 text-3xs font-medium rounded-full px-2 py-1 bg-brand-subtle text-brand-inkSoft">
+                <Snowflake size={10} /> Pode congelar
               </span>
             )}
           </div>
