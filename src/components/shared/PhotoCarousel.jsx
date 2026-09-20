@@ -25,7 +25,7 @@ export default function PhotoCarousel({ photos, alt }) {
 
   return (
     <div className="relative w-full overflow-hidden select-none aspect-photo">
-      <img src={photos[i]} alt={alt} className="w-full h-full object-cover" />
+      <img src={photos[i]} alt={alt} className="w-full h-full object-cover" loading="lazy" decoding="async" />
       {photos.length > 1 && (
         <>
           <button

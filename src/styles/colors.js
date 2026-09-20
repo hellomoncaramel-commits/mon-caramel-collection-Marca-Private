@@ -12,7 +12,7 @@ export const COLORS = {
   subtle: "#F4EBDA",
   ink: "#3D2418",
   inkSoft: "#5B4A3D",
-  muted: "#8A7A68",
+  muted: "#7A6A57", // darkened for WCAG AA contrast on beige — see tailwind.config.js
   caramelDark: "#AB6233",
   caramelLight: "#ECC15C",
   creamYellow: "#EFC970",

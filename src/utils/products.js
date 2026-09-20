@@ -39,6 +39,28 @@ export function photosForMoment(product, momentId) {
   );
 }
 
+// Whether a product belongs in general, price-showing browsing (the feed,
+// search, favorites). Excludes: presente items (inspiration, not individual
+// SKUs — they live in PresenteScreen) and festa-exclusive items, since the
+// Festa flow deliberately never shows a price or mixes with Minha Seleção;
+// a product cross-tagged to festa *and* another moment is fine here, since
+// it already shows its price in that other moment.
+export function isBrowsable(product) {
+  if (product.presenteGroup) return false;
+  if (product.moments.length === 1 && product.moments[0] === "festa") return false;
+  return true;
+}
+
+// Same idea as photosForMoment, but for contexts with no moment in play
+// (the feed, search results, favorites) — first whatever general photos
+// the product has, otherwise the first moment-specific set available.
+export function defaultPhotos(product) {
+  if (product.photos) return product.photos;
+  if (product.photosByMoment) return Object.values(product.photosByMoment)[0];
+  if (product.photoByMoment) return [Object.values(product.photoByMoment)[0]];
+  return null;
+}
+
 // Pulls whole numbers out of a unit string like "6, 12 ou 24 unidades" to
 // offer as quantity chips. Falls back to a single default when the unit
 // doesn't describe multiple options.

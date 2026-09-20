@@ -5,6 +5,11 @@ import { REAL_PHOTOS } from "./photos";
 // PRODUCTS — real catalog, cross-tagged to multiple emotional "moments".
 // Price fixed at $1 as a placeholder where the real price isn't set yet —
 // Naia is still finalizing pricing in Excel (briefing section 6).
+//
+// Optional field, not set on any product yet: `relatedProducts: string[]`,
+// an array of other product ids to show as "já que você chegou até aqui"
+// suggestions on that product's detail sheet. No relations are invented —
+// add the field to a product once Naia tells us what actually pairs well.
 // ===========================================================================
 export const PRODUCTS = [
   {

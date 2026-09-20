@@ -26,7 +26,10 @@ export default {
           // Derived neutrals (not in the brand kit, kept from the prototype)
           ink: "#3D2418",
           inkSoft: "#5B4A3D",
-          muted: "#8A7A68",
+          // Darkened from the prototype's #8A7A68 (~4.04:1 on beige, fails
+          // WCAG AA for normal text) to reach ~5:1 while staying in the
+          // same warm-brown family.
+          muted: "#7A6A57",
           border: "#EADFC8",
           subtle: "#F4EBDA",
         },
