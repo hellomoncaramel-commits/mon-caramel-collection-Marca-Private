@@ -132,7 +132,7 @@ export default function GiftIdeaWizard({ onBack, groupKey, groupLabel, title, oc
   };
 
   return (
-    <div className="max-w-xl mx-auto px-5 pt-8 pb-10 fade-up">
+    <div className="max-w-xl mx-auto px-4 pt-8 pb-10 fade-up">
       <BackButton onClick={back} label={stepIndex === 0 ? "Voltar" : "Etapa anterior"} />
       <p className="text-xl font-display text-brand-ink mb-1 text-center">{title}</p>
 

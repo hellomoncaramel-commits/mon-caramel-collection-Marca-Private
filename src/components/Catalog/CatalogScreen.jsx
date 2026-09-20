@@ -10,7 +10,7 @@ export default function CatalogScreen({ onBack, favorites, toggleFavorite, selec
   const inSelection = (id) => selection.some((it) => it.productId === id);
 
   return (
-    <div className="max-w-2xl mx-auto px-6 pt-10 pb-28 fade-up">
+    <div className="max-w-2xl mx-auto px-4 pt-10 pb-28 fade-up">
       <BackButton onClick={onBack} label="Voltar" />
       <h2 className="text-2xl mb-1 font-display text-brand-ink">Coleção completa</h2>
       <p className="text-sm mb-6 text-brand-muted">Todos os produtos, num lugar só.</p>
