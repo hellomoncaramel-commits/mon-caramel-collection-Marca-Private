@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { MOMENTS, MOMENT_TAGLINE } from "../../data/moments";
+import { MOMENTS, MOMENT_TAGLINE, MOMENT_SHORT } from "../../data/moments";
 import { COLORS } from "../../styles/colors";
 import BackButton from "../shared/BackButton";
 
@@ -119,8 +119,30 @@ export default function MomentPicker({ onBack, onSelectMoment }) {
         </button>
       </div>
 
-      <button onClick={() => setShowAll((s) => !s)} className="w-full text-center text-sm mt-6 py-2 underline text-brand-muted min-h-11">
+      <div className="flex justify-between gap-1 mt-6">
+        {MOMENTS.map((m, i) => (
+          <button
+            key={m.id}
+            onClick={() => onSelectMoment(m.id)}
+            className="flex flex-col items-center gap-1.5 flex-1 min-h-11 py-1"
+          >
+            <span
+              className="w-11 h-11 rounded-full flex items-center justify-center text-lg"
+              style={{ backgroundColor: `${ACCENTS[i]}22` }}
+            >
+              {m.emoji}
+            </span>
+            <span className="text-3xs text-brand-inkSoft text-center leading-tight">{MOMENT_SHORT[m.id]}</span>
+          </button>
+        ))}
+      </div>
+
+      <button
+        onClick={() => setShowAll((s) => !s)}
+        className="w-full flex items-center justify-center gap-1.5 text-sm font-medium mt-5 py-3 min-h-11 rounded-full border border-brand-caramelDark text-brand-caramelDark"
+      >
         {showAll ? "Ocultar lista" : "Ver todos os momentos"}
+        {!showAll && <ChevronRight size={16} />}
       </button>
 
       {showAll && (

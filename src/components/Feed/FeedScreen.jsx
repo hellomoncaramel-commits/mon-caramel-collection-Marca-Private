@@ -18,7 +18,7 @@ const FILTERS = [
 // "Só quero olhar e passar vontade" — an editorial, Instagram/Pinterest-
 // style feed. Presente items sit this one out: they're inspiration, not
 // individually browsable products, and already have their own experience.
-export default function FeedScreen({ onBack, favorites, toggleFavorite, onOpenProduct, onGoSaved }) {
+export default function FeedScreen({ onBack, favorites, toggleFavorite, selection, addToSelection, onOpenProduct, onGoSaved }) {
   const [filter, setFilter] = useState("tudo");
 
   const items = useMemo(() => {
@@ -56,6 +56,10 @@ export default function FeedScreen({ onBack, favorites, toggleFavorite, onOpenPr
             product={p}
             isFavorite={favorites.includes(p.id)}
             onToggleFavorite={toggleFavorite}
+            isAdded={selection.some((it) => it.kind === "product" && it.productId === p.id)}
+            onQuickAdd={(product, qty) =>
+              addToSelection({ kind: "product", productId: product.id, name: product.name, unit: product.unit, qty, flavors: null })
+            }
             onOpen={onOpenProduct}
           />
         ))}

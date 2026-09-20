@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X, Copy, Instagram } from "lucide-react";
+import { X, Copy, Instagram, CheckCircle2 } from "lucide-react";
 
 export default function SendModal({ message, onClose }) {
   const [copied, setCopied] = useState(false);
@@ -22,14 +22,17 @@ export default function SendModal({ message, onClose }) {
         className="relative rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl flex flex-col fade-up bg-brand-beige"
         style={{ maxHeight: "85vh" }}
       >
-        <div className="flex items-start justify-between mb-4">
-          <h2 className="text-xl font-display text-brand-ink">Pronto pra enviar</h2>
-          <button onClick={onClose} className="p-1.5 rounded-full hover:bg-brand-subtle" aria-label="Fechar">
+        <div className="flex items-start justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <CheckCircle2 size={22} className="text-brand-caramelDark" />
+            <h2 className="text-xl font-display text-brand-ink">Sua ideia está pronta! 🎉</h2>
+          </div>
+          <button onClick={onClose} className="p-1.5 rounded-full hover:bg-brand-subtle shrink-0" aria-label="Fechar">
             <X size={20} className="text-brand-ink" />
           </button>
         </div>
         <p className="text-sm mb-4 leading-relaxed text-brand-inkSoft">
-          Copie e nos mande pelo Instagram ou WhatsApp — a gente cuida do resto.
+          Copie a mensagem e nos mande pelo Instagram ou WhatsApp — a gente cuida do resto a partir daqui.
         </p>
         <div className="border border-brand-border rounded-2xl p-4 text-sm whitespace-pre-wrap overflow-y-auto flex-1 leading-relaxed bg-brand-subtle text-brand-ink">
           {message}
