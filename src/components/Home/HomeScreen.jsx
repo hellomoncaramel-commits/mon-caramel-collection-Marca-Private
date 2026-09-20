@@ -1,5 +1,6 @@
 import { REAL_PHOTOS } from "../../data/photos";
 import Logo from "../shared/Logo";
+import Photo from "../shared/Photo";
 
 // Three ways in, weighted differently on purpose — a stack of three
 // identical white cards reads like a form. "Só quero olhar" leads with a
@@ -22,7 +23,7 @@ export default function HomeScreen({ onSelect }) {
           onClick={() => onSelect("feed")}
           className="relative rounded-3xl overflow-hidden text-left min-h-44 flex flex-col justify-end p-5"
         >
-          <img
+          <Photo
             src={REAL_PHOTOS.brigadeiroDiaDificil}
             alt=""
             className="absolute inset-0 w-full h-full object-cover"

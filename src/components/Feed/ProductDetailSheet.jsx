@@ -5,6 +5,7 @@ import { PRODUCTS } from "../../data/products";
 import { defaultPhotos, parseQuantityOptions } from "../../utils/products";
 import PhotoCarousel from "../shared/PhotoCarousel";
 import ProductArt from "../shared/ProductArt";
+import Photo from "../shared/Photo";
 import QuantityStepper from "../shared/QuantityStepper";
 import FlavorConfigurator from "../Moment/FlavorConfigurator";
 
@@ -122,7 +123,7 @@ export default function ProductDetailSheet({ product: p, onClose, selection, add
                 {related.map((r) => (
                   <div key={r.id} className="shrink-0 w-32">
                     <div className="rounded-2xl overflow-hidden aspect-photo">
-                      <img src={defaultPhotos(r)?.[0]} alt={r.name} className="w-full h-full object-cover" loading="lazy" />
+                      <Photo src={defaultPhotos(r)?.[0]} alt={r.name} className="w-full h-full object-cover" loading="lazy" />
                     </div>
                     <p className="text-xs mt-1.5 text-brand-ink">{r.name}</p>
                   </div>

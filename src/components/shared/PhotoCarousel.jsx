@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import Photo from "./Photo";
 
 // Rotates automatically every ~3s (briefing section 7 — many customers don't
 // notice they can drag/see more photos). Pauses as soon as someone
@@ -25,14 +26,14 @@ export default function PhotoCarousel({ photos, alt }) {
 
   return (
     <div className="relative w-full overflow-hidden select-none aspect-photo">
-      <img src={photos[i]} alt={alt} className="w-full h-full object-cover" loading="lazy" decoding="async" />
+      <Photo src={photos[i]} alt={alt} className="w-full h-full object-cover" loading="lazy" />
       {photos.length > 1 && (
         <>
           <button
             type="button"
             onClick={(e) => go(-1, e)}
             aria-label="Foto anterior"
-            className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/85 flex items-center justify-center z-10"
+            className="absolute left-1.5 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/85 flex items-center justify-center z-10"
           >
             <ChevronLeft size={16} className="text-brand-ink" />
           </button>
@@ -40,7 +41,7 @@ export default function PhotoCarousel({ photos, alt }) {
             type="button"
             onClick={(e) => go(1, e)}
             aria-label="Próxima foto"
-            className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/85 flex items-center justify-center z-10"
+            className="absolute right-1.5 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/85 flex items-center justify-center z-10"
           >
             <ChevronRight size={16} className="text-brand-ink" />
           </button>
