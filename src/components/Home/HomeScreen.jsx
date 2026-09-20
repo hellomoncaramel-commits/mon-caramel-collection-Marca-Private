@@ -1,56 +1,60 @@
-import { MOMENTS, MOMENT_TAGLINE } from "../../data/moments";
-import { COLORS } from "../../styles/colors";
+import { REAL_PHOTOS } from "../../data/photos";
 import Logo from "../shared/Logo";
 
-// Rotating accent tints for the moment badges — purely visual rhythm, so
-// five near-identical cards don't all carry the exact same weight.
-const ACCENTS = [COLORS.caramelDark, COLORS.caramelLight, COLORS.creamYellow, COLORS.caramelDark, COLORS.caramelLight];
-
-export default function HomeScreen({ onSelect, favorites }) {
+// Three ways in, weighted differently on purpose — a stack of three
+// identical white cards reads like a form. "Só quero olhar" leads with a
+// real, appetizing photo because the home page shouldn't be all text and
+// buttons; the other two carry their own visual weight through color, not
+// through more copy.
+export default function HomeScreen({ onSelect }) {
   return (
-    <div className="max-w-xl mx-auto px-6 pt-14 pb-20 text-center fade-up">
-      <div className="mb-6">
-        <Logo size="lg" />
+    <div className="max-w-xl mx-auto px-5 pt-8 pb-10 fade-up">
+      <div className="text-center mb-5">
+        <Logo size="sm" />
       </div>
-      <h1 className="text-4xl sm:text-5xl mb-4 font-display italic text-brand-ink">Como você está hoje?</h1>
-      <p className="mb-9 leading-relaxed text-brand-inkSoft">
-        Conta pra gente o que te trouxe aqui — a gente te mostra o que combina com o seu momento.
+      <h1 className="text-3xl text-center mb-2 font-display italic text-brand-ink">O que a gente vai adoçar hoje? 💛</h1>
+      <p className="text-sm text-center mb-7 leading-relaxed text-brand-inkSoft">
+        Escolha pelo momento, procure alguma coisa específica ou simplesmente fique olhando...
       </p>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {MOMENTS.map((m, i) => (
-          <button
-            key={m.id}
-            onClick={() => onSelect(m.id)}
-            className="flex flex-col items-start gap-2 p-5 rounded-3xl bg-white text-left transition-all shadow-sm hover:shadow-lg hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-caramelDark"
-          >
-            <span
-              className="w-11 h-11 rounded-2xl flex items-center justify-center text-xl"
-              style={{ backgroundColor: `${ACCENTS[i]}22` }}
-            >
-              {m.emoji}
-            </span>
-            <span className="font-display text-lg text-brand-ink leading-snug">{m.label}</span>
-            <span className="text-sm text-brand-muted">{MOMENT_TAGLINE[m.id]}</span>
-          </button>
-        ))}
-      </div>
+      <div className="flex flex-col gap-4">
+        <button
+          onClick={() => onSelect("feed")}
+          className="relative rounded-3xl overflow-hidden text-left min-h-44 flex flex-col justify-end p-5"
+        >
+          <img
+            src={REAL_PHOTOS.brigadeiroDiaDificil}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover"
+            loading="eager"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+          <span className="relative text-white text-xl font-display">👀 Só quero olhar e passar vontade</span>
+          <span className="relative text-white/85 text-sm mt-0.5">Por sua conta e risco.</span>
+        </button>
 
-      {favorites.length > 0 && (
-        <p className="text-xs mt-8 text-brand-muted">
-          ♥ Você guardou {favorites.length} {favorites.length === 1 ? "item" : "itens"} pra depois
-        </p>
-      )}
+        <button
+          onClick={() => onSelect("momentos")}
+          className="rounded-3xl text-left p-5 min-h-24 bg-brand-caramelDark"
+        >
+          <span className="block text-white text-lg font-display">💛 Me ajuda a escolher</span>
+          <span className="block text-white/85 text-sm mt-0.5">Escolha pelo momento.</span>
+        </button>
+
+        <button
+          onClick={() => onSelect("busca")}
+          className="rounded-3xl text-left p-5 min-h-24 bg-white border border-brand-border"
+        >
+          <span className="block text-brand-ink text-lg font-display">🔎 Já sei o que quero</span>
+          <span className="block text-brand-muted text-sm mt-0.5">Me leva pros doces.</span>
+        </button>
+      </div>
 
       <div className="flex items-center justify-center gap-4 mt-8 text-xs text-brand-muted">
         <span>📍 Retirada grátis — Ritson x Adelaide</span>
         <span className="w-1 h-1 rounded-full bg-brand-caramelLight" />
         <span>🚗 Entrega disponível</span>
       </div>
-
-      <button onClick={() => onSelect("catalogo")} className="text-xs mt-6 underline text-brand-muted">
-        📋 Já sabe o que procura? Veja toda a coleção.
-      </button>
     </div>
   );
 }

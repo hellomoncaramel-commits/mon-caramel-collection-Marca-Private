@@ -15,7 +15,7 @@ export default function MimosSection({ selection, addToSelection }) {
         return (
           <div key={p.id} className="rounded-2xl overflow-hidden bg-white border border-brand-border flex flex-col">
             <div className="aspect-photo">
-              <img src={p.photos[0]} alt={p.name} className="w-full h-full object-cover" />
+              <img src={p.photos[0]} alt={p.name} className="w-full h-full object-cover" loading="lazy" decoding="async" />
             </div>
             <div className="p-3 flex flex-col flex-1">
               <h4 className="text-sm font-display text-brand-ink leading-tight">{p.name}</h4>
@@ -25,7 +25,8 @@ export default function MimosSection({ selection, addToSelection }) {
                 onClick={() =>
                   addToSelection({ kind: "product", productId: p.id, name: p.name, unit: p.unit, qty: 1, flavors: null })
                 }
-                className="mt-2 w-full text-3xs font-medium rounded-full py-1.5 flex items-center justify-center gap-1 border"
+                aria-label={existing ? `${p.name} já está na seleção` : `Adicionar ${p.name} à seleção`}
+                className="mt-2 w-full text-3xs font-medium rounded-full min-h-11 flex items-center justify-center gap-1 border"
                 style={{
                   backgroundColor: existing ? COLORS.caramelDark : "transparent",
                   color: existing ? "white" : COLORS.caramelDark,

@@ -95,30 +95,28 @@ export default function IdeaConfigurator({ title, subtitle, groupKey, groupLabel
       <div className="mb-6">
         <p className="text-sm font-medium mb-2 text-brand-ink">Quer deixar com a cara de quem vai receber?</p>
         <div className="grid grid-cols-2 gap-2 mb-2">
-          <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Nome"
-            className="rounded-xl border border-brand-border px-3 py-2 text-sm bg-white"
-          />
-          <input
-            value={colors}
-            onChange={(e) => setColors(e.target.value)}
-            placeholder="Cores"
-            className="rounded-xl border border-brand-border px-3 py-2 text-sm bg-white"
-          />
-          <input
-            value={theme}
-            onChange={(e) => setTheme(e.target.value)}
-            placeholder="Tema"
-            className="rounded-xl border border-brand-border px-3 py-2 text-sm bg-white"
-          />
-          <input
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder="Mensagem"
-            className="rounded-xl border border-brand-border px-3 py-2 text-sm bg-white"
-          />
+          {[
+            { id: "name", label: "Nome", value: name, set: setName },
+            { id: "colors", label: "Cores", value: colors, set: setColors },
+            { id: "theme", label: "Tema", value: theme, set: setTheme },
+            { id: "message", label: "Mensagem", value: message, set: setMessage },
+          ].map((field) => {
+            const inputId = `${groupKey}-${field.id}`;
+            return (
+              <div key={field.id}>
+                <label htmlFor={inputId} className="sr-only">
+                  {field.label}
+                </label>
+                <input
+                  id={inputId}
+                  value={field.value}
+                  onChange={(e) => field.set(e.target.value)}
+                  placeholder={field.label}
+                  className="w-full rounded-xl border border-brand-border px-3 py-2 text-sm bg-white min-h-11"
+                />
+              </div>
+            );
+          })}
         </div>
         <button
           onClick={() => setUnsure((u) => !u)}

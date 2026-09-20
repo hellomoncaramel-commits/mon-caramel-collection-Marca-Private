@@ -64,10 +64,11 @@ export default function ProductCard({
         {!isFesta && (
           <button
             onClick={() => toggleFavorite(p.id)}
-            className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center"
-            aria-label="Guardar pra depois"
+            className="absolute top-2 right-2 w-11 h-11 rounded-full bg-white/90 flex items-center justify-center"
+            aria-label={isFav ? `Remover ${p.name} dos salvos` : `Salvar ${p.name}`}
+            aria-pressed={isFav}
           >
-            <Heart size={15} fill={isFav ? COLORS.caramelDark : "none"} stroke={COLORS.caramelDark} />
+            <Heart size={16} fill={isFav ? COLORS.caramelDark : "none"} stroke={COLORS.caramelDark} />
           </button>
         )}
       </div>
@@ -97,7 +98,7 @@ export default function ProductCard({
         {isFesta ? (
           <button
             onClick={() => onOpenPartyModal(p)}
-            className="w-full mt-3 text-xs font-medium rounded-full px-3.5 py-2 flex items-center justify-center gap-1.5 border border-brand-caramelDark"
+            className="w-full mt-3 text-xs font-medium rounded-full px-3.5 min-h-11 flex items-center justify-center gap-1.5 border border-brand-caramelDark"
             style={{
               backgroundColor: partyEntry ? COLORS.caramelDark : "transparent",
               color: partyEntry ? "white" : COLORS.caramelDark,
@@ -117,7 +118,7 @@ export default function ProductCard({
                     ? removeFromSelection(existing)
                     : confirmAdd({ qty: defaultQty, flavorBreakdown: [] })
                 }
-                className="text-xs font-medium rounded-full px-3.5 py-1.5 inline-flex items-center gap-1 border border-brand-caramelDark"
+                className="text-xs font-medium rounded-full px-3.5 min-h-11 inline-flex items-center gap-1 border border-brand-caramelDark"
                 style={{ backgroundColor: existing ? COLORS.caramelDark : "transparent", color: existing ? "white" : COLORS.caramelDark }}
               >
                 <Heart size={12} fill={existing ? "white" : "none"} />

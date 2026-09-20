@@ -32,8 +32,13 @@ export default function CatalogScreen({ onBack, favorites, toggleFavorite, selec
                 <div>
                   <div className="flex items-center gap-1.5">
                     <h3 className="font-display text-base text-brand-ink">{p.name}</h3>
-                    <button onClick={() => toggleFavorite(p.id)} aria-label="Guardar pra depois">
-                      <Heart size={13} fill={isFav ? COLORS.caramelDark : "none"} stroke={COLORS.caramelDark} />
+                    <button
+                      onClick={() => toggleFavorite(p.id)}
+                      aria-label={isFav ? `Remover ${p.name} dos salvos` : `Salvar ${p.name}`}
+                      aria-pressed={isFav}
+                      className="w-11 h-11 -my-4 flex items-center justify-center"
+                    >
+                      <Heart size={14} fill={isFav ? COLORS.caramelDark : "none"} stroke={COLORS.caramelDark} />
                     </button>
                   </div>
                   <p className="text-xs text-brand-muted">
@@ -42,7 +47,8 @@ export default function CatalogScreen({ onBack, favorites, toggleFavorite, selec
                 </div>
                 <button
                   onClick={() => addToSelection({ kind: "product", productId: p.id, name: p.name, unit: p.unit, qty: 1, flavors: null })}
-                  className="text-xs font-medium rounded-full px-3 py-1.5 shrink-0 border border-brand-caramelDark"
+                  aria-label={added ? `${p.name} já está na seleção` : `Adicionar ${p.name} à seleção`}
+                  className="text-sm font-medium rounded-full w-11 h-11 shrink-0 border border-brand-caramelDark flex items-center justify-center"
                   style={{ backgroundColor: added ? COLORS.caramelDark : "transparent", color: added ? "white" : COLORS.caramelDark }}
                 >
                   {added ? "✓" : "♡"}
