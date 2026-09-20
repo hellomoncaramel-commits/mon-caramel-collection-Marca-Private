@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X, Heart, Snowflake, Sparkles } from "lucide-react";
+import { X, Heart, Snowflake, Sparkles, Share2 } from "lucide-react";
 import { COLORS } from "../../styles/colors";
 import { PRODUCTS } from "../../data/products";
 import { defaultPhotos, parseQuantityOptions } from "../../utils/products";
@@ -27,6 +27,16 @@ export default function ProductDetailSheet({ product: p, onClose, selection, add
     addToSelection({ kind: "product", productId: p.id, name: p.name, unit: p.unit, qty, flavors: null });
   };
 
+  const share = async () => {
+    const shareData = { title: p.name, text: `${p.name} — Mon Caramel Collection`, url: window.location.href };
+    try {
+      if (navigator.share) await navigator.share(shareData);
+      else await navigator.clipboard.writeText(shareData.url);
+    } catch {
+      // Cancelled or unsupported — no error state needed for a share action.
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-modal flex items-end sm:items-center justify-center">
       <div className="absolute inset-0 bg-black/50" onClick={onClose} />
@@ -40,10 +50,27 @@ export default function ProductDetailSheet({ product: p, onClose, selection, add
         <button
           onClick={onClose}
           aria-label="Fechar"
-          className="absolute top-3 right-3 z-10 w-11 h-11 rounded-full bg-white/90 flex items-center justify-center"
+          className="absolute top-3 left-3 z-10 w-11 h-11 rounded-full bg-white/90 flex items-center justify-center"
         >
           <X size={18} className="text-brand-ink" />
         </button>
+        <div className="absolute top-3 right-3 z-10 flex gap-2">
+          <button
+            onClick={() => toggleFavorite(p.id)}
+            aria-label={isFav ? `Remover ${p.name} dos salvos` : `Salvar ${p.name}`}
+            aria-pressed={isFav}
+            className="w-11 h-11 rounded-full bg-white/90 flex items-center justify-center transition-transform active:scale-90"
+          >
+            <Heart size={18} fill={isFav ? COLORS.caramelDark : "none"} stroke={COLORS.caramelDark} />
+          </button>
+          <button
+            onClick={share}
+            aria-label="Compartilhar"
+            className="w-11 h-11 rounded-full bg-white/90 flex items-center justify-center"
+          >
+            <Share2 size={16} className="text-brand-ink" />
+          </button>
+        </div>
 
         {photos && photos.length > 0 ? (
           <PhotoCarousel photos={photos} alt={p.name} />
@@ -52,41 +79,37 @@ export default function ProductDetailSheet({ product: p, onClose, selection, add
         )}
 
         <div className="p-5">
-          <div className="flex items-start justify-between gap-3">
-            <h2 id="product-detail-title" className="text-2xl font-display text-brand-ink leading-tight">
-              {p.name}
-            </h2>
-            <button
-              onClick={() => toggleFavorite(p.id)}
-              aria-label={isFav ? `Remover ${p.name} dos salvos` : `Salvar ${p.name}`}
-              aria-pressed={isFav}
-              className="shrink-0 w-11 h-11 rounded-full flex items-center justify-center transition-transform active:scale-90"
-            >
-              <Heart size={22} fill={isFav ? COLORS.caramelDark : "none"} stroke={COLORS.caramelDark} />
-            </button>
-          </div>
+          <h2 id="product-detail-title" className="text-2xl font-display text-brand-ink leading-tight">
+            {p.name}
+          </h2>
           <p className="text-sm mt-0.5 text-brand-muted">{p.unit}</p>
           <p className="text-sm mt-3 leading-relaxed text-brand-inkSoft">{p.sensory}</p>
 
+          <p className="text-xl font-medium mt-4 text-brand-caramelDark">{p.price}</p>
+
           {(canFreeze || isCustomizable) && (
-            <div className="flex flex-wrap gap-1.5 mt-3">
+            <ul className="flex flex-col gap-2 mt-4">
               {canFreeze && (
-                <span className="inline-flex items-center gap-1 text-2xs font-medium rounded-full px-2.5 py-1 bg-brand-subtle text-brand-inkSoft">
-                  <Snowflake size={11} /> Pode congelar
-                </span>
+                <li className="flex items-center gap-2.5 text-sm text-brand-inkSoft">
+                  <span className="w-8 h-8 shrink-0 rounded-full flex items-center justify-center bg-brand-subtle">
+                    <Snowflake size={14} className="text-brand-caramelDark" />
+                  </span>
+                  Pode congelar
+                </li>
               )}
               {isCustomizable && (
-                <span
-                  className="inline-flex items-center gap-1 text-2xs font-medium rounded-full px-2.5 py-1"
-                  style={{ backgroundColor: `${COLORS.caramelLight}30`, color: COLORS.caramelDark }}
-                >
-                  <Sparkles size={11} /> Escolha seus sabores
-                </span>
+                <li className="flex items-center gap-2.5 text-sm text-brand-inkSoft">
+                  <span
+                    className="w-8 h-8 shrink-0 rounded-full flex items-center justify-center"
+                    style={{ backgroundColor: `${COLORS.caramelLight}30` }}
+                  >
+                    <Sparkles size={14} className="text-brand-caramelDark" />
+                  </span>
+                  Escolha seus sabores
+                </li>
               )}
-            </div>
+            </ul>
           )}
-
-          <p className="text-xl font-medium mt-4 text-brand-caramelDark">{p.price}</p>
 
           {isCustomizable ? (
             <div className="mt-4 pt-4 border-t border-dashed border-brand-border">

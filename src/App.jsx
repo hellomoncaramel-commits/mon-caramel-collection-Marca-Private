@@ -6,7 +6,10 @@ import HomeScreen from "./components/Home/HomeScreen";
 import MomentPicker from "./components/Home/MomentPicker";
 import CatalogScreen from "./components/Catalog/CatalogScreen";
 import MomentScreen from "./components/Moment/MomentScreen";
-import PresenteScreen from "./components/Presente/PresenteScreen";
+import PresenteEntryScreen from "./components/Presente/PresenteEntryScreen";
+import CaixasScreen from "./components/Presente/CaixasScreen";
+import BandejasScreen from "./components/Presente/BandejasScreen";
+import MimosScreen from "./components/Presente/MimosScreen";
 import FeedScreen from "./components/Feed/FeedScreen";
 import SavedScreen from "./components/Feed/SavedScreen";
 import ProductDetailSheet from "./components/Feed/ProductDetailSheet";
@@ -17,6 +20,18 @@ import BottomNav from "./components/shared/BottomNav";
 import Toast from "./components/shared/Toast";
 
 const BOTTOM_NAV_SCREENS = ["salvos", "busca", "selecao"];
+const NON_MOMENT_SCREENS = [
+  "momentos",
+  "feed",
+  "salvos",
+  "busca",
+  "catalogo",
+  "selecao",
+  "presente",
+  "presente-caixas",
+  "presente-bandejas",
+  "presente-mimos",
+];
 
 export default function App() {
   const [screen, setScreen] = useState(null);
@@ -41,6 +56,8 @@ export default function App() {
             onBack={() => setScreen(null)}
             favorites={favorites}
             toggleFavorite={toggleFavorite}
+            selection={selection}
+            addToSelection={addToSelection}
             onOpenProduct={setOpenProduct}
             onGoSaved={() => setScreen("salvos")}
           />
@@ -51,6 +68,8 @@ export default function App() {
             onBack={() => setScreen(null)}
             favorites={favorites}
             toggleFavorite={toggleFavorite}
+            selection={selection}
+            addToSelection={addToSelection}
             onOpenProduct={setOpenProduct}
             onGoFeed={() => setScreen("feed")}
           />
@@ -60,9 +79,10 @@ export default function App() {
           <SearchScreen
             onBack={() => setScreen(null)}
             onGoCatalog={() => setScreen("catalogo")}
-            favorites={favorites}
-            toggleFavorite={toggleFavorite}
+            selection={selection}
+            addToSelection={addToSelection}
             onOpenProduct={setOpenProduct}
+            onSend={setPendingMessage}
           />
         )}
 
@@ -81,25 +101,37 @@ export default function App() {
           <SelectionScreen
             selection={selection}
             removeFromSelection={removeFromSelection}
+            addToSelection={addToSelection}
             onBack={() => setScreen(null)}
             onSend={setPendingMessage}
           />
         )}
 
-        {screen === "presente" && (
-          <PresenteScreen
-            onBack={() => setScreen(null)}
-            onGoCatalog={() => setScreen("catalogo")}
-            onSend={setPendingMessage}
-            selection={selection}
+        {screen === "presente" && <PresenteEntryScreen onBack={() => setScreen(null)} onSelect={setScreen} />}
+
+        {screen === "presente-caixas" && (
+          <CaixasScreen
+            onBack={() => setScreen("presente")}
+            isSelected={isSelected}
             addToSelection={addToSelection}
             removeFromSelection={removeFromSelection}
-            isSelected={isSelected}
-            onOpenSelection={onGoSelection}
           />
         )}
 
-        {screen && !["momentos", "feed", "salvos", "busca", "catalogo", "selecao", "presente"].includes(screen) && (
+        {screen === "presente-bandejas" && (
+          <BandejasScreen
+            onBack={() => setScreen("presente")}
+            isSelected={isSelected}
+            addToSelection={addToSelection}
+            removeFromSelection={removeFromSelection}
+          />
+        )}
+
+        {screen === "presente-mimos" && (
+          <MimosScreen onBack={() => setScreen("presente")} selection={selection} addToSelection={addToSelection} />
+        )}
+
+        {screen && !NON_MOMENT_SCREENS.includes(screen) && (
           <MomentScreen
             momentId={screen}
             onBack={() => setScreen(null)}

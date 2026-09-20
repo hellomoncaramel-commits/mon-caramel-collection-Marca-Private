@@ -4,7 +4,7 @@ import FeedCard from "./FeedCard";
 
 // Everything favorited from anywhere in the app (feed, search, moments,
 // presente mimos) shows up here — a quiet holding pen, not a checkout step.
-export default function SavedScreen({ onBack, favorites, toggleFavorite, onOpenProduct, onGoFeed }) {
+export default function SavedScreen({ onBack, favorites, toggleFavorite, selection, addToSelection, onOpenProduct, onGoFeed }) {
   const items = PRODUCTS.filter((p) => favorites.includes(p.id));
 
   return (
@@ -30,6 +30,10 @@ export default function SavedScreen({ onBack, favorites, toggleFavorite, onOpenP
               product={p}
               isFavorite={true}
               onToggleFavorite={toggleFavorite}
+              isAdded={selection.some((it) => it.kind === "product" && it.productId === p.id)}
+              onQuickAdd={(product, qty) =>
+                addToSelection({ kind: "product", productId: product.id, name: product.name, unit: product.unit, qty, flavors: null })
+              }
               onOpen={onOpenProduct}
             />
           ))}

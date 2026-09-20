@@ -31,6 +31,16 @@ export const MOMENT_TAGLINE = {
   festa: "A gente conhece essa história...",
 };
 
+// One or two words per moment — for tight spots (quick-shortcut rows,
+// nav) where the full label sentence doesn't fit.
+export const MOMENT_SHORT = {
+  cafe: "Café",
+  "dia-dificil": "Dias de luta",
+  freezer: "Freezer",
+  presente: "Presente",
+  festa: "Festa",
+};
+
 // Fixed display order within a moment, when it differs from catalog order.
 export const MOMENT_ORDER = {
   "dia-dificil": ["bala-de-coco", "chocobomb", "cone-trufado", "mini-donut-decorado"],

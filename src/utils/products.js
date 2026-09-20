@@ -51,6 +51,14 @@ export function isBrowsable(product) {
   return true;
 }
 
+// Minha Seleção's single cross-sell nudge — no current moment to lean on
+// here (the selection mixes entries from every screen), so it just offers
+// the first browsable product not already in the selection.
+export function pickSelectionCrossSell(selection) {
+  const selectedIds = new Set(selection.filter((it) => !it.kind || it.kind === "product").map((it) => it.productId));
+  return PRODUCTS.find((p) => isBrowsable(p) && !selectedIds.has(p.id)) || null;
+}
+
 // Same idea as photosForMoment, but for contexts with no moment in play
 // (the feed, search results, favorites) — first whatever general photos
 // the product has, otherwise the first moment-specific set available.
