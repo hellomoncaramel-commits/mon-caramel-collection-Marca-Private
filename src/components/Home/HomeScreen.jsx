@@ -7,10 +7,14 @@ import { COLORS } from "../../styles/colors";
 import Logo from "../shared/Logo";
 import Photo from "../shared/Photo";
 
+// All three paths belong to one system: full-color blocks, not "two solid
+// + one plain outline" — each cycles through a real brand color instead of
+// inventing a new hue, with "dark" saying whether that color needs ink text
+// (light backgrounds) or white text (the dark caramel).
 const PATHS = [
-  { id: "momentos", emoji: "💛", title: "Me ajuda a escolher", subtitle: "Escolha pelo momento.", solid: true },
-  { id: "feed", emoji: "👀", title: "Só quero olhar e passar vontade", subtitle: "Por sua conta e risco.", solid: true },
-  { id: "busca", emoji: "🔎", title: "Já sei o que quero", subtitle: "Me leva pros doces.", solid: false },
+  { id: "momentos", emoji: "💛", title: "Me ajuda a escolher", subtitle: "Escolha pelo momento.", bg: COLORS.caramelDark, dark: false },
+  { id: "feed", emoji: "👀", title: "Só quero olhar e passar vontade", subtitle: "Por sua conta e risco.", bg: COLORS.creamYellow, dark: true },
+  { id: "busca", emoji: "🔎", title: "Já sei o que quero", subtitle: "Me leva pros doces.", bg: COLORS.caramelLight, dark: true },
 ];
 
 const MOMENT_ACCENTS = [COLORS.caramelDark, COLORS.caramelLight, COLORS.creamYellow, COLORS.caramelDark, COLORS.caramelLight];
@@ -48,26 +52,23 @@ export default function HomeScreen({ onSelect }) {
             key={p.id}
             onClick={() => onSelect(p.id)}
             className="flex items-center gap-3 rounded-2xl px-4 py-4 text-left min-h-11"
-            style={{
-              backgroundColor: p.solid ? COLORS.caramelDark : "white",
-              border: p.solid ? "none" : `1px solid ${COLORS.border}`,
-            }}
+            style={{ backgroundColor: p.bg }}
           >
             <span
               className="w-10 h-10 shrink-0 rounded-full flex items-center justify-center text-lg"
-              style={{ backgroundColor: p.solid ? "rgba(255,255,255,0.18)" : COLORS.subtle }}
+              style={{ backgroundColor: p.dark ? "rgba(61,36,24,0.08)" : "rgba(255,255,255,0.18)" }}
             >
               {p.emoji}
             </span>
             <span className="flex-1 min-w-0">
-              <span className="block font-display text-base" style={{ color: p.solid ? "white" : COLORS.ink }}>
+              <span className="block font-display text-base" style={{ color: p.dark ? COLORS.ink : "white" }}>
                 {p.title}
               </span>
-              <span className="block text-xs mt-0.5" style={{ color: p.solid ? "rgba(255,255,255,0.85)" : COLORS.muted }}>
+              <span className="block text-xs mt-0.5" style={{ color: p.dark ? COLORS.inkSoft : "rgba(255,255,255,0.85)" }}>
                 {p.subtitle}
               </span>
             </span>
-            <ChevronRight size={18} style={{ color: p.solid ? "rgba(255,255,255,0.85)" : COLORS.muted }} />
+            <ChevronRight size={18} style={{ color: p.dark ? COLORS.inkSoft : "rgba(255,255,255,0.85)" }} />
           </button>
         ))}
       </div>
@@ -108,11 +109,11 @@ export default function HomeScreen({ onSelect }) {
             >
               <span
                 className="w-14 h-14 rounded-full flex items-center justify-center text-2xl"
-                style={{ backgroundColor: `${MOMENT_ACCENTS[i]}1F` }}
+                style={{ backgroundColor: MOMENT_ACCENTS[i] }}
               >
                 {m.emoji}
               </span>
-              <span className="text-xs text-brand-inkSoft text-center leading-tight">{MOMENT_SHORT[m.id]}</span>
+              <span className="text-xs text-brand-ink text-center leading-tight">{MOMENT_SHORT[m.id]}</span>
             </button>
           ))}
         </div>
