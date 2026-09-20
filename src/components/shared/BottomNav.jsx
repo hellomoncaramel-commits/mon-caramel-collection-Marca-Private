@@ -27,7 +27,7 @@ export default function BottomNav({ active, onNavigate, selectionCount, favorite
             <button
               key={id}
               onClick={() => onNavigate(id)}
-              className="relative flex flex-col items-center justify-center gap-0.5 py-2.5 min-h-11"
+              className="relative flex flex-col items-center justify-center gap-0.5 py-2 min-h-11"
               aria-current={isActive ? "page" : undefined}
             >
               <span className="relative">
