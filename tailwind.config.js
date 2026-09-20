@@ -56,7 +56,7 @@ export default {
         photo: "4 / 3",
         // Wide editorial banner ratio for the Home hero photo — appetite,
         // not a catalog thumbnail.
-        hero: "2 / 1",
+        hero: "1.85 / 1",
       },
       zIndex: {
         modal: "60",
