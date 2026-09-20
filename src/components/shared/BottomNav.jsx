@@ -27,11 +27,12 @@ export default function BottomNav({ active, onNavigate, selectionCount, favorite
             <button
               key={id}
               onClick={() => onNavigate(id)}
-              className="relative flex flex-col items-center justify-center gap-0.5 py-2 min-h-11"
+              className="relative flex flex-col items-center justify-center gap-0.5 min-h-11"
+              style={{ height: 50 }}
               aria-current={isActive ? "page" : undefined}
             >
               <span className="relative">
-                <Icon size={22} strokeWidth={isActive ? 2.5 : 2} color={isActive ? COLORS.caramelDark : COLORS.muted} />
+                <Icon size={20} strokeWidth={isActive ? 2.5 : 2} color={isActive ? COLORS.caramelDark : COLORS.muted} />
                 {count > 0 && (
                   <span
                     className="absolute -top-1.5 -right-2.5 min-w-4 h-4 px-1 rounded-full text-white text-3xs font-medium flex items-center justify-center"
@@ -41,7 +42,7 @@ export default function BottomNav({ active, onNavigate, selectionCount, favorite
                   </span>
                 )}
               </span>
-              <span className="text-3xs font-medium" style={{ color: isActive ? COLORS.caramelDark : COLORS.muted }}>
+              <span className="text-mc-home-nav-label font-medium" style={{ color: isActive ? COLORS.caramelDark : COLORS.muted }}>
                 {label}
               </span>
             </button>
