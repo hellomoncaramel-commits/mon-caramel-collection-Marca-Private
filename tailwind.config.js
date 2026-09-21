@@ -57,7 +57,7 @@ export default {
         "mc-home-card-subtitle": ["10px", { lineHeight: "1.1" }],
         "mc-home-product": ["12px", { lineHeight: "1.2" }],
         "mc-home-price": ["10px", { lineHeight: "1.2" }],
-        "mc-home-meta": ["9.5px", { lineHeight: "1.2" }],
+        "mc-home-meta": ["9.5px", { lineHeight: "1.15" }],
         "mc-home-nav-label": ["9px", { lineHeight: "1.1" }],
       },
       letterSpacing: {

@@ -14,12 +14,12 @@ const CHOICES = [
 ];
 
 // The photo itself fades in via a CSS mask (transparent at the top, fully
-// opaque by 48%) instead of a dark/white overlay layered on top — the
+// opaque by 52%) instead of a dark/white overlay layered on top — the
 // page's own cream background shows through the masked-out top, so it
 // flows into the photo with no visible hard edge, and the photo reveals
-// itself in full color well before the block's midpoint.
+// itself in full color around the block's midpoint.
 const MASK_GRADIENT =
-  "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.10) 8%, rgba(0,0,0,0.25) 16%, rgba(0,0,0,0.50) 26%, rgba(0,0,0,0.78) 36%, black 48%)";
+  "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.06) 7%, rgba(0,0,0,0.18) 15%, rgba(0,0,0,0.38) 24%, rgba(0,0,0,0.65) 34%, rgba(0,0,0,0.88) 43%, black 52%)";
 const PHOTO_MASK = {
   WebkitMaskImage: MASK_GRADIENT,
   maskImage: MASK_GRADIENT,
@@ -54,13 +54,16 @@ export default function HomeScreen({ onSelect }) {
       </div>
 
       {/* Intro — editorial, not a marketing hero */}
-      <h1 className="text-mc-home-hero mt-2.5 font-display italic text-brand-ink shrink-0">O que a gente vai adoçar hoje? 💛</h1>
+      <h1 className="text-mc-home-hero mt-2 font-display italic text-brand-ink shrink-0">O que a gente vai adoçar hoje? 💛</h1>
       <p className="text-mc-home-body mt-1.5 text-brand-inkSoft shrink-0">
         Escolha pelo momento, procure alguma coisa específica ou simplesmente fique olhando...
       </p>
 
-      {/* Real Mon Caramel photo as background, discovery choices layered on top of it */}
-      <div className="relative w-full overflow-hidden rounded-mc mt-3 flex-1 min-h-0" style={{ minHeight: 260 }}>
+      {/* Real Mon Caramel photo as background, discovery choices layered on top of it.
+          No margin-top here — the 10px gap to the first button comes entirely from the
+          inner wrapper's pt-[10px] below, since the photo itself is still fully
+          transparent (via mask) at its very top and reads as part of that same gap. */}
+      <div className="relative w-full overflow-hidden rounded-mc flex-1 min-h-0" style={{ minHeight: 260 }}>
         <Photo
           src={REAL_PHOTOS.casadinhoGoiabada}
           alt=""
@@ -69,7 +72,7 @@ export default function HomeScreen({ onSelect }) {
           loading="eager"
         />
 
-        <div className="relative flex flex-col gap-1.5 p-3" style={{ zIndex: 2 }}>
+        <div className="relative flex flex-col gap-1.5 pt-[10px] px-3 pb-3" style={{ zIndex: 2 }}>
           {CHOICES.map((c) => (
             <button
               key={c.id}
@@ -103,7 +106,7 @@ export default function HomeScreen({ onSelect }) {
       </div>
 
       {/* Pickup/delivery — footnote scale metadata, not a section */}
-      <div className="flex items-center justify-center gap-1.5 mt-2 text-mc-home-meta text-brand-muted shrink-0">
+      <div className="flex items-center justify-center gap-1.5 mt-[5px] text-mc-home-meta text-brand-muted shrink-0">
         <span>📍 Retirada grátis — Ritson x Adelaide</span>
         <span className="w-1 h-1 rounded-full shrink-0 bg-brand-caramelLight" />
         <span>🚗 Entrega disponível</span>
