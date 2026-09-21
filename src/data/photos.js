@@ -100,4 +100,8 @@ export const REAL_PHOTOS = {
   lembrancinha: `${MOMENTS_BASE}/lembrancinha.jpg`,
   diasDeLuta: `${MOMENTS_BASE}/dias-de-luta.jpg`,
   naoVaiTerFesta: `${MOMENTS_BASE}/nao-vai-ter-festa.jpg`,
+  // Freezer carousel cover only — distinct from REAL_PHOTOS.freezer, which
+  // the Brigadeiro product card also uses (see data/products.js) and must
+  // stay untouched.
+  freezerDonuts: `${MOMENTS_BASE}/freezer-donuts.jpg`,
 };
