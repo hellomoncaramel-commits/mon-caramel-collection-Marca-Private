@@ -38,29 +38,49 @@ const MOMENT_PHOTO = {
 // mockup rather than picked by eye; it's a one-off tint from the brand's
 // caramel family (not one of the existing brand.* tokens), scoped here.
 const CARD_PANEL_TAN = "250,217,196";
-const TEXT_PANEL_GRADIENT = `linear-gradient(to bottom, rgba(${CARD_PANEL_TAN},0) 0%, rgba(${CARD_PANEL_TAN},0) 45%, rgba(${CARD_PANEL_TAN},0.28) 58%, rgba(${CARD_PANEL_TAN},0.74) 72%, rgba(${CARD_PANEL_TAN},0.95) 86%, rgba(${CARD_PANEL_TAN},1) 100%)`;
+// Desktop keeps the exact approved gradient from the previous round
+// untouched; mobile gets earlier, steeper stops since its taller
+// (line-broken) heading needs a cream backdrop to start higher up.
+const TEXT_PANEL_GRADIENT_DESKTOP = `linear-gradient(to bottom, rgba(${CARD_PANEL_TAN},0) 0%, rgba(${CARD_PANEL_TAN},0) 45%, rgba(${CARD_PANEL_TAN},0.28) 58%, rgba(${CARD_PANEL_TAN},0.74) 72%, rgba(${CARD_PANEL_TAN},0.95) 86%, rgba(${CARD_PANEL_TAN},1) 100%)`;
+const TEXT_PANEL_GRADIENT_MOBILE = `linear-gradient(to bottom, rgba(${CARD_PANEL_TAN},0) 0%, rgba(${CARD_PANEL_TAN},0) 38%, rgba(${CARD_PANEL_TAN},0.35) 52%, rgba(${CARD_PANEL_TAN},0.78) 66%, rgba(${CARD_PANEL_TAN},0.95) 80%, rgba(${CARD_PANEL_TAN},1) 100%)`;
 
 function MomentCard({ moment, photoSrc, eager, onSelect }) {
+  const lines = moment.titleLines ?? [moment.label];
   return (
     <div className="relative w-full h-full overflow-hidden" style={{ borderRadius: 20 }}>
       <Photo src={photoSrc} alt="" className="absolute inset-0 w-full h-full object-cover" loading={eager ? "eager" : "lazy"} />
-      <div className="absolute inset-0" style={{ background: TEXT_PANEL_GRADIENT }} />
+      <div className="absolute inset-0 md:hidden" style={{ background: TEXT_PANEL_GRADIENT_MOBILE }} />
+      <div className="absolute inset-0 hidden md:block" style={{ background: TEXT_PANEL_GRADIENT_DESKTOP }} />
 
-      <div className="absolute inset-x-0 bottom-0 flex flex-col" style={{ padding: "0 20px 20px" }}>
+      <div className="absolute left-6 right-6 bottom-[22px] md:left-5 md:right-5 md:bottom-5 flex flex-col items-start">
         <h3
-          className="font-display font-semibold text-brand-ink text-[clamp(24px,6.5vw,30px)] md:text-[25px] leading-[1.02] md:leading-[1.08]"
+          className="font-display font-semibold text-brand-ink max-w-[230px] md:max-w-none text-[clamp(26px,7vw,31px)] md:text-[25px] leading-[0.98] md:leading-[1.08] tracking-[-0.02em] md:tracking-normal"
+          aria-label={moment.label}
         >
-          <span className="inline-block align-baseline" style={{ fontSize: "0.7em" }}>
-            {moment.emoji}
-          </span>{" "}
-          {moment.label}
+          {/* Mobile: editorial, explicitly-broken lines, no emoji in the
+              flow (the photo already communicates the moment). Desktop:
+              untouched — same running text with the leading emoji as
+              before this round. */}
+          <span aria-hidden="true" className="md:hidden">
+            {lines.map((line, i) => (
+              <span key={i} className="block">
+                {line}
+              </span>
+            ))}
+          </span>
+          <span aria-hidden="true" className="hidden md:inline">
+            <span className="inline-block align-baseline" style={{ fontSize: "0.7em" }}>
+              {moment.emoji}
+            </span>{" "}
+            {moment.label}
+          </span>
         </h3>
-        <p className="text-brand-inkSoft mt-2.5 md:mt-1.5 text-[15px] md:text-[13px] leading-[1.3] md:leading-[1.35]">
+        <p className="text-brand-inkSoft mt-3.5 md:mt-1.5 max-w-[210px] md:max-w-none text-[15px] md:text-[13px] leading-[1.3] md:leading-[1.35]">
           {MOMENT_TAGLINE[moment.id]}
         </p>
         <button
           onClick={onSelect}
-          className="mt-4 md:mt-3 self-end shrink-0 font-semibold md:font-medium h-11 md:h-[43px] px-5 md:px-[18px] text-[14.5px] md:text-[14px]"
+          className="mt-4 md:mt-3 self-end shrink-0 font-semibold md:font-medium h-11 md:h-[43px] px-[18px] text-[14px]"
           style={{ backgroundColor: COLORS.caramelDarker, color: COLORS.beige, borderRadius: 999 }}
         >
           Quero isso →
@@ -155,7 +175,7 @@ export default function MomentPicker({ onBack, onSelectMoment }) {
       <h1 className="font-display italic text-brand-ink text-center shrink-0 text-[clamp(30px,8vw,36px)] md:text-[26px] leading-[1.05]">
         Como você está hoje?
       </h1>
-      <p className="text-brand-inkSoft text-center mt-1.5 shrink-0 text-[16px] md:text-mc-home-body leading-[1.35]">
+      <p className="text-brand-inkSoft text-center mt-1.5 shrink-0 text-[15px] md:text-mc-home-body leading-[1.35]">
         Deslize para ver os momentos
         <br />e encontre o doce perfeito.
       </p>
