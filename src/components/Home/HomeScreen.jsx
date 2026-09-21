@@ -87,11 +87,13 @@ export default function HomeScreen({ onSelect }) {
         ))}
       </div>
 
-      {/* Real Mon Caramel hero photo — dominant, near-square, matching the
-          approved mockup's own measured proportion (not a short wide banner). */}
+      {/* Real Mon Caramel hero photo — large and dominant like the approved
+          mockup, but 4:3 rather than full square: combined with the logo,
+          a full square pushed the first screen below the fold on a real
+          device. Still much bigger than the old short banner. */}
       <button
         onClick={() => onSelect("feed")}
-        className="relative w-full overflow-hidden text-left rounded-mc block mt-2.5 aspect-square"
+        className="relative w-full overflow-hidden text-left rounded-mc block mt-2.5 aspect-photo"
       >
         <Photo
           src={REAL_PHOTOS.casadinhoGoiabada}
