@@ -70,12 +70,11 @@ function MomentCard({ moment, photoSrc, eager, onSelect }) {
 
 // "Me ajuda a escolher" — swipe (or use the side arrows) through the 5
 // moments, recognize yourself in one, tap "Quero isso". A big real photo
-// carries each card; dots plus "Ver todos os momentos" underneath cover
-// anyone who'd rather not swipe at all.
+// carries each card; the dots underneath are the only other way through
+// (no "ver todos" list — the carousel is the whole page).
 export default function MomentPicker({ onBack, onSelectMoment }) {
   const trackRef = useRef(null);
   const [index, setIndex] = useState(0);
-  const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
     const el = trackRef.current;
@@ -200,7 +199,7 @@ export default function MomentPicker({ onBack, onSelectMoment }) {
               onClick={() => goTo(i)}
               role="tab"
               aria-selected={active}
-              aria-label={m.label}
+              aria-label={`Ir para momento ${i + 1}`}
               className="flex items-center justify-center shrink-0"
               style={{ width: dotSize + 7, height: 32 }}
             >
@@ -209,34 +208,6 @@ export default function MomentPicker({ onBack, onSelectMoment }) {
           );
         })}
       </div>
-
-      {/* Alternative to swiping: the plain full list, collapsed by default. */}
-      <button
-        onClick={() => setShowAll((s) => !s)}
-        className="flex items-center justify-center gap-1 text-sm font-medium shrink-0 mt-1 py-1.5 min-h-11"
-        style={{ color: COLORS.caramelDarker }}
-      >
-        {showAll ? "Ocultar lista" : "Ver todos os momentos"}
-        <ChevronRight size={15} />
-      </button>
-
-      {showAll && (
-        <div className="flex flex-col gap-2 mt-1 pb-1 fade-up">
-          {MOMENTS.map((m) => (
-            <button
-              key={m.id}
-              onClick={() => onSelectMoment(m.id)}
-              className="flex items-center gap-3 p-3 rounded-2xl border border-brand-border bg-white text-left min-h-11"
-            >
-              <span className="text-xl shrink-0">{m.emoji}</span>
-              <span>
-                <span className="block text-brand-ink text-sm font-medium">{m.label}</span>
-                <span className="block text-brand-muted text-xs mt-0.5">{MOMENT_TAGLINE[m.id]}</span>
-              </span>
-            </button>
-          ))}
-        </div>
-      )}
     </div>
   );
 }
