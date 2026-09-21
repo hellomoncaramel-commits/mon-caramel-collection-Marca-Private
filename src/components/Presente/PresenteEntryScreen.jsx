@@ -1,7 +1,15 @@
-import { ChevronRight } from "lucide-react";
 import { COLORS } from "../../styles/colors";
+import { REAL_PHOTOS } from "../../data/photos";
 import SiteHeader from "../shared/SiteHeader";
+import Photo from "../shared/Photo";
 
+// Real Mon Caramel photography — no AI, no stock, no edited files.
+// "Bandejas": the mobile slot is taller than the source photo's landscape
+// (4:3) shape, so object-fit: cover alone always shows the full photo
+// height — including the box's graduation-banner strip across the top —
+// no matter the object-position. A scale() zoom crops that strip out and
+// keeps the treats; the desktop slot is wide enough that plain cover
+// already crops close to the same band, so it needs no extra zoom.
 const OPTIONS = [
   {
     id: "presente-caixas",
@@ -10,6 +18,7 @@ const OPTIONS = [
     description: "Um presente montado do jeitinho que quem vai receber merece.",
     cta: "Quero ver ideias →",
     tint: COLORS.caramelDark,
+    photo: REAL_PHOTOS.lembrancinha,
   },
   {
     id: "presente-bandejas",
@@ -18,6 +27,8 @@ const OPTIONS = [
     description: "Para transformar qualquer dia em uma comemoração.",
     cta: "Quero ver ideias →",
     tint: COLORS.creamYellow,
+    photo: REAL_PHOTOS.bandejaFormatura,
+    photoClassName: "scale-[2.18] origin-[50%_69%] md:scale-[1.64] md:origin-[50%_96%]",
   },
   {
     id: "presente-mimos",
@@ -26,6 +37,7 @@ const OPTIONS = [
     description: "Um jeitinho pequeno de fazer alguém sorrir.",
     cta: "Quero ver produtos →",
     tint: COLORS.caramelLight,
+    photo: REAL_PHOTOS.brownlitoInteiro,
   },
 ];
 
@@ -35,23 +47,40 @@ const OPTIONS = [
 // products, leads straight to a small catalog.
 export default function PresenteEntryScreen({ onBack, onSelect }) {
   return (
-    <div className="max-w-xl mx-auto px-4 pt-2 pb-10 fade-up">
+    <div className="max-w-xl md:max-w-3xl mx-auto px-4 pt-2 pb-10 fade-up">
       <SiteHeader onBack={onBack} />
       <h1 className="text-2xl font-display text-brand-ink mb-1">É só uma lembrancinha.</h1>
       <p className="text-sm mb-6 text-brand-inkSoft">
         Pra gente, é muito mais que isso. Cada presente é único, pensado pra quem vai receber se sentir especial.
       </p>
 
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-3 md:grid md:grid-cols-3 md:gap-4">
         {OPTIONS.map((o) => (
-          <button key={o.id} onClick={() => onSelect(o.id)} className="rounded-3xl p-5 text-left" style={{ backgroundColor: `${o.tint}22` }}>
-            <span className="text-2xl">{o.emoji}</span>
-            <p className="text-lg font-display mt-2 text-brand-ink">{o.title}</p>
-            <p className="text-sm mt-0.5 mb-3 text-brand-inkSoft">{o.description}</p>
-            <span className="inline-flex items-center gap-1 text-sm font-medium" style={{ color: COLORS.caramelDark }}>
-              {o.cta}
-              <ChevronRight size={15} />
-            </span>
+          <button
+            key={o.id}
+            onClick={() => onSelect(o.id)}
+            className="flex md:flex-col items-stretch rounded-2xl overflow-hidden text-left"
+            style={{ backgroundColor: `${o.tint}22` }}
+          >
+            <div className="flex-1 min-w-0 p-4 md:p-4 flex flex-col justify-center gap-1 order-1 md:order-2">
+              <span className="text-xl leading-none">{o.emoji}</span>
+              <p className="font-display text-lg text-brand-ink leading-tight">{o.title}</p>
+              <p className="text-xs leading-snug text-brand-inkSoft">{o.description}</p>
+              <span
+                className="inline-flex self-start items-center mt-2 rounded-full px-3.5 py-2 text-xs font-medium text-white"
+                style={{ backgroundColor: COLORS.caramelDarker }}
+              >
+                {o.cta}
+              </span>
+            </div>
+            <div className="w-[38%] md:w-full shrink-0 relative min-h-[130px] md:h-36 order-2 md:order-1">
+              <Photo
+                src={o.photo}
+                alt=""
+                className={`absolute inset-0 w-full h-full object-cover${o.photoClassName ? ` ${o.photoClassName}` : ""}`}
+                loading="lazy"
+              />
+            </div>
           </button>
         ))}
       </div>
