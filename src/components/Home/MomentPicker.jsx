@@ -9,28 +9,29 @@ import Photo from "../shared/Photo";
 // Real Mon Caramel photography per moment — no AI mockups, no stock.
 //   café        → moment-cafe.jpg (cup + brigadeiro on a plate)
 //   dia-difícil → dias-de-luta.jpg (real photo, cookie/chocolate tray)
-//   freezer     → moment-freezer.jpg (literally inside the freezer)
+//   freezer     → freezer-donuts.jpg (real photo, donuts/cookies in the freezer)
 //   presente    → lembrancinha.jpg (real photo, gift box + ribbon)
 //   festa       → nao-vai-ter-festa.jpg (real photo, party dessert table)
 const MOMENT_PHOTO = {
   cafe: REAL_PHOTOS.cafe,
   "dia-dificil": REAL_PHOTOS.diasDeLuta,
-  freezer: REAL_PHOTOS.freezer,
+  freezer: REAL_PHOTOS.freezerDonuts,
   presente: REAL_PHOTOS.lembrancinha,
   festa: REAL_PHOTOS.naoVaiTerFesta,
 };
 
-// object-position per moment photo — only set where the source photo's
+// Per-moment photo framing override — only set where the source photo's
 // framing needs a nudge so the card's tall crop keeps the right subject
-// in frame; anything absent here just uses the CSS default (50% 50%).
-// "festa": the card's aspect ratio leaves no vertical crop headroom on
-// this landscape photo (object-fit: cover binds to height, so the full
-// vertical span — backdrop and all — always shows through), so only a
-// horizontal shift is possible; 85% keeps the cupcake stands, lollipop
-// favors and florals in frame instead of the default center, which
-// landed mostly on blank backdrop wall.
-const MOMENT_PHOTO_POSITION = {
-  festa: "85% center",
+// in frame; anything absent here just uses plain object-fit: cover at
+// the CSS default position (50% 50%).
+// "festa": the source photo is landscape and the card is portrait, so
+// object-fit: cover alone binds to height (no vertical crop headroom —
+// the full vertical span, backdrop wall included, always shows through).
+// A scale() zoom on top of cover, anchored low and right via
+// transformOrigin, crops further in both directions so the table/desserts
+// dominate instead of the wall.
+const MOMENT_PHOTO_STYLE = {
+  festa: { transform: "scale(1.9)", transformOrigin: "89% 100%" },
 };
 
 // The card's own width on mobile (min(82vw, 330px)) recurs in a few
@@ -54,14 +55,14 @@ const TEXT_PANEL_GRADIENT_MOBILE = `linear-gradient(to bottom, rgba(${CARD_PANEL
 
 function MomentCard({ moment, photoSrc, eager, onSelect }) {
   const lines = moment.titleLines ?? [moment.label];
-  const objectPosition = MOMENT_PHOTO_POSITION[moment.id];
+  const photoStyle = MOMENT_PHOTO_STYLE[moment.id];
   return (
     <div className="relative w-full h-full overflow-hidden" style={{ borderRadius: 20 }}>
       <Photo
         src={photoSrc}
         alt=""
         className="absolute inset-0 w-full h-full object-cover"
-        style={objectPosition ? { objectPosition } : undefined}
+        style={photoStyle}
         loading={eager ? "eager" : "lazy"}
       />
       <div className="absolute inset-0 md:hidden" style={{ background: TEXT_PANEL_GRADIENT_MOBILE }} />
