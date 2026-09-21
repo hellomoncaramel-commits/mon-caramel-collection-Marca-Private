@@ -1,14 +1,77 @@
-import { useRef, useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { MOMENTS, MOMENT_TAGLINE, MOMENT_SHORT } from "../../data/moments";
+import { useEffect, useRef, useState } from "react";
+import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
+import { MOMENTS, MOMENT_TAGLINE } from "../../data/moments";
+import { REAL_PHOTOS } from "../../data/photos";
 import { COLORS } from "../../styles/colors";
-import BackButton from "../shared/BackButton";
+import Logo from "../shared/Logo";
+import Photo from "../shared/Photo";
 
-const ACCENTS = [COLORS.caramelDark, COLORS.caramelLight, COLORS.creamYellow, COLORS.caramelDark, COLORS.caramelLight];
+// Real Mon Caramel photography per moment — no AI mockups, no stock. Four
+// moments already have a dedicated photo; "festa" reuses the first real
+// custom-order photo from the party gallery (there's no single "festa"
+// hero shot yet). Chosen for how well each crops into a tall vertical
+// frame with the treat itself clear and off-center enough to leave room
+// for the bottom text panel:
+//   café      → moment-cafe.jpg (cup + brigadeiro on a plate)
+//   dia-difícil → moment-dia-dificil.jpg (tray of truffles)
+//   freezer   → moment-freezer.jpg (literally inside the freezer)
+//   presente  → moment-presente.jpg (wrapped gift box with ribbon)
+//   festa     → festaOptions[0] (personalized party sweets)
+const MOMENT_PHOTO = {
+  cafe: REAL_PHOTOS.cafe,
+  "dia-dificil": REAL_PHOTOS["dia-dificil"],
+  freezer: REAL_PHOTOS.freezer,
+  presente: REAL_PHOTOS.presente,
+  festa: REAL_PHOTOS.festaOptions[0],
+};
 
-// "Me ajuda a escolher" — one big moment at a time, swipe or arrows to move
-// between them. Swipe is never the *only* way through: arrows, dots and a
-// plain "ver todos" list all reach the same place.
+const CARD_WIDTH = "min(84vw, 325px)";
+
+// Local, screen-scoped typography — sized to this screen's own targets
+// rather than reusing Home's mc-home-hero token, which is close but not
+// identical (24px/1.04 vs. the 25-26px/1.05 asked for here).
+const HEADING_STYLE = { fontSize: 26, lineHeight: 1.05 };
+const CARD_TITLE_STYLE = { fontSize: 25, lineHeight: 1.08 };
+const CARD_SUBTITLE_STYLE = { fontSize: 13, lineHeight: 1.35 };
+
+// The photo covers the whole card; this panel is a soft cream gradient
+// laid over its lower portion so the text has a legible platform without
+// turning into a hard, separate rectangle — the photo keeps showing
+// through the upper, more transparent part of the gradient.
+const TEXT_PANEL_GRADIENT =
+  "linear-gradient(to bottom, rgba(255,252,245,0) 0%, rgba(255,252,245,0.32) 16%, rgba(255,252,245,0.8) 38%, rgba(255,252,245,0.96) 60%, #FFFCF5 100%)";
+
+function MomentCard({ moment, photoSrc, eager, onSelect }) {
+  return (
+    <div className="relative w-full h-full overflow-hidden" style={{ borderRadius: 20 }}>
+      <Photo src={photoSrc} alt="" className="absolute inset-0 w-full h-full object-cover" loading={eager ? "eager" : "lazy"} />
+
+      <div
+        className="absolute inset-x-0 bottom-0 flex flex-col justify-end"
+        style={{ top: "50%", background: TEXT_PANEL_GRADIENT, padding: 20 }}
+      >
+        <h3 className="font-display italic text-brand-ink" style={CARD_TITLE_STYLE}>
+          {moment.emoji} {moment.label}
+        </h3>
+        <p className="text-brand-inkSoft mt-1.5" style={CARD_SUBTITLE_STYLE}>
+          {MOMENT_TAGLINE[moment.id]}
+        </p>
+        <button
+          onClick={onSelect}
+          className="mt-3 self-end shrink-0 text-white font-medium"
+          style={{ backgroundColor: COLORS.caramelDarker, height: 43, padding: "0 18px", borderRadius: 999, fontSize: 14 }}
+        >
+          Quero isso →
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// "Me ajuda a escolher" — swipe (or use the side arrows) through the 5
+// moments, recognize yourself in one, tap "Quero isso". A big real photo
+// carries each card; dots plus "Ver todos os momentos" underneath cover
+// anyone who'd rather not swipe at all.
 export default function MomentPicker({ onBack, onSelectMoment }) {
   const trackRef = useRef(null);
   const [index, setIndex] = useState(0);
@@ -21,8 +84,18 @@ export default function MomentPicker({ onBack, onSelectMoment }) {
     const onScroll = () => {
       cancelAnimationFrame(raf);
       raf = requestAnimationFrame(() => {
-        const i = Math.round(el.scrollLeft / el.clientWidth);
-        setIndex(Math.max(0, Math.min(MOMENTS.length - 1, i)));
+        const children = Array.from(el.children);
+        if (!children.length) return;
+        let closest = 0;
+        let closestDist = Infinity;
+        children.forEach((c, i) => {
+          const dist = Math.abs(c.offsetLeft - el.scrollLeft);
+          if (dist < closestDist) {
+            closestDist = dist;
+            closest = i;
+          }
+        });
+        setIndex(closest);
       });
     };
     el.addEventListener("scroll", onScroll, { passive: true });
@@ -36,36 +109,62 @@ export default function MomentPicker({ onBack, onSelectMoment }) {
     const el = trackRef.current;
     if (!el) return;
     const clamped = Math.max(0, Math.min(MOMENTS.length - 1, i));
-    el.scrollTo({ left: clamped * el.clientWidth, behavior: "smooth" });
+    const child = el.children[clamped];
+    if (!child) return;
+    const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    el.scrollTo({ left: child.offsetLeft, behavior: reduceMotion ? "auto" : "smooth" });
+  };
+
+  const onTrackKeyDown = (e) => {
+    if (e.key === "ArrowRight") {
+      e.preventDefault();
+      goTo(index + 1);
+    } else if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      goTo(index - 1);
+    }
   };
 
   return (
-    <div className="max-w-xl mx-auto px-4 pt-8 pb-10 fade-up">
-      <BackButton onClick={onBack} label="Voltar" />
-      <h1 className="text-2xl font-display text-brand-ink mb-1">Escolha pelo momento</h1>
-      <p className="text-sm mb-5 text-brand-muted">Arraste, use as setas, ou veja a lista completa aí embaixo.</p>
+    <div className="w-full md:max-w-xl md:mx-auto px-gutter pt-2 pb-3 fade-up flex flex-col h-[calc(100dvh-6rem)] md:h-auto">
+      {/* Header — same compact, icon-only language as Home. The right-side
+          spacer mirrors the back button's width so the logo stays
+          centered on the viewport, independent of the back arrow. */}
+      <div className="flex items-center justify-between mb-2 shrink-0">
+        <button onClick={onBack} aria-label="Voltar" className="w-11 h-11 flex items-center justify-center">
+          <ArrowLeft size={20} className="text-brand-caramelDark" />
+        </button>
+        <Logo size="sm" />
+        <div className="w-11" />
+      </div>
 
-      <div className="relative">
+      {/* Intro */}
+      <h1 className="font-display italic text-brand-ink text-center shrink-0" style={HEADING_STYLE}>
+        Como você está hoje?
+      </h1>
+      <p className="text-mc-home-body text-brand-inkSoft text-center mt-1.5 shrink-0">
+        Deslize para ver os momentos
+        <br />e encontre o doce perfeito.
+      </p>
+
+      {/* Carousel — the real photo is the protagonist, one card at a time,
+          a small peek of the next on the right teaches the swipe. Side
+          arrows sit partially over the card edges as an alternative to
+          swiping. Bounded by the page's own gutter (no full-bleed), so
+          overflow stays contained. */}
+      <div className="relative flex-1 min-h-0 mt-3">
         <div
           ref={trackRef}
-          className="flex overflow-x-auto snap-x snap-mandatory no-scrollbar rounded-3xl"
-          role="group"
+          onKeyDown={onTrackKeyDown}
+          tabIndex={0}
+          role="region"
+          aria-roledescription="carousel"
           aria-label="Momentos"
+          className="h-full flex gap-3 overflow-x-auto snap-x snap-mandatory no-scrollbar focus:outline-none"
         >
           {MOMENTS.map((m, i) => (
-            <div key={m.id} className="min-w-full shrink-0 snap-center px-1">
-              <div className="rounded-3xl p-8 min-h-64 flex flex-col justify-center items-center text-center" style={{ backgroundColor: `${ACCENTS[i]}1F` }}>
-                <span className="text-5xl mb-4">{m.emoji}</span>
-                <p className="text-xl font-display text-brand-ink mb-2">{m.label}</p>
-                <p className="text-sm mb-6 text-brand-inkSoft">{MOMENT_TAGLINE[m.id]}</p>
-                <button
-                  onClick={() => onSelectMoment(m.id)}
-                  className="text-sm font-medium text-white rounded-full px-6 py-3 min-h-11"
-                  style={{ backgroundColor: COLORS.caramelDark }}
-                >
-                  Quero isso →
-                </button>
-              </div>
+            <div key={m.id} className="h-full shrink-0" style={{ width: CARD_WIDTH, scrollSnapAlign: "start" }}>
+              <MomentCard moment={m} photoSrc={MOMENT_PHOTO[m.id]} eager={i === 0} onSelect={() => onSelectMoment(m.id)} />
             </div>
           ))}
         </div>
@@ -74,7 +173,8 @@ export default function MomentPicker({ onBack, onSelectMoment }) {
           onClick={() => goTo(index - 1)}
           disabled={index === 0}
           aria-label="Momento anterior"
-          className="hidden sm:flex absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 w-11 h-11 rounded-full bg-white shadow items-center justify-center disabled:opacity-30"
+          className="absolute rounded-full flex items-center justify-center disabled:opacity-0 disabled:pointer-events-none transition-opacity"
+          style={{ left: 4, top: "50%", transform: "translateY(-50%)", width: 36, height: 36, backgroundColor: "rgba(255,252,245,0.88)", boxShadow: "0 2px 8px rgba(61,36,24,0.18)" }}
         >
           <ChevronLeft size={18} className="text-brand-ink" />
         </button>
@@ -82,76 +182,51 @@ export default function MomentPicker({ onBack, onSelectMoment }) {
           onClick={() => goTo(index + 1)}
           disabled={index === MOMENTS.length - 1}
           aria-label="Próximo momento"
-          className="hidden sm:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 w-11 h-11 rounded-full bg-white shadow items-center justify-center disabled:opacity-30"
+          className="absolute rounded-full flex items-center justify-center disabled:opacity-0 disabled:pointer-events-none transition-opacity"
+          style={{ right: 4, top: "50%", transform: "translateY(-50%)", width: 36, height: 36, backgroundColor: "rgba(255,252,245,0.88)", boxShadow: "0 2px 8px rgba(61,36,24,0.18)" }}
         >
           <ChevronRight size={18} className="text-brand-ink" />
         </button>
       </div>
 
-      <div className="flex items-center justify-center gap-2 mt-4" role="tablist" aria-label="Ir para momento">
-        {MOMENTS.map((m, i) => (
-          <button
-            key={m.id}
-            onClick={() => goTo(i)}
-            role="tab"
-            aria-selected={i === index}
-            aria-label={m.label}
-            className="w-11 h-11 flex items-center justify-center"
-          >
-            <span
-              className="block rounded-full transition-all"
-              style={{
-                width: i === index ? 18 : 6,
-                height: 6,
-                backgroundColor: i === index ? COLORS.caramelDark : COLORS.border,
-              }}
-            />
-          </button>
-        ))}
-      </div>
-
-      <div className="flex sm:hidden justify-center gap-6 mt-2">
-        <button onClick={() => goTo(index - 1)} disabled={index === 0} aria-label="Momento anterior" className="w-11 h-11 flex items-center justify-center disabled:opacity-30">
-          <ChevronLeft size={20} className="text-brand-caramelDark" />
-        </button>
-        <button onClick={() => goTo(index + 1)} disabled={index === MOMENTS.length - 1} aria-label="Próximo momento" className="w-11 h-11 flex items-center justify-center disabled:opacity-30">
-          <ChevronRight size={20} className="text-brand-caramelDark" />
-        </button>
-      </div>
-
-      <div className="flex justify-between gap-1 mt-6">
-        {MOMENTS.map((m, i) => (
-          <button
-            key={m.id}
-            onClick={() => onSelectMoment(m.id)}
-            className="flex flex-col items-center gap-1.5 flex-1 min-h-11 py-1"
-          >
-            <span
-              className="w-11 h-11 rounded-full flex items-center justify-center text-lg"
-              style={{ backgroundColor: `${ACCENTS[i]}22` }}
+      {/* Pagination */}
+      <div className="flex items-center justify-center shrink-0 mt-2" role="tablist" aria-label="Ir para momento">
+        {MOMENTS.map((m, i) => {
+          const active = i === index;
+          const dotSize = active ? 9 : 7;
+          return (
+            <button
+              key={m.id}
+              onClick={() => goTo(i)}
+              role="tab"
+              aria-selected={active}
+              aria-label={m.label}
+              className="flex items-center justify-center shrink-0"
+              style={{ width: dotSize + 7, height: 32 }}
             >
-              {m.emoji}
-            </span>
-            <span className="text-3xs text-brand-inkSoft text-center leading-tight">{MOMENT_SHORT[m.id]}</span>
-          </button>
-        ))}
+              <span className="block rounded-full" style={{ width: dotSize, height: dotSize, backgroundColor: active ? COLORS.caramelDarker : COLORS.border }} />
+            </button>
+          );
+        })}
       </div>
 
+      {/* Alternative to swiping: the plain full list, collapsed by default. */}
       <button
         onClick={() => setShowAll((s) => !s)}
-        className="w-full flex items-center justify-center gap-1.5 text-sm font-medium mt-5 py-3 min-h-11 rounded-full border border-brand-caramelDark text-brand-caramelDark"
+        className="flex items-center justify-center gap-1 text-sm font-medium shrink-0 mt-1 py-1.5 min-h-11"
+        style={{ color: COLORS.caramelDarker }}
       >
         {showAll ? "Ocultar lista" : "Ver todos os momentos"}
-        {!showAll && <ChevronRight size={16} />}
+        <ChevronRight size={15} />
       </button>
 
       {showAll && (
-        <div className="flex flex-col gap-2.5 mt-2 fade-up">
+        <div className="flex flex-col gap-2 mt-1 pb-1 fade-up">
           {MOMENTS.map((m) => (
             <button
               key={m.id}
               onClick={() => onSelectMoment(m.id)}
-              className="flex items-center gap-3 p-4 rounded-2xl border border-brand-border bg-white text-left min-h-11"
+              className="flex items-center gap-3 p-3 rounded-2xl border border-brand-border bg-white text-left min-h-11"
             >
               <span className="text-xl shrink-0">{m.emoji}</span>
               <span>
