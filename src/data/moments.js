@@ -2,12 +2,40 @@ import { Coffee, CloudRain, PartyPopper, Gift, Snowflake } from "lucide-react";
 
 // Home is organized by moment/mood, not by traditional product category —
 // see briefing section 4.
+// titleLines is an optional editorial line-break for the moment carousel
+// card's heading (see MomentPicker) — label stays the plain-text source
+// used everywhere else and for accessibility.
 export const MOMENTS = [
-  { id: "cafe", emoji: "☕", label: "Hmm... isso aqui com um café..." },
-  { id: "dia-dificil", emoji: "💛", label: "Dias de luta. Doces de glória." },
-  { id: "freezer", emoji: "❄️", label: "Seu eu do futuro agradece." },
-  { id: "presente", emoji: "🎁", label: "É só uma lembrancinha." },
-  { id: "festa", emoji: "🎉", label: "Não vai ter festa... só um bolinho." },
+  {
+    id: "cafe",
+    emoji: "☕",
+    label: "Hmm... isso aqui com um café...",
+    titleLines: ["Hmm...", "isso aqui com", "um café..."],
+  },
+  {
+    id: "dia-dificil",
+    emoji: "💛",
+    label: "Dias de luta. Doces de glória.",
+    titleLines: ["Dias de luta.", "Doces de glória."],
+  },
+  {
+    id: "freezer",
+    emoji: "❄️",
+    label: "Seu eu do futuro agradece.",
+    titleLines: ["Seu eu do futuro", "agradece."],
+  },
+  {
+    id: "presente",
+    emoji: "🎁",
+    label: "É só uma lembrancinha.",
+    titleLines: ["É só uma", "lembrancinha."],
+  },
+  {
+    id: "festa",
+    emoji: "🎉",
+    label: "Não vai ter festa... só um bolinho.",
+    titleLines: ["Não vai ter festa...", "só um bolinho."],
+  },
 ];
 
 export const MOMENT_INTRO = {
