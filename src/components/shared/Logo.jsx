@@ -1,9 +1,10 @@
 const SIZES = {
   sm: 72,
-  // Home header logo — measured directly against the approved mockup's
-  // own logo-to-screen-width ratio (~30% of a 390px screen ≈ 115px),
-  // not an approximated number.
-  home: 112,
+  // Home header logo — tempered down from a straight 30%-of-width
+  // measurement (115px): combined with a large hero photo, that pushed
+  // the first screen below the fold on a real device. Still clearly
+  // bigger than the earlier 58px attempt.
+  home: 90,
   md: 120,
   lg: 200,
 };
