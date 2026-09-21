@@ -7,22 +7,10 @@ import { Coffee, CloudRain, PartyPopper, Gift, Snowflake } from "lucide-react";
 // used everywhere else and for accessibility.
 export const MOMENTS = [
   {
-    id: "cafe",
-    emoji: "☕",
-    label: "Hmm... isso aqui com um café...",
-    titleLines: ["Hmm...", "isso aqui com", "um café..."],
-  },
-  {
     id: "dia-dificil",
     emoji: "💛",
     label: "Dias de luta. Doces de glória.",
     titleLines: ["Dias de luta.", "Doces de glória."],
-  },
-  {
-    id: "freezer",
-    emoji: "❄️",
-    label: "Seu eu do futuro agradece.",
-    titleLines: ["Seu eu do futuro", "agradece."],
   },
   {
     id: "presente",
@@ -31,10 +19,22 @@ export const MOMENTS = [
     titleLines: ["É só uma", "lembrancinha."],
   },
   {
+    id: "cafe",
+    emoji: "☕",
+    label: "Hmm... isso aqui com um café...",
+    titleLines: ["Hmm...", "isso aqui com", "um café..."],
+  },
+  {
     id: "festa",
     emoji: "🎉",
     label: "Não vai ter festa... só um bolinho.",
     titleLines: ["Não vai ter festa...", "só um bolinho."],
+  },
+  {
+    id: "freezer",
+    emoji: "❄️",
+    label: "Seu eu do futuro agradece.",
+    titleLines: ["Seu eu do futuro", "agradece."],
   },
 ];
 
