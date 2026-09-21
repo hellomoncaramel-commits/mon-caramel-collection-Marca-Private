@@ -13,43 +13,54 @@ const CHOICES = [
   { id: "busca", emoji: "🔎", title: "Já sei o que quero", subtitle: "Me leva pros doces." },
 ];
 
-// The real photo is the background for the whole screen, not just a card
-// behind the buttons: a white veil sits over it, strong at the top (where
-// the text needs to stay readable) and fading to nothing toward the
-// bottom, so the sweets themselves become the payoff as the eye moves
-// down. The bottom nav (rendered by App.jsx, fixed + blurred) sits in
-// front of it, unchanged.
+// The photo itself fades in via a CSS mask (transparent at the top, fully
+// opaque at the bottom) instead of a dark/white overlay layered on top —
+// the page's own cream background shows through the masked-out top, so
+// the buttons read clearly there, and the photo reveals itself in full
+// color toward the bottom of the block.
+const PHOTO_MASK = {
+  WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 100%)",
+  maskImage: "linear-gradient(to bottom, transparent 0%, black 100%)",
+};
+
+// One composition, one 16px alignment grid. Data, routes and behavior
+// (onSelect) come straight from the existing project — only the
+// presentation is new. The real photo sits behind the discovery choices
+// as a background, not as a separate block below them, and the page stops
+// right there — no extra sections competing with the primary decision.
 export default function HomeScreen({ onSelect }) {
   return (
-    <div className="relative w-full" style={{ minHeight: "100dvh" }}>
-      <Photo src={REAL_PHOTOS.casadinhoGoiabada} alt="" className="absolute inset-0 w-full h-full object-cover" loading="eager" />
-      <div
-        className="absolute inset-0"
-        style={{ backgroundImage: "linear-gradient(to bottom, white 0%, white 38%, rgba(255,255,255,0.55) 58%, rgba(255,255,255,0) 78%)" }}
-      />
+    <div className="w-full md:max-w-xl md:mx-auto px-gutter pt-2 pb-8 fade-up">
+      {/* Header — small brand presence, no website navbar feel */}
+      <div className="flex items-center justify-between mb-2">
+        <div className="w-11" />
+        <Logo size="home" />
+        <button
+          onClick={() => onSelect("salvos")}
+          aria-label="Ver salvos"
+          className="w-11 h-11 flex items-center justify-center"
+        >
+          <Heart size={20} className="text-brand-caramelDark" />
+        </button>
+      </div>
 
-      <div className="relative w-full md:max-w-xl md:mx-auto px-gutter pt-2 pb-8 fade-up">
-        {/* Header — small brand presence, no website navbar feel */}
-        <div className="flex items-center justify-between mb-2">
-          <div className="w-11" />
-          <Logo size="home" />
-          <button
-            onClick={() => onSelect("salvos")}
-            aria-label="Ver salvos"
-            className="w-11 h-11 flex items-center justify-center"
-          >
-            <Heart size={20} className="text-brand-caramelDark" />
-          </button>
-        </div>
+      {/* Intro — editorial, not a marketing hero */}
+      <h1 className="text-mc-home-hero mt-2.5 font-display italic text-brand-ink">O que a gente vai adoçar hoje? 💛</h1>
+      <p className="text-mc-home-body mt-1.5 text-brand-inkSoft">
+        Escolha pelo momento, procure alguma coisa específica ou simplesmente fique olhando...
+      </p>
 
-        {/* Intro — editorial, not a marketing hero */}
-        <h1 className="text-mc-home-hero mt-2.5 font-display italic text-brand-ink">O que a gente vai adoçar hoje? 💛</h1>
-        <p className="text-mc-home-body mt-1.5 text-brand-inkSoft">
-          Escolha pelo momento, procure alguma coisa específica ou simplesmente fique olhando...
-        </p>
+      {/* Real Mon Caramel photo as background, discovery choices layered on top of it */}
+      <div className="relative w-full overflow-hidden rounded-mc mt-3" style={{ minHeight: 420 }}>
+        <Photo
+          src={REAL_PHOTOS.casadinhoGoiabada}
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover"
+          style={PHOTO_MASK}
+          loading="eager"
+        />
 
-        {/* Discovery choices — sit directly on the fading photo background */}
-        <div className="flex flex-col gap-1.5 mt-3">
+        <div className="relative flex flex-col gap-1.5 p-3">
           {CHOICES.map((c) => (
             <button
               key={c.id}
@@ -80,16 +91,13 @@ export default function HomeScreen({ onSelect }) {
             </button>
           ))}
         </div>
+      </div>
 
-        {/* Pickup/delivery — footnote scale metadata, sits where the photo is fully revealed */}
-        <div
-          className="inline-flex items-center gap-1.5 mt-2 text-mc-home-meta text-brand-ink rounded-full px-2.5 py-1"
-          style={{ backgroundColor: "rgba(255,255,255,0.72)" }}
-        >
-          <span>📍 Retirada grátis — Ritson x Adelaide</span>
-          <span className="w-1 h-1 rounded-full shrink-0 bg-brand-caramelLight" />
-          <span>🚗 Entrega disponível</span>
-        </div>
+      {/* Pickup/delivery — footnote scale metadata, not a section */}
+      <div className="flex items-center justify-center gap-1.5 mt-2 text-mc-home-meta text-brand-muted">
+        <span>📍 Retirada grátis — Ritson x Adelaide</span>
+        <span className="w-1 h-1 rounded-full shrink-0 bg-brand-caramelLight" />
+        <span>🚗 Entrega disponível</span>
       </div>
     </div>
   );
