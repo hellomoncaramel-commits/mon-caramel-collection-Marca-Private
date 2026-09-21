@@ -14,13 +14,20 @@ const CHOICES = [
 ];
 
 // The photo itself fades in via a CSS mask (transparent at the top, fully
-// opaque at the bottom) instead of a dark/white overlay layered on top —
-// the page's own cream background shows through the masked-out top, so
-// the buttons read clearly there, and the photo reveals itself in full
-// color toward the bottom of the block.
+// opaque by 48%) instead of a dark/white overlay layered on top — the
+// page's own cream background shows through the masked-out top, so it
+// flows into the photo with no visible hard edge, and the photo reveals
+// itself in full color well before the block's midpoint.
+const MASK_GRADIENT =
+  "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.10) 8%, rgba(0,0,0,0.25) 16%, rgba(0,0,0,0.50) 26%, rgba(0,0,0,0.78) 36%, black 48%)";
 const PHOTO_MASK = {
-  WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 100%)",
-  maskImage: "linear-gradient(to bottom, transparent 0%, black 100%)",
+  WebkitMaskImage: MASK_GRADIENT,
+  maskImage: MASK_GRADIENT,
+  WebkitMaskRepeat: "no-repeat",
+  maskRepeat: "no-repeat",
+  WebkitMaskSize: "100% 100%",
+  maskSize: "100% 100%",
+  zIndex: 0,
 };
 
 // One composition, one 16px alignment grid. Data, routes and behavior
@@ -60,7 +67,7 @@ export default function HomeScreen({ onSelect }) {
           loading="eager"
         />
 
-        <div className="relative flex flex-col gap-1.5 p-3">
+        <div className="relative flex flex-col gap-1.5 p-3" style={{ zIndex: 2 }}>
           {CHOICES.map((c) => (
             <button
               key={c.id}
