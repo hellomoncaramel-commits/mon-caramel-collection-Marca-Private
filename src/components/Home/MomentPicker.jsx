@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
 import { MOMENTS, MOMENT_TAGLINE } from "../../data/moments";
 import { REAL_PHOTOS } from "../../data/photos";
 import { COLORS } from "../../styles/colors";
@@ -9,7 +9,14 @@ import Photo from "../shared/Photo";
 // Real Mon Caramel photography per moment — no AI mockups, no stock. Four
 // moments already have a dedicated photo; "festa" reuses the first real
 // custom-order photo from the party gallery (there's no single "festa"
-// hero shot yet).
+// hero shot yet). Chosen for how well each crops into a tall vertical
+// frame with the treat itself clear and off-center enough to leave room
+// for the bottom text panel:
+//   café      → moment-cafe.jpg (cup + brigadeiro on a plate)
+//   dia-difícil → moment-dia-dificil.jpg (tray of truffles)
+//   freezer   → moment-freezer.jpg (literally inside the freezer)
+//   presente  → moment-presente.jpg (wrapped gift box with ribbon)
+//   festa     → festaOptions[0] (personalized party sweets)
 const MOMENT_PHOTO = {
   cafe: REAL_PHOTOS.cafe,
   "dia-dificil": REAL_PHOTOS["dia-dificil"],
@@ -18,60 +25,40 @@ const MOMENT_PHOTO = {
   festa: REAL_PHOTOS.festaOptions[0],
 };
 
-// Fades the bottom ~28% of the card photo to transparent so it blends into
-// the card's own cream base instead of meeting the text area at a hard
-// edge — the same masked-photo technique already established on Home,
-// just run over a short distance near the photo's bottom instead of its
-// top (photography should still dominate the upper portion of the card).
-const CARD_PHOTO_MASK_GRADIENT = "linear-gradient(to bottom, black 0%, black 72%, transparent 100%)";
-const CARD_PHOTO_MASK = {
-  WebkitMaskImage: CARD_PHOTO_MASK_GRADIENT,
-  maskImage: CARD_PHOTO_MASK_GRADIENT,
-  WebkitMaskRepeat: "no-repeat",
-  maskRepeat: "no-repeat",
-  WebkitMaskSize: "100% 100%",
-  maskSize: "100% 100%",
-};
-
-const PHOTO_REGION_HEIGHT = "63%";
 const CARD_WIDTH = "min(84vw, 325px)";
 
 // Local, screen-scoped typography — sized to this screen's own targets
 // rather than reusing Home's mc-home-hero token, which is close but not
 // identical (24px/1.04 vs. the 25-26px/1.05 asked for here).
 const HEADING_STYLE = { fontSize: 26, lineHeight: 1.05 };
-const CARD_TITLE_STYLE = { fontSize: 26, lineHeight: 1.05 };
+const CARD_TITLE_STYLE = { fontSize: 25, lineHeight: 1.08 };
 const CARD_SUBTITLE_STYLE = { fontSize: 13, lineHeight: 1.35 };
+
+// The photo covers the whole card; this panel is a soft cream gradient
+// laid over its lower portion so the text has a legible platform without
+// turning into a hard, separate rectangle — the photo keeps showing
+// through the upper, more transparent part of the gradient.
+const TEXT_PANEL_GRADIENT =
+  "linear-gradient(to bottom, rgba(255,252,245,0) 0%, rgba(255,252,245,0.32) 16%, rgba(255,252,245,0.8) 38%, rgba(255,252,245,0.96) 60%, #FFFCF5 100%)";
 
 function MomentCard({ moment, photoSrc, eager, onSelect }) {
   return (
-    <div className="relative w-full h-full overflow-hidden" style={{ borderRadius: 20, backgroundColor: COLORS.beige }}>
-      <div className="absolute inset-x-0 top-0 overflow-hidden" style={{ height: PHOTO_REGION_HEIGHT }}>
-        <Photo
-          src={photoSrc}
-          alt=""
-          className="absolute inset-0 w-full h-full object-cover"
-          style={CARD_PHOTO_MASK}
-          loading={eager ? "eager" : "lazy"}
-        />
-      </div>
+    <div className="relative w-full h-full overflow-hidden" style={{ borderRadius: 20 }}>
+      <Photo src={photoSrc} alt="" className="absolute inset-0 w-full h-full object-cover" loading={eager ? "eager" : "lazy"} />
 
-      <div className="absolute inset-x-0 bottom-0 flex flex-col" style={{ top: `calc(${PHOTO_REGION_HEIGHT} - 34px)`, padding: 19 }}>
-        <span
-          className="rounded-full flex items-center justify-center shrink-0"
-          style={{ width: 34, height: 34, fontSize: 17, backgroundColor: `${COLORS.caramelDarker}17` }}
-        >
-          {moment.emoji}
-        </span>
-        <h3 className="font-display italic text-brand-ink mt-2" style={CARD_TITLE_STYLE}>
-          {moment.label}
+      <div
+        className="absolute inset-x-0 bottom-0 flex flex-col justify-end"
+        style={{ top: "50%", background: TEXT_PANEL_GRADIENT, padding: 20 }}
+      >
+        <h3 className="font-display italic text-brand-ink" style={CARD_TITLE_STYLE}>
+          {moment.emoji} {moment.label}
         </h3>
-        <p className="text-brand-inkSoft mt-1" style={CARD_SUBTITLE_STYLE}>
+        <p className="text-brand-inkSoft mt-1.5" style={CARD_SUBTITLE_STYLE}>
           {MOMENT_TAGLINE[moment.id]}
         </p>
         <button
           onClick={onSelect}
-          className="mt-auto self-start text-white font-medium"
+          className="mt-3 self-end shrink-0 text-white font-medium"
           style={{ backgroundColor: COLORS.caramelDarker, height: 43, padding: "0 18px", borderRadius: 999, fontSize: 14 }}
         >
           Quero isso →
@@ -81,13 +68,14 @@ function MomentCard({ moment, photoSrc, eager, onSelect }) {
   );
 }
 
-// "Me ajuda a escolher" — swipe through the 5 moments, recognize yourself
-// in one, tap "Quero isso". The carousel *is* the navigation: no "ver
-// todos" list, no redundant shortcut row underneath it — just the cards
-// and 5 tappable dots.
+// "Me ajuda a escolher" — swipe (or use the side arrows) through the 5
+// moments, recognize yourself in one, tap "Quero isso". A big real photo
+// carries each card; dots plus "Ver todos os momentos" underneath cover
+// anyone who'd rather not swipe at all.
 export default function MomentPicker({ onBack, onSelectMoment }) {
   const trackRef = useRef(null);
   const [index, setIndex] = useState(0);
+  const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
     const el = trackRef.current;
@@ -155,17 +143,16 @@ export default function MomentPicker({ onBack, onSelectMoment }) {
         Como você está hoje?
       </h1>
       <p className="text-mc-home-body text-brand-inkSoft text-center mt-1.5 shrink-0">
-        Deslize e encontre o seu momento.
+        Deslize para ver os momentos
+        <br />e encontre o doce perfeito.
       </p>
 
-      {/* Carousel — one card at a time, a small peek of the next on the
-          right teaches the swipe. Bounded by the page's own gutter
-          (no full-bleed), so overflow stays contained. The card height is
-          capped (not left to fill all available flex space) so it stays
-          near the ~440-470px target regardless of viewport; any leftover
-          room becomes symmetric breathing space above/below via
-          justify-center instead of an oversized card. */}
-      <div className="relative flex-1 min-h-0 mt-3 flex flex-col justify-center">
+      {/* Carousel — the real photo is the protagonist, one card at a time,
+          a small peek of the next on the right teaches the swipe. Side
+          arrows sit partially over the card edges as an alternative to
+          swiping. Bounded by the page's own gutter (no full-bleed), so
+          overflow stays contained. */}
+      <div className="relative flex-1 min-h-0 mt-3">
         <div
           ref={trackRef}
           onKeyDown={onTrackKeyDown}
@@ -173,8 +160,7 @@ export default function MomentPicker({ onBack, onSelectMoment }) {
           role="region"
           aria-roledescription="carousel"
           aria-label="Momentos"
-          className="flex gap-3 overflow-x-auto snap-x snap-mandatory no-scrollbar focus:outline-none"
-          style={{ height: "min(100%, 460px)" }}
+          className="h-full flex gap-3 overflow-x-auto snap-x snap-mandatory no-scrollbar focus:outline-none"
         >
           {MOMENTS.map((m, i) => (
             <div key={m.id} className="h-full shrink-0" style={{ width: CARD_WIDTH, scrollSnapAlign: "start" }}>
@@ -182,12 +168,28 @@ export default function MomentPicker({ onBack, onSelectMoment }) {
             </div>
           ))}
         </div>
+
+        <button
+          onClick={() => goTo(index - 1)}
+          disabled={index === 0}
+          aria-label="Momento anterior"
+          className="absolute rounded-full flex items-center justify-center disabled:opacity-0 disabled:pointer-events-none transition-opacity"
+          style={{ left: 4, top: "50%", transform: "translateY(-50%)", width: 36, height: 36, backgroundColor: "rgba(255,252,245,0.88)", boxShadow: "0 2px 8px rgba(61,36,24,0.18)" }}
+        >
+          <ChevronLeft size={18} className="text-brand-ink" />
+        </button>
+        <button
+          onClick={() => goTo(index + 1)}
+          disabled={index === MOMENTS.length - 1}
+          aria-label="Próximo momento"
+          className="absolute rounded-full flex items-center justify-center disabled:opacity-0 disabled:pointer-events-none transition-opacity"
+          style={{ right: 4, top: "50%", transform: "translateY(-50%)", width: 36, height: 36, backgroundColor: "rgba(255,252,245,0.88)", boxShadow: "0 2px 8px rgba(61,36,24,0.18)" }}
+        >
+          <ChevronRight size={18} className="text-brand-ink" />
+        </button>
       </div>
 
-      {/* Pagination — the only navigation besides the swipe itself. Each
-          dot's visible size stays tiny (7-9px) while a larger invisible
-          hit area (via the absolutely-positioned inset child) keeps it
-          comfortably tappable. */}
+      {/* Pagination */}
       <div className="flex items-center justify-center shrink-0 mt-2" role="tablist" aria-label="Ir para momento">
         {MOMENTS.map((m, i) => {
           const active = i === index;
@@ -207,6 +209,34 @@ export default function MomentPicker({ onBack, onSelectMoment }) {
           );
         })}
       </div>
+
+      {/* Alternative to swiping: the plain full list, collapsed by default. */}
+      <button
+        onClick={() => setShowAll((s) => !s)}
+        className="flex items-center justify-center gap-1 text-sm font-medium shrink-0 mt-1 py-1.5 min-h-11"
+        style={{ color: COLORS.caramelDarker }}
+      >
+        {showAll ? "Ocultar lista" : "Ver todos os momentos"}
+        <ChevronRight size={15} />
+      </button>
+
+      {showAll && (
+        <div className="flex flex-col gap-2 mt-1 pb-1 fade-up">
+          {MOMENTS.map((m) => (
+            <button
+              key={m.id}
+              onClick={() => onSelectMoment(m.id)}
+              className="flex items-center gap-3 p-3 rounded-2xl border border-brand-border bg-white text-left min-h-11"
+            >
+              <span className="text-xl shrink-0">{m.emoji}</span>
+              <span>
+                <span className="block text-brand-ink text-sm font-medium">{m.label}</span>
+                <span className="block text-brand-muted text-xs mt-0.5">{MOMENT_TAGLINE[m.id]}</span>
+              </span>
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
