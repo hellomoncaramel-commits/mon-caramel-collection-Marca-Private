@@ -150,8 +150,16 @@ export default function MomentPicker({ onBack, onSelectMoment }) {
           a small peek of the next on the right teaches the swipe. Side
           arrows sit partially over the card edges as an alternative to
           swiping. Bounded by the page's own gutter (no full-bleed), so
-          overflow stays contained. */}
-      <div className="relative flex-1 min-h-0 mt-3">
+          overflow stays contained.
+
+          Height: mobile uses flex-1 to fill whatever's left inside the
+          page's fixed h-[calc(100dvh-6rem)]. At md+ the page switches to
+          h-auto (content-sized) — flex-1 then has no space to grow into,
+          so this and the cards' h-full inside it would resolve to 0
+          (percentage height on an indeterminate ancestor). Pinning a
+          fixed height at md+ breaks that chain and keeps the card
+          visible on desktop. */}
+      <div className="relative flex-1 min-h-0 mt-3 md:flex-none md:h-[520px]">
         <div
           ref={trackRef}
           onKeyDown={onTrackKeyDown}
