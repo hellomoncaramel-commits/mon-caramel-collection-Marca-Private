@@ -37,7 +37,7 @@ const PHOTO_MASK = {
 // right there — no extra sections competing with the primary decision.
 export default function HomeScreen({ onSelect }) {
   return (
-    <div className="w-full md:max-w-xl md:mx-auto px-gutter pt-2 pb-3 fade-up flex flex-col h-[calc(100dvh-6rem)] md:h-auto">
+    <div className="w-full md:max-w-2xl lg:max-w-3xl xl:max-w-4xl md:mx-auto px-gutter pt-2 pb-3 fade-up flex flex-col h-[calc(100dvh-6rem)] md:h-auto">
       {/* Header — small brand presence, no website navbar feel. Height is
           pinned so the larger, deliberately-overflowing logo below can't
           push the headline down or grow the page. */}
@@ -62,8 +62,14 @@ export default function HomeScreen({ onSelect }) {
       {/* Real Mon Caramel photo as background, discovery choices layered on top of it.
           No margin-top here — the 10px gap to the first button comes entirely from the
           inner wrapper's pt-[10px] below, since the photo itself is still fully
-          transparent (via mask) at its very top and reads as part of that same gap. */}
-      <div className="relative w-full overflow-hidden rounded-mc flex-1 min-h-0" style={{ minHeight: 260 }}>
+          transparent (via mask) at its very top and reads as part of that same gap.
+
+          Height: mobile uses flex-1 to fill whatever's left inside the page's fixed
+          h-[calc(100dvh-6rem)]. At md+ the page switches to h-auto (content-sized) —
+          flex-1 then has no space to grow into, so this block would collapse to its
+          minHeight floor (a thin 260px strip, however wide the desktop container is).
+          Pinning a fixed height at md+ breaks that chain, same fix as MomentPicker. */}
+      <div className="relative w-full overflow-hidden rounded-mc flex-1 min-h-0 md:flex-none md:h-[460px]" style={{ minHeight: 260 }}>
         <Photo
           src={REAL_PHOTOS.casadinhoGoiabada}
           alt=""

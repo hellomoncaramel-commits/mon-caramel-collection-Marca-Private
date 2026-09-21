@@ -125,7 +125,7 @@ export default function MomentPicker({ onBack, onSelectMoment }) {
   };
 
   return (
-    <div className="w-full md:max-w-xl md:mx-auto px-gutter pt-2 pb-3 fade-up flex flex-col h-[calc(100dvh-6rem)] md:h-auto">
+    <div className="w-full md:max-w-2xl lg:max-w-4xl xl:max-w-5xl md:mx-auto px-gutter pt-2 pb-3 fade-up flex flex-col h-[calc(100dvh-6rem)] md:h-auto">
       {/* Header — same compact, icon-only language as Home. The right-side
           spacer mirrors the back button's width so the logo stays
           centered on the viewport, independent of the back arrow. */}
