@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { PRODUCTS } from "../../data/products";
 import { COLORS } from "../../styles/colors";
 import { isBrowsable } from "../../utils/products";
-import BackButton from "../shared/BackButton";
+import SiteHeader from "../shared/SiteHeader";
 import FeedCard from "./FeedCard";
 import FavoritesNudge from "./FavoritesNudge";
 
@@ -27,8 +27,8 @@ export default function FeedScreen({ onBack, favorites, toggleFavorite, selectio
   }, [filter]);
 
   return (
-    <div className="max-w-xl mx-auto px-4 pt-8 pb-10 fade-up">
-      <BackButton onClick={onBack} label="Voltar" />
+    <div className="max-w-xl mx-auto px-4 pt-2 pb-10 fade-up">
+      <SiteHeader onBack={onBack} />
       <h1 className="text-2xl font-display text-brand-ink mb-1">Só olha... 👀</h1>
       <p className="text-sm mb-5 text-brand-muted">Vai rolando. A gente não conta pra ninguém se você ficar com vontade.</p>
 

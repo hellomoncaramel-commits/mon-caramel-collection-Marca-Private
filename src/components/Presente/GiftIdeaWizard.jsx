@@ -4,7 +4,7 @@ import { COLORS } from "../../styles/colors";
 import { BUDGET_RANGES, SURPRISE_ME } from "../../data/giftOptions";
 import { defaultPhotos } from "../../utils/products";
 import Photo from "../shared/Photo";
-import BackButton from "../shared/BackButton";
+import SiteHeader from "../shared/SiteHeader";
 
 function StepDots({ total, current }) {
   return (
@@ -132,8 +132,8 @@ export default function GiftIdeaWizard({ onBack, groupKey, groupLabel, title, oc
   };
 
   return (
-    <div className="max-w-xl mx-auto px-4 pt-8 pb-10 fade-up">
-      <BackButton onClick={back} label={stepIndex === 0 ? "Voltar" : "Etapa anterior"} />
+    <div className="max-w-xl mx-auto px-4 pt-2 pb-10 fade-up">
+      <SiteHeader onBack={back} />
       <p className="text-xl font-display text-brand-ink mb-1 text-center">{title}</p>
 
       {!isLast && <StepDots total={totalNumbered} current={stepIndex} />}

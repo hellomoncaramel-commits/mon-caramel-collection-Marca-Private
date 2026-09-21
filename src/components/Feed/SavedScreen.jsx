@@ -1,5 +1,5 @@
 import { PRODUCTS } from "../../data/products";
-import BackButton from "../shared/BackButton";
+import SiteHeader from "../shared/SiteHeader";
 import FeedCard from "./FeedCard";
 
 // Everything favorited from anywhere in the app (feed, search, moments,
@@ -8,8 +8,8 @@ export default function SavedScreen({ onBack, favorites, toggleFavorite, selecti
   const items = PRODUCTS.filter((p) => favorites.includes(p.id));
 
   return (
-    <div className="max-w-xl mx-auto px-4 pt-8 pb-10 fade-up">
-      <BackButton onClick={onBack} label="Voltar" />
+    <div className="max-w-xl mx-auto px-4 pt-2 pb-10 fade-up">
+      <SiteHeader onBack={onBack} />
       <h1 className="text-2xl font-display text-brand-ink mb-1">♡ Salvos</h1>
       <p className="text-sm mb-6 text-brand-muted">
         {items.length === 0 ? "Ainda nada por aqui." : "As coisas que chamaram sua atenção."}

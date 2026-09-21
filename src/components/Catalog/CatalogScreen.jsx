@@ -1,7 +1,7 @@
 import { Heart } from "lucide-react";
 import { PRODUCTS } from "../../data/products";
 import { COLORS } from "../../styles/colors";
-import BackButton from "../shared/BackButton";
+import SiteHeader from "../shared/SiteHeader";
 import ProductArt from "../shared/ProductArt";
 
 // Discreet alternate path for customers who already know what they want —
@@ -10,8 +10,8 @@ export default function CatalogScreen({ onBack, favorites, toggleFavorite, selec
   const inSelection = (id) => selection.some((it) => it.productId === id);
 
   return (
-    <div className="max-w-2xl mx-auto px-4 pt-10 pb-28 fade-up">
-      <BackButton onClick={onBack} label="Voltar" />
+    <div className="max-w-2xl mx-auto px-4 pt-2 pb-28 fade-up">
+      <SiteHeader onBack={onBack} />
       <h2 className="text-2xl mb-1 font-display text-brand-ink">Coleção completa</h2>
       <p className="text-sm mb-6 text-brand-muted">Todos os produtos, num lugar só.</p>
 

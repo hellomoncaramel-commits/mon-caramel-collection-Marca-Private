@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { MOMENTS, MOMENT_TAGLINE } from "../../data/moments";
 import { REAL_PHOTOS } from "../../data/photos";
 import { COLORS } from "../../styles/colors";
-import Logo from "../shared/Logo";
+import SiteHeader from "../shared/SiteHeader";
 import Photo from "../shared/Photo";
 
 // Real Mon Caramel photography per moment — no AI mockups, no stock. Four
@@ -160,16 +160,7 @@ export default function MomentPicker({ onBack, onSelectMoment }) {
 
   return (
     <div className="w-full md:max-w-2xl lg:max-w-4xl xl:max-w-5xl md:mx-auto px-gutter pt-2 pb-3 fade-up flex flex-col h-[calc(100dvh-6rem)] md:h-auto">
-      {/* Header — same compact, icon-only language as Home. The right-side
-          spacer mirrors the back button's width so the logo stays
-          centered on the viewport, independent of the back arrow. */}
-      <div className="flex items-center justify-between mb-2 shrink-0">
-        <button onClick={onBack} aria-label="Voltar" className="w-11 h-11 flex items-center justify-center">
-          <ArrowLeft size={20} className="text-brand-caramelDark" />
-        </button>
-        <Logo size="sm" />
-        <div className="w-11" />
-      </div>
+      <SiteHeader onBack={onBack} />
 
       {/* Intro */}
       <h1 className="font-display italic text-brand-ink text-center shrink-0 text-[clamp(30px,8vw,36px)] md:text-[26px] leading-[1.05]">

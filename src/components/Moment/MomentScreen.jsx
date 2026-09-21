@@ -4,7 +4,7 @@ import { MOMENT_INTRO } from "../../data/moments";
 import { pickForMoment, pickCrossSell } from "../../utils/products";
 import { buildPartyMessage } from "../../utils/messages";
 import { useParty } from "../../hooks/useParty";
-import BackButton from "../shared/BackButton";
+import SiteHeader from "../shared/SiteHeader";
 import Toast from "../shared/Toast";
 import ProductCard from "./ProductCard";
 import PartyPanel from "../Party/PartyPanel";
@@ -45,8 +45,8 @@ export default function MomentScreen({
   };
 
   return (
-    <div className="max-w-2xl mx-auto px-4 pt-10 pb-28 fade-up">
-      <BackButton onClick={onBack} label="Voltar" />
+    <div className="max-w-2xl mx-auto px-4 pt-2 pb-28 fade-up">
+      <SiteHeader onBack={onBack} />
 
       {MOMENT_INTRO[momentId] && (
         <p className="text-base leading-relaxed mb-6 font-subtitle italic text-brand-inkSoft">{MOMENT_INTRO[momentId]}</p>

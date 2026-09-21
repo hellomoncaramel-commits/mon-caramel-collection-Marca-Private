@@ -1,7 +1,7 @@
 import { ChevronRight, Heart } from "lucide-react";
 import { REAL_PHOTOS } from "../../data/photos";
 import { COLORS } from "../../styles/colors";
-import Logo from "../shared/Logo";
+import SiteHeader from "../shared/SiteHeader";
 import Photo from "../shared/Photo";
 
 // Discovery choices — all three rows share the exact same solid caramel
@@ -38,20 +38,17 @@ const PHOTO_MASK = {
 export default function HomeScreen({ onSelect }) {
   return (
     <div className="w-full md:max-w-2xl lg:max-w-3xl xl:max-w-4xl md:mx-auto px-gutter pt-2 pb-3 fade-up flex flex-col h-[calc(100dvh-6rem)] md:h-auto">
-      {/* Header — small brand presence, no website navbar feel. Height is
-          pinned so the larger, deliberately-overflowing logo below can't
-          push the headline down or grow the page. */}
-      <div className="flex items-center justify-between mb-2 shrink-0" style={{ height: 76 }}>
-        <div className="w-11" />
-        <Logo size="home" />
-        <button
-          onClick={() => onSelect("salvos")}
-          aria-label="Ver salvos"
-          className="w-11 h-11 flex items-center justify-center"
-        >
-          <Heart size={20} className="text-brand-caramelDark" />
-        </button>
-      </div>
+      <SiteHeader
+        rightSlot={
+          <button
+            onClick={() => onSelect("salvos")}
+            aria-label="Ver salvos"
+            className="w-11 h-11 flex items-center justify-center"
+          >
+            <Heart size={20} className="text-brand-caramelDark" />
+          </button>
+        }
+      />
 
       {/* Intro — editorial, not a marketing hero */}
       <h1 className="text-mc-home-hero mt-2 font-display italic text-brand-ink shrink-0">O que a gente vai adoçar hoje? 💛</h1>
