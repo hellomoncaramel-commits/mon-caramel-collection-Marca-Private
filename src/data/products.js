@@ -176,7 +176,7 @@ export const PRODUCTS = [
     tint: COLORS.creamYellow,
     moments: ["cafe", "freezer"],
     photosByMoment: { cafe: [REAL_PHOTOS.biscoitoAmanteigadoCafe] },
-    photos: [REAL_PHOTOS.biscoitoAmanteigadoFreezer, REAL_PHOTOS.alfajorClassico],
+    photos: [REAL_PHOTOS.biscoitoVariedade, REAL_PHOTOS.biscoitoAmanteigadoFreezer, REAL_PHOTOS.alfajorClassico],
   },
   {
     id: "casadinho",
@@ -221,6 +221,42 @@ export const PRODUCTS = [
     tint: COLORS.creamYellow,
     moments: ["dia-dificil", "freezer", "festa"],
     photos: [REAL_PHOTOS.balaDeCoco],
+  },
+  // Unit and sensory are still pending real data from Naia — left blank
+  // rather than invented. Price reuses the project's existing "not a fixed
+  // number yet" convention (see every presenteGroup item below, and
+  // entryPrice/parsePrice in utils/pricing.js, which already treats any
+  // non-"$12"-shaped price as "not orderable yet" and excludes it from the
+  // selection subtotal) — not a real price, just the same placeholder the
+  // app already shows for "sob consulta" items.
+  {
+    id: "bolo-de-pote",
+    name: "Bolo de Pote",
+    unit: "",
+    price: "Sob consulta 💬",
+    sensory: "",
+    kind: "cake",
+    tint: COLORS.caramelDark,
+    moments: ["dia-dificil"],
+    photos: [REAL_PHOTOS.boloDePoteCamadas, REAL_PHOTOS.boloDePoteMorango],
+  },
+  // Brownlito belongs to two journeys at once (the "dia-dificil" moment
+  // catalog and Presentes → Pequenos Mimos) — a single product with both
+  // `moments` and `presenteGroup` set, not two separate entries. Every
+  // other presenteGroup item so far only ever carries moments: ["presente"];
+  // this is the first to also carry a real moment tag, which the existing
+  // pickForMoment()/getMimos() derivations already support without change.
+  {
+    id: "brownlito",
+    name: "Brownlito",
+    unit: "",
+    price: "Sob consulta 💬",
+    sensory: "",
+    kind: "dipped",
+    tint: COLORS.ink,
+    moments: ["dia-dificil"],
+    presenteGroup: "mimos",
+    photos: [REAL_PHOTOS.brownlitoInteiro, REAL_PHOTOS.brownlitoRecheio],
   },
 
   // --- Caixas Personalizadas — fotos reais de caixas já montadas, aqui como

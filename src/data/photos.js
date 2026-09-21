@@ -104,4 +104,10 @@ export const REAL_PHOTOS = {
   // the Brigadeiro product card also uses (see data/products.js) and must
   // stay untouched.
   freezerDonuts: `${MOMENTS_BASE}/freezer-donuts.jpg`,
+  // New real photos — catalog additions.
+  biscoitoVariedade: `${BASE}/biscoito-variedade.jpg`,
+  boloDePoteCamadas: `${BASE}/bolo-de-pote-camadas.jpg`,
+  boloDePoteMorango: `${BASE}/bolo-de-pote-morango.jpg`,
+  brownlitoInteiro: `${BASE}/brownlito-inteiro.jpg`,
+  brownlitoRecheio: `${BASE}/brownlito-recheio.jpg`,
 };
