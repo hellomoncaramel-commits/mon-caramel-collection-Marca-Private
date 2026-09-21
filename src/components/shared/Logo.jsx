@@ -1,10 +1,7 @@
 const SIZES = {
   sm: 72,
-  // Home header logo — tempered down from a straight 30%-of-width
-  // measurement (115px): combined with a large hero photo, that pushed
-  // the first screen below the fold on a real device. Still clearly
-  // bigger than the earlier 58px attempt.
-  home: 90,
+  // Home header logo.
+  home: 76,
   md: 120,
   lg: 200,
 };
@@ -18,7 +15,7 @@ export default function Logo({ size = "md" }) {
     <img
       src="/images/brand/logo-mon-caramel.webp"
       alt="Mon Caramel — Not your average sweet."
-      style={{ width }}
+      style={{ width, height: "auto" }}
       className="mx-auto"
     />
   );
