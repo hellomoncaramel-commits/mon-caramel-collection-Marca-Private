@@ -1,10 +1,9 @@
 const SIZES = {
   sm: 72,
-  // Compact Home header logo (spec target: 58px displayed width). Since
-  // the artwork is a square canvas, its rendered height is also ~58px —
-  // taller than a 46px header row would allow, an unavoidable tradeoff of
-  // hitting the logo-width target on a square, uncropped asset.
-  home: 58,
+  // Home header logo — measured directly against the approved mockup's
+  // own logo-to-screen-width ratio (~30% of a 390px screen ≈ 115px),
+  // not an approximated number.
+  home: 112,
   md: 120,
   lg: 200,
 };

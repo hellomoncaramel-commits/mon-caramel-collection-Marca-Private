@@ -7,14 +7,14 @@ import { COLORS } from "../../styles/colors";
 import Logo from "../shared/Logo";
 import Photo from "../shared/Photo";
 
-// Discovery choices — compact app-style rows, not stacked website buttons.
-// Only choice 1 is a solid caramel surface; the other two are quiet
-// beige/off-white surfaces. Yellow never becomes a large surface, only a
-// small icon accent (see moment shortcuts below).
+// Discovery choices — all three rows share the exact same solid caramel
+// surface, matching the approved mockup (it does not differentiate row 2/3
+// with a lighter fill — that was an earlier approximation that drifted
+// from the actual reference). Only the icon and copy change between them.
 const CHOICES = [
-  { id: "momentos", emoji: "💛", title: "Me ajuda a escolher", subtitle: "Escolha pelo momento.", bg: COLORS.caramelDark, dark: false },
-  { id: "feed", emoji: "👀", title: "Só quero olhar e passar vontade", subtitle: "Por sua conta e risco.", bg: COLORS.subtle, dark: true },
-  { id: "busca", emoji: "🔎", title: "Já sei o que quero", subtitle: "Me leva pros doces.", bg: "white", dark: true },
+  { id: "momentos", emoji: "💛", title: "Me ajuda a escolher", subtitle: "Escolha pelo momento." },
+  { id: "feed", emoji: "👀", title: "Só quero olhar e passar vontade", subtitle: "Por sua conta e risco." },
+  { id: "busca", emoji: "🔎", title: "Já sei o que quero", subtitle: "Me leva pros doces." },
 ];
 
 const MOMENT_ACCENTS = [COLORS.caramelDark, COLORS.caramelLight, COLORS.creamYellow, COLORS.caramelDark, COLORS.caramelLight];
@@ -62,8 +62,7 @@ export default function HomeScreen({ onSelect }) {
             onClick={() => onSelect(c.id)}
             className="items-center rounded-mc text-left"
             style={{
-              backgroundColor: c.bg,
-              border: c.dark ? `1px solid ${COLORS.border}` : "none",
+              backgroundColor: COLORS.caramelDark,
               display: "grid",
               gridTemplateColumns: "30px 1fr 14px",
               columnGap: "9px",
@@ -73,28 +72,26 @@ export default function HomeScreen({ onSelect }) {
           >
             <span
               className="rounded-full flex items-center justify-center"
-              style={{ width: 30, height: 30, fontSize: 16, backgroundColor: c.dark ? COLORS.beige : "rgba(255,255,255,0.18)" }}
+              style={{ width: 30, height: 30, fontSize: 16, backgroundColor: "rgba(255,255,255,0.18)" }}
             >
               {c.emoji}
             </span>
             <span className="min-w-0">
-              <span className="block font-display text-mc-home-card-title truncate" style={{ color: c.dark ? COLORS.ink : "white" }}>
-                {c.title}
-              </span>
-              <span className="block text-mc-home-card-subtitle truncate mt-0.5" style={{ color: c.dark ? COLORS.muted : "rgba(255,255,255,0.85)" }}>
+              <span className="block font-display text-mc-home-card-title truncate text-white">{c.title}</span>
+              <span className="block text-mc-home-card-subtitle truncate mt-0.5" style={{ color: "rgba(255,255,255,0.85)" }}>
                 {c.subtitle}
               </span>
             </span>
-            <ChevronRight size={14} style={{ color: c.dark ? COLORS.muted : "rgba(255,255,255,0.85)" }} />
+            <ChevronRight size={14} style={{ color: "rgba(255,255,255,0.85)" }} />
           </button>
         ))}
       </div>
 
-      {/* Real Mon Caramel hero photo — editorial crop, photography as the star */}
+      {/* Real Mon Caramel hero photo — dominant, near-square, matching the
+          approved mockup's own measured proportion (not a short wide banner). */}
       <button
         onClick={() => onSelect("feed")}
-        className="relative w-full overflow-hidden text-left rounded-mc block mt-2.5"
-        style={{ height: 154 }}
+        className="relative w-full overflow-hidden text-left rounded-mc block mt-2.5 aspect-square"
       >
         <Photo
           src={REAL_PHOTOS.casadinhoGoiabada}
