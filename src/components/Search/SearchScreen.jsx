@@ -3,7 +3,7 @@ import { Search, Plus, Check, MessageCircle } from "lucide-react";
 import { PRODUCTS } from "../../data/products";
 import { isBrowsable, defaultPhotos, parseQuantityOptions } from "../../utils/products";
 import { COLORS } from "../../styles/colors";
-import BackButton from "../shared/BackButton";
+import SiteHeader from "../shared/SiteHeader";
 import ProductArt from "../shared/ProductArt";
 import Photo from "../shared/Photo";
 
@@ -71,8 +71,8 @@ export default function SearchScreen({ onBack, onGoCatalog, selection, addToSele
     addToSelection({ kind: "product", productId: p.id, name: p.name, unit: p.unit, qty, flavors: null });
 
   return (
-    <div className="max-w-xl mx-auto px-4 pt-8 pb-10 fade-up">
-      <BackButton onClick={onBack} label="Voltar" />
+    <div className="max-w-xl mx-auto px-4 pt-2 pb-10 fade-up">
+      <SiteHeader onBack={onBack} />
       <h1 className="text-2xl font-display text-brand-ink mb-4">O que você está procurando?</h1>
 
       <label htmlFor="search-input" className="sr-only">

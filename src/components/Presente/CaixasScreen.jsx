@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { COLORS } from "../../styles/colors";
 import { getInspiration, CAIXA_MUST_HAVE_PRODUCTS } from "../../data/giftOptions";
-import BackButton from "../shared/BackButton";
+import SiteHeader from "../shared/SiteHeader";
 import SwipeGallery from "./SwipeGallery";
 import GiftIdeaWizard from "./GiftIdeaWizard";
 
@@ -29,8 +29,8 @@ export default function CaixasScreen({ onBack, isSelected, addToSelection, remov
   }
 
   return (
-    <div className="max-w-xl mx-auto px-4 pt-8 pb-10 fade-up">
-      <BackButton onClick={onBack} label="Voltar" />
+    <div className="max-w-xl mx-auto px-4 pt-2 pb-10 fade-up">
+      <SiteHeader onBack={onBack} />
       <h1 className="text-2xl font-display text-brand-ink mb-1">Caixas para presentear</h1>
       <p className="text-sm mb-6 italic font-subtitle text-brand-inkSoft">Inspire-se. A sua não precisa ser igual a nenhuma delas.</p>
 

@@ -6,7 +6,7 @@ import { PRODUCTS } from "../../data/products";
 import { defaultPhotos, pickSelectionCrossSell } from "../../utils/products";
 import { entryPrice } from "../../utils/pricing";
 import Photo from "../shared/Photo";
-import BackButton from "../shared/BackButton";
+import SiteHeader from "../shared/SiteHeader";
 
 function Thumb({ photo, fallbackIcon }) {
   return (
@@ -103,8 +103,8 @@ export default function SelectionScreen({ selection, removeFromSelection, addToS
   const suggestion = useMemo(() => pickSelectionCrossSell(selection), [selection]);
 
   return (
-    <div className="max-w-2xl mx-auto px-4 pt-10 pb-28 fade-up">
-      <BackButton onClick={onBack} label="Continuar escolhendo" />
+    <div className="max-w-2xl mx-auto px-4 pt-2 pb-28 fade-up">
+      <SiteHeader onBack={onBack} />
       <h2 className="text-2xl mb-1 font-display text-brand-ink">♡ Minha Seleção</h2>
       <p className="text-sm mb-6 text-brand-muted">
         {selection.length === 0
