@@ -38,8 +38,10 @@ const PHOTO_MASK = {
 export default function HomeScreen({ onSelect }) {
   return (
     <div className="w-full md:max-w-xl md:mx-auto px-gutter pt-2 pb-3 fade-up flex flex-col h-[calc(100dvh-6rem)] md:h-auto">
-      {/* Header — small brand presence, no website navbar feel */}
-      <div className="flex items-center justify-between mb-2 shrink-0">
+      {/* Header — small brand presence, no website navbar feel. Height is
+          pinned so the larger, deliberately-overflowing logo below can't
+          push the headline down or grow the page. */}
+      <div className="flex items-center justify-between mb-2 shrink-0" style={{ height: 76 }}>
         <div className="w-11" />
         <Logo size="home" />
         <button
