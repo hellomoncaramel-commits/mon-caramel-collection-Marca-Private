@@ -37,9 +37,9 @@ const PHOTO_MASK = {
 // right there — no extra sections competing with the primary decision.
 export default function HomeScreen({ onSelect }) {
   return (
-    <div className="w-full md:max-w-xl md:mx-auto px-gutter pt-2 pb-8 fade-up">
+    <div className="w-full md:max-w-xl md:mx-auto px-gutter pt-2 pb-3 fade-up flex flex-col h-[calc(100dvh-6rem)] md:h-auto">
       {/* Header — small brand presence, no website navbar feel */}
-      <div className="flex items-center justify-between mb-2">
+      <div className="flex items-center justify-between mb-2 shrink-0">
         <div className="w-11" />
         <Logo size="home" />
         <button
@@ -52,13 +52,13 @@ export default function HomeScreen({ onSelect }) {
       </div>
 
       {/* Intro — editorial, not a marketing hero */}
-      <h1 className="text-mc-home-hero mt-2.5 font-display italic text-brand-ink">O que a gente vai adoçar hoje? 💛</h1>
-      <p className="text-mc-home-body mt-1.5 text-brand-inkSoft">
+      <h1 className="text-mc-home-hero mt-2.5 font-display italic text-brand-ink shrink-0">O que a gente vai adoçar hoje? 💛</h1>
+      <p className="text-mc-home-body mt-1.5 text-brand-inkSoft shrink-0">
         Escolha pelo momento, procure alguma coisa específica ou simplesmente fique olhando...
       </p>
 
       {/* Real Mon Caramel photo as background, discovery choices layered on top of it */}
-      <div className="relative w-full overflow-hidden rounded-mc mt-3" style={{ minHeight: 420 }}>
+      <div className="relative w-full overflow-hidden rounded-mc mt-3 flex-1 min-h-0" style={{ minHeight: 260 }}>
         <Photo
           src={REAL_PHOTOS.casadinhoGoiabada}
           alt=""
@@ -74,7 +74,7 @@ export default function HomeScreen({ onSelect }) {
               onClick={() => onSelect(c.id)}
               className="items-center rounded-mc text-left"
               style={{
-                backgroundColor: COLORS.caramelDark,
+                backgroundColor: COLORS.caramelDarker,
                 display: "grid",
                 gridTemplateColumns: "30px 1fr 14px",
                 columnGap: "9px",
@@ -101,7 +101,7 @@ export default function HomeScreen({ onSelect }) {
       </div>
 
       {/* Pickup/delivery — footnote scale metadata, not a section */}
-      <div className="flex items-center justify-center gap-1.5 mt-2 text-mc-home-meta text-brand-muted">
+      <div className="flex items-center justify-center gap-1.5 mt-2 text-mc-home-meta text-brand-muted shrink-0">
         <span>📍 Retirada grátis — Ritson x Adelaide</span>
         <span className="w-1 h-1 rounded-full shrink-0 bg-brand-caramelLight" />
         <span>🚗 Entrega disponível</span>

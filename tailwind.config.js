@@ -18,6 +18,8 @@ export default {
         brand: {
           // Official brand kit
           caramelDark: "#AB6233",
+          // Deeper shade used only for the Home discovery-choice buttons.
+          caramelDarker: "#7A4524",
           caramelLight: "#ECC15C",
           creamYellow: "#EFC970",
           beige: "#FFFCF5",
