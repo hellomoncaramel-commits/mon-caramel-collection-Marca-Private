@@ -6,6 +6,7 @@
  * src/components/shared/ProductArt.jsx (illustrated placeholder).
  */
 const BASE = "/images/products";
+const MOMENTS_BASE = "/images/moments";
 
 export const REAL_PHOTOS = {
   brigadeiroDiaDificil: `${BASE}/brigadeiro-dia-dificil.jpg`,
@@ -95,4 +96,8 @@ export const REAL_PHOTOS = {
   piramide: [`${BASE}/piramide-1.jpg`, `${BASE}/piramide-2.jpg`],
   pirulitoAlfajor: `${BASE}/pirulito-alfajor-1.jpg`,
   balaDeCoco: `${BASE}/bala-de-coco-1.jpg`,
+  // MomentPicker carousel covers — real Mon Caramel photography.
+  lembrancinha: `${MOMENTS_BASE}/lembrancinha.jpg`,
+  diasDeLuta: `${MOMENTS_BASE}/dias-de-luta.jpg`,
+  naoVaiTerFesta: `${MOMENTS_BASE}/nao-vai-ter-festa.jpg`,
 };

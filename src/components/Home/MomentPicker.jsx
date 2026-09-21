@@ -6,23 +6,31 @@ import { COLORS } from "../../styles/colors";
 import SiteHeader from "../shared/SiteHeader";
 import Photo from "../shared/Photo";
 
-// Real Mon Caramel photography per moment — no AI mockups, no stock. Four
-// moments already have a dedicated photo; "festa" reuses the first real
-// custom-order photo from the party gallery (there's no single "festa"
-// hero shot yet). Chosen for how well each crops into a tall vertical
-// frame with the treat itself clear and off-center enough to leave room
-// for the bottom text panel:
-//   café      → moment-cafe.jpg (cup + brigadeiro on a plate)
-//   dia-difícil → moment-dia-dificil.jpg (tray of truffles)
-//   freezer   → moment-freezer.jpg (literally inside the freezer)
-//   presente  → moment-presente.jpg (wrapped gift box with ribbon)
-//   festa     → festaOptions[0] (personalized party sweets)
+// Real Mon Caramel photography per moment — no AI mockups, no stock.
+//   café        → moment-cafe.jpg (cup + brigadeiro on a plate)
+//   dia-difícil → dias-de-luta.jpg (real photo, cookie/chocolate tray)
+//   freezer     → moment-freezer.jpg (literally inside the freezer)
+//   presente    → lembrancinha.jpg (real photo, gift box + ribbon)
+//   festa       → nao-vai-ter-festa.jpg (real photo, party dessert table)
 const MOMENT_PHOTO = {
   cafe: REAL_PHOTOS.cafe,
-  "dia-dificil": REAL_PHOTOS["dia-dificil"],
+  "dia-dificil": REAL_PHOTOS.diasDeLuta,
   freezer: REAL_PHOTOS.freezer,
-  presente: REAL_PHOTOS.presente,
-  festa: REAL_PHOTOS.festaOptions[0],
+  presente: REAL_PHOTOS.lembrancinha,
+  festa: REAL_PHOTOS.naoVaiTerFesta,
+};
+
+// object-position per moment photo — only set where the source photo's
+// framing needs a nudge so the card's tall crop keeps the right subject
+// in frame; anything absent here just uses the CSS default (50% 50%).
+// "festa": the card's aspect ratio leaves no vertical crop headroom on
+// this landscape photo (object-fit: cover binds to height, so the full
+// vertical span — backdrop and all — always shows through), so only a
+// horizontal shift is possible; 85% keeps the cupcake stands, lollipop
+// favors and florals in frame instead of the default center, which
+// landed mostly on blank backdrop wall.
+const MOMENT_PHOTO_POSITION = {
+  festa: "85% center",
 };
 
 // The card's own width on mobile (min(82vw, 330px)) recurs in a few
@@ -46,9 +54,16 @@ const TEXT_PANEL_GRADIENT_MOBILE = `linear-gradient(to bottom, rgba(${CARD_PANEL
 
 function MomentCard({ moment, photoSrc, eager, onSelect }) {
   const lines = moment.titleLines ?? [moment.label];
+  const objectPosition = MOMENT_PHOTO_POSITION[moment.id];
   return (
     <div className="relative w-full h-full overflow-hidden" style={{ borderRadius: 20 }}>
-      <Photo src={photoSrc} alt="" className="absolute inset-0 w-full h-full object-cover" loading={eager ? "eager" : "lazy"} />
+      <Photo
+        src={photoSrc}
+        alt=""
+        className="absolute inset-0 w-full h-full object-cover"
+        style={objectPosition ? { objectPosition } : undefined}
+        loading={eager ? "eager" : "lazy"}
+      />
       <div className="absolute inset-0 md:hidden" style={{ background: TEXT_PANEL_GRADIENT_MOBILE }} />
       <div className="absolute inset-0 hidden md:block" style={{ background: TEXT_PANEL_GRADIENT_DESKTOP }} />
 
