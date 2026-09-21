@@ -25,13 +25,14 @@ const MOMENT_PHOTO = {
 // in frame; anything absent here just uses plain object-fit: cover at
 // the CSS default position (50% 50%).
 // "festa": the source photo is landscape and the card is portrait, so
-// object-fit: cover alone binds to height (no vertical crop headroom —
-// the full vertical span, backdrop wall included, always shows through).
-// A scale() zoom on top of cover, anchored low and right via
-// transformOrigin, crops further in both directions so the table/desserts
-// dominate instead of the wall.
+// object-position alone can only slide the crop window sideways — every
+// tested value still showed mostly backdrop wall and swapped which flower
+// arrangement was visible, never the table. A scale() zoom on top of
+// cover, anchored on the green "E" party favors and the nearer cupcake
+// stand (bottom-left of frame), actually crops the wall out instead of
+// just repositioning it.
 const MOMENT_PHOTO_STYLE = {
-  festa: { transform: "scale(1.9)", transformOrigin: "89% 100%" },
+  festa: { objectPosition: "0% center", transform: "scale(1.9)", transformOrigin: "62% 100%" },
 };
 
 // The card's own width on mobile (min(82vw, 330px)) recurs in a few
