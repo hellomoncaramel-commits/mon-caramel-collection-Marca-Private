@@ -14,6 +14,9 @@ export const COLORS = {
   inkSoft: "#5B4A3D",
   muted: "#7A6A57", // darkened for WCAG AA contrast on beige — see tailwind.config.js
   caramelDark: "#AB6233",
+  // Deeper shade used only for the Home discovery-choice buttons, where the
+  // brand caramelDark reads too light layered over the photo.
+  caramelDarker: "#7A4524",
   caramelLight: "#ECC15C",
   creamYellow: "#EFC970",
   black: "#000000",
