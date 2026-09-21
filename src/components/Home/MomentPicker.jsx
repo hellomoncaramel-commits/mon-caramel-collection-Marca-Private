@@ -34,12 +34,17 @@ const HEADING_STYLE = { fontSize: 26, lineHeight: 1.05 };
 const CARD_TITLE_STYLE = { fontSize: 25, lineHeight: 1.08 };
 const CARD_SUBTITLE_STYLE = { fontSize: 13, lineHeight: 1.35 };
 
-// The photo covers the whole card; this panel is a soft cream gradient
-// laid over its lower portion so the text has a legible platform without
-// turning into a hard, separate rectangle — the photo keeps showing
-// through the upper, more transparent part of the gradient.
-const TEXT_PANEL_GRADIENT =
-  "linear-gradient(to bottom, rgba(255,252,245,0) 0%, rgba(255,252,245,0.32) 16%, rgba(255,252,245,0.8) 38%, rgba(255,252,245,0.96) 60%, #FFFCF5 100%)";
+// The photo covers the whole card; this panel is a warm caramel/cream
+// gradient laid over its lower portion so the text has a legible platform
+// without turning into a hard, separate rectangle — the photo keeps
+// showing through the upper, more transparent part of the gradient, and
+// the same warm hue carries all the way down (no separate white box).
+// The exact tan (#FAD9C4) was sampled from the approved reference mockup
+// rather than picked by eye, so the finish matches it precisely; it's a
+// one-off tint derived from the brand's caramel family (not one of the
+// existing brand.* tokens), scoped to this card only.
+const CARD_PANEL_TAN = "250,217,196";
+const TEXT_PANEL_GRADIENT = `linear-gradient(to bottom, rgba(${CARD_PANEL_TAN},0) 0%, rgba(${CARD_PANEL_TAN},0.14) 30%, rgba(${CARD_PANEL_TAN},0.48) 44%, rgba(${CARD_PANEL_TAN},0.8) 56%, rgba(${CARD_PANEL_TAN},0.95) 68%, rgb(${CARD_PANEL_TAN}) 100%)`;
 
 function MomentCard({ moment, photoSrc, eager, onSelect }) {
   return (
@@ -50,7 +55,7 @@ function MomentCard({ moment, photoSrc, eager, onSelect }) {
         className="absolute inset-x-0 bottom-0 flex flex-col justify-end"
         style={{ top: "50%", background: TEXT_PANEL_GRADIENT, padding: 20 }}
       >
-        <h3 className="font-display italic text-brand-ink" style={CARD_TITLE_STYLE}>
+        <h3 className="font-display font-semibold text-brand-ink" style={CARD_TITLE_STYLE}>
           {moment.emoji} {moment.label}
         </h3>
         <p className="text-brand-inkSoft mt-1.5" style={CARD_SUBTITLE_STYLE}>
@@ -58,8 +63,8 @@ function MomentCard({ moment, photoSrc, eager, onSelect }) {
         </p>
         <button
           onClick={onSelect}
-          className="mt-3 self-end shrink-0 text-white font-medium"
-          style={{ backgroundColor: COLORS.caramelDarker, height: 43, padding: "0 18px", borderRadius: 999, fontSize: 14 }}
+          className="mt-3 self-end shrink-0 font-medium"
+          style={{ backgroundColor: COLORS.caramelDarker, color: COLORS.beige, height: 43, padding: "0 18px", borderRadius: 999, fontSize: 14 }}
         >
           Quero isso →
         </button>
