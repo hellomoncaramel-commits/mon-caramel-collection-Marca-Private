@@ -52,7 +52,7 @@ export default function PresenteEntryScreen({ onBack, onSelect }) {
           <button
             key={o.id}
             onClick={() => onSelect(o.id)}
-            className="grid grid-cols-[minmax(0,62%)_minmax(0,38%)] md:grid-cols-1 items-stretch rounded-2xl overflow-hidden text-left"
+            className="grid grid-cols-[minmax(0,57%)_minmax(0,43%)] md:grid-cols-1 items-stretch rounded-2xl overflow-hidden text-left"
             style={{ backgroundColor: `${o.tint}22` }}
           >
             <div className="min-w-0 p-4 flex flex-col justify-center gap-1 order-1 md:order-2">
