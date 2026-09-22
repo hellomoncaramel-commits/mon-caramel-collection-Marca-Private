@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { getInspiration, CAIXA_MUST_HAVE_PRODUCTS } from "../../data/giftOptions";
+import { CAIXA_MUST_HAVE_PRODUCTS } from "../../data/giftOptions";
+import { BOX_INSPIRATIONS } from "../../data/inspirationGalleries";
 import SiteHeader from "../shared/SiteHeader";
 import CaixasCarousel from "./CaixasCarousel";
 import PresenteCTA from "./PresenteCTA";
@@ -12,7 +13,6 @@ import GiftIdeaWizard from "./GiftIdeaWizard";
 // wizard fresh, never tied to whichever photo was on screen.
 export default function CaixasScreen({ onBack, addToSelection }) {
   const [showWizard, setShowWizard] = useState(false);
-  const inspiration = getInspiration("caixas");
 
   if (showWizard) {
     return (
@@ -35,7 +35,7 @@ export default function CaixasScreen({ onBack, addToSelection }) {
         Algumas ideias que já passaram por aqui. Escolha uma inspiração e a gente adapta do seu jeito.
       </p>
 
-      <CaixasCarousel items={inspiration} />
+      <CaixasCarousel items={BOX_INSPIRATIONS} />
 
       <PresenteCTA
         onAction={() => setShowWizard(true)}
