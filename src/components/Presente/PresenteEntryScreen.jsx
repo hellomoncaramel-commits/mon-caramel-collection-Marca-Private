@@ -22,11 +22,10 @@ const OPTIONS = [
     cta: "Quero ver ideias →",
     tint: COLORS.creamYellow,
     photo: REAL_PHOTOS.bandejaMario,
-    // Default (centered) cover crop puts the balloons front and center and
-    // cuts off the cake — zoomed and anchored toward the cake instead, per
-    // breakpoint since the card's photo slot has a different aspect ratio
-    // on mobile vs. desktop.
-    photoClassName: "scale-[1.71] origin-[91%_95%] md:scale-[1.82] md:origin-[74%_100%]",
+    // A mild zoom, bottom-anchored, trims a sliver of empty space above
+    // the balloons without cropping tight on just the cake — keeps the
+    // whole spread (balloons, cake, cupcakes) readable as a composition.
+    photoClassName: "scale-[1.2] origin-[94%_100%] md:scale-100 md:origin-center",
   },
   {
     id: "presente-mimos",
@@ -57,10 +56,10 @@ export default function PresenteEntryScreen({ onBack, onSelect }) {
           <button
             key={o.id}
             onClick={() => onSelect(o.id)}
-            className="flex md:flex-col items-stretch rounded-2xl overflow-hidden text-left"
+            className="grid grid-cols-[minmax(0,62%)_minmax(0,38%)] md:grid-cols-1 items-stretch rounded-2xl overflow-hidden text-left"
             style={{ backgroundColor: `${o.tint}22` }}
           >
-            <div className="flex-1 min-w-0 p-4 md:p-4 flex flex-col justify-center gap-1 order-1 md:order-2">
+            <div className="min-w-0 p-4 flex flex-col justify-center gap-1 order-1 md:order-2">
               <span className="text-xl leading-none">{o.emoji}</span>
               <p className="font-display text-lg text-brand-ink leading-tight">{o.title}</p>
               <p className="text-xs leading-snug text-brand-inkSoft">{o.description}</p>
@@ -71,7 +70,10 @@ export default function PresenteEntryScreen({ onBack, onSelect }) {
                 {o.cta}
               </span>
             </div>
-            <div className="w-[38%] md:w-full shrink-0 relative min-h-[130px] md:h-36 order-2 md:order-1">
+            {/* overflow-hidden here (not just on the card) is load-bearing:
+                it's what keeps a zoomed (transform: scale) photo clipped to
+                its own column instead of bleeding into the text column. */}
+            <div className="relative overflow-hidden min-h-[130px] md:h-36 order-2 md:order-1">
               <Photo
                 src={o.photo}
                 alt=""
