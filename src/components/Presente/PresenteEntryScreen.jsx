@@ -22,10 +22,6 @@ const OPTIONS = [
     cta: "Quero ver ideias →",
     tint: COLORS.creamYellow,
     photo: REAL_PHOTOS.bandejaMario,
-    // A mild zoom, bottom-anchored, trims a sliver of empty space above
-    // the balloons without cropping tight on just the cake — keeps the
-    // whole spread (balloons, cake, cupcakes) readable as a composition.
-    photoClassName: "scale-[1.2] origin-[94%_100%] md:scale-100 md:origin-center",
   },
   {
     id: "presente-mimos",
@@ -70,14 +66,15 @@ export default function PresenteEntryScreen({ onBack, onSelect }) {
                 {o.cta}
               </span>
             </div>
-            {/* overflow-hidden here (not just on the card) is load-bearing:
-                it's what keeps a zoomed (transform: scale) photo clipped to
-                its own column instead of bleeding into the text column. */}
-            <div className="relative overflow-hidden min-h-[130px] md:h-36 order-2 md:order-1">
+            {/* object-contain (not cover): these photos need to read as the
+                whole object — a box, a full tray, one lembrancinha — not an
+                abstract crop, so the entire frame is always shown and any
+                leftover space just shows the card's own tint underneath. */}
+            <div className="relative overflow-hidden min-h-[130px] md:h-36 order-2 md:order-1 p-1.5">
               <Photo
                 src={o.photo}
                 alt=""
-                className={`absolute inset-0 w-full h-full object-cover${o.photoClassName ? ` ${o.photoClassName}` : ""}`}
+                className="absolute inset-0 w-full h-full object-contain"
                 loading="lazy"
               />
             </div>
