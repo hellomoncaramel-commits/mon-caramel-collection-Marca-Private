@@ -13,6 +13,22 @@ import Photo from "../shared/Photo";
 // `w-[${SLIDE}]` never produces the real class text and silently emits no
 // CSS for it.
 
+// Per-photo display-only crop override — every source photo here is native
+// 4:3, exactly matching the slide's own aspect-photo box, so object-contain
+// already fills the box edge to edge with zero crop by default (nothing to
+// override). These three are the exception: the photographer's own framing
+// leaves an awkward partial row cut at the very top (pão de mel, butter
+// cookies) or a wide dead margin of out-of-focus table on the left (chá de
+// bebê), so a mild transform: scale(), anchored away from that dead space,
+// trims just enough to drop the confusing/empty part while keeping the
+// whole coherent composition (box, ribbon, treats) in frame. No file is
+// touched — this only changes how the existing photo is displayed here.
+const PHOTO_STYLE = {
+  "presente-caixa-pao-de-mel": { transform: "scale(1.25)", transformOrigin: "50% 100%" },
+  "presente-caixa-butter-cookies": { transform: "scale(1.1)", transformOrigin: "50% 100%" },
+  "presente-caixa-cha-de-bebe": { transform: "scale(1.45)", transformOrigin: "80% 42%" },
+};
+
 // One inspiration photo at a time, full width of its own slide — the
 // whole point of retiring the grid+lightbox is that there's no
 // intermediate tap before you can actually see a box. Items are just
@@ -88,7 +104,13 @@ export default function CaixasCarousel({ items }) {
           {items.map((item) => (
             <div key={item.id} className="shrink-0 snap-center w-[min(84vw,460px)]">
               <div className="relative aspect-photo rounded-3xl overflow-hidden bg-brand-subtle">
-                <Photo src={item.photo} alt={item.caption || ""} className="w-full h-full object-contain" loading="lazy" />
+                <Photo
+                  src={item.photo}
+                  alt={item.caption || ""}
+                  className="w-full h-full object-contain"
+                  style={PHOTO_STYLE[item.id]}
+                  loading="lazy"
+                />
               </div>
             </div>
           ))}
