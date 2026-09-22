@@ -1,19 +1,18 @@
 import { useState } from "react";
 import { getInspiration, CAIXA_MUST_HAVE_PRODUCTS } from "../../data/giftOptions";
 import SiteHeader from "../shared/SiteHeader";
-import InspirationGallery from "./InspirationGallery";
+import CaixasCarousel from "./CaixasCarousel";
 import PresenteCTA from "./PresenteCTA";
 import GiftIdeaWizard from "./GiftIdeaWizard";
 
-export default function CaixasScreen({ onBack, isSelected, addToSelection, removeFromSelection }) {
+// A single carousel, not a grid+lightbox: the inspiration here isn't a
+// specific composition to reproduce (no per-photo title/description/save),
+// it's just "here's the kind of thing we've made" — one photo at a time is
+// the whole browsing experience, and "Montar a sua" always starts the
+// wizard fresh, never tied to whichever photo was on screen.
+export default function CaixasScreen({ onBack, addToSelection }) {
   const [showWizard, setShowWizard] = useState(false);
   const inspiration = getInspiration("caixas");
-
-  const toggleSave = (item) => {
-    const entry = { kind: "inspiration", id: item.id, group: "caixas", title: item.caption, photo: item.photo };
-    if (isSelected(entry)) removeFromSelection(entry);
-    else addToSelection(entry);
-  };
 
   if (showWizard) {
     return (
@@ -36,9 +35,14 @@ export default function CaixasScreen({ onBack, isSelected, addToSelection, remov
         Algumas ideias que já passaram por aqui. Escolha uma inspiração e a gente adapta do seu jeito.
       </p>
 
-      <InspirationGallery items={inspiration} isSelected={isSelected} onToggleSave={toggleSave} />
+      <CaixasCarousel items={inspiration} />
 
-      <PresenteCTA onAction={() => setShowWizard(true)} />
+      <PresenteCTA
+        onAction={() => setShowWizard(true)}
+        title="Gostou de alguma ideia?"
+        body="A sua pode ser completamente diferente. Escolha os doces, cores e detalhes do seu jeito."
+        label="Montar a sua →"
+      />
     </div>
   );
 }
