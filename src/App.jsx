@@ -110,12 +110,7 @@ export default function App() {
         {screen === "presente" && <PresenteEntryScreen onBack={() => setScreen(null)} onSelect={setScreen} />}
 
         {screen === "presente-caixas" && (
-          <CaixasScreen
-            onBack={() => setScreen("presente")}
-            isSelected={isSelected}
-            addToSelection={addToSelection}
-            removeFromSelection={removeFromSelection}
-          />
+          <CaixasScreen onBack={() => setScreen("presente")} addToSelection={addToSelection} />
         )}
 
         {screen === "presente-bandejas" && (
