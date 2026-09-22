@@ -13,6 +13,12 @@ const OPTIONS = [
     cta: "Quero ver ideias →",
     tint: COLORS.caramelDark,
     photo: REAL_PHOTOS.presenteRosas,
+    // Cover, not contain: the source is landscape (4:3) in a portrait
+    // slot, and cover fills the whole container the way Mimos' does — no
+    // manual zoom added on top, just the browser's own fit. Positioned
+    // toward the top-left to keep the ribbon knot and the rosas visible;
+    // only the empty wood-grain margin at the edges is what gets trimmed.
+    photoPosition: "object-[20%_25%]",
   },
   {
     id: "presente-bandejas",
@@ -22,6 +28,9 @@ const OPTIONS = [
     cta: "Quero ver ideias →",
     tint: COLORS.creamYellow,
     photo: REAL_PHOTOS.bandejaMario,
+    // Positioned to keep the balloons, the cake and the treats box in
+    // frame together — only the thin wall margin above them is trimmed.
+    photoPosition: "object-[38%_35%]",
   },
   {
     id: "presente-mimos",
@@ -31,6 +40,10 @@ const OPTIONS = [
     cta: "Quero ver produtos →",
     tint: COLORS.caramelLight,
     photo: REAL_PHOTOS.presentinhoTrufas,
+    // Contain, not cover: this is the reference container fit — the
+    // photo is already close to the slot's own aspect, so contain already
+    // fills it edge to edge with no cropping. Left as is per instruction.
+    photoFit: "contain",
   },
 ];
 
@@ -74,15 +87,13 @@ export default function PresenteEntryScreen({ onBack, onSelect }) {
                 {o.cta}
               </span>
             </div>
-            {/* object-contain (not cover): these photos need to read as the
-                whole object — a box, a full tray, one lembrancinha — not an
-                abstract crop, so the entire frame is always shown and any
-                leftover space just shows the card's own tint underneath. */}
             <div className="relative overflow-hidden min-h-[130px] md:h-36 order-2 md:order-1 p-1">
               <Photo
                 src={o.photo}
                 alt=""
-                className="absolute inset-0 w-full h-full object-contain"
+                className={`absolute inset-0 w-full h-full ${o.photoFit === "contain" ? "object-contain" : "object-cover"}${
+                  o.photoPosition ? ` ${o.photoPosition}` : ""
+                }`}
                 loading="lazy"
               />
             </div>
