@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { COLORS } from "../../styles/colors";
 import { getInspiration, BANDEJA_OCCASIONS, BANDEJA_CONTENTS } from "../../data/giftOptions";
 import SiteHeader from "../shared/SiteHeader";
-import SwipeGallery from "./SwipeGallery";
+import InspirationGallery from "./InspirationGallery";
+import PresenteCTA from "./PresenteCTA";
 import GiftIdeaWizard from "./GiftIdeaWizard";
 
 export default function BandejasScreen({ onBack, isSelected, addToSelection, removeFromSelection }) {
@@ -30,24 +30,16 @@ export default function BandejasScreen({ onBack, isSelected, addToSelection, rem
   }
 
   return (
-    <div className="max-w-xl mx-auto px-4 pt-2 pb-10 fade-up">
+    <div className="max-w-xl md:max-w-3xl mx-auto px-4 pt-2 pb-10 fade-up">
       <SiteHeader onBack={onBack} />
-      <h1 className="text-2xl font-display text-brand-ink mb-1">Bandejas para celebrar 🎈</h1>
-      <p className="text-sm mb-6 text-brand-inkSoft">Também são inspiração — a sua pode ganhar a cara que você quiser.</p>
+      <h1 className="text-2xl font-display text-brand-ink mb-1">Bandejas para inspirar</h1>
+      <p className="text-sm mb-6 text-brand-inkSoft">
+        Para comemorar, presentear ou simplesmente deixar o dia mais especial.
+      </p>
 
-      <SwipeGallery items={inspiration} isSaved={isSelected} onToggleSave={toggleSave} />
+      <InspirationGallery items={inspiration} isSelected={isSelected} onToggleSave={toggleSave} />
 
-      <div className="mt-10 rounded-3xl p-5 text-center" style={{ backgroundColor: COLORS.subtle }}>
-        <p className="text-lg font-display text-brand-ink mb-1">Vamos montar a ideia?</p>
-        <p className="text-sm mb-4 text-brand-inkSoft">Conta a ocasião, o que incluir e a gente cuida do resto.</p>
-        <button
-          onClick={() => setShowWizard(true)}
-          className="text-sm font-medium text-white rounded-full px-6 py-3 min-h-11"
-          style={{ backgroundColor: COLORS.caramelDark }}
-        >
-          Montar minha bandeja →
-        </button>
-      </div>
+      <PresenteCTA onAction={() => setShowWizard(true)} />
     </div>
   );
 }

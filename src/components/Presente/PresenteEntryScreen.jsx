@@ -47,12 +47,12 @@ export default function PresenteEntryScreen({ onBack, onSelect }) {
         Pra gente, é muito mais que isso. Cada presente é único, pensado pra quem vai receber se sentir especial.
       </p>
 
-      <div className="flex flex-col gap-3 md:grid md:grid-cols-3 md:gap-4">
+      <div className="flex flex-col gap-2.5 md:grid md:grid-cols-3 md:gap-4">
         {OPTIONS.map((o) => (
           <button
             key={o.id}
             onClick={() => onSelect(o.id)}
-            className="grid grid-cols-[minmax(0,57%)_minmax(0,43%)] md:grid-cols-1 items-stretch rounded-2xl overflow-hidden text-left"
+            className="grid grid-cols-[minmax(0,55%)_minmax(0,45%)] md:grid-cols-1 items-stretch rounded-2xl overflow-hidden text-left"
             style={{ backgroundColor: `${o.tint}22` }}
           >
             <div className="min-w-0 p-4 flex flex-col justify-center gap-1 order-1 md:order-2">
