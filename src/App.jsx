@@ -128,7 +128,13 @@ export default function App() {
         )}
 
         {screen === "presente-mimos" && (
-          <MimosScreen onBack={() => setScreen("presente")} selection={selection} addToSelection={addToSelection} />
+          <MimosScreen
+            onBack={() => setScreen("presente")}
+            isSelected={isSelected}
+            addToSelection={addToSelection}
+            removeFromSelection={removeFromSelection}
+            onGoSelection={onGoSelection}
+          />
         )}
 
         {screen && !NON_MOMENT_SCREENS.includes(screen) && (
