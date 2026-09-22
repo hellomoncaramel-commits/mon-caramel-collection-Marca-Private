@@ -4,12 +4,6 @@ import SiteHeader from "../shared/SiteHeader";
 import Photo from "../shared/Photo";
 
 // Real Mon Caramel photography — no AI, no stock, no edited files.
-// "Bandejas": the mobile slot is taller than the source photo's landscape
-// (4:3) shape, so object-fit: cover alone always shows the full photo
-// height — including the box's graduation-banner strip across the top —
-// no matter the object-position. A scale() zoom crops that strip out and
-// keeps the treats; the desktop slot is wide enough that plain cover
-// already crops close to the same band, so it needs no extra zoom.
 const OPTIONS = [
   {
     id: "presente-caixas",
@@ -18,7 +12,7 @@ const OPTIONS = [
     description: "Um presente montado do jeitinho que quem vai receber merece.",
     cta: "Quero ver ideias →",
     tint: COLORS.caramelDark,
-    photo: REAL_PHOTOS.lembrancinha,
+    photo: REAL_PHOTOS.presenteRosas,
   },
   {
     id: "presente-bandejas",
@@ -27,8 +21,12 @@ const OPTIONS = [
     description: "Para transformar qualquer dia em uma comemoração.",
     cta: "Quero ver ideias →",
     tint: COLORS.creamYellow,
-    photo: REAL_PHOTOS.bandejaFormatura,
-    photoClassName: "scale-[2.18] origin-[50%_69%] md:scale-[1.64] md:origin-[50%_96%]",
+    photo: REAL_PHOTOS.bandejaMario,
+    // Default (centered) cover crop puts the balloons front and center and
+    // cuts off the cake — zoomed and anchored toward the cake instead, per
+    // breakpoint since the card's photo slot has a different aspect ratio
+    // on mobile vs. desktop.
+    photoClassName: "scale-[1.71] origin-[91%_95%] md:scale-[1.82] md:origin-[74%_100%]",
   },
   {
     id: "presente-mimos",
@@ -37,7 +35,7 @@ const OPTIONS = [
     description: "Um jeitinho pequeno de fazer alguém sorrir.",
     cta: "Quero ver produtos →",
     tint: COLORS.caramelLight,
-    photo: REAL_PHOTOS.brownlitoInteiro,
+    photo: REAL_PHOTOS.presentinhoMacas,
   },
 ];
 
