@@ -27,6 +27,7 @@ export const REAL_PHOTOS = {
   presentinhoObrigada: `${BASE}/presentinho-obrigada.jpg`,
   presentinhoPirulito: `${BASE}/presentinho-pirulito.jpg`,
   presentinhoVariedade: `${BASE}/presentinho-variedade.jpg`,
+  presentinhoTrufas: `${BASE}/presentinho-trufas.jpg`,
   bandejaBabyShower: `${BASE}/bandeja-baby-shower.jpg`,
   bandejaMario: `${BASE}/bandeja-mario.jpg`,
   bandejaFormatura: `${BASE}/bandeja-formatura.jpg`,

@@ -30,7 +30,7 @@ const OPTIONS = [
     description: "Um jeitinho pequeno de fazer alguém sorrir.",
     cta: "Quero ver produtos →",
     tint: COLORS.caramelLight,
-    photo: REAL_PHOTOS.presentinhoMacas,
+    photo: REAL_PHOTOS.presentinhoTrufas,
   },
 ];
 
