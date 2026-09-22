@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { COLORS } from "../../styles/colors";
-import Photo from "../shared/Photo";
+import InspirationImage from "../shared/InspirationImage";
 
 // Slide width: "min(84vw,460px)" — same technique as MomentPicker, scales
 // with the viewport on mobile and caps at a fixed size once there's room
@@ -13,23 +13,21 @@ import Photo from "../shared/Photo";
 // `w-[${SLIDE}]` never produces the real class text and silently emits no
 // CSS for it.
 
-// Every source photo here is native 4:3, exactly matching the slide's own
-// aspect-photo box, so plain object-contain (no transform) already shows
-// the ENTIRE original photo edge to edge with zero crop and zero letterbox
-// — there is nothing to override. Two earlier rounds tried a transform:
-// scale() "crop" on pão de mel / butter cookies / chá de bebê to hide an
-// awkward edge in each original photo, but any scale necessarily enlarges
-// and cuts into the image — which is the opposite of what these three
-// need: as much of the original composition visible as possible, so the
-// whole gift box reads clearly. Showing 100% of the photo (this default)
-// beats trimming it to hide a rough edge. No file is touched — display
-// only, and nothing below is transform-scaled anymore.
+// The slide FRAME (aspect-photo, rounded-3xl, overflow-hidden below) is the
+// only thing with a fixed size — it stays identical for every photo, now
+// and for whatever gets added later. What goes inside it never needs its
+// own CSS: InspirationImage renders each photo at its own natural aspect
+// ratio (no crop, no zoom, no forced width/height:100%), so a portrait, a
+// square, or an odd phone-camera ratio all just work, with cream space
+// showing on the sides when a photo doesn't fill the frame — same
+// intentional "photo mounted in a frame" look for every slide.
 
 // One inspiration photo at a time, full width of its own slide — the
 // whole point of retiring the grid+lightbox is that there's no
 // intermediate tap before you can actually see a box. Items are just
-// {id, photo}: add more to the array (data/giftOptions.js → getInspiration)
-// and they show up here automatically, nothing else to wire up.
+// {id, src, alt} (data/inspirationGalleries.js → BOX_INSPIRATIONS, not
+// derived from PRODUCTS — an inspiration photo isn't a SKU): add an entry
+// there and it shows up here automatically, nothing else to wire up.
 export default function CaixasCarousel({ items }) {
   const trackRef = useRef(null);
   const [index, setIndex] = useState(0);
@@ -100,13 +98,7 @@ export default function CaixasCarousel({ items }) {
           {items.map((item) => (
             <div key={item.id} className="shrink-0 snap-center w-[min(84vw,460px)]">
               <div className="relative aspect-photo rounded-3xl overflow-hidden bg-brand-subtle">
-                <Photo
-                  src={item.photo}
-                  alt={item.caption || ""}
-                  pictureClassName="block w-full h-full"
-                  className="w-full h-full object-contain"
-                  loading="lazy"
-                />
+                <InspirationImage src={item.src} alt={item.alt || ""} />
               </div>
             </div>
           ))}
