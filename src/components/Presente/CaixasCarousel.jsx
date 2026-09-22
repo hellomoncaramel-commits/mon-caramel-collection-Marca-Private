@@ -103,6 +103,7 @@ export default function CaixasCarousel({ items }) {
                 <Photo
                   src={item.photo}
                   alt={item.caption || ""}
+                  pictureClassName="block w-full h-full"
                   className="w-full h-full object-contain"
                   loading="lazy"
                 />
