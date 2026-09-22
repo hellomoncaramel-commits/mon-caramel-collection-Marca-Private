@@ -52,10 +52,15 @@ export default function PresenteEntryScreen({ onBack, onSelect }) {
           <button
             key={o.id}
             onClick={() => onSelect(o.id)}
-            className="grid grid-cols-[minmax(0,55%)_minmax(0,45%)] md:grid-cols-1 items-stretch rounded-2xl overflow-hidden text-left"
+            // min-h here is one shared rule, not a per-card value: mobile
+            // cards are stacked in a flex column (no automatic sibling
+            // stretch like a grid row gets), so without it each card — and
+            // therefore its photo container — settles to its own text
+            // height instead of matching the other two.
+            className="grid grid-cols-[minmax(0,53%)_minmax(0,47%)] md:grid-cols-1 items-stretch rounded-2xl overflow-hidden text-left min-h-[184px] md:min-h-0"
             style={{ backgroundColor: `${o.tint}22` }}
           >
-            <div className="min-w-0 p-4 flex flex-col justify-center gap-1 order-1 md:order-2">
+            <div className="min-w-0 pl-4 pr-2.5 py-4 md:p-4 flex flex-col justify-center gap-1 order-1 md:order-2">
               <span className="text-xl leading-none">{o.emoji}</span>
               <p className="font-display text-lg text-brand-ink leading-tight">{o.title}</p>
               <p className="text-xs leading-snug text-brand-inkSoft">{o.description}</p>
@@ -70,7 +75,7 @@ export default function PresenteEntryScreen({ onBack, onSelect }) {
                 whole object — a box, a full tray, one lembrancinha — not an
                 abstract crop, so the entire frame is always shown and any
                 leftover space just shows the card's own tint underneath. */}
-            <div className="relative overflow-hidden min-h-[130px] md:h-36 order-2 md:order-1 p-1.5">
+            <div className="relative overflow-hidden min-h-[130px] md:h-36 order-2 md:order-1 p-1">
               <Photo
                 src={o.photo}
                 alt=""
