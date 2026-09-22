@@ -332,7 +332,15 @@ export const PRODUCTS = [
     tint: COLORS.creamYellow,
     moments: ["presente"],
     presenteGroup: "caixas",
-    photos: [REAL_PHOTOS.presenteFlex1],
+    // Was REAL_PHOTOS.presenteFlex1 — an already-cropped close-up shot of a
+    // *different* box (the legacy prototype used flex1 for "Caixa
+    // Clássica", a chocolates/alfajores mix, not this product). No CSS
+    // display fix can recover what a wrong source photo never had: the box's
+    // own edges. presenteButterCookies is the real, correctly-oriented,
+    // full-composition photo of this exact box — already extracted to
+    // /public/images/products but never wired to a product. See
+    // src/data/photos.js.
+    photos: [REAL_PHOTOS.presenteButterCookies],
   },
   {
     id: "presente-caixa-individual",
