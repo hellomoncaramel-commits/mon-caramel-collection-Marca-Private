@@ -16,17 +16,19 @@ import Photo from "../shared/Photo";
 // Per-photo display-only crop override — every source photo here is native
 // 4:3, exactly matching the slide's own aspect-photo box, so object-contain
 // already fills the box edge to edge with zero crop by default (nothing to
-// override). These three are the exception: the photographer's own framing
-// leaves an awkward partial row cut at the very top (pão de mel, butter
-// cookies) or a wide dead margin of out-of-focus table on the left (chá de
-// bebê), so a mild transform: scale(), anchored away from that dead space,
-// trims just enough to drop the confusing/empty part while keeping the
-// whole coherent composition (box, ribbon, treats) in frame. No file is
-// touched — this only changes how the existing photo is displayed here.
+// override). These three are the exception, but only barely: the earlier
+// scale values (1.25/1.1/1.45) fully eliminated the awkward bits at the
+// edges but, in doing so, also cropped out the box's own border/edge on
+// every side — with nothing left to signal "this is a box" (vs. a close-up
+// of loose treats), it read as more zoomed-in and worse-framed than the
+// original, not better. These are deliberately mild — just enough to soften
+// the top-edge cut row (pão de mel, butter cookies) or trim some of the
+// dead table margin (chá de bebê) while a strip of the box's own edge stays
+// in frame on every photo. No file is touched — display only.
 const PHOTO_STYLE = {
-  "presente-caixa-pao-de-mel": { transform: "scale(1.25)", transformOrigin: "50% 100%" },
-  "presente-caixa-butter-cookies": { transform: "scale(1.1)", transformOrigin: "50% 100%" },
-  "presente-caixa-cha-de-bebe": { transform: "scale(1.45)", transformOrigin: "80% 42%" },
+  "presente-caixa-pao-de-mel": { transform: "scale(1.08)", transformOrigin: "50% 100%" },
+  "presente-caixa-butter-cookies": { transform: "scale(1.03)", transformOrigin: "50% 100%" },
+  "presente-caixa-cha-de-bebe": { transform: "scale(1.15)", transformOrigin: "65% 48%" },
 };
 
 // One inspiration photo at a time, full width of its own slide — the
