@@ -56,8 +56,11 @@ export default function PresenteEntryScreen({ onBack, onSelect }) {
             // cards are stacked in a flex column (no automatic sibling
             // stretch like a grid row gets), so without it each card — and
             // therefore its photo container — settles to its own text
-            // height instead of matching the other two.
-            className="grid grid-cols-[minmax(0,53%)_minmax(0,47%)] md:grid-cols-1 items-stretch rounded-2xl overflow-hidden text-left min-h-[184px] md:min-h-0"
+            // height instead of matching the other two. Sized with margin
+            // above the tallest real content (Caixas' description wraps to
+            // 3 lines on some devices/widths) so every card clears the
+            // floor the same way instead of sitting right at the edge.
+            className="grid grid-cols-[minmax(0,53%)_minmax(0,47%)] md:grid-cols-1 items-stretch rounded-2xl overflow-hidden text-left min-h-[204px] md:min-h-0"
             style={{ backgroundColor: `${o.tint}22` }}
           >
             <div className="min-w-0 pl-4 pr-2.5 py-4 md:p-4 flex flex-col justify-center gap-1 order-1 md:order-2">
