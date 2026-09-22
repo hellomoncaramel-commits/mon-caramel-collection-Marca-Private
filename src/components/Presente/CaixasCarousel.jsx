@@ -13,23 +13,17 @@ import Photo from "../shared/Photo";
 // `w-[${SLIDE}]` never produces the real class text and silently emits no
 // CSS for it.
 
-// Per-photo display-only crop override — every source photo here is native
-// 4:3, exactly matching the slide's own aspect-photo box, so object-contain
-// already fills the box edge to edge with zero crop by default (nothing to
-// override). These three are the exception, but only barely: the earlier
-// scale values (1.25/1.1/1.45) fully eliminated the awkward bits at the
-// edges but, in doing so, also cropped out the box's own border/edge on
-// every side — with nothing left to signal "this is a box" (vs. a close-up
-// of loose treats), it read as more zoomed-in and worse-framed than the
-// original, not better. These are deliberately mild — just enough to soften
-// the top-edge cut row (pão de mel, butter cookies) or trim some of the
-// dead table margin (chá de bebê) while a strip of the box's own edge stays
-// in frame on every photo. No file is touched — display only.
-const PHOTO_STYLE = {
-  "presente-caixa-pao-de-mel": { transform: "scale(1.08)", transformOrigin: "50% 100%" },
-  "presente-caixa-butter-cookies": { transform: "scale(1.03)", transformOrigin: "50% 100%" },
-  "presente-caixa-cha-de-bebe": { transform: "scale(1.15)", transformOrigin: "65% 48%" },
-};
+// Every source photo here is native 4:3, exactly matching the slide's own
+// aspect-photo box, so plain object-contain (no transform) already shows
+// the ENTIRE original photo edge to edge with zero crop and zero letterbox
+// — there is nothing to override. Two earlier rounds tried a transform:
+// scale() "crop" on pão de mel / butter cookies / chá de bebê to hide an
+// awkward edge in each original photo, but any scale necessarily enlarges
+// and cuts into the image — which is the opposite of what these three
+// need: as much of the original composition visible as possible, so the
+// whole gift box reads clearly. Showing 100% of the photo (this default)
+// beats trimming it to hide a rough edge. No file is touched — display
+// only, and nothing below is transform-scaled anymore.
 
 // One inspiration photo at a time, full width of its own slide — the
 // whole point of retiring the grid+lightbox is that there's no
@@ -110,7 +104,6 @@ export default function CaixasCarousel({ items }) {
                   src={item.photo}
                   alt={item.caption || ""}
                   className="w-full h-full object-contain"
-                  style={PHOTO_STYLE[item.id]}
                   loading="lazy"
                 />
               </div>
