@@ -43,14 +43,18 @@ const CREAM_BACKGROUND = "#F4EBDA";
 //     photo is drawn.
 const SOURCES = [
   { src: "presente-pao-mel.jpg", out: "box-005-inspiration" },
-  // Shot with the camera rotated 90° from the box's natural orientation
-  // (compare: every other box photo in this carousel has its ribbon/box
-  // edge running horizontally — this one's ran vertically before
-  // correction). rotate: 90 (clockwise) puts the box edge back on top,
-  // matching the rest of the set. scaleFactor: 0.82 additionally shrinks
-  // it within the canvas (vs. a plain contain-fit) so more of the box
-  // reads clearly instead of filling the frame edge-to-edge.
-  { src: "presente-cha-de-bebe.jpg", out: "box-008-inspiration", rotate: 90, scaleFactor: 0.82 },
+  // A previous round rotated this 90° based on where the box's own border
+  // sat in frame vs. the other 7 box photos — wrong ground truth. Checked
+  // against the one thing that actually has a fixed up/down (the teddy
+  // bear cookies: ears on top, muzzle/nose at the bottom), the ORIGINAL
+  // file (0°, no rotation) is already correctly oriented and landscape —
+  // rotating it 90° in either direction tips the bears onto their side.
+  // rotate stays 0 (the default); only scaleFactor is set, and close to 1
+  // (not the earlier 0.82): the source is already exactly 4:3, matching
+  // this canvas, so a near-1.0 factor is the largest size that still
+  // shows the complete, uncropped photo — filling ~95% of the frame with
+  // a thin, deliberate cream margin instead of edge-to-edge.
+  { src: "presente-cha-de-bebe.jpg", out: "box-008-inspiration", scaleFactor: 0.95 },
 ];
 
 if (!existsSync(displayDir)) mkdirSync(displayDir, { recursive: true });
