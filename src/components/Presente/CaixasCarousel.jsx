@@ -98,7 +98,23 @@ export default function CaixasCarousel({ items }) {
           {items.map((item) => (
             <div key={item.id} className="shrink-0 snap-center w-[min(84vw,460px)]">
               <div className="relative aspect-photo rounded-3xl overflow-hidden bg-brand-subtle">
-                <InspirationImage src={item.src} alt={item.alt || ""} />
+                {item.id === "presente-caixa-cha-de-bebe" ? (
+                  // TEMP DIAGNOSTIC ONLY — slide 8, to rule out a stale
+                  // deployment/CDN cache masking a real code fix. Bare
+                  // native <img>, no <Photo>, no <picture>, no WebP/srcset,
+                  // pointed at a brand-new filename (box-008-v2.jpg) that
+                  // has never been served before, so nothing could have
+                  // cached it. Revert to <InspirationImage> once confirmed.
+                  <div className="w-full h-full flex items-center justify-center overflow-hidden bg-brand-subtle">
+                    <img
+                      src="/images/inspirations/boxes/box-008-v2.jpg"
+                      alt={item.alt || ""}
+                      className="block w-auto h-auto max-w-full max-h-full object-contain"
+                    />
+                  </div>
+                ) : (
+                  <InspirationImage src={item.src} alt={item.alt || ""} />
+                )}
               </div>
             </div>
           ))}
