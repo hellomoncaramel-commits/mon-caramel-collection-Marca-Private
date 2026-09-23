@@ -133,4 +133,29 @@ export const MIMO_INSPIRATIONS = [
     src: "/images/products/presentinho-variedade.jpg",
     alt: "Caneca Mon Caramel, cookies e mini donuts — um mimo mais completo pra quem merece um mix.",
   },
+  {
+    id: "presentinho-folha-laco-vermelho",
+    src: "/images/products/presentinho-folha-laco-vermelho.jpg",
+    alt: "Docinho com aplique de folha vermelha, laço de cetim — delicado e outonal.",
+  },
+  {
+    id: "presentinho-welcome-canada",
+    src: "/images/products/presentinho-welcome-canada.jpg",
+    alt: "Caixinha com dois chocolates, faixa estampada Mon Caramel e etiqueta 'Welcome to Canada'.",
+  },
+  {
+    id: "presentinho-trufas-laco-vermelho",
+    src: "/images/products/presentinho-trufas-laco-vermelho.jpg",
+    alt: "Trufas douradas embrulhadas em celofane, cada uma com laço de cetim vermelho.",
+  },
+  {
+    id: "presentinho-trufas-mon-caramel",
+    src: "/images/products/presentinho-trufas-mon-caramel.jpg",
+    alt: "Caixinha Mon Caramel com janela mostrando três trufas variadas.",
+  },
+  {
+    id: "presentinho-donuts-personalizado",
+    src: "/images/products/presentinho-donuts-personalizado.jpg",
+    alt: "Mini donuts de chocolate com granulado e etiqueta personalizada.",
+  },
 ];
