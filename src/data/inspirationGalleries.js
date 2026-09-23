@@ -54,15 +54,9 @@ export const BOX_INSPIRATIONS = [
     src: "/images/products/presente-flex2.jpg",
     alt: "Cada docinho embrulhado com seu próprio laço — ótimo pra distribuir ou compor uma mesa de lembrancinhas.",
   },
-  {
-    id: "presente-caixa-cha-de-bebe",
-    // Prepared asset (scripts/prepare-inspiration-images.mjs): the source
-    // photo was shot with the camera rotated 90° from the box's natural
-    // orientation, and even corrected, it read as a tight close-up — the
-    // script rotates it upright and draws it smaller within the 4:3 canvas
-    // (scaleFactor 0.82) so more of the box is visible. Original photo
-    // (presente-cha-de-bebe.jpg) is untouched.
-    src: "/images/inspirations/boxes/display/box-008-inspiration.jpg",
-    alt: "Cookies decorados no tema ursinho — body, pezinho e placa personalizável, ideal pra chá de bebê ou revelação.",
-  },
+  // "Caixa Chá de Bebê" (presente-cha-de-bebe.jpg) pulled after several
+  // rounds trying to fix its framing: the original photo itself only
+  // captured part of the box (no right/bottom edge in frame at all) — no
+  // orientation or display fix can show pixels the camera never captured.
+  // Add it back once a full, uncropped photo of this box exists.
 ];
