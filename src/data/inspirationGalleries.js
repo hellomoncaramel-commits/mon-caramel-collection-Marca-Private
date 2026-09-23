@@ -36,7 +36,12 @@ export const BOX_INSPIRATIONS = [
   },
   {
     id: "presente-caixa-pao-de-mel",
-    src: "/images/products/presente-pao-mel.jpg",
+    // PROOF OF CONCEPT (this one entry only): pointed at the prepared 4:3
+    // canvas asset from scripts/prepare-inspiration-images.mjs instead of
+    // the raw product photo — see that script for what generated it and
+    // why. Original photo (presente-pao-mel.jpg) is untouched; this is a
+    // derived, centered version of the exact same photograph.
+    src: "/images/inspirations/boxes/display/box-005-inspiration.jpg",
     alt: "Pão de mel coberto de chocolate, com um potinho de doce de leite pra acompanhar.",
   },
   {

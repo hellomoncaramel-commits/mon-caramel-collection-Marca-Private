@@ -8,7 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint .",
-    "images:webp": "node scripts/generate-webp.mjs"
+    "images:webp": "node scripts/generate-webp.mjs",
+    "images:inspirations": "node scripts/prepare-inspiration-images.mjs"
   },
   "dependencies": {
     "lucide-react": "^0.475.0",
