@@ -1,5 +1,5 @@
-// Dedicated data for "inspiration" photo carousels — Caixas and Bandejas
-// today, both rendered by the same shared InspirationCarousel
+// Dedicated data for "inspiration" photo carousels — Caixas, Bandejas and
+// Mimos today, all rendered by the same shared InspirationCarousel
 // (src/components/shared/InspirationCarousel.jsx). Deliberately NOT
 // derived from PRODUCTS: an inspiration photo isn't a SKU — it doesn't
 // need a price, a description, or a moments/tag list, so it shouldn't
@@ -97,5 +97,40 @@ export const TRAY_INSPIRATIONS = [
     id: "bandeja-cidadania",
     src: "/images/products/bandeja-cidadania.jpg",
     alt: "Docinhos, bandeirinhas e um bolinho no potinho — comemoração personalizada pra uma conquista grande.",
+  },
+];
+
+// Pequenos Mimos moved from an individually-selectable product grid
+// (Heart per photo → add that exact item to Minha Seleção) to pure
+// inspiration, same as Caixas/Bandejas — browsing only, no per-photo
+// action. Same 5 real photos already shown on that page before (each
+// product's photos[0] — brownlito has a second photo, brownlitoRecheio,
+// that was never surfaced there either, so it's left out here too, not
+// newly excluded).
+export const MIMO_INSPIRATIONS = [
+  {
+    id: "brownlito",
+    src: "/images/products/brownlito-inteiro.jpg",
+    alt: "Brownlito.",
+  },
+  {
+    id: "presentinho-macas",
+    src: "/images/products/presentinho-macas.jpg",
+    alt: "Docinho embalado em formatinho de maçã, com nome personalizado — perfeito pra presentear professoras.",
+  },
+  {
+    id: "presentinho-obrigada",
+    src: "/images/products/presentinho-obrigada.jpg",
+    alt: "Docinhos num coninho com cartão de agradecimento — ideal pra dar um obrigada especial.",
+  },
+  {
+    id: "presentinho-pirulito",
+    src: "/images/products/presentinho-pirulito.jpg",
+    alt: "Chocolate no palito, laço de cetim — simples, bonito e rápido de entregar.",
+  },
+  {
+    id: "presentinho-variedade",
+    src: "/images/products/presentinho-variedade.jpg",
+    alt: "Caneca Mon Caramel, cookies e mini donuts — um mimo mais completo pra quem merece um mix.",
   },
 ];
