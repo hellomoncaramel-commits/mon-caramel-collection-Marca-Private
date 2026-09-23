@@ -45,21 +45,30 @@ const CREAM_BACKGROUND = "#F4EBDA";
 //     composition reads as "the whole box" rather than filling the frame
 //     edge-to-edge. Still never crops — only how small the fully-visible
 //     photo is drawn.
+//   extraRotate: additional degrees clockwise applied AFTER rotate (so it
+//     composes with "auto" — EXIF correction first, then this). For a
+//     photo that's technically upright per its camera/EXIF but was framed
+//     sideways relative to how its own decorations read (e.g. stamped
+//     text that only reads left-to-right after a further turn).
 const SOURCES = [
   { src: "presente-pao-mel.jpg", out: "box-005-inspiration" },
   // Shot on a phone that writes real EXIF orientation (unlike every other
-  // source here, which has none) — rotate: "auto" bakes that in so the box
-  // displays upright. Even corrected, this photo only has the box's LEFT
-  // edge (table meets box wall) in frame; top/right/bottom are cut by the
-  // camera's own framing, not fixable here — see inspirationGalleries.js.
-  { src: "presente-cha-de-bebe-2.jpg", out: "box-008-inspiration", rotate: "auto" },
+  // source here, which has none) — rotate: "auto" bakes that in first.
+  // Even EXIF-upright, the box was still framed with its long edge
+  // vertical: the stamped cookie letters only read "Rafa" left-to-right
+  // after an additional 90° cw, confirmed by reading them before
+  // committing to this — extraRotate applies that on top of the EXIF fix.
+  // Still only has the box's LEFT edge (now: TOP edge) in frame — the
+  // other three sides are cut by the camera's own framing, unfixable here.
+  { src: "presente-cha-de-bebe-2.jpg", out: "box-008-inspiration", rotate: "auto", extraRotate: 90 },
 ];
 
 if (!existsSync(displayDir)) mkdirSync(displayDir, { recursive: true });
 
-for (const { src: srcName, out: outName, rotate = 0, scaleFactor = 1 } of SOURCES) {
+for (const { src: srcName, out: outName, rotate = 0, extraRotate = 0, scaleFactor = 1 } of SOURCES) {
   const srcPath = path.join(sourceDir, srcName);
-  const rotated = rotate === "auto" ? sharp(srcPath).rotate() : sharp(srcPath).rotate(rotate);
+  let rotated = rotate === "auto" ? sharp(srcPath).rotate() : sharp(srcPath).rotate(rotate);
+  if (extraRotate) rotated = rotated.rotate(extraRotate);
   const meta = await rotated.metadata();
   // rotate(90/270) swaps the reported width/height only after the pixels
   // are actually re-encoded; re-read metadata from a materialized buffer
@@ -86,7 +95,9 @@ for (const { src: srcName, out: outName, rotate = 0, scaleFactor = 1 } of SOURCE
   await canvas().jpeg({ quality: 92 }).toFile(jpgPath);
   await canvas().webp({ quality: 90 }).toFile(webpPath);
 
-  const note = rotate === "auto" ? " (rotated per source EXIF)" : rotate ? ` (rotated ${rotate}° cw)` : "";
+  const baseNote = rotate === "auto" ? "rotated per source EXIF" : rotate ? `rotated ${rotate}° cw` : "";
+  const extraNote = extraRotate ? `+${extraRotate}° cw` : "";
+  const note = baseNote || extraNote ? ` (${[baseNote, extraNote].filter(Boolean).join(" ")})` : "";
   console.log(
     `${srcName}${note} (${meta.width}x${meta.height} source, ${rotatedMeta.width}x${rotatedMeta.height} after rotation) -> ${outName} (${CANVAS_WIDTH}x${CANVAS_HEIGHT}), photo drawn at ${newWidth}x${newHeight} centered${scaleFactor !== 1 ? ` (scaleFactor ${scaleFactor})` : ""}`,
   );
