@@ -54,9 +54,18 @@ export const BOX_INSPIRATIONS = [
     src: "/images/products/presente-flex2.jpg",
     alt: "Cada docinho embrulhado com seu próprio laço — ótimo pra distribuir ou compor uma mesa de lembrancinhas.",
   },
-  // "Caixa Chá de Bebê" (presente-cha-de-bebe.jpg) pulled after several
-  // rounds trying to fix its framing: the original photo itself only
-  // captured part of the box (no right/bottom edge in frame at all) — no
-  // orientation or display fix can show pixels the camera never captured.
-  // Add it back once a full, uncropped photo of this box exists.
+  {
+    id: "presente-caixa-cha-de-bebe",
+    // Replacement photo (presente-cha-de-bebe-2.jpg — the original
+    // presente-cha-de-bebe.jpg this replaced is untouched, just no longer
+    // referenced here). Prepared via scripts/prepare-inspiration-images.mjs
+    // with rotate: "auto" (this source has a real EXIF orientation tag,
+    // unlike every other photo here). Wider than the photo it replaced,
+    // but still only shows the box's left edge in frame — top/right/bottom
+    // are cut by the camera's own framing, not something a display fix can
+    // recover. Good enough to use; swap for an even wider shot if one
+    // becomes available.
+    src: "/images/inspirations/boxes/display/box-008-inspiration.jpg",
+    alt: "Cookies decorados no tema ursinho — body, pezinho e placa personalizável, ideal pra chá de bebê ou revelação.",
+  },
 ];

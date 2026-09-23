@@ -31,23 +31,35 @@ const CREAM_BACKGROUND = "#F4EBDA";
 // Each entry: source filename in public/images/products, output basename
 // in display/, plus two optional per-photo knobs — used only when a
 // specific photo genuinely needs them, never as a default:
-//   rotate: degrees clockwise to correct the source's orientation before
-//     laying it out (e.g. a landscape box shot with the camera turned
-//     sideways). Never applied to hide bad framing — only to undo an
-//     actual camera-orientation mismatch.
+//   rotate: "auto" reads the source's own EXIF orientation tag and bakes
+//     it into the pixels (needed for photos straight off a phone camera,
+//     which store landscape pixels + an EXIF flag saying "display this
+//     rotated" — sharp.rotate() with no argument is what applies that; a
+//     plain sharp.rotate(0), which every entry got by default before this
+//     photo, explicitly ignores EXIF instead of auto-orienting). A number
+//     forces that many degrees clockwise regardless of EXIF, for the rarer
+//     case where the source has no EXIF but was still shot sideways.
 //   scaleFactor: shrinks the photo further than a plain "fit inside the
 //     canvas" would (1.0 = default, full contain-fit). A value like 0.82
 //     leaves visibly more cream margin on every side, so more of the
 //     composition reads as "the whole box" rather than filling the frame
 //     edge-to-edge. Still never crops — only how small the fully-visible
 //     photo is drawn.
-const SOURCES = [{ src: "presente-pao-mel.jpg", out: "box-005-inspiration" }];
+const SOURCES = [
+  { src: "presente-pao-mel.jpg", out: "box-005-inspiration" },
+  // Shot on a phone that writes real EXIF orientation (unlike every other
+  // source here, which has none) — rotate: "auto" bakes that in so the box
+  // displays upright. Even corrected, this photo only has the box's LEFT
+  // edge (table meets box wall) in frame; top/right/bottom are cut by the
+  // camera's own framing, not fixable here — see inspirationGalleries.js.
+  { src: "presente-cha-de-bebe-2.jpg", out: "box-008-inspiration", rotate: "auto" },
+];
 
 if (!existsSync(displayDir)) mkdirSync(displayDir, { recursive: true });
 
 for (const { src: srcName, out: outName, rotate = 0, scaleFactor = 1 } of SOURCES) {
   const srcPath = path.join(sourceDir, srcName);
-  const rotated = sharp(srcPath).rotate(rotate);
+  const rotated = rotate === "auto" ? sharp(srcPath).rotate() : sharp(srcPath).rotate(rotate);
   const meta = await rotated.metadata();
   // rotate(90/270) swaps the reported width/height only after the pixels
   // are actually re-encoded; re-read metadata from a materialized buffer
@@ -74,7 +86,7 @@ for (const { src: srcName, out: outName, rotate = 0, scaleFactor = 1 } of SOURCE
   await canvas().jpeg({ quality: 92 }).toFile(jpgPath);
   await canvas().webp({ quality: 90 }).toFile(webpPath);
 
-  const note = rotate ? ` (rotated ${rotate}° cw)` : "";
+  const note = rotate === "auto" ? " (rotated per source EXIF)" : rotate ? ` (rotated ${rotate}° cw)` : "";
   console.log(
     `${srcName}${note} (${meta.width}x${meta.height} source, ${rotatedMeta.width}x${rotatedMeta.height} after rotation) -> ${outName} (${CANVAS_WIDTH}x${CANVAS_HEIGHT}), photo drawn at ${newWidth}x${newHeight} centered${scaleFactor !== 1 ? ` (scaleFactor ${scaleFactor})` : ""}`,
   );
