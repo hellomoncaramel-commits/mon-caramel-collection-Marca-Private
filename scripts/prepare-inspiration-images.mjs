@@ -28,22 +28,49 @@ const CANVAS_WIDTH = 1600;
 const CANVAS_HEIGHT = 1200;
 const CREAM_BACKGROUND = "#F4EBDA";
 
-// [source filename in public/images/products, output basename in display/]
-// Proof-of-concept round: only slide 5 (pão de mel). The other 7 box photos
-// get added here once this one is confirmed to look right in the carousel.
-const SOURCES = [["presente-pao-mel.jpg", "box-005-inspiration"]];
+// Each entry: source filename in public/images/products, output basename
+// in display/, plus two optional per-photo knobs — used only when a
+// specific photo genuinely needs them, never as a default:
+//   rotate: degrees clockwise to correct the source's orientation before
+//     laying it out (e.g. a landscape box shot with the camera turned
+//     sideways). Never applied to hide bad framing — only to undo an
+//     actual camera-orientation mismatch.
+//   scaleFactor: shrinks the photo further than a plain "fit inside the
+//     canvas" would (1.0 = default, full contain-fit). A value like 0.82
+//     leaves visibly more cream margin on every side, so more of the
+//     composition reads as "the whole box" rather than filling the frame
+//     edge-to-edge. Still never crops — only how small the fully-visible
+//     photo is drawn.
+const SOURCES = [
+  { src: "presente-pao-mel.jpg", out: "box-005-inspiration" },
+  // Shot with the camera rotated 90° from the box's natural orientation
+  // (compare: every other box photo in this carousel has its ribbon/box
+  // edge running horizontally — this one's ran vertically before
+  // correction). rotate: 90 (clockwise) puts the box edge back on top,
+  // matching the rest of the set. scaleFactor: 0.82 additionally shrinks
+  // it within the canvas (vs. a plain contain-fit) so more of the box
+  // reads clearly instead of filling the frame edge-to-edge.
+  { src: "presente-cha-de-bebe.jpg", out: "box-008-inspiration", rotate: 90, scaleFactor: 0.82 },
+];
 
 if (!existsSync(displayDir)) mkdirSync(displayDir, { recursive: true });
 
-for (const [srcName, outName] of SOURCES) {
+for (const { src: srcName, out: outName, rotate = 0, scaleFactor = 1 } of SOURCES) {
   const srcPath = path.join(sourceDir, srcName);
-  const meta = await sharp(srcPath).metadata();
+  const rotated = sharp(srcPath).rotate(rotate);
+  const meta = await rotated.metadata();
+  // rotate(90/270) swaps the reported width/height only after the pixels
+  // are actually re-encoded; re-read metadata from a materialized buffer
+  // to get the POST-rotation dimensions reliably.
+  const rotatedBuffer = await rotated.toBuffer();
+  const rotatedMeta = await sharp(rotatedBuffer).metadata();
 
-  const scale = Math.min(CANVAS_WIDTH / meta.width, CANVAS_HEIGHT / meta.height);
-  const newWidth = Math.round(meta.width * scale);
-  const newHeight = Math.round(meta.height * scale);
+  const containScale = Math.min(CANVAS_WIDTH / rotatedMeta.width, CANVAS_HEIGHT / rotatedMeta.height);
+  const scale = containScale * scaleFactor;
+  const newWidth = Math.round(rotatedMeta.width * scale);
+  const newHeight = Math.round(rotatedMeta.height * scale);
 
-  const resized = await sharp(srcPath)
+  const resized = await sharp(rotatedBuffer)
     .resize(newWidth, newHeight, { fit: "inside", withoutEnlargement: false })
     .toBuffer();
 
@@ -57,5 +84,8 @@ for (const [srcName, outName] of SOURCES) {
   await canvas().jpeg({ quality: 92 }).toFile(jpgPath);
   await canvas().webp({ quality: 90 }).toFile(webpPath);
 
-  console.log(`${srcName} (${meta.width}x${meta.height}) -> ${outName} (${CANVAS_WIDTH}x${CANVAS_HEIGHT}), photo drawn at ${newWidth}x${newHeight} centered`);
+  const note = rotate ? ` (rotated ${rotate}° cw)` : "";
+  console.log(
+    `${srcName}${note} (${meta.width}x${meta.height} source, ${rotatedMeta.width}x${rotatedMeta.height} after rotation) -> ${outName} (${CANVAS_WIDTH}x${CANVAS_HEIGHT}), photo drawn at ${newWidth}x${newHeight} centered${scaleFactor !== 1 ? ` (scaleFactor ${scaleFactor})` : ""}`,
+  );
 }
