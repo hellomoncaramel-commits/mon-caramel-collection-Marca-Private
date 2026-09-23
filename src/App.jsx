@@ -114,12 +114,7 @@ export default function App() {
         )}
 
         {screen === "presente-bandejas" && (
-          <BandejasScreen
-            onBack={() => setScreen("presente")}
-            isSelected={isSelected}
-            addToSelection={addToSelection}
-            removeFromSelection={removeFromSelection}
-          />
+          <BandejasScreen onBack={() => setScreen("presente")} addToSelection={addToSelection} />
         )}
 
         {screen === "presente-mimos" && (

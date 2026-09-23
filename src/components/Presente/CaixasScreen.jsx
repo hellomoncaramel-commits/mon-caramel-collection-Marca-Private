@@ -2,7 +2,7 @@ import { useState } from "react";
 import { CAIXA_MUST_HAVE_PRODUCTS } from "../../data/giftOptions";
 import { BOX_INSPIRATIONS } from "../../data/inspirationGalleries";
 import SiteHeader from "../shared/SiteHeader";
-import CaixasCarousel from "./CaixasCarousel";
+import InspirationCarousel from "../shared/InspirationCarousel";
 import PresenteCTA from "./PresenteCTA";
 import GiftIdeaWizard from "./GiftIdeaWizard";
 
@@ -35,7 +35,7 @@ export default function CaixasScreen({ onBack, addToSelection }) {
         Algumas ideias que já passaram por aqui. Escolha uma inspiração e a gente adapta do seu jeito.
       </p>
 
-      <CaixasCarousel items={BOX_INSPIRATIONS} />
+      <InspirationCarousel items={BOX_INSPIRATIONS} ariaLabel="Fotos de caixas" />
 
       <PresenteCTA
         onAction={() => setShowWizard(true)}

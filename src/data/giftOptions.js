@@ -24,18 +24,6 @@ export const CAIXA_MUST_HAVE_PRODUCTS = PRODUCTS.filter((p) => p.moments.include
 // instead of) actual items, handled specially wherever items are rendered.
 export const SURPRISE_ME = { id: "surpreenda-me", name: "Surpreenda-me" };
 
-// Editorial inspiration photos for a presente sub-group ("caixas" |
-// "bandejas") — pulled from the matching cataloged products, but shown
-// without name, price or an "add to cart" affordance: these are references,
-// not fixed SKUs (briefing: "Reformular completamente a área de presentes").
-export function getInspiration(group) {
-  return PRODUCTS.filter((p) => p.presenteGroup === group).map((p) => ({
-    id: p.id,
-    photo: p.photos?.[0],
-    caption: p.sensory,
-  }));
-}
-
 export function getMimos() {
   return PRODUCTS.filter((p) => p.presenteGroup === "mimos");
 }
