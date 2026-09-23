@@ -56,7 +56,13 @@ export const BOX_INSPIRATIONS = [
   },
   {
     id: "presente-caixa-cha-de-bebe",
-    src: "/images/products/presente-cha-de-bebe.jpg",
+    // Prepared asset (scripts/prepare-inspiration-images.mjs): the source
+    // photo was shot with the camera rotated 90° from the box's natural
+    // orientation, and even corrected, it read as a tight close-up — the
+    // script rotates it upright and draws it smaller within the 4:3 canvas
+    // (scaleFactor 0.82) so more of the box is visible. Original photo
+    // (presente-cha-de-bebe.jpg) is untouched.
+    src: "/images/inspirations/boxes/display/box-008-inspiration.jpg",
     alt: "Cookies decorados no tema ursinho — body, pezinho e placa personalizável, ideal pra chá de bebê ou revelação.",
   },
 ];
