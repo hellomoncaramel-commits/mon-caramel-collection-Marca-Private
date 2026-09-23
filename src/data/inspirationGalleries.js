@@ -1,18 +1,20 @@
-// Dedicated data for "inspiration" photo carousels (currently just Caixas —
-// "Bandejas para inspirar" still uses getInspiration()/InspirationGallery,
-// untouched). Deliberately NOT derived from PRODUCTS: an inspiration photo
-// isn't a SKU — it doesn't need a price, a description, or a moments/tag
-// list, so it shouldn't require creating a product to add one. Adding a
-// new box photo is exactly two steps:
+// Dedicated data for "inspiration" photo carousels — Caixas and Bandejas
+// today, both rendered by the same shared InspirationCarousel
+// (src/components/shared/InspirationCarousel.jsx). Deliberately NOT
+// derived from PRODUCTS: an inspiration photo isn't a SKU — it doesn't
+// need a price, a description, or a moments/tag list, so it shouldn't
+// require creating a product to add one. Adding a new photo to either
+// gallery is exactly two steps:
 //
 //   1. Drop the .jpg (+ matching .webp) into /public/images/products/
-//   2. Add one { id, src, alt } entry below
+//   2. Add one { id, src, alt } entry to the relevant array below
 //
-// CaixasCarousel derives everything else (slide count, dots, counter) from
-// this array's length — no other file needs to change, and no photo here
-// needs its own CSS: InspirationImage (src/components/shared/InspirationImage.jsx)
-// renders every entry at its own natural aspect ratio, so a portrait, a
-// square, or an unusually-shaped future photo all just work.
+// InspirationCarousel derives everything else (slide count, dots, counter)
+// from the array's length — no other file needs to change, and no photo
+// here needs its own CSS: InspirationImage
+// (src/components/shared/InspirationImage.jsx) renders every entry at its
+// own natural aspect ratio, so a portrait, a square, or an unusually-shaped
+// future photo all just work.
 export const BOX_INSPIRATIONS = [
   {
     id: "presente-caixa-mix",
@@ -67,5 +69,33 @@ export const BOX_INSPIRATIONS = [
     // becomes available.
     src: "/images/inspirations/boxes/display/box-008-inspiration.jpg",
     alt: "Cookies decorados no tema ursinho — body, pezinho e placa personalizável, ideal pra chá de bebê ou revelação.",
+  },
+];
+
+export const TRAY_INSPIRATIONS = [
+  {
+    id: "bandeja-baby-shower",
+    src: "/images/products/bandeja-baby-shower.jpg",
+    alt: "Docinhos e cookies decorados, com plaquinha personalizada e ursinho de pelúcia — clima de chá de bebê.",
+  },
+  {
+    id: "bandeja-mario",
+    src: "/images/products/bandeja-mario.jpg",
+    alt: "Bolo personalizado, docinhos temáticos e balões — festa completa em forma de bandeja.",
+  },
+  {
+    id: "bandeja-formatura",
+    src: "/images/products/bandeja-formatura.jpg",
+    alt: "Docinhos, brigadeiros no palito e toppers personalizados — pra comemorar aquela conquista.",
+  },
+  {
+    id: "bandeja-dia-dos-pais",
+    src: "/images/products/bandeja-dia-dos-pais.jpg",
+    alt: "Docinhos, cookies e balões nas cores do tema — surpresa completa pra comemorar.",
+  },
+  {
+    id: "bandeja-cidadania",
+    src: "/images/products/bandeja-cidadania.jpg",
+    alt: "Docinhos, bandeirinhas e um bolinho no potinho — comemoração personalizada pra uma conquista grande.",
   },
 ];

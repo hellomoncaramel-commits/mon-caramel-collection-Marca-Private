@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { COLORS } from "../../styles/colors";
-import InspirationImage from "../shared/InspirationImage";
+import InspirationImage from "./InspirationImage";
 
 // Slide width: "min(84vw,460px)" — same technique as MomentPicker, scales
 // with the viewport on mobile and caps at a fixed size once there's room
@@ -22,13 +22,17 @@ import InspirationImage from "../shared/InspirationImage";
 // showing on the sides when a photo doesn't fill the frame — same
 // intentional "photo mounted in a frame" look for every slide.
 
-// One inspiration photo at a time, full width of its own slide — the
-// whole point of retiring the grid+lightbox is that there's no
-// intermediate tap before you can actually see a box. Items are just
-// {id, src, alt} (data/inspirationGalleries.js → BOX_INSPIRATIONS, not
-// derived from PRODUCTS — an inspiration photo isn't a SKU): add an entry
-// there and it shows up here automatically, nothing else to wire up.
-export default function CaixasCarousel({ items }) {
+// One inspiration photo at a time, full width of its own slide — no
+// intermediate tap before you can actually see the whole thing. Items are
+// just {id, src, alt}, not derived from PRODUCTS — an inspiration photo
+// isn't a SKU: add an entry to the relevant array in
+// data/inspirationGalleries.js and it shows up here automatically, nothing
+// else to wire up. Shared by every "para inspirar" carousel (Caixas,
+// Bandejas, and whatever comes next) — ariaLabel is the one thing each
+// caller sets for itself (screen-reader context, e.g. "Fotos de caixas"
+// vs. "Fotos de bandejas"); everything else here is identical across all
+// of them on purpose, so they read as one consistent system.
+export default function InspirationCarousel({ items, ariaLabel }) {
   const trackRef = useRef(null);
   const [index, setIndex] = useState(0);
 
@@ -92,7 +96,7 @@ export default function CaixasCarousel({ items }) {
           tabIndex={0}
           role="region"
           aria-roledescription="carousel"
-          aria-label="Fotos de caixas"
+          aria-label={ariaLabel}
           className="flex gap-3 overflow-x-auto snap-x snap-mandatory no-scrollbar focus:outline-none pl-[calc((100%-min(84vw,460px))/2)] pr-[calc((100%-min(84vw,460px))/2)]"
         >
           {items.map((item) => (

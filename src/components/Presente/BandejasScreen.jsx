@@ -1,19 +1,17 @@
 import { useState } from "react";
-import { getInspiration, BANDEJA_OCCASIONS, BANDEJA_CONTENTS } from "../../data/giftOptions";
+import { BANDEJA_OCCASIONS, BANDEJA_CONTENTS } from "../../data/giftOptions";
+import { TRAY_INSPIRATIONS } from "../../data/inspirationGalleries";
 import SiteHeader from "../shared/SiteHeader";
-import InspirationGallery from "./InspirationGallery";
+import InspirationCarousel from "../shared/InspirationCarousel";
 import PresenteCTA from "./PresenteCTA";
 import GiftIdeaWizard from "./GiftIdeaWizard";
 
-export default function BandejasScreen({ onBack, isSelected, addToSelection, removeFromSelection }) {
+// Same carousel as "Caixas para inspirar" (src/components/shared/
+// InspirationCarousel.jsx) — one photo at a time, no per-photo save/title,
+// "Quero montar o meu" always starts the wizard fresh, never tied to
+// whichever photo was on screen.
+export default function BandejasScreen({ onBack, addToSelection }) {
   const [showWizard, setShowWizard] = useState(false);
-  const inspiration = getInspiration("bandejas");
-
-  const toggleSave = (item) => {
-    const entry = { kind: "inspiration", id: item.id, group: "bandejas", title: item.caption, photo: item.photo };
-    if (isSelected(entry)) removeFromSelection(entry);
-    else addToSelection(entry);
-  };
 
   if (showWizard) {
     return (
@@ -37,7 +35,7 @@ export default function BandejasScreen({ onBack, isSelected, addToSelection, rem
         Para comemorar, presentear ou simplesmente deixar o dia mais especial.
       </p>
 
-      <InspirationGallery items={inspiration} isSelected={isSelected} onToggleSave={toggleSave} />
+      <InspirationCarousel items={TRAY_INSPIRATIONS} ariaLabel="Fotos de bandejas" />
 
       <PresenteCTA onAction={() => setShowWizard(true)} />
     </div>
