@@ -23,7 +23,3 @@ export const CAIXA_MUST_HAVE_PRODUCTS = PRODUCTS.filter((p) => p.moments.include
 // Not a real product — a wildcard the customer can pick alongside (or
 // instead of) actual items, handled specially wherever items are rendered.
 export const SURPRISE_ME = { id: "surpreenda-me", name: "Surpreenda-me" };
-
-export function getMimos() {
-  return PRODUCTS.filter((p) => p.presenteGroup === "mimos");
-}

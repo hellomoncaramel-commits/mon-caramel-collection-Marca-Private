@@ -38,7 +38,7 @@ export default function App() {
   const [pendingMessage, setPendingMessage] = useState(null);
   const [openProduct, setOpenProduct] = useState(null);
   const { favorites, toggleFavorite, toast: favToast } = useFavorites();
-  const { selection, addToSelection, removeFromSelection, isSelected } = useSelection();
+  const { selection, addToSelection, removeFromSelection } = useSelection();
 
   const onGoSelection = () => setScreen("selecao");
   const onNavigate = (id) => setScreen(id === "home" ? null : id);
@@ -118,13 +118,7 @@ export default function App() {
         )}
 
         {screen === "presente-mimos" && (
-          <MimosScreen
-            onBack={() => setScreen("presente")}
-            isSelected={isSelected}
-            addToSelection={addToSelection}
-            removeFromSelection={removeFromSelection}
-            onGoSelection={onGoSelection}
-          />
+          <MimosScreen onBack={() => setScreen("presente")} onGoSelection={onGoSelection} />
         )}
 
         {screen && !NON_MOMENT_SCREENS.includes(screen) && (

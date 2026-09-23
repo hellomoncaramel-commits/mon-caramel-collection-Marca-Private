@@ -241,11 +241,12 @@ export const PRODUCTS = [
     photos: [REAL_PHOTOS.boloDePoteCamadas, REAL_PHOTOS.boloDePoteMorango],
   },
   // Brownlito belongs to two journeys at once (the "dia-dificil" moment
-  // catalog and Presentes → Pequenos Mimos) — a single product with both
-  // `moments` and `presenteGroup` set, not two separate entries. Every
-  // other presenteGroup item so far only ever carries moments: ["presente"];
-  // this is the first to also carry a real moment tag, which the existing
-  // pickForMoment()/getMimos() derivations already support without change.
+  // catalog and Presentes → Pequenos Mimos, via its matching entry in
+  // MIMO_INSPIRATIONS — src/data/inspirationGalleries.js) — a single
+  // product with both `moments` and `presenteGroup` set, not two separate
+  // entries. Every other presenteGroup item so far only ever carries
+  // moments: ["presente"]; this is the first to also carry a real moment
+  // tag, which pickForMoment() already supports without change.
   {
     id: "brownlito",
     name: "Brownlito",
