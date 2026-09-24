@@ -22,16 +22,25 @@ import { REAL_PHOTOS } from "./photos";
 // one badge, until a dedicated `badges` field replaces it (briefing
 // section 9 — not built yet, by design).
 //
-// Also not yet modeled: a "sold frozen" commercial variant of a regular
-// product (e.g. a future "Biscoito Amanteigado — congelado para assar" or
-// "Mini Cake Donut — congelado" SKU) is a DIFFERENT concept from the
-// "Pode congelar" badge above — one is a characteristic of the regular
-// product, the other is a separate purchasable option. Neither of those
-// two specific variants exists in this catalog yet (no price/unit/photo
-// to invent), so none is added here. When Naia has real data for one, add
-// it as its own product entry placed immediately after its regular
-// counterpart in this array — see the MOMENT_ORDER comment in
-// data/moments.js for why that's enough to keep them adjacent.
+// Separately: a "sold frozen" commercial variant of a regular product is a
+// DIFFERENT concept from the "Pode congelar" badge above — one is a
+// characteristic of the regular product, the other is its own purchasable
+// option, modeled as its own product entry (never a badge on the regular
+// one). Two exist today:
+//   - "mini-donut-simples" ("Mini Cake Donuts — assados e congelados"),
+//     right after its regular counterpart "mini-donut-decorado" ("Mini
+//     Cake Donuts") — this was real pre-existing data/photo, previously
+//     named just "Mini Donuts" and not positioned next to the regular one.
+//   - "butter-cookies-congelado" ("Biscoito Amanteigado — congelado para
+//     assar"), right after "butter-cookies" — newly added as its own
+//     entry once a real, previously-misfiled photo (raw dough disks in a
+//     freezer bag, formerly bundled into the regular product's own
+//     gallery) was found for it. unit/price/sensory are left blank/"Sob
+//     consulta" (the same established placeholder convention as
+//     bolo-de-pote and brownlito below) since no real values exist yet —
+//     never invented.
+// Both pairs are kept adjacent via MOMENT_ORDER["dia-dificil"]
+// (data/moments.js), not by array position — see that file's comment.
 // ===========================================================================
 export const PRODUCTS = [
   {
@@ -55,7 +64,7 @@ export const PRODUCTS = [
   },
   {
     id: "mini-donut-simples",
-    name: "Mini Donuts",
+    name: "Mini Cake Donuts — assados e congelados",
     unit: "unidade",
     price: "$1",
     sensory:
@@ -199,20 +208,39 @@ export const PRODUCTS = [
     kind: "sandwich",
     tint: COLORS.creamYellow,
     moments: ["dia-dificil", "freezer"],
-    // "dia-dificil" surfaces the real photos previously shown only under
-    // the (now-removed) "cafe" and "freezer" moments, alongside this
-    // product's other real photos — one single gallery, nothing lost.
-    // `photos` below stays as the general fallback used outside a moment
-    // context (Feed/Search default — see utils/products.js defaultPhotos).
+    // "dia-dificil" surfaces the real photo previously shown only under
+    // the (now-removed) "cafe" moment, alongside this product's other
+    // real photos — one single gallery, nothing lost. `photos` below
+    // stays as the general fallback used outside a moment context
+    // (Feed/Search default — see utils/products.js defaultPhotos).
+    //
+    // REAL_PHOTOS.biscoitoAmanteigadoFreezer (raw dough disks in a
+    // freezer bag) used to sit in both arrays here too, but it's a photo
+    // of the UNBAKED, sold-frozen product, not this (baked, ready-to-eat)
+    // one — moved to its own product, "butter-cookies-congelado", right
+    // below.
     photosByMoment: {
-      "dia-dificil": [
-        REAL_PHOTOS.biscoitoAmanteigadoCafe,
-        REAL_PHOTOS.biscoitoAmanteigadoFreezer,
-        REAL_PHOTOS.biscoitoVariedade,
-        REAL_PHOTOS.alfajorClassico,
-      ],
+      "dia-dificil": [REAL_PHOTOS.biscoitoAmanteigadoCafe, REAL_PHOTOS.biscoitoVariedade, REAL_PHOTOS.alfajorClassico],
     },
-    photos: [REAL_PHOTOS.biscoitoVariedade, REAL_PHOTOS.biscoitoAmanteigadoFreezer, REAL_PHOTOS.alfajorClassico],
+    photos: [REAL_PHOTOS.biscoitoVariedade, REAL_PHOTOS.alfajorClassico],
+  },
+  {
+    id: "butter-cookies-congelado",
+    name: "Biscoito Amanteigado — congelado para assar",
+    // unit/price/sensory: no real data yet — Naia to confirm weight/count,
+    // price and a proper description. Left blank/"Sob consulta" (same
+    // established convention as bolo-de-pote and brownlito below), not
+    // invented.
+    unit: "", // TODO: Naia to confirm real quantity/weight
+    price: "Sob consulta 💬",
+    sensory: "", // TODO: Naia to confirm real description
+    kind: "sandwich",
+    tint: COLORS.creamYellow,
+    moments: ["dia-dificil", "freezer"],
+    // The real photo previously bundled into the regular Biscoito
+    // Amanteigado's own gallery (see comment above) — raw dough disks in
+    // a freezer bag, i.e. this exact unbaked/frozen product.
+    photos: [REAL_PHOTOS.biscoitoAmanteigadoFreezer],
   },
   {
     id: "casadinho",
