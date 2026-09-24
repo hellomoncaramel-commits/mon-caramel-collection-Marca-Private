@@ -20,11 +20,15 @@ export const PRODUCTS = [
     sensory: "Docinho de chocolate cremoso, do jeito que a vó fazia — pode congelar por até 90 dias.",
     kind: "bites",
     tint: COLORS.ink,
-    moments: ["dia-dificil", "cafe", "freezer"],
+    moments: ["dia-dificil", "freezer"],
+    // "dia-dificil" now carries both its own real photo and the one
+    // previously shown only under the (now-removed) "cafe" moment — see
+    // src/data/moments.js: the two consolidated into this single id.
+    photosByMoment: {
+      "dia-dificil": [REAL_PHOTOS.brigadeiroDiaDificil, REAL_PHOTOS.cafe],
+    },
     photoByMoment: {
-      cafe: REAL_PHOTOS.cafe,
       freezer: REAL_PHOTOS.freezer,
-      "dia-dificil": REAL_PHOTOS.brigadeiroDiaDificil,
     },
     customizable: true,
     flavors: [], // TODO: Naia to confirm real flavors (ex. "Tradicional", "Ninho", "Pistache")
@@ -129,7 +133,7 @@ export const PRODUCTS = [
       "Receita macia original, com toque de mel e limão, recheado com doce de leite condensado cozido. Pode ser coberto ou não por chocolate.",
     kind: "sandwich",
     tint: COLORS.caramelDark,
-    moments: ["cafe", "dia-dificil"],
+    moments: ["dia-dificil"],
     photos: [REAL_PHOTOS.alfajorCoco],
   },
   {
@@ -152,7 +156,7 @@ export const PRODUCTS = [
     sensory: "Bolinho macio de mel e especiarias, recheado com doce de leite, coberto de chocolate.",
     kind: "cake",
     tint: COLORS.caramelDark,
-    moments: ["cafe", "dia-dificil", "festa"],
+    moments: ["dia-dificil", "festa"],
     photos: [REAL_PHOTOS.visita, REAL_PHOTOS.paodemel2],
   },
   {
@@ -163,7 +167,7 @@ export const PRODUCTS = [
     sensory: "Bolo de cenoura fofinho, coberto com chocolate cremoso e granulado — clássico que nunca falha.",
     kind: "cake",
     tint: COLORS.caramelLight,
-    moments: ["cafe", "dia-dificil"],
+    moments: ["dia-dificil"],
     photos: [REAL_PHOTOS.boloCenouraTray, REAL_PHOTOS.boloCenouraFatias],
   },
   {
@@ -174,8 +178,14 @@ export const PRODUCTS = [
     sensory: "Biscoitinho amanteigado que derrete na boca — o queridinho pra acompanhar um café.",
     kind: "sandwich",
     tint: COLORS.creamYellow,
-    moments: ["cafe", "freezer"],
-    photosByMoment: { cafe: [REAL_PHOTOS.biscoitoAmanteigadoCafe] },
+    moments: ["dia-dificil", "freezer"],
+    // "dia-dificil" surfaces the real photo previously shown only under
+    // the (now-removed) "cafe" moment, alongside this product's other
+    // non-freezer-specific real photos — freezer keeps its own unchanged
+    // gallery via the general `photos` fallback below.
+    photosByMoment: {
+      "dia-dificil": [REAL_PHOTOS.biscoitoAmanteigadoCafe, REAL_PHOTOS.biscoitoVariedade, REAL_PHOTOS.alfajorClassico],
+    },
     photos: [REAL_PHOTOS.biscoitoVariedade, REAL_PHOTOS.biscoitoAmanteigadoFreezer, REAL_PHOTOS.alfajorClassico],
   },
   {
@@ -186,7 +196,7 @@ export const PRODUCTS = [
     sensory: "Biscoito amanteigado recheado de goiabada — outros sabores? É só chamar a gente.",
     kind: "sandwich",
     tint: COLORS.caramelLight,
-    moments: ["festa", "cafe"],
+    moments: ["festa", "dia-dificil"],
     photos: [REAL_PHOTOS.casadinhoGoiabada],
   },
   {
@@ -197,7 +207,7 @@ export const PRODUCTS = [
     sensory: "Derrete na boca, crocante por fora — sem glúten, o queridinho de sempre.",
     kind: "bites",
     tint: COLORS.creamYellow,
-    moments: ["cafe"],
+    moments: ["dia-dificil"],
     photos: [REAL_PHOTOS.sequilhoNatural, REAL_PHOTOS.sequilhoRosa],
   },
   {

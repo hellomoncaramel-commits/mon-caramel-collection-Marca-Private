@@ -16,9 +16,15 @@ export const BANDEJA_OCCASIONS = ["Aniversário", "Café da manhã", "Parabéns"
 export const BANDEJA_CONTENTS = ["Doces", "Bolo", "Cookies", "Bebida", "Balão", "Mensagem"];
 
 // "O que não pode faltar" options for the Caixa builder — every day-to-day
-// treat already tagged to the "cafe" moment, i.e. real, cataloged products
-// (with real photos, so the step can show a picture, not just a word).
-export const CAIXA_MUST_HAVE_PRODUCTS = PRODUCTS.filter((p) => p.moments.includes("cafe"));
+// treat, i.e. real, cataloged products (with real photos, so the step can
+// show a picture, not just a word). These 7 ids used to be picked out by
+// filtering products.js for the "cafe" moment tag; now that "cafe" has
+// been folded into "dia-dificil" (src/data/moments.js) — a broader moment
+// that also covers non-everyday treats like Chocobomb — the same 7 ids are
+// listed explicitly here instead, so this step keeps showing exactly the
+// products it always has.
+const CAIXA_MUST_HAVE_IDS = ["brigadeiro", "alfajor", "pao-de-mel", "bolo-cenoura", "butter-cookies", "casadinho", "melties"];
+export const CAIXA_MUST_HAVE_PRODUCTS = PRODUCTS.filter((p) => CAIXA_MUST_HAVE_IDS.includes(p.id));
 
 // Not a real product — a wildcard the customer can pick alongside (or
 // instead of) actual items, handled specially wherever items are rendered.
