@@ -19,6 +19,11 @@ import SendModal from "./components/shared/SendModal";
 import BottomNav from "./components/shared/BottomNav";
 import Toast from "./components/shared/Toast";
 
+// "cafe" was a standalone moment, since folded into "dia-dificil" (see
+// src/data/moments.js). Kept here so any stale link/state still holding
+// screen="cafe" lands on the consolidated moment instead of an empty page.
+const LEGACY_MOMENT_REDIRECTS = { cafe: "dia-dificil" };
+
 const BOTTOM_NAV_SCREENS = ["salvos", "busca", "selecao"];
 const NON_MOMENT_SCREENS = [
   "momentos",
@@ -123,7 +128,7 @@ export default function App() {
 
         {screen && !NON_MOMENT_SCREENS.includes(screen) && (
           <MomentScreen
-            momentId={screen}
+            momentId={LEGACY_MOMENT_REDIRECTS[screen] || screen}
             onBack={() => setScreen(null)}
             onGoCatalog={() => setScreen("catalogo")}
             onSend={setPendingMessage}

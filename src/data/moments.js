@@ -1,4 +1,4 @@
-import { Coffee, CloudRain, PartyPopper, Gift, Snowflake } from "lucide-react";
+import { CloudRain, PartyPopper, Gift, Snowflake } from "lucide-react";
 
 // Home is organized by moment/mood, not by traditional product category —
 // see briefing section 4.
@@ -19,12 +19,6 @@ export const MOMENTS = [
     titleLines: ["É só uma", "lembrancinha."],
   },
   {
-    id: "cafe",
-    emoji: "☕",
-    label: "Hmm... isso aqui com um café...",
-    titleLines: ["Hmm...", "isso aqui com", "um café..."],
-  },
-  {
     id: "festa",
     emoji: "🎉",
     label: "Não vai ter festa... só um bolinho.",
@@ -39,9 +33,8 @@ export const MOMENTS = [
 ];
 
 export const MOMENT_INTRO = {
-  cafe: "Sempre tem um bom motivo para colocar um docinho na mesa.",
   "dia-dificil":
-    "Seja TPM, segunda-feira ou um dia difícil. Nem todo problema tem solução, mas um docinho sempre ajuda.",
+    "Seja TPM, segunda-feira, uma pausa pro café ou só aquela vontade de um doce. Nem todo problema tem solução, mas um docinho sempre ajuda.",
   freezer:
     "Guarde no freezer e tenha sempre à mão opções low sugar para a lancheira das crianças ou para aquela vontade de um doce de última hora.",
   presente:
@@ -52,8 +45,7 @@ export const MOMENT_INTRO = {
 // Short, scannable version of MOMENT_INTRO used on the Home cards — the
 // full text above still shows up inside each moment's own screen.
 export const MOMENT_TAGLINE = {
-  cafe: "Um docinho sempre cabe na mesa.",
-  "dia-dificil": "TPM, segunda-feira ou só um dia difícil.",
+  "dia-dificil": "TPM, café, segunda-feira ou só vontade de um docinho.",
   freezer: "Docinhos que ficam felizes no freezer.",
   presente: "Presentes feitos para alguém especial.",
   festa: "A gente conhece essa história...",
@@ -62,7 +54,6 @@ export const MOMENT_TAGLINE = {
 // One or two words per moment — for tight spots (quick-shortcut rows,
 // nav) where the full label sentence doesn't fit.
 export const MOMENT_SHORT = {
-  cafe: "Café",
   "dia-dificil": "Dias de luta",
   freezer: "Freezer",
   presente: "Presente",
@@ -75,7 +66,6 @@ export const MOMENT_ORDER = {
 };
 
 export const MOMENT_ICON = {
-  cafe: Coffee,
   "dia-dificil": CloudRain,
   festa: PartyPopper,
   presente: Gift,
