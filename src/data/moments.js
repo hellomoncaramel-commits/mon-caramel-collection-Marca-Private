@@ -53,14 +53,23 @@ export const MOMENT_SHORT = {
 // Fixed display order within a moment, when it differs from catalog order.
 // Anything not listed here still shows — pickForMoment() (utils/products.js)
 // appends every other matched product afterward, in catalog (PRODUCTS array)
-// order. That tail behavior is also how a future frozen-variant product
-// (e.g. "Biscoito Amanteigado — congelado para assar", "Mini Cake Donut —
-// congelado" — see data/products.js) will sit right next to its regular
-// counterpart without needing a dedicated Freezer moment again: place the
-// variant's product entry immediately after the regular one in PRODUCTS,
-// same as any other pair here.
+// order. Listed ids ALWAYS sort before unlisted ones, so a pair only stays
+// adjacent if BOTH ids are listed here, consecutively — that's why every
+// regular/frozen-variant pair below (see data/products.js) is spelled out
+// in full, rather than relying on where either one happens to sit in
+// PRODUCTS. "pao-de-mel" leads deliberately — Naia wants it to be the
+// first thing a customer sees in this category.
 export const MOMENT_ORDER = {
-  "dia-dificil": ["bala-de-coco", "chocobomb", "cone-trufado", "mini-donut-decorado"],
+  "dia-dificil": [
+    "pao-de-mel",
+    "bala-de-coco",
+    "chocobomb",
+    "cone-trufado",
+    "mini-donut-decorado",
+    "mini-donut-simples",
+    "butter-cookies",
+    "butter-cookies-congelado",
+  ],
 };
 
 export const MOMENT_ICON = {
