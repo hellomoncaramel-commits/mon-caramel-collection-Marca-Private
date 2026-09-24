@@ -1,4 +1,4 @@
-import { CloudRain, PartyPopper, Gift, Snowflake } from "lucide-react";
+import { CloudRain, PartyPopper, Gift } from "lucide-react";
 
 // Home is organized by moment/mood, not by traditional product category —
 // see briefing section 4.
@@ -24,19 +24,11 @@ export const MOMENTS = [
     label: "Não vai ter festa... só um bolinho.",
     titleLines: ["Não vai ter festa...", "só um bolinho."],
   },
-  {
-    id: "freezer",
-    emoji: "❄️",
-    label: "Seu eu do futuro agradece.",
-    titleLines: ["Seu eu do futuro", "agradece."],
-  },
 ];
 
 export const MOMENT_INTRO = {
   "dia-dificil":
     "Seja TPM, segunda-feira, uma pausa pro café ou só aquela vontade de um doce. Nem todo problema tem solução, mas um docinho sempre ajuda.",
-  freezer:
-    "Guarde no freezer e tenha sempre à mão opções low sugar para a lancheira das crianças ou para aquela vontade de um doce de última hora.",
   presente:
     "Pra gente, é muito mais que isso. Cada caixa é única, pensada e personalizada para que quem a receba se sinta realmente especial.",
   festa: "A gente conhece essa história... foi assim que muita festa começou.",
@@ -45,8 +37,7 @@ export const MOMENT_INTRO = {
 // Short, scannable version of MOMENT_INTRO used on the Home cards — the
 // full text above still shows up inside each moment's own screen.
 export const MOMENT_TAGLINE = {
-  "dia-dificil": "TPM, café, segunda-feira ou só vontade de um docinho.",
-  freezer: "Docinhos que ficam felizes no freezer.",
+  "dia-dificil": "Café, TPM, lanche ou só vontade de um docinho.",
   presente: "Presentes feitos para alguém especial.",
   festa: "A gente conhece essa história...",
 };
@@ -55,12 +46,19 @@ export const MOMENT_TAGLINE = {
 // nav) where the full label sentence doesn't fit.
 export const MOMENT_SHORT = {
   "dia-dificil": "Dias de luta",
-  freezer: "Freezer",
   presente: "Presente",
   festa: "Festa",
 };
 
 // Fixed display order within a moment, when it differs from catalog order.
+// Anything not listed here still shows — pickForMoment() (utils/products.js)
+// appends every other matched product afterward, in catalog (PRODUCTS array)
+// order. That tail behavior is also how a future frozen-variant product
+// (e.g. "Biscoito Amanteigado — congelado para assar", "Mini Cake Donut —
+// congelado" — see data/products.js) will sit right next to its regular
+// counterpart without needing a dedicated Freezer moment again: place the
+// variant's product entry immediately after the regular one in PRODUCTS,
+// same as any other pair here.
 export const MOMENT_ORDER = {
   "dia-dificil": ["bala-de-coco", "chocobomb", "cone-trufado", "mini-donut-decorado"],
 };
@@ -69,5 +67,4 @@ export const MOMENT_ICON = {
   "dia-dificil": CloudRain,
   festa: PartyPopper,
   presente: Gift,
-  freezer: Snowflake,
 };
