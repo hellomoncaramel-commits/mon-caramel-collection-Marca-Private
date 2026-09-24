@@ -11,8 +11,8 @@ import PartyPanel from "../Party/PartyPanel";
 import PartyModal from "../Party/PartyModal";
 import PartyFloatingButton from "../Party/PartyFloatingButton";
 
-// Matched products for the chosen moment (café, dia difícil, freezer or
-// festa — "presente" has its own dedicated PresenteScreen), plus cross-sell
+// Matched products for the chosen moment (dia-dificil or festa —
+// "presente" has its own dedicated PresenteScreen), plus cross-sell
 // discovery and the "Minha Seleção" / "Minha Festa" baskets.
 export default function MomentScreen({
   momentId,

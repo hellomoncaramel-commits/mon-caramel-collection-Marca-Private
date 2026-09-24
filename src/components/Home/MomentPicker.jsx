@@ -9,12 +9,11 @@ import Photo from "../shared/Photo";
 // Real Mon Caramel photography per moment — no AI mockups, no stock.
 //   dia-difícil → dias-de-luta.jpg (real photo, cookie/chocolate tray) —
 //                 consolidated moment, also covers what used to be "café"
-//   freezer     → freezer-donuts.jpg (real photo, donuts/cookies in the freezer)
+//                 and "freezer" as standalone journeys
 //   presente    → lembrancinha.jpg (real photo, gift box + ribbon)
 //   festa       → nao-vai-ter-festa.jpg (real photo, party dessert table)
 const MOMENT_PHOTO = {
   "dia-dificil": REAL_PHOTOS.diasDeLuta,
-  freezer: REAL_PHOTOS.freezerDonuts,
   presente: REAL_PHOTOS.lembrancinha,
   festa: REAL_PHOTOS.naoVaiTerFesta,
 };

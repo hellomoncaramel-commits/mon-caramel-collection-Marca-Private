@@ -10,6 +10,28 @@ import { REAL_PHOTOS } from "./photos";
 // an array of other product ids to show as "já que você chegou até aqui"
 // suggestions on that product's detail sheet. No relations are invented —
 // add the field to a product once Naia tells us what actually pairs well.
+//
+// "freezer" survives as a co-tag in `moments` on a few products below (see
+// e.g. brigadeiro, butter-cookies) purely to feed the existing "Pode
+// congelar" badge (ProductCard.jsx, ProductDetailSheet.jsx) and the Feed's
+// "Pode congelar" filter (Feed/FeedScreen.jsx), both keyed off
+// `moments.includes("freezer")` already. It is NOT a navigable destination
+// any more — "freezer" was removed from MOMENTS (data/moments.js), so
+// nothing ever renders a MomentScreen for it. Don't read its presence here
+// as "Freezer is still a journey"; it's just today's data source for that
+// one badge, until a dedicated `badges` field replaces it (briefing
+// section 9 — not built yet, by design).
+//
+// Also not yet modeled: a "sold frozen" commercial variant of a regular
+// product (e.g. a future "Biscoito Amanteigado — congelado para assar" or
+// "Mini Cake Donut — congelado" SKU) is a DIFFERENT concept from the
+// "Pode congelar" badge above — one is a characteristic of the regular
+// product, the other is a separate purchasable option. Neither of those
+// two specific variants exists in this catalog yet (no price/unit/photo
+// to invent), so none is added here. When Naia has real data for one, add
+// it as its own product entry placed immediately after its regular
+// counterpart in this array — see the MOMENT_ORDER comment in
+// data/moments.js for why that's enough to keep them adjacent.
 // ===========================================================================
 export const PRODUCTS = [
   {
@@ -21,14 +43,12 @@ export const PRODUCTS = [
     kind: "bites",
     tint: COLORS.ink,
     moments: ["dia-dificil", "freezer"],
-    // "dia-dificil" now carries both its own real photo and the one
-    // previously shown only under the (now-removed) "cafe" moment — see
-    // src/data/moments.js: the two consolidated into this single id.
+    // "dia-dificil" now carries its own real photo plus the ones
+    // previously shown only under the (now-removed) "cafe" and "freezer"
+    // moments — see src/data/moments.js: all consolidated into this
+    // single id, so nothing that used to live under those two is lost.
     photosByMoment: {
-      "dia-dificil": [REAL_PHOTOS.brigadeiroDiaDificil, REAL_PHOTOS.cafe],
-    },
-    photoByMoment: {
-      freezer: REAL_PHOTOS.freezer,
+      "dia-dificil": [REAL_PHOTOS.brigadeiroDiaDificil, REAL_PHOTOS.cafe, REAL_PHOTOS.freezer],
     },
     customizable: true,
     flavors: [], // TODO: Naia to confirm real flavors (ex. "Tradicional", "Ninho", "Pistache")
@@ -42,7 +62,7 @@ export const PRODUCTS = [
       "Mini cake donut simples, sem recheio, nos sabores baunilha e chocolate — prático pra ter sempre no freezer.",
     kind: "cake",
     tint: COLORS.caramelLight,
-    moments: ["freezer"],
+    moments: ["dia-dificil", "freezer"],
     photos: [REAL_PHOTOS.donutFreezer],
   },
   {
@@ -179,12 +199,18 @@ export const PRODUCTS = [
     kind: "sandwich",
     tint: COLORS.creamYellow,
     moments: ["dia-dificil", "freezer"],
-    // "dia-dificil" surfaces the real photo previously shown only under
-    // the (now-removed) "cafe" moment, alongside this product's other
-    // non-freezer-specific real photos — freezer keeps its own unchanged
-    // gallery via the general `photos` fallback below.
+    // "dia-dificil" surfaces the real photos previously shown only under
+    // the (now-removed) "cafe" and "freezer" moments, alongside this
+    // product's other real photos — one single gallery, nothing lost.
+    // `photos` below stays as the general fallback used outside a moment
+    // context (Feed/Search default — see utils/products.js defaultPhotos).
     photosByMoment: {
-      "dia-dificil": [REAL_PHOTOS.biscoitoAmanteigadoCafe, REAL_PHOTOS.biscoitoVariedade, REAL_PHOTOS.alfajorClassico],
+      "dia-dificil": [
+        REAL_PHOTOS.biscoitoAmanteigadoCafe,
+        REAL_PHOTOS.biscoitoAmanteigadoFreezer,
+        REAL_PHOTOS.biscoitoVariedade,
+        REAL_PHOTOS.alfajorClassico,
+      ],
     },
     photos: [REAL_PHOTOS.biscoitoVariedade, REAL_PHOTOS.biscoitoAmanteigadoFreezer, REAL_PHOTOS.alfajorClassico],
   },
