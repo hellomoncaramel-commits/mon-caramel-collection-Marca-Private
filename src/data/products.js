@@ -302,7 +302,7 @@ export const PRODUCTS = [
     kind: "cake",
     tint: COLORS.caramelDark,
     moments: ["dia-dificil"],
-    photos: [REAL_PHOTOS.boloDePoteCamadas, REAL_PHOTOS.boloDePoteMorango],
+    photos: [REAL_PHOTOS.boloDePoteCamadas, REAL_PHOTOS.boloDePoteMorango, REAL_PHOTOS.boloDePoteVariedade],
   },
   // Brownlito belongs to two journeys at once (the "dia-dificil" moment
   // catalog and Presentes → Pequenos Mimos, via its matching entry in
@@ -321,6 +321,16 @@ export const PRODUCTS = [
     tint: COLORS.ink,
     moments: ["dia-dificil"],
     presenteGroup: "mimos",
+    // "dia-dificil" gets its own curated gallery — brownlitoEmbalado
+    // (individually wrapped, coconut on top) in, brownlitoInteiro (the
+    // green-ribbon photo) out, at Naia's request; `photos` below stays
+    // unchanged as the general fallback (Feed/Search/ProductDetailSheet —
+    // see utils/products.js defaultPhotos), and the Mimos inspiration
+    // carousel (MIMO_INSPIRATIONS, src/data/inspirationGalleries.js) is a
+    // separate data source entirely, untouched by either.
+    photosByMoment: {
+      "dia-dificil": [REAL_PHOTOS.brownlitoEmbalado, REAL_PHOTOS.brownlitoRecheio],
+    },
     photos: [REAL_PHOTOS.brownlitoInteiro, REAL_PHOTOS.brownlitoRecheio],
   },
 
