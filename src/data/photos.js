@@ -109,6 +109,8 @@ export const REAL_PHOTOS = {
   biscoitoVariedade: `${BASE}/biscoito-variedade.jpg`,
   boloDePoteCamadas: `${BASE}/bolo-de-pote-camadas.jpg`,
   boloDePoteMorango: `${BASE}/bolo-de-pote-morango.jpg`,
+  boloDePoteVariedade: `${BASE}/bolo-de-pote-variedade.jpg`,
   brownlitoInteiro: `${BASE}/brownlito-inteiro.jpg`,
   brownlitoRecheio: `${BASE}/brownlito-recheio.jpg`,
+  brownlitoEmbalado: `${BASE}/brownlito-embalado.jpg`,
 };
