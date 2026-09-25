@@ -98,6 +98,22 @@ export const TRAY_INSPIRATIONS = [
     src: "/images/products/bandeja-cidadania.jpg",
     alt: "Docinhos, bandeirinhas e um bolinho no potinho — comemoração personalizada pra uma conquista grande.",
   },
+  {
+    id: "bandeja-variedade",
+    // Moved here from MIMO_INSPIRATIONS — this is a tray/spread
+    // composition (mug, cookies and mini donuts laid out together), not a
+    // small individual mimo. Points at the prepared 4:3 canvas asset from
+    // scripts/prepare-inspiration-images.mjs instead of the raw product
+    // photo: the source is already exactly 4:3, so it fills the carousel
+    // frame edge-to-edge with zero cream margin at scaleFactor 1, which
+    // read as overly zoomed-in — the derived asset draws it at 0.85 scale
+    // instead, same idea as box-005's proof of concept. Original photo
+    // (presentinho-variedade.jpg, still used by the "Mix Variedade"
+    // product elsewhere) is untouched; this is a derived, centered version
+    // of the exact same photograph.
+    src: "/images/inspirations/trays/display/bandeja-variedade-inspiration.jpg",
+    alt: "Caneca Mon Caramel, cookies e mini donuts — um mimo mais completo pra quem merece um mix.",
+  },
 ];
 
 // Pequenos Mimos moved from an individually-selectable product grid
@@ -127,11 +143,6 @@ export const MIMO_INSPIRATIONS = [
     id: "presentinho-pirulito",
     src: "/images/products/presentinho-pirulito.jpg",
     alt: "Chocolate no palito, laço de cetim — simples, bonito e rápido de entregar.",
-  },
-  {
-    id: "presentinho-variedade",
-    src: "/images/products/presentinho-variedade.jpg",
-    alt: "Caneca Mon Caramel, cookies e mini donuts — um mimo mais completo pra quem merece um mix.",
   },
   {
     id: "presentinho-folha-laco-vermelho",

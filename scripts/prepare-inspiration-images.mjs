@@ -1,8 +1,9 @@
-// Prepares "display" assets for the Caixas inspiration carousel: every
-// source photo gets resized (never cropped, never upscaled beyond its own
-// pixels) to fit fully inside a fixed 4:3 canvas, centered, with any
-// leftover space filled by the Mon Caramel cream (#F4EBDA — brand.subtle,
-// see src/styles/colors.js). The carousel then never needs to know or care
+// Prepares "display" assets for the "para inspirar" carousels (Caixas,
+// Bandejas — src/data/inspirationGalleries.js): every source photo gets
+// resized (never cropped, never upscaled beyond its own pixels) to fit
+// fully inside a fixed 4:3 canvas, centered, with any leftover space
+// filled by the Mon Caramel cream (#F4EBDA — brand.subtle, see
+// src/styles/colors.js). The carousel then never needs to know or care
 // whether the original photo was portrait, landscape, square, or an odd
 // phone-camera ratio: every display asset it's given already has the same
 // external 4:3 proportions.
@@ -10,8 +11,9 @@
 // Source photos are read straight from their real location
 // (public/images/products/ — where every product/inspiration photo already
 // lives and is referenced elsewhere in the app) and are NEVER modified;
-// only the derived canvas asset is written, into a separate folder, so
-// there is exactly one place each original photo lives.
+// only the derived canvas asset is written, into a separate folder (per
+// gallery — `dir` below, "boxes" or "trays"), so there is exactly one
+// place each original photo lives.
 //
 // Usage: npm run images:inspirations
 import sharp from "sharp";
@@ -22,7 +24,7 @@ import { fileURLToPath } from "url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, "..");
 const sourceDir = path.join(root, "public", "images", "products");
-const displayDir = path.join(root, "public", "images", "inspirations", "boxes", "display");
+const inspirationsRoot = path.join(root, "public", "images", "inspirations");
 
 const CANVAS_WIDTH = 1600;
 const CANVAS_HEIGHT = 1200;
@@ -50,6 +52,8 @@ const CREAM_BACKGROUND = "#F4EBDA";
 //     photo that's technically upright per its camera/EXIF but was framed
 //     sideways relative to how its own decorations read (e.g. stamped
 //     text that only reads left-to-right after a further turn).
+//   dir: which gallery's display/ subfolder this belongs in ("boxes" or
+//     "trays") — defaults to "boxes" since every entry so far has been one.
 const SOURCES = [
   { src: "presente-pao-mel.jpg", out: "box-005-inspiration" },
   // Shot on a phone that writes real EXIF orientation (unlike every other
@@ -61,11 +65,20 @@ const SOURCES = [
   // Still only has the box's LEFT edge (now: TOP edge) in frame — the
   // other three sides are cut by the camera's own framing, unfixable here.
   { src: "presente-cha-de-bebe-2.jpg", out: "box-008-inspiration", rotate: "auto", extraRotate: 90 },
+  // Moved here from MIMO_INSPIRATIONS (src/data/inspirationGalleries.js) —
+  // it's a tray/spread composition, not a small individual mimo. Source is
+  // already exactly 4:3 (640x480, same as the carousel's own frame), so a
+  // plain contain-fit (scaleFactor 1) would fill the frame edge-to-edge
+  // with zero cream margin — reads as "zoomed in" even though nothing is
+  // actually cropped. scaleFactor 0.85 draws it smaller within the same
+  // 4:3 canvas, leaving visible cream margin on every side, same as any
+  // photo that needs a bit more breathing room.
+  { src: "presentinho-variedade.jpg", out: "bandeja-variedade-inspiration", dir: "trays", scaleFactor: 0.85 },
 ];
 
-if (!existsSync(displayDir)) mkdirSync(displayDir, { recursive: true });
-
-for (const { src: srcName, out: outName, rotate = 0, extraRotate = 0, scaleFactor = 1 } of SOURCES) {
+for (const { src: srcName, out: outName, rotate = 0, extraRotate = 0, scaleFactor = 1, dir = "boxes" } of SOURCES) {
+  const displayDir = path.join(inspirationsRoot, dir, "display");
+  if (!existsSync(displayDir)) mkdirSync(displayDir, { recursive: true });
   const srcPath = path.join(sourceDir, srcName);
   let rotated = rotate === "auto" ? sharp(srcPath).rotate() : sharp(srcPath).rotate(rotate);
   if (extraRotate) rotated = rotated.rotate(extraRotate);
