@@ -143,4 +143,11 @@ export const REAL_PHOTOS = {
     `${BASE}/chocobomb-festa-coracao-par.jpg`,
     `${BASE}/chocobomb-festa-corrida.jpg`,
   ],
+  docinhoPersonalizado: [
+    `${BASE}/docinho-personalizado-abelha.jpg`,
+    `${BASE}/docinho-personalizado-variedade.jpg`,
+    `${BASE}/docinho-personalizado-joaninha.jpg`,
+    `${BASE}/docinho-personalizado-fruta.jpg`,
+    `${BASE}/docinho-personalizado-jardim.jpg`,
+  ],
 };

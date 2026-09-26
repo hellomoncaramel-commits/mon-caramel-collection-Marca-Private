@@ -76,7 +76,15 @@ export const MOMENT_ORDER = {
   // Personalizados, Lembrancinhas Pirâmide) were removed from Festa's
   // `moments` tag entirely (still browsable elsewhere in the catalog) so
   // there's nothing left unlisted for pickForMoment() to append afterward.
-  festa: ["bolo-palito", "pirulito-decorado", "cone-trufado", "briganinho-personalizado", "mini-donut-decorado", "chocobomb"],
+  festa: [
+    "bolo-palito",
+    "pirulito-decorado",
+    "cone-trufado",
+    "briganinho-personalizado",
+    "mini-donut-decorado",
+    "chocobomb",
+    "docinho-personalizado",
+  ],
 };
 
 export const MOMENT_ICON = {

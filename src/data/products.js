@@ -298,6 +298,20 @@ export const PRODUCTS = [
     photos: [REAL_PHOTOS.chocobomb],
     photosByMoment: { festa: REAL_PHOTOS.chocobombFesta },
   },
+  // Unit, price and any other options are pending real data from Naia —
+  // left blank/"Sob consulta" rather than invented, same convention as
+  // Bolo de Pote and Brownlito above.
+  {
+    id: "docinho-personalizado",
+    name: "Docinho Personalizado",
+    unit: "",
+    price: "Sob consulta 💬",
+    sensory: "Docinhos modelados à mão com pasta de leite em pó, personalizados para combinar com o tema da sua festa.",
+    kind: "bites",
+    tint: COLORS.creamYellow,
+    moments: ["festa"],
+    photos: REAL_PHOTOS.docinhoPersonalizado,
+  },
   {
     id: "bala-de-coco",
     name: "Bala de Coco",
