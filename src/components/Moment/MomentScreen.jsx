@@ -58,7 +58,7 @@ export default function MomentScreen({
         ))}
       </div>
 
-      {crossSell.length > 0 && momentId !== "dia-dificil" && (
+      {crossSell.length > 0 && momentId !== "dia-dificil" && momentId !== "festa" && (
         <div className="mt-9">
           <div className="flex items-center gap-2 mb-1 text-brand-caramelDark">
             <Sparkles size={16} />
