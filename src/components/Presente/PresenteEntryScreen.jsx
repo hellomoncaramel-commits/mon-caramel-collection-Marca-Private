@@ -53,10 +53,10 @@ const OPTIONS = [
 // products, leads straight to a small catalog.
 export default function PresenteEntryScreen({ onBack, onSelect }) {
   return (
-    <div className="max-w-xl md:max-w-3xl mx-auto px-4 pt-2 pb-10 fade-up">
+    <div className="max-w-xl md:max-w-3xl mx-auto px-gutter pt-2 pb-10 fade-up">
       <SiteHeader onBack={onBack} />
-      <h1 className="text-2xl font-display text-brand-ink mb-1">É só uma lembrancinha.</h1>
-      <p className="text-sm mb-6 text-brand-inkSoft">
+      <h1 className="mc-page-title">É só uma lembrancinha.</h1>
+      <p className="mc-page-subtitle">
         Pra gente, é muito mais que isso. Cada presente é único, pensado pra quem vai receber se sentir especial.
       </p>
 

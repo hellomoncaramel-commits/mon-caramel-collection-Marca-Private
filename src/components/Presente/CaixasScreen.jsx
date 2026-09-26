@@ -28,10 +28,10 @@ export default function CaixasScreen({ onBack, addToSelection }) {
   }
 
   return (
-    <div className="max-w-xl md:max-w-3xl mx-auto px-4 pt-2 pb-10 fade-up">
+    <div className="max-w-xl md:max-w-3xl mx-auto px-gutter pt-2 pb-10 fade-up">
       <SiteHeader onBack={onBack} />
-      <h1 className="text-2xl font-display text-brand-ink mb-1">Caixas para inspirar</h1>
-      <p className="text-sm mb-6 text-brand-inkSoft">
+      <h1 className="mc-page-title">Caixas para inspirar</h1>
+      <p className="mc-page-subtitle">
         Algumas ideias que já passaram por aqui. Escolha uma inspiração e a gente adapta do seu jeito.
       </p>
 

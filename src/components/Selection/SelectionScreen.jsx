@@ -103,10 +103,10 @@ export default function SelectionScreen({ selection, removeFromSelection, addToS
   const suggestion = useMemo(() => pickSelectionCrossSell(selection), [selection]);
 
   return (
-    <div className="max-w-2xl mx-auto px-4 pt-2 pb-28 fade-up">
+    <div className="max-w-2xl mx-auto px-gutter pt-2 pb-10 fade-up">
       <SiteHeader onBack={onBack} />
-      <h2 className="text-2xl mb-1 font-display text-brand-ink">♡ Minha Seleção</h2>
-      <p className="text-sm mb-6 text-brand-muted">
+      <h2 className="mc-page-title">♡ Minha Seleção</h2>
+      <p className="mc-page-subtitle">
         {selection.length === 0
           ? "Ainda vazia — volte e escolha o que combinar com o momento."
           : "Confira tudo antes de conversar com a gente."}

@@ -102,7 +102,7 @@ export default function ProductCard({
         {isFesta ? (
           <button
             onClick={() => onOpenPartyModal(p)}
-            className="w-full mt-3 text-xs font-medium rounded-full px-3.5 min-h-11 flex items-center justify-center gap-1.5 border border-brand-caramelDark"
+            className="w-full mt-3 text-sm font-medium rounded-full px-3.5 min-h-11 flex items-center justify-center gap-1.5 border border-brand-caramelDark"
             style={{
               backgroundColor: partyEntry ? COLORS.caramelDark : "transparent",
               color: partyEntry ? "white" : COLORS.caramelDark,
@@ -122,7 +122,7 @@ export default function ProductCard({
                     ? removeFromSelection(existing)
                     : confirmAdd({ qty: defaultQty, flavorBreakdown: [] })
                 }
-                className="text-xs font-medium rounded-full px-3.5 min-h-11 inline-flex items-center gap-1 border border-brand-caramelDark"
+                className="text-sm font-medium rounded-full px-3.5 min-h-11 inline-flex items-center gap-1 border border-brand-caramelDark"
                 style={{ backgroundColor: existing ? COLORS.caramelDark : "transparent", color: existing ? "white" : COLORS.caramelDark }}
               >
                 <Heart size={12} fill={existing ? "white" : "none"} />

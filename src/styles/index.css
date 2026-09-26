@@ -12,6 +12,25 @@ html {
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  /* Shared "Page Title / Page Subtitle" pair — the heading + one-line intro
+     every catalog-style screen opens with (Coleção completa, Só olha...,
+     O que você está procurando?, Minha Seleção, É só uma lembrancinha.,
+     Caixas/Bandejas/Mimos para inspirar). Was already ~text-2xl/text-sm
+     almost everywhere, just re-typed slightly differently on each screen
+     (mb-1 vs no margin, mb-4/5/6, muted vs inkSoft) — formalized here so
+     "same function" always renders pixel-identical instead of by
+     coincidence. MomentScreen intentionally has no page title (its own
+     moment-intro paragraph fills that role) and Product Detail stays
+     image-first by design — neither uses this pair, on purpose. */
+  .mc-page-title {
+    @apply text-2xl font-display text-brand-ink leading-tight mb-1;
+  }
+  .mc-page-subtitle {
+    @apply text-sm text-brand-inkSoft leading-relaxed mb-6;
+  }
+}
+
 @layer base {
   body {
     @apply bg-brand-beige text-brand-ink font-body;

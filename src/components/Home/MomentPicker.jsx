@@ -56,7 +56,9 @@ function MomentCard({ moment, photoSrc, eager, onSelect }) {
   const lines = moment.titleLines ?? [moment.label];
   const photoStyle = MOMENT_PHOTO_STYLE[moment.id];
   return (
-    <div className="relative w-full h-full overflow-hidden" style={{ borderRadius: 20 }}>
+    // rounded-3xl: same "primary photo card" radius as ProductCard, FeedCard
+    // and the Presente inspiration frames — was a one-off inline 20px before.
+    <div className="relative w-full h-full overflow-hidden rounded-3xl">
       <Photo
         src={photoSrc}
         alt=""
