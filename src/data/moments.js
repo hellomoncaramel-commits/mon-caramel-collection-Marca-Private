@@ -70,6 +70,11 @@ export const MOMENT_ORDER = {
     "butter-cookies",
     "butter-cookies-congelado",
   ],
+  // "bolo-palito" leads deliberately — Naia wants it to be the first thing
+  // a customer sees in Festa, with "pirulito-decorado" and "cone-trufado"
+  // right behind it. Everything else festa-tagged in PRODUCTS still shows
+  // (see the note above on unlisted ids), just after these three.
+  festa: ["bolo-palito", "pirulito-decorado", "cone-trufado"],
 };
 
 export const MOMENT_ICON = {

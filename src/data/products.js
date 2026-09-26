@@ -116,6 +116,18 @@ export const PRODUCTS = [
     kind: "cake",
     tint: COLORS.caramelDark,
     moments: ["festa", "dia-dificil"],
+    // `photos` below is the current single general photo, shown in every
+    // context today (dia-dificil, Feed/Search, etc.) — left as-is for now.
+    // Naia has festa-specific photos (theme/decoration variety) coming in
+    // a follow-up step; once provided, they belong in a `photosByMoment:
+    // { festa: [...] }` entry here, same pattern already used elsewhere
+    // (e.g. brigadeiro, butter-cookies, brownlito above) — `photosForMoment`
+    // (utils/products.js) already resolves that key generically, so no
+    // other code needs to change. Not added yet: an empty/placeholder
+    // array here would make photosForMoment return `[]` for festa (a
+    // photos.length > 0 check away from silently hiding this product's
+    // photo in that moment), which is exactly the kind of photo change
+    // this step was told not to make.
     photos: [REAL_PHOTOS.coneTrufadoNovo],
   },
   {
