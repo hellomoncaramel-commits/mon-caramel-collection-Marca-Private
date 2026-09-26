@@ -93,7 +93,10 @@ export const PRODUCTS = [
     sensory: "Decorados com apliques artesanais em pasta de leite em pó, feitos sob medida pro tema da festa.",
     kind: "bites",
     tint: COLORS.caramelDark,
-    moments: ["festa"],
+    // Removed from Festa's curated menu (kept in the general catalog —
+    // still browsable via Feed/Search) so Festa only surfaces the handful
+    // of products meant to lead there.
+    moments: [],
     photos: REAL_PHOTOS.brigadeiroPersonalizado,
   },
   {
@@ -163,7 +166,10 @@ export const PRODUCTS = [
     sensory: "Bala de coco caseira que derrete na boca, dentro de uma pirâmide personalizada no tema da sua festa.",
     kind: "candy",
     tint: COLORS.caramelDark,
-    moments: ["festa"],
+    // Removed from Festa's curated menu (kept in the general catalog —
+    // still browsable via Feed/Search) so Festa only surfaces the handful
+    // of products meant to lead there.
+    moments: [],
     photos: REAL_PHOTOS.piramide,
   },
   {
@@ -198,7 +204,7 @@ export const PRODUCTS = [
     sensory: "Bolinho macio de mel e especiarias, recheado com doce de leite, coberto de chocolate.",
     kind: "cake",
     tint: COLORS.caramelDark,
-    moments: ["dia-dificil", "festa"],
+    moments: ["dia-dificil"],
     photos: [REAL_PHOTOS.visita, REAL_PHOTOS.paodemel2],
   },
   {
@@ -263,7 +269,7 @@ export const PRODUCTS = [
     sensory: "Biscoito amanteigado recheado de goiabada — outros sabores? É só chamar a gente.",
     kind: "sandwich",
     tint: COLORS.caramelLight,
-    moments: ["festa", "dia-dificil"],
+    moments: ["dia-dificil"],
     photos: [REAL_PHOTOS.casadinhoGoiabada],
   },
   {
@@ -285,8 +291,12 @@ export const PRODUCTS = [
     sensory: "Oreo mergulhado em fudge cremoso — pra quando bate aquela vontade impossível de ignorar.",
     kind: "dipped",
     tint: COLORS.caramelLight,
-    moments: ["dia-dificil"],
+    moments: ["dia-dificil", "festa"],
+    // General/day-to-day photo unchanged. Festa gets its own gallery — real
+    // decorated Chocobombs across several themes/personalizations, so a
+    // customer can picture matching it to their own party.
     photos: [REAL_PHOTOS.chocobomb],
+    photosByMoment: { festa: REAL_PHOTOS.chocobombFesta },
   },
   {
     id: "bala-de-coco",
@@ -296,7 +306,7 @@ export const PRODUCTS = [
     sensory: "Docinho de coco que derrete na boca — sem glúten, sem lactose, gostoso de qualquer jeito.",
     kind: "candy",
     tint: COLORS.creamYellow,
-    moments: ["dia-dificil", "freezer", "festa"],
+    moments: ["dia-dificil", "freezer"],
     photos: [REAL_PHOTOS.balaDeCoco],
   },
   // Unit and sensory are still pending real data from Naia — left blank

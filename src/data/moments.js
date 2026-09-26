@@ -70,11 +70,13 @@ export const MOMENT_ORDER = {
     "butter-cookies",
     "butter-cookies-congelado",
   ],
-  // "bolo-palito" leads deliberately — Naia wants it to be the first thing
-  // a customer sees in Festa, with "pirulito-decorado" and "cone-trufado"
-  // right behind it. Everything else festa-tagged in PRODUCTS still shows
-  // (see the note above on unlisted ids), just after these three.
-  festa: ["bolo-palito", "pirulito-decorado", "cone-trufado"],
+  // Festa is a deliberately curated menu — only products that make sense
+  // for a party/personalization occasion, in this exact order. Day-to-day
+  // staples (Pão de Mel, Casadinho, Bala de Coco, Brigadeiros
+  // Personalizados, Lembrancinhas Pirâmide) were removed from Festa's
+  // `moments` tag entirely (still browsable elsewhere in the catalog) so
+  // there's nothing left unlisted for pickForMoment() to append afterward.
+  festa: ["bolo-palito", "pirulito-decorado", "cone-trufado", "briganinho-personalizado", "mini-donut-decorado", "chocobomb"],
 };
 
 export const MOMENT_ICON = {

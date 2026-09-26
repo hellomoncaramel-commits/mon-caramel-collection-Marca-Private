@@ -134,4 +134,13 @@ export const REAL_PHOTOS = {
     `${BASE}/cone-trufado-festa-margaridas.jpg`,
     `${BASE}/cone-trufado-festa-buque-verde.jpg`,
   ],
+  chocobombFesta: [
+    `${BASE}/chocobomb-festa-mario.jpg`,
+    `${BASE}/chocobomb-festa-minnie.jpg`,
+    `${BASE}/chocobomb-festa-animais.jpg`,
+    `${BASE}/chocobomb-festa-confete.jpg`,
+    `${BASE}/chocobomb-festa-coracao-tray.jpg`,
+    `${BASE}/chocobomb-festa-coracao-par.jpg`,
+    `${BASE}/chocobomb-festa-corrida.jpg`,
+  ],
 };
