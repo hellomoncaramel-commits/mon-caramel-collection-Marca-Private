@@ -113,4 +113,25 @@ export const REAL_PHOTOS = {
   brownlitoInteiro: `${BASE}/brownlito-inteiro.jpg`,
   brownlitoRecheio: `${BASE}/brownlito-recheio.jpg`,
   brownlitoEmbalado: `${BASE}/brownlito-embalado.jpg`,
+  // Festa-specific contextual galleries (photosByMoment.festa in
+  // data/products.js) — decorated/personalized presentations, distinct from
+  // each product's day-to-day general photo. Portrait phone photos, fit onto
+  // a cream 4:3 canvas (never cropped) since the product card frame is
+  // landscape — see the individual notes on each products.js entry.
+  miniDonutFesta: [
+    `${BASE}/mini-donut-festa-torre.jpg`,
+    `${BASE}/mini-donut-festa-gabrielly-sweet16.jpg`,
+    `${BASE}/mini-donut-festa-fundo-do-mar.jpg`,
+    `${BASE}/mini-donut-festa-emma-hotel-transilvania.jpg`,
+    `${BASE}/mini-donut-festa-borboletas.jpg`,
+    `${BASE}/mini-donut-festa-folha-bordo.jpg`,
+    `${BASE}/mini-donut-festa-bella-is6.jpg`,
+    `${BASE}/mini-donut-festa-tropical.jpg`,
+  ],
+  coneTrufadoFesta: [
+    `${BASE}/cone-trufado-festa-minnie.jpg`,
+    `${BASE}/cone-trufado-festa-futebol.jpg`,
+    `${BASE}/cone-trufado-festa-margaridas.jpg`,
+    `${BASE}/cone-trufado-festa-buque-verde.jpg`,
+  ],
 };

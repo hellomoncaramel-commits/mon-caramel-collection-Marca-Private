@@ -105,7 +105,14 @@ export const PRODUCTS = [
     kind: "cake",
     tint: COLORS.ink,
     moments: ["festa", "dia-dificil"],
+    // General/day-to-day photo unchanged. Festa gets its own gallery of real
+    // decorated/personalized donuts — the simple everyday presentation
+    // above isn't the right protagonist there. Hero is the green/yellow
+    // donut tower with cake pops and the "GOOL" plaque; the rest show a
+    // variety of personalizations (not flavors) so a customer can picture
+    // matching the donuts to their own party theme.
     photos: REAL_PHOTOS.miniDonutDecorado,
+    photosByMoment: { festa: REAL_PHOTOS.miniDonutFesta },
   },
   {
     id: "cone-trufado",
@@ -116,19 +123,13 @@ export const PRODUCTS = [
     kind: "cake",
     tint: COLORS.caramelDark,
     moments: ["festa", "dia-dificil"],
-    // `photos` below is the current single general photo, shown in every
-    // context today (dia-dificil, Feed/Search, etc.) — left as-is for now.
-    // Naia has festa-specific photos (theme/decoration variety) coming in
-    // a follow-up step; once provided, they belong in a `photosByMoment:
-    // { festa: [...] }` entry here, same pattern already used elsewhere
-    // (e.g. brigadeiro, butter-cookies, brownlito above) — `photosForMoment`
-    // (utils/products.js) already resolves that key generically, so no
-    // other code needs to change. Not added yet: an empty/placeholder
-    // array here would make photosForMoment return `[]` for festa (a
-    // photos.length > 0 check away from silently hiding this product's
-    // photo in that moment), which is exactly the kind of photo change
-    // this step was told not to make.
+    // `photos` is the general photo, still shown everywhere outside Festa
+    // (dia-dificil, Feed/Search, etc.) — untouched. Festa gets its own
+    // gallery, leading with the Minnie-personalized cone (communicates
+    // theme/personalization far better than the plain cone), followed by
+    // the other real decorated pairs.
     photos: [REAL_PHOTOS.coneTrufadoNovo],
+    photosByMoment: { festa: REAL_PHOTOS.coneTrufadoFesta },
   },
   {
     id: "pirulito-decorado",
