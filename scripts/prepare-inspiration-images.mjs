@@ -1,5 +1,5 @@
 // Prepares "display" assets for the "para inspirar" carousels (Caixas,
-// Bandejas — src/data/inspirationGalleries.js): every source photo gets
+// Bandejas, Mimos — src/data/inspirationGalleries.js): every source photo gets
 // resized (never cropped, never upscaled beyond its own pixels) to fit
 // fully inside a fixed 4:3 canvas, centered, with any leftover space
 // filled by the Mon Caramel cream (#F4EBDA — brand.subtle, see
@@ -12,8 +12,8 @@
 // (public/images/products/ — where every product/inspiration photo already
 // lives and is referenced elsewhere in the app) and are NEVER modified;
 // only the derived canvas asset is written, into a separate folder (per
-// gallery — `dir` below, "boxes" or "trays"), so there is exactly one
-// place each original photo lives.
+// gallery — `dir` below, "boxes", "trays" or "mimos"), so there is exactly
+// one place each original photo lives.
 //
 // Usage: npm run images:inspirations
 import sharp from "sharp";
@@ -84,6 +84,15 @@ const SOURCES = [
   // this one didn't need a second pass) gives every edge a bit of breathing
   // room.
   { src: "bandeja-dia-dos-pais.jpg", out: "bandeja-dia-dos-pais-inspiration", dir: "trays", scaleFactor: 0.85 },
+  // Also already exactly 4:3 (640x480) — same edge-to-edge issue: the
+  // white "THANK YOU!" card's right corner and its bottom text line sit
+  // right at the source photo's own edges, so filling the frame at
+  // scaleFactor 1 left the card feeling cut off on both sides even though
+  // the whole photo was already visible. scaleFactor 0.85 (a 15% zoom out,
+  // the top of the requested 10–15% range) gives the card and the yellow
+  // treats around it visible breathing room without shrinking the photo
+  // much.
+  { src: "presentinho-obrigada.jpg", out: "presentinho-obrigada-inspiration", dir: "mimos", scaleFactor: 0.85 },
 ];
 
 for (const { src: srcName, out: outName, rotate = 0, extraRotate = 0, scaleFactor = 1, dir = "boxes" } of SOURCES) {

@@ -147,7 +147,16 @@ export const MIMO_INSPIRATIONS = [
   },
   {
     id: "presentinho-obrigada",
-    src: "/images/products/presentinho-obrigada.jpg",
+    // Points at the prepared 4:3 canvas asset from
+    // scripts/prepare-inspiration-images.mjs instead of the raw product
+    // photo: the source is already exactly 4:3, so the white "THANK YOU!"
+    // card's right corner and bottom text line sat right at the frame's
+    // own edges, reading as cut off even though the full photo was
+    // already visible. The derived asset draws it at 0.85 scale instead,
+    // same idea as bandeja-dia-dos-pais. Original photo
+    // (presentinho-obrigada.jpg) is untouched; this is a derived,
+    // centered version of the exact same photograph.
+    src: "/images/inspirations/mimos/display/presentinho-obrigada-inspiration.jpg",
     alt: "Docinhos num coninho com cartão de agradecimento — ideal pra dar um obrigada especial.",
   },
   {
