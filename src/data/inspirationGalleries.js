@@ -90,7 +90,17 @@ export const TRAY_INSPIRATIONS = [
   },
   {
     id: "bandeja-dia-dos-pais",
-    src: "/images/products/bandeja-dia-dos-pais.jpg",
+    // Points at the prepared 4:3 canvas asset from
+    // scripts/prepare-inspiration-images.mjs instead of the raw product
+    // photo: the source is already exactly 4:3, so it filled the carousel
+    // frame edge-to-edge with zero cream margin — the balloons pressed
+    // against the top and the tray's products right at the bottom edge
+    // both read as cut off, even though the full photo was already
+    // visible. The derived asset draws it at 0.85 scale instead, same
+    // idea as bandeja-variedade below. Original photo
+    // (bandeja-dia-dos-pais.jpg) is untouched; this is a derived, centered
+    // version of the exact same photograph.
+    src: "/images/inspirations/trays/display/bandeja-dia-dos-pais-inspiration.jpg",
     alt: "Docinhos, cookies e balões nas cores do tema — surpresa completa pra comemorar.",
   },
   {
@@ -106,9 +116,10 @@ export const TRAY_INSPIRATIONS = [
     // scripts/prepare-inspiration-images.mjs instead of the raw product
     // photo: the source is already exactly 4:3, so it fills the carousel
     // frame edge-to-edge with zero cream margin at scaleFactor 1, which
-    // read as overly zoomed-in — the derived asset draws it at 0.85 scale
-    // instead, same idea as box-005's proof of concept. Original photo
-    // (presentinho-variedade.jpg, still used by the "Mix Variedade"
+    // read as overly zoomed-in — the derived asset draws it at 0.75 scale
+    // instead (a first pass at 0.85 still left too thin a margin to read
+    // as breathing room), same idea as box-005's proof of concept. Original
+    // photo (presentinho-variedade.jpg, still used by the "Mix Variedade"
     // product elsewhere) is untouched; this is a derived, centered version
     // of the exact same photograph.
     src: "/images/inspirations/trays/display/bandeja-variedade-inspiration.jpg",

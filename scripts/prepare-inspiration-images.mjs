@@ -70,10 +70,20 @@ const SOURCES = [
   // already exactly 4:3 (640x480, same as the carousel's own frame), so a
   // plain contain-fit (scaleFactor 1) would fill the frame edge-to-edge
   // with zero cream margin — reads as "zoomed in" even though nothing is
-  // actually cropped. scaleFactor 0.85 draws it smaller within the same
-  // 4:3 canvas, leaving visible cream margin on every side, same as any
-  // photo that needs a bit more breathing room.
-  { src: "presentinho-variedade.jpg", out: "bandeja-variedade-inspiration", dir: "trays", scaleFactor: 0.85 },
+  // actually cropped. First pass used scaleFactor 0.85, but the resulting
+  // margin was thin enough (a few px at real display size) to still read
+  // as cramped, especially against the app's own similarly-cream page
+  // background — 0.75 leaves a clearly visible margin instead.
+  { src: "presentinho-variedade.jpg", out: "bandeja-variedade-inspiration", dir: "trays", scaleFactor: 0.75 },
+  // Also already exactly 4:3 (640x480) — same edge-to-edge issue as above,
+  // made worse here because the source composition itself is tight
+  // (balloons pushed up against the top, the tray's products right at the
+  // bottom edge): filling the frame with zero margin made the balloons and
+  // products both feel cut off, even though the full photo was already
+  // showing. scaleFactor 0.85 (a lighter reduction than variedade's, since
+  // this one didn't need a second pass) gives every edge a bit of breathing
+  // room.
+  { src: "bandeja-dia-dos-pais.jpg", out: "bandeja-dia-dos-pais-inspiration", dir: "trays", scaleFactor: 0.85 },
 ];
 
 for (const { src: srcName, out: outName, rotate = 0, extraRotate = 0, scaleFactor = 1, dir = "boxes" } of SOURCES) {
