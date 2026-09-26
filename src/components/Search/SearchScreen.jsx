@@ -71,9 +71,9 @@ export default function SearchScreen({ onBack, onGoCatalog, selection, addToSele
     addToSelection({ kind: "product", productId: p.id, name: p.name, unit: p.unit, qty, flavors: null });
 
   return (
-    <div className="max-w-xl mx-auto px-4 pt-2 pb-10 fade-up">
+    <div className="max-w-xl mx-auto px-gutter pt-2 pb-10 fade-up">
       <SiteHeader onBack={onBack} />
-      <h1 className="text-2xl font-display text-brand-ink mb-4">O que você está procurando?</h1>
+      <h1 className="mc-page-title mb-4">O que você está procurando?</h1>
 
       <label htmlFor="search-input" className="sr-only">
         Buscar produto

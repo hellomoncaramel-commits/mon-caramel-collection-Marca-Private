@@ -35,9 +35,18 @@ const PHOTO_MASK = {
 // presentation is new. The real photo sits behind the discovery choices
 // as a background, not as a separate block below them, and the page stops
 // right there — no extra sections competing with the primary decision.
+//
+// Height: unlike MomentPicker (whose carousel genuinely needs a fixed
+// viewport-relative height for the swipe math), Home has no such
+// requirement — it previously borrowed the same h-[calc(100dvh-6rem)] +
+// flex-1 pattern anyway, which forced the whole composition (hero, body,
+// photo, cards) to shrink to fit whatever was left above the fold. That's
+// what made Home read smaller than every other screen despite being the
+// first thing a customer sees. It now flows naturally like every other
+// page — minimal scroll on short phones, full presence everywhere else.
 export default function HomeScreen({ onSelect }) {
   return (
-    <div className="w-full md:max-w-2xl lg:max-w-3xl xl:max-w-4xl md:mx-auto px-gutter pt-2 pb-3 fade-up flex flex-col h-[calc(100dvh-6rem)] md:h-auto">
+    <div className="w-full md:max-w-2xl lg:max-w-3xl xl:max-w-4xl md:mx-auto px-gutter pt-2 pb-6 fade-up">
       <SiteHeader
         rightSlot={
           <button
@@ -50,23 +59,21 @@ export default function HomeScreen({ onSelect }) {
         }
       />
 
-      {/* Intro — editorial, not a marketing hero */}
-      <h1 className="text-mc-home-hero mt-2 font-display italic text-brand-ink shrink-0">O que a gente vai adoçar hoje? 💛</h1>
-      <p className="text-mc-home-body mt-1.5 text-brand-inkSoft shrink-0">
+      {/* Intro — editorial, not a marketing hero. Scale matched to
+          MomentPicker's own mobile hero (see tailwind.config.js) so the
+          two "big editorial headline" screens read as the same family. */}
+      <h1 className="text-mc-home-hero mt-2 font-display italic text-brand-ink">O que a gente vai adoçar hoje? 💛</h1>
+      <p className="text-[15px] leading-[1.4] mt-2 text-brand-inkSoft">
         Escolha pelo momento, procure alguma coisa específica ou simplesmente fique olhando...
       </p>
 
       {/* Real Mon Caramel photo as background, discovery choices layered on top of it.
-          No margin-top here — the 10px gap to the first button comes entirely from the
-          inner wrapper's pt-[10px] below, since the photo itself is still fully
+          No margin-top here — the 14px gap to the first button comes entirely from the
+          inner wrapper's pt-[14px] below, since the photo itself is still fully
           transparent (via mask) at its very top and reads as part of that same gap.
-
-          Height: mobile uses flex-1 to fill whatever's left inside the page's fixed
-          h-[calc(100dvh-6rem)]. At md+ the page switches to h-auto (content-sized) —
-          flex-1 then has no space to grow into, so this block would collapse to its
-          minHeight floor (a thin 260px strip, however wide the desktop container is).
-          Pinning a fixed height at md+ breaks that chain, same fix as MomentPicker. */}
-      <div className="relative w-full overflow-hidden rounded-mc flex-1 min-h-0 md:flex-none md:h-[460px]" style={{ minHeight: 260 }}>
+          Fixed height on both mobile and desktop now — the photo is the page's main
+          visual anchor, sized for presence rather than for "whatever space is left". */}
+      <div className="relative w-full overflow-hidden rounded-mc mt-5 h-[400px] md:h-[460px]">
         <Photo
           src={REAL_PHOTOS.casadinhoGoiabada}
           alt=""
@@ -75,7 +82,7 @@ export default function HomeScreen({ onSelect }) {
           loading="eager"
         />
 
-        <div className="relative flex flex-col gap-1.5 pt-[10px] px-3 pb-3" style={{ zIndex: 2 }}>
+        <div className="relative flex flex-col gap-2 pt-[14px] px-3.5 pb-3.5" style={{ zIndex: 2 }}>
           {CHOICES.map((c) => (
             <button
               key={c.id}
@@ -84,15 +91,15 @@ export default function HomeScreen({ onSelect }) {
               style={{
                 backgroundColor: COLORS.caramelDarker,
                 display: "grid",
-                gridTemplateColumns: "30px 1fr 14px",
-                columnGap: "9px",
-                height: "50px",
-                padding: "0 12px",
+                gridTemplateColumns: "34px 1fr 16px",
+                columnGap: "10px",
+                height: "62px",
+                padding: "0 14px",
               }}
             >
               <span
                 className="rounded-full flex items-center justify-center"
-                style={{ width: 30, height: 30, fontSize: 16, backgroundColor: "rgba(255,255,255,0.18)" }}
+                style={{ width: 34, height: 34, fontSize: 18, backgroundColor: "rgba(255,255,255,0.18)" }}
               >
                 {c.emoji}
               </span>
@@ -102,14 +109,14 @@ export default function HomeScreen({ onSelect }) {
                   {c.subtitle}
                 </span>
               </span>
-              <ChevronRight size={14} style={{ color: "rgba(255,255,255,0.85)" }} />
+              <ChevronRight size={16} style={{ color: "rgba(255,255,255,0.85)" }} />
             </button>
           ))}
         </div>
       </div>
 
       {/* Pickup/delivery — footnote scale metadata, not a section */}
-      <div className="flex items-center justify-center gap-1.5 mt-[5px] text-mc-home-meta text-brand-muted shrink-0">
+      <div className="flex items-center justify-center gap-1.5 mt-3 text-mc-home-meta text-brand-muted">
         <span>📍 Retirada grátis — Ritson x Adelaide</span>
         <span className="w-1 h-1 rounded-full shrink-0 bg-brand-caramelLight" />
         <span>🚗 Entrega disponível</span>

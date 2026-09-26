@@ -50,11 +50,19 @@ export default {
         // section / body / utility), not one size per component. Product
         // names/prices get their own two entries since they sit between
         // body and utility.
-        "mc-home-hero": ["24px", { lineHeight: "1.04", letterSpacing: "-0.025em" }],
+        // Hero was 24px flat — visibly smaller than MomentPicker's own
+        // mobile hero (clamp(30px,8vw,36px)), even though both are the
+        // site's two "editorial intro" headlines. Matched to the same
+        // clamp family (capped a touch lower since Home's heading runs
+        // longer) so neither screen reads as the smaller, lesser one.
+        "mc-home-hero": ["clamp(28px, 8vw, 34px)", { lineHeight: "1.05", letterSpacing: "-0.025em" }],
         "mc-home-section": ["18px", { lineHeight: "1.1" }],
         "mc-home-body": ["12.5px", { lineHeight: "1.35" }],
-        "mc-home-card-title": ["13px", { lineHeight: "1.05" }],
-        "mc-home-card-subtitle": ["10px", { lineHeight: "1.1" }],
+        // Card title/subtitle bumped alongside the card's own min-height
+        // (50px → 62px, see HomeScreen.jsx) — same reasoning: the discovery
+        // rows are the Home page's main content, not a compact utility list.
+        "mc-home-card-title": ["15px", { lineHeight: "1.15" }],
+        "mc-home-card-subtitle": ["11.5px", { lineHeight: "1.2" }],
         "mc-home-product": ["12px", { lineHeight: "1.2" }],
         "mc-home-price": ["10px", { lineHeight: "1.2" }],
         "mc-home-meta": ["9.5px", { lineHeight: "1.15" }],
@@ -78,8 +86,12 @@ export default {
       },
       borderRadius: {
         card: "1.5rem",
-        // Home shared radius for the discovery rows and hero photo.
-        mc: "12px",
+        // Home shared radius for the discovery rows and hero photo. Was
+        // 12px — visibly tighter than every other "big surface" card on
+        // the site (product cards, feed photos, presente CTA blocks all
+        // use rounded-3xl/24px). Bumped to sit in that same family instead
+        // of reading as a smaller, separate visual language.
+        mc: "20px",
         // Home small radius for the "Só olha" product images.
         "mc-img": "11px",
       },

@@ -45,7 +45,12 @@ export default function MomentScreen({
   };
 
   return (
-    <div className="max-w-2xl mx-auto px-4 pt-2 pb-28 fade-up">
+    // pb-10: matches every other scrollable page's own bottom padding — the
+    // app shell's outer pb-24 wrapper (App.jsx) already clears the fixed
+    // bottom nav on its own, so this only needs to close out the content,
+    // not double up on nav clearance (Festa's floating button is `fixed`,
+    // independent of this padding either way).
+    <div className="max-w-2xl mx-auto px-gutter pt-2 pb-10 fade-up">
       <SiteHeader onBack={onBack} />
 
       {MOMENT_INTRO[momentId] && (

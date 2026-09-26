@@ -27,12 +27,15 @@ export default function FeedScreen({ onBack, favorites, toggleFavorite, selectio
   }, [filter]);
 
   return (
-    <div className="max-w-xl mx-auto px-4 pt-2 pb-10 fade-up">
+    <div className="max-w-xl mx-auto px-gutter pt-2 pb-10 fade-up">
       <SiteHeader onBack={onBack} />
-      <h1 className="text-2xl font-display text-brand-ink mb-1">Só olha... 👀</h1>
-      <p className="text-sm mb-5 text-brand-muted">Vai rolando. A gente não conta pra ninguém se você ficar com vontade.</p>
+      <h1 className="mc-page-title">Só olha... 👀</h1>
+      <p className="mc-page-subtitle">Vai rolando. A gente não conta pra ninguém se você ficar com vontade.</p>
 
-      <div className="flex gap-2 overflow-x-auto no-scrollbar mb-6 -mx-5 px-5">
+      {/* -mx-4/px-4 matches this page's own 16px gutter (px-gutter), so the
+          chip row bleeds flush to the real viewport edge — was -mx-5/px-5
+          (20px), 4px short of the actual edge. */}
+      <div className="flex gap-2 overflow-x-auto no-scrollbar mb-6 -mx-4 px-4">
         {FILTERS.map((f) => (
           <button
             key={f.id}
