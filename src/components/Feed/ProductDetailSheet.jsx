@@ -7,21 +7,49 @@ import PhotoCarousel from "../shared/PhotoCarousel";
 import ProductArt from "../shared/ProductArt";
 import Photo from "../shared/Photo";
 import QuantityStepper from "../shared/QuantityStepper";
+import ProductBadges from "../shared/ProductBadges";
+import MonCaramelNote from "../shared/MonCaramelNote";
+import NextTemptation from "../shared/NextTemptation";
 import FlavorConfigurator from "../Moment/FlavorConfigurator";
 
 // Seduction happens in the feed; this is where information and the actual
 // "quero esse" decision live (progressive disclosure). Opens as a mobile
 // bottom sheet — same product, more room, no page navigation needed.
-export default function ProductDetailSheet({ product: p, onClose, selection, addToSelection, removeFromSelection, favorites, toggleFavorite }) {
+//
+// `momentId` is which journey this sheet was opened from — Feed/Search/
+// Salvos never pass one, so `showExperience` stays false there and the
+// sheet renders exactly as it always has. Only Dias de luta passes
+// momentId="dia-dificil" (see MomentScreen.jsx), which turns on the Mon
+// Caramel Experience layer: badges, the editorial note, and the manual
+// "próxima tentação" cross-sell, replacing the older generic bits they'd
+// otherwise duplicate (see the two `showExperience` gates below).
+export default function ProductDetailSheet({
+  product: p,
+  onClose,
+  selection,
+  addToSelection,
+  removeFromSelection,
+  favorites,
+  toggleFavorite,
+  momentId,
+  onOpenProduct,
+}) {
   const isCustomizable = p.customizable === true;
   const existing = selection.find((it) => it.kind === "product" && it.productId === p.id);
   const isFav = favorites.includes(p.id);
   const canFreeze = p.moments.includes("freezer");
   const photos = defaultPhotos(p);
+  const showExperience = momentId === "dia-dificil";
 
   const [qty, setQty] = useState(existing?.qty ?? parseQuantityOptions(p.unit)[0]);
 
   const related = (p.relatedProducts ?? []).map((id) => PRODUCTS.find((x) => x.id === id)).filter(Boolean).slice(0, 3);
+
+  const temptation = p.experience?.nextTemptation;
+  const temptationProduct = temptation ? PRODUCTS.find((x) => x.id === temptation.id) : null;
+  const temptationAlreadySelected = temptationProduct
+    ? selection.some((it) => it.kind === "product" && it.productId === temptationProduct.id)
+    : false;
 
   const add = () => {
     addToSelection({ kind: "product", productId: p.id, name: p.name, unit: p.unit, qty, flavors: null });
@@ -85,11 +113,19 @@ export default function ProductDetailSheet({ product: p, onClose, selection, add
           <p className="text-sm mt-0.5 text-brand-muted">{p.unit}</p>
           <p className="text-sm mt-3 leading-relaxed text-brand-inkSoft">{p.sensory}</p>
 
+          {/* Dias de luta only — the curated badge matrix. Suppresses the
+              older `canFreeze` list item just below when it's showing
+              (that one's less precise: it fires off `moments.includes
+              ("freezer")` for every context, which doesn't always match
+              the hand-curated badge list — e.g. products whose name
+              already says "congelado" deliberately skip the badge). */}
+          {showExperience && <ProductBadges badges={p.badges} />}
+
           <p className="text-xl font-medium mt-4 text-brand-caramelDark">{p.price}</p>
 
-          {(canFreeze || isCustomizable) && (
+          {((canFreeze && !showExperience) || isCustomizable) && (
             <ul className="flex flex-col gap-2 mt-4">
-              {canFreeze && (
+              {canFreeze && !showExperience && (
                 <li className="flex items-center gap-2.5 text-sm text-brand-inkSoft">
                   <span className="w-8 h-8 shrink-0 rounded-full flex items-center justify-center bg-brand-subtle">
                     <Snowflake size={14} className="text-brand-caramelDark" />
@@ -110,6 +146,10 @@ export default function ProductDetailSheet({ product: p, onClose, selection, add
               )}
             </ul>
           )}
+
+          {/* Mon Caramel's own voice — a short editorial aside, Dias de
+              luta only, right before the purchase decision. */}
+          {showExperience && <MonCaramelNote label={p.experience?.noteLabel} note={p.experience?.note} />}
 
           {isCustomizable ? (
             <div className="mt-4 pt-4 border-t border-dashed border-brand-border">
@@ -139,7 +179,20 @@ export default function ProductDetailSheet({ product: p, onClose, selection, add
             </div>
           )}
 
-          {related.length > 0 && (
+          {/* Dias de luta's manual, one-at-a-time cross-sell — replaces the
+              generic auto-related block below for this context (never both
+              at once). Hidden outright if the suggested product is already
+              in the selection, per the brief, rather than insisting on it. */}
+          {showExperience && temptationProduct && !temptationAlreadySelected && (
+            <NextTemptation
+              line={temptation.line}
+              product={temptationProduct}
+              photo={defaultPhotos(temptationProduct)?.[0]}
+              onOpen={(product) => onOpenProduct?.(product, momentId)}
+            />
+          )}
+
+          {!showExperience && related.length > 0 && (
             <div className="mt-8 pt-6 border-t border-brand-border">
               <p className="text-sm font-display text-brand-ink mb-3">Já que você chegou até aqui... 👀</p>
               <div className="flex gap-3 overflow-x-auto no-scrollbar -mx-5 px-5">

@@ -22,5 +22,5 @@ export const BADGES = {
   // A deliberate one-off personality moment on Brownlito specifically — see
   // that product's `badges` entry in products.js. Never apply this to
   // another product automatically.
-  hardDay: { emoji: "🫶", label: "Amigo das horas difíceis" },
+  hardTimes: { emoji: "🫶", label: "Amigo das horas difíceis" },
 };

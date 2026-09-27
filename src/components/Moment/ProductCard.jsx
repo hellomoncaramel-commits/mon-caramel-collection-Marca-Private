@@ -23,6 +23,8 @@ export default function ProductCard({
   removeFromSelection,
   partyItems,
   onOpenPartyModal,
+  onOpenDetail,
+  onAdded,
 }) {
   const isFav = favorites.includes(p.id);
   const isCustomizable = p.customizable === true;
@@ -40,6 +42,7 @@ export default function ProductCard({
       flavors: isCustomizable && flavorBreakdown.length > 0 ? flavorBreakdown : null,
     });
     setOpen(false);
+    onAdded?.(p);
   };
 
   const photos = photosForMoment(p, momentId);
@@ -52,7 +55,10 @@ export default function ProductCard({
       className="rounded-3xl border bg-white overflow-hidden transition-all h-full flex flex-col"
       style={{ borderColor: existing ? COLORS.caramelDark : COLORS.border, borderWidth: existing ? "2px" : "1px" }}
     >
-      <div className="relative">
+      <div
+        className={`relative ${onOpenDetail ? "cursor-pointer" : ""}`}
+        onClick={onOpenDetail ? () => onOpenDetail(p) : undefined}
+      >
         {photos && photos.length > 0 ? (
           <PhotoCarousel photos={photos} alt={p.name} />
         ) : (
@@ -60,7 +66,10 @@ export default function ProductCard({
         )}
         {!isFesta && (
           <button
-            onClick={() => toggleFavorite(p.id)}
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleFavorite(p.id);
+            }}
             className="absolute top-2 right-2 w-11 h-11 rounded-full bg-white/90 flex items-center justify-center"
             aria-label={isFav ? `Remover ${p.name} dos salvos` : `Salvar ${p.name}`}
             aria-pressed={isFav}
@@ -70,9 +79,26 @@ export default function ProductCard({
         )}
       </div>
       <div className="p-4 flex flex-col flex-1">
-        <h3 className="text-lg font-display text-brand-ink leading-tight">{p.name}</h3>
+        {onOpenDetail ? (
+          <button onClick={() => onOpenDetail(p)} className="text-left">
+            <h3 className="text-lg font-display text-brand-ink leading-tight">{p.name}</h3>
+          </button>
+        ) : (
+          <h3 className="text-lg font-display text-brand-ink leading-tight">{p.name}</h3>
+        )}
         {!isFesta && <p className="text-xs mt-0.5 text-brand-muted">{p.unit}</p>}
-        <p className="text-xs mt-2 leading-relaxed flex-1 text-brand-inkSoft">{p.sensory}</p>
+
+        {/* Dias de luta: the short "teaser" carries the vitrine — the full
+            sensory description now lives in the detail sheet only (see
+            progressive-disclosure split in the brief). Festa keeps showing
+            its own sensory line unchanged. */}
+        {!isFesta ? (
+          <p className="text-sm mt-2 leading-relaxed flex-1 font-subtitle italic text-brand-ink">
+            {p.experience?.teaser ?? p.sensory}
+          </p>
+        ) : (
+          <p className="text-xs mt-2 leading-relaxed flex-1 text-brand-inkSoft">{p.sensory}</p>
+        )}
 
         {/* "Insight" badges — Dias de luta only (per Naia's brief); Festa's
             card never renders this, even for a product that also carries a
