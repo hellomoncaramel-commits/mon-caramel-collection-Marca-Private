@@ -50,12 +50,13 @@ export default {
         // section / body / utility), not one size per component. Product
         // names/prices get their own two entries since they sit between
         // body and utility.
-        // Hero was 24px flat — visibly smaller than MomentPicker's own
-        // mobile hero (clamp(30px,8vw,36px)), even though both are the
-        // site's two "editorial intro" headlines. Matched to the same
-        // clamp family (capped a touch lower since Home's heading runs
-        // longer) so neither screen reads as the smaller, lesser one.
-        "mc-home-hero": ["clamp(28px, 8vw, 34px)", { lineHeight: "1.05", letterSpacing: "-0.025em" }],
+        // Home's hero needs to read as the page's clear textual protagonist —
+        // bigger than MomentPicker's own headline (clamp(30,8vw,36)), since
+        // Home's sentence is longer and wraps to two lines regardless of
+        // size, so it can afford (and needs) more scale to still command
+        // the top of the page rather than reading as "a slightly large
+        // paragraph".
+        "mc-home-hero": ["clamp(32px, 9.5vw, 40px)", { lineHeight: "0.98", letterSpacing: "-0.02em" }],
         "mc-home-section": ["18px", { lineHeight: "1.1" }],
         "mc-home-body": ["12.5px", { lineHeight: "1.35" }],
         // Card title/subtitle bumped alongside the card's own min-height
@@ -65,7 +66,10 @@ export default {
         "mc-home-card-subtitle": ["11.5px", { lineHeight: "1.2" }],
         "mc-home-product": ["12px", { lineHeight: "1.2" }],
         "mc-home-price": ["10px", { lineHeight: "1.2" }],
-        "mc-home-meta": ["9.5px", { lineHeight: "1.15" }],
+        // Now the closing row of the choice panel (a bordered footer inside
+        // it, not a lone floating footnote) — legible enough to read as
+        // that panel's own content, still clearly the smallest tier.
+        "mc-home-meta": ["10.5px", { lineHeight: "1.2" }],
         "mc-home-nav-label": ["9px", { lineHeight: "1.1" }],
       },
       letterSpacing: {
@@ -86,11 +90,11 @@ export default {
       },
       borderRadius: {
         card: "1.5rem",
-        // Home shared radius for the discovery rows and hero photo. Was
-        // 12px — visibly tighter than every other "big surface" card on
-        // the site (product cards, feed photos, presente CTA blocks all
-        // use rounded-3xl/24px). Bumped to sit in that same family instead
-        // of reading as a smaller, separate visual language.
+        // Home's overlapping choice panel — sits between the site's
+        // "small card" (rounded-2xl/16px, used for the panel's own rows)
+        // and "primary card" (rounded-3xl/24px) tiers, giving the page's
+        // one hero panel a slightly distinct identity from an ordinary
+        // product card elsewhere in the app.
         mc: "20px",
         // Home small radius for the "Só olha" product images.
         "mc-img": "11px",
