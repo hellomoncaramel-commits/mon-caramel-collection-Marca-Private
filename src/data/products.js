@@ -59,6 +59,12 @@ export const PRODUCTS = [
     tint: COLORS.ink,
     moments: ["dia-dificil", "freezer"],
     badges: ["coffee", "freezer", "glutenFree"],
+    experience: {
+      teaser: "Dia difícil + brigadeiro. Não tenho estudos científicos, mas confio.",
+      noteLabel: "Eu te conto:",
+      note: "Você sabia que dá pra congelar? Eu deixaria alguns guardados para emergências. 😂",
+      nextTemptation: { id: "chocobomb", line: "Agora… se você gosta de chocolate, deixa eu te apresentar o Chocobomb." },
+    },
     // "dia-dificil" now carries its own real photo plus the ones
     // previously shown only under the (now-removed) "cafe" and "freezer"
     // moments — see src/data/moments.js: all consolidated into this
@@ -80,6 +86,15 @@ export const PRODUCTS = [
     tint: COLORS.caramelLight,
     moments: ["dia-dificil", "freezer"],
     badges: ["coffee", "lunchbox"],
+    experience: {
+      teaser: "Para os dias em que até pensar no lanche dá preguiça.",
+      noteLabel: "Seu eu do futuro agradece:",
+      note: "Esse é muito prático. Já fica pronto no freezer pra quando você precisar.",
+      nextTemptation: {
+        id: "butter-cookies-congelado",
+        line: "Se você gosta dessa praticidade, olha o biscoito congelado pra assar.",
+      },
+    },
     photos: [REAL_PHOTOS.donutFreezer],
   },
   {
@@ -119,6 +134,12 @@ export const PRODUCTS = [
     // Badges are Dias de luta-only (ProductCard gates on momentId — see
     // that component) — Festa's own card never reads this field.
     badges: ["freezer", "lunchbox"],
+    experience: {
+      teaser: "Pequeno o suficiente pra parecer inocente. 👀",
+      noteLabel: "Entre a gente:",
+      note: "Esse é daqueles que resolve um monte de coisa: café, lancheira, vontade de doce…",
+      nextTemptation: { id: "butter-cookies", line: "Já provou os biscoitos amanteigados? Também são ótimos pra ter em casa." },
+    },
     // General/day-to-day photo unchanged. Festa gets its own gallery of real
     // decorated/personalized donuts — the simple everyday presentation
     // above isn't the right protagonist there. Hero is the green/yellow
@@ -138,6 +159,12 @@ export const PRODUCTS = [
     tint: COLORS.caramelDark,
     moments: ["festa", "dia-dificil"],
     badges: ["deserve"],
+    experience: {
+      teaser: "Tem vontade de doce. E tem vontade de DOCE. Esse é pro segundo caso.",
+      noteLabel: "Eu não julgo:",
+      note: "Esse não é o docinho comportado. 😂 É pra quando você quer alguma coisa bem gostosa mesmo.",
+      nextTemptation: { id: "brownlito", line: "E se hoje você estiver nesse nível, olha o Brownlito também." },
+    },
     // `photos` is the general photo, still shown everywhere outside Festa
     // (dia-dificil, Feed/Search, etc.) — untouched. Festa gets its own
     // gallery, leading with the Minnie-personalized cone (communicates
@@ -195,6 +222,12 @@ export const PRODUCTS = [
     tint: COLORS.caramelDark,
     moments: ["dia-dificil"],
     badges: ["coffee"],
+    experience: {
+      teaser: "Café passado. Alfajor do lado. Agora ninguém me chama por cinco minutos.",
+      noteLabel: "Eu adoro esse:",
+      note: "É macio, tem doce de leite… com café fica muito bom.",
+      nextTemptation: { id: "pao-de-mel", line: "Se você gosta de doce de leite, já provou nosso Pão de Mel?" },
+    },
     photos: [REAL_PHOTOS.alfajorCoco],
   },
   {
@@ -219,6 +252,12 @@ export const PRODUCTS = [
     tint: COLORS.caramelDark,
     moments: ["dia-dificil"],
     badges: ["freezer", "deserve"],
+    experience: {
+      teaser: "Tem dia que um café sozinho simplesmente não dá conta.",
+      noteLabel: "Eu adoro esse:",
+      note: "E uma dica: compra alguns e congela. Seu eu do futuro vai agradecer.",
+      nextTemptation: { id: "brownlito", line: "Mas você já provou o Brownlito? 👀" },
+    },
     photos: [REAL_PHOTOS.visita, REAL_PHOTOS.paodemel2],
   },
   {
@@ -231,6 +270,12 @@ export const PRODUCTS = [
     tint: COLORS.caramelLight,
     moments: ["dia-dificil"],
     badges: ["coffee", "freezer"],
+    experience: {
+      teaser: "Tem dias que pedem café. Tem dias que pedem café e bolo.",
+      noteLabel: "Dica de amiga:",
+      note: "Dá pra congelar. Então eu já faria o favor de guardar umas fatias pro seu eu do futuro.",
+      nextTemptation: { id: "butter-cookies", line: "Pra acompanhar o próximo café, olha os amanteigados também." },
+    },
     photos: [REAL_PHOTOS.boloCenouraTray, REAL_PHOTOS.boloCenouraFatias],
   },
   {
@@ -243,6 +288,15 @@ export const PRODUCTS = [
     tint: COLORS.creamYellow,
     moments: ["dia-dificil", "freezer"],
     badges: ["coffee", "lunchbox"],
+    experience: {
+      teaser: "Cinco minutinhos de paz também contam como autocuidado.",
+      noteLabel: "Eu te conto:",
+      note: "Esse é um dos que eu gosto de ter em casa. Pega o café e pronto.",
+      nextTemptation: {
+        id: "butter-cookies-congelado",
+        line: "E já viu que também temos ele congelado pra você assar em casa?",
+      },
+    },
     // "dia-dificil" surfaces the real photo previously shown only under
     // the (now-removed) "cafe" moment, alongside this product's other
     // real photos — one single gallery, nothing lost. `photos` below
@@ -273,6 +327,12 @@ export const PRODUCTS = [
     tint: COLORS.creamYellow,
     moments: ["dia-dificil", "freezer"],
     badges: ["coffee", "lunchbox"],
+    experience: {
+      teaser: "Casa cheirando a biscoito sem precisar fazer a massa? Sim.",
+      noteLabel: "Esse é esperto:",
+      note: "Você deixa no freezer e assa quando quiser. Parece que você passou a tarde fazendo biscoito. Eu não conto. 😂",
+      nextTemptation: { id: "mini-donut-simples", line: "Quer outra coisa prática pro freezer? Olha os mini donuts." },
+    },
     // The real photo previously bundled into the regular Biscoito
     // Amanteigado's own gallery (see comment above) — raw dough disks in
     // a freezer bag, i.e. this exact unbaked/frozen product.
@@ -288,6 +348,12 @@ export const PRODUCTS = [
     tint: COLORS.caramelLight,
     moments: ["dia-dificil"],
     badges: ["coffee"],
+    experience: {
+      teaser: "Um café, um casadinho e de repente a tarde ficou bem melhor.",
+      noteLabel: "Entre a gente:",
+      note: "Amanteigado com goiabada. Não precisava inventar muito porque essa combinação já funciona.",
+      nextTemptation: { id: "butter-cookies", line: "Se você gosta de biscoitinho com café, olha o amanteigado também." },
+    },
     photos: [REAL_PHOTOS.casadinhoGoiabada],
   },
   {
@@ -300,6 +366,12 @@ export const PRODUCTS = [
     tint: COLORS.creamYellow,
     moments: ["dia-dificil"],
     badges: ["coffee", "glutenFree"],
+    experience: {
+      teaser: "Você pega um. Depois outro. Depois a gente para de contar.",
+      noteLabel: "Eu avisei:",
+      note: "Eles derretem na boca e desaparecem do pote numa velocidade suspeita.",
+      nextTemptation: { id: "alfajor", line: "Agora, se quiser continuar no território do café… já viu o Alfajor?" },
+    },
     photos: [REAL_PHOTOS.sequilhoNatural, REAL_PHOTOS.sequilhoRosa],
   },
   {
@@ -314,6 +386,12 @@ export const PRODUCTS = [
     // Badges are Dias de luta-only (ProductCard gates on momentId — see
     // that component) — Festa's own card never reads this field.
     badges: ["deserve", "freezer"],
+    experience: {
+      teaser: "Quando 'vou comer só um pedacinho de chocolate' já não vai resolver.",
+      noteLabel: "Sem julgamentos:",
+      note: "Oreo mergulhado em fudge. Eu não vou nem tentar fingir que esse é moderado. 😂",
+      nextTemptation: { id: "brownlito", line: "Se chegou nesse nível de vontade de chocolate, eu preciso te mostrar o Brownlito." },
+    },
     // General/day-to-day photo unchanged. Festa gets its own gallery — real
     // decorated Chocobombs across several themes/personalizations, so a
     // customer can picture matching it to their own party.
@@ -344,6 +422,12 @@ export const PRODUCTS = [
     tint: COLORS.creamYellow,
     moments: ["dia-dificil", "freezer"],
     badges: ["vegan", "freezer"],
+    experience: {
+      teaser: "Parece comportadinha. Aí você come uma.",
+      noteLabel: "Depois não diz que eu não avisei:",
+      note: "Ela derrete na boca e é perigosamente fácil de ficar beliscando.",
+      nextTemptation: { id: "brigadeiro", line: "Quer outra coisa boa pra deixar guardada? Dá uma olhada nos brigadeiros." },
+    },
     photos: [REAL_PHOTOS.balaDeCoco],
   },
   // Unit and sensory are still pending real data from Naia — left blank
@@ -363,6 +447,12 @@ export const PRODUCTS = [
     tint: COLORS.caramelDark,
     moments: ["dia-dificil"],
     badges: ["deserve", "freezer"],
+    experience: {
+      teaser: "Colher na mão. Problemas em espera por alguns minutos.",
+      noteLabel: "Entre a gente:",
+      note: "Esse é pra sentar e comer feliz. E não, você não precisa dividir.",
+      nextTemptation: { id: "chocobomb", line: "Mas já que hoje é dia de se agradar… você viu o Chocobomb?" },
+    },
     photos: [REAL_PHOTOS.boloDePoteCamadas, REAL_PHOTOS.boloDePoteMorango, REAL_PHOTOS.boloDePoteVariedade],
   },
   // Brownlito belongs to two journeys at once (the "dia-dificil" moment
@@ -382,9 +472,15 @@ export const PRODUCTS = [
     tint: COLORS.ink,
     moments: ["dia-dificil"],
     presenteGroup: "mimos",
-    // "hardDay" is a deliberate one-off personality moment for Brownlito
+    // "hardTimes" is a deliberate one-off personality moment for Brownlito
     // specifically — see src/data/badges.js. Do not reuse it elsewhere.
-    badges: ["hardDay", "freezer"],
+    badges: ["hardTimes", "freezer"],
+    experience: {
+      teaser: "Dia difícil? Eu não faço perguntas. Só te apresento o Brownlito.",
+      noteLabel: "Amigo das horas difíceis:",
+      note: "Brownie recheado no palito. Preciso explicar mais? 😂",
+      nextTemptation: { id: "chocobomb", line: "Agora, se você é do time chocolate sem limites, olha o Chocobomb também." },
+    },
     // "dia-dificil" gets its own curated gallery — brownlitoEmbalado
     // (individually wrapped, coconut on top) in, brownlitoInteiro (the
     // green-ribbon photo) out, at Naia's request; `photos` below stays

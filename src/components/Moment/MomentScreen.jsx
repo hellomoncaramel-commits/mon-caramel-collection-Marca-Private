@@ -1,4 +1,4 @@
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Heart, Sparkles } from "lucide-react";
 import { MOMENT_INTRO } from "../../data/moments";
 import { pickForMoment, pickCrossSell } from "../../utils/products";
@@ -11,6 +11,11 @@ import PartyPanel from "../Party/PartyPanel";
 import PartyModal from "../Party/PartyModal";
 import PartyFloatingButton from "../Party/PartyFloatingButton";
 
+// A cross-sell reaction line shouldn't fire on every single add — that
+// reads as bombarding, not spontaneous. One is enough per stretch of
+// browsing; this is how long before another is allowed to show.
+const CROSS_SELL_COOLDOWN_MS = 60_000;
+
 // Matched products for the chosen moment (dia-dificil or festa —
 // "presente" has its own dedicated PresenteScreen), plus cross-sell
 // discovery and the "Minha Seleção" / "Minha Festa" baskets.
@@ -18,6 +23,7 @@ export default function MomentScreen({
   momentId,
   onBack,
   onSend,
+  onOpenProduct,
   favorites,
   toggleFavorite,
   onGoCatalog,
@@ -29,9 +35,36 @@ export default function MomentScreen({
   const matched = useMemo(() => pickForMoment(momentId), [momentId]);
   const crossSell = useMemo(() => pickCrossSell(momentId, matched), [momentId, matched]);
   const isFesta = momentId === "festa";
+  const isDiaDificil = momentId === "dia-dificil";
 
   const party = useParty();
   const partyPanelRef = useRef(null);
+
+  // Dias de luta's own "reação Mon Caramel" on add — a quiet confirmation
+  // that occasionally (never every time — see CROSS_SELL_COOLDOWN_MS below)
+  // becomes a soft cross-sell nudge instead, reusing that same product's
+  // hand-written `experience.nextTemptation` line rather than inventing new
+  // copy for the toast.
+  const [addReaction, setAddReaction] = useState(null);
+  const reactionTimeoutRef = useRef(null);
+  const lastCrossSellAtRef = useRef(0);
+
+  const handleProductAdded = (product) => {
+    const temptation = product.experience?.nextTemptation;
+    const now = Date.now();
+    // The cooldown alone would make the very first add of a session always
+    // qualify (nothing shown yet to be "recent"), which isn't "occasional"
+    // — the coin flip keeps it feeling spontaneous even then.
+    const showCrossSell =
+      Boolean(temptation) && now - lastCrossSellAtRef.current > CROSS_SELL_COOLDOWN_MS && Math.random() < 0.5;
+    if (showCrossSell) lastCrossSellAtRef.current = now;
+    const message = showCrossSell
+      ? `Boa escolha. Agora eu vou fazer meu trabalho de te tentar: ${temptation.line}`
+      : `${product.name} entrou pra sua seleção 💛`;
+    setAddReaction(message);
+    clearTimeout(reactionTimeoutRef.current);
+    reactionTimeoutRef.current = setTimeout(() => setAddReaction(null), showCrossSell ? 3400 : 2200);
+  };
 
   const cardProps = {
     isFesta,
@@ -42,6 +75,12 @@ export default function MomentScreen({
     removeFromSelection,
     partyItems: party.items,
     onOpenPartyModal: party.openModal,
+    // The Mon Caramel Experience layer (teaser styling aside, which lives
+    // directly in ProductCard) is Dias de luta-only — Festa's card never
+    // receives these two, so tapping a Festa card can't open a detail sheet
+    // and adding to Minha Festa never triggers the reaction toast.
+    onOpenDetail: isDiaDificil ? (p) => onOpenProduct(p, "dia-dificil") : undefined,
+    onAdded: isDiaDificil ? handleProductAdded : undefined,
   };
 
   return (
@@ -123,7 +162,7 @@ export default function MomentScreen({
         />
       )}
 
-      <Toast message={party.toast} />
+      <Toast message={isFesta ? party.toast : addReaction} />
     </div>
   );
 }

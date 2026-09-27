@@ -43,12 +43,26 @@ export default function App() {
   const [screen, setScreen] = useState(null);
   const [pendingMessage, setPendingMessage] = useState(null);
   const [openProduct, setOpenProduct] = useState(null);
+  // Which journey opened the product detail sheet — only Dias de luta ever
+  // sets this (to "dia-dificil"), which is what turns on the Mon Caramel
+  // Experience layer inside ProductDetailSheet (badges/note/cross-sell).
+  // Feed/Search/Salvos never pass a context, so the sheet renders exactly
+  // as it always has for them.
+  const [openProductContext, setOpenProductContext] = useState(null);
   const { favorites, toggleFavorite, toast: favToast } = useFavorites();
   const { selection, addToSelection, removeFromSelection } = useSelection();
 
   const onGoSelection = () => setScreen("selecao");
   const onNavigate = (id) => setScreen(id === "home" ? null : id);
   const activeNav = screen === null ? "home" : BOTTOM_NAV_SCREENS.includes(screen) ? screen : undefined;
+  const openProductDetail = (product, context = null) => {
+    setOpenProduct(product);
+    setOpenProductContext(context);
+  };
+  const closeProductDetail = () => {
+    setOpenProduct(null);
+    setOpenProductContext(null);
+  };
 
   return (
     <div className="min-h-screen bg-brand-beige font-body">
@@ -64,7 +78,7 @@ export default function App() {
             toggleFavorite={toggleFavorite}
             selection={selection}
             addToSelection={addToSelection}
-            onOpenProduct={setOpenProduct}
+            onOpenProduct={openProductDetail}
             onGoSaved={() => setScreen("salvos")}
           />
         )}
@@ -76,7 +90,7 @@ export default function App() {
             toggleFavorite={toggleFavorite}
             selection={selection}
             addToSelection={addToSelection}
-            onOpenProduct={setOpenProduct}
+            onOpenProduct={openProductDetail}
             onGoFeed={() => setScreen("feed")}
           />
         )}
@@ -87,7 +101,7 @@ export default function App() {
             onGoCatalog={() => setScreen("catalogo")}
             selection={selection}
             addToSelection={addToSelection}
-            onOpenProduct={setOpenProduct}
+            onOpenProduct={openProductDetail}
             onSend={setPendingMessage}
           />
         )}
@@ -133,6 +147,7 @@ export default function App() {
             onBack={() => setScreen(null)}
             onGoCatalog={() => setScreen("catalogo")}
             onSend={setPendingMessage}
+            onOpenProduct={openProductDetail}
             favorites={favorites}
             toggleFavorite={toggleFavorite}
             selection={selection}
@@ -164,8 +179,15 @@ export default function App() {
 
       {openProduct && (
         <ProductDetailSheet
+          // Remounts cleanly when "próxima tentação" switches to a
+          // different product (see NextTemptation.jsx) — otherwise local
+          // state like the quantity stepper would carry over from whatever
+          // product was open before.
+          key={openProduct.id}
           product={openProduct}
-          onClose={() => setOpenProduct(null)}
+          onClose={closeProductDetail}
+          momentId={openProductContext}
+          onOpenProduct={openProductDetail}
           selection={selection}
           addToSelection={addToSelection}
           removeFromSelection={removeFromSelection}
