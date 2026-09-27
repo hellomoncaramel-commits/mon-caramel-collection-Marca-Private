@@ -12,15 +12,21 @@ import { REAL_PHOTOS } from "./photos";
 // add the field to a product once Naia tells us what actually pairs well.
 //
 // "freezer" survives as a co-tag in `moments` on a few products below (see
-// e.g. brigadeiro, butter-cookies) purely to feed the existing "Pode
-// congelar" badge (ProductCard.jsx, ProductDetailSheet.jsx) and the Feed's
-// "Pode congelar" filter (Feed/FeedScreen.jsx), both keyed off
-// `moments.includes("freezer")` already. It is NOT a navigable destination
-// any more — "freezer" was removed from MOMENTS (data/moments.js), so
-// nothing ever renders a MomentScreen for it. Don't read its presence here
-// as "Freezer is still a journey"; it's just today's data source for that
-// one badge, until a dedicated `badges` field replaces it (briefing
-// section 9 — not built yet, by design).
+// e.g. brigadeiro, butter-cookies) purely to feed ProductDetailSheet.jsx's
+// "Pode congelar" list item and the Feed's "Pode congelar" filter
+// (Feed/FeedScreen.jsx), both still keyed off `moments.includes("freezer")`.
+// It is NOT a navigable destination any more — "freezer" was removed from
+// MOMENTS (data/moments.js), so nothing ever renders a MomentScreen for it.
+// Don't read its presence here as "Freezer is still a journey"; it's just
+// today's data source for those two spots.
+//
+// The Dias de luta card (ProductCard.jsx) no longer reads this tag: it now
+// renders the `badges` field below (data/badges.js) instead — a manually
+// curated list per product, deliberately not always the same as
+// `moments.includes("freezer")` (e.g. "Mini Cake Donuts — assados e
+// congelados" already says "congelados" in its own name, so it doesn't
+// repeat that as a badge). `badges` is Dias de luta-only for now, by
+// Naia's brief — not read anywhere else yet.
 //
 // Separately: a "sold frozen" commercial variant of a regular product is a
 // DIFFERENT concept from the "Pode congelar" badge above — one is a
@@ -52,6 +58,7 @@ export const PRODUCTS = [
     kind: "bites",
     tint: COLORS.ink,
     moments: ["dia-dificil", "freezer"],
+    badges: ["coffee", "freezer", "glutenFree"],
     // "dia-dificil" now carries its own real photo plus the ones
     // previously shown only under the (now-removed) "cafe" and "freezer"
     // moments — see src/data/moments.js: all consolidated into this
@@ -72,6 +79,7 @@ export const PRODUCTS = [
     kind: "cake",
     tint: COLORS.caramelLight,
     moments: ["dia-dificil", "freezer"],
+    badges: ["coffee", "lunchbox"],
     photos: [REAL_PHOTOS.donutFreezer],
   },
   {
@@ -108,6 +116,9 @@ export const PRODUCTS = [
     kind: "cake",
     tint: COLORS.ink,
     moments: ["festa", "dia-dificil"],
+    // Badges are Dias de luta-only (ProductCard gates on momentId — see
+    // that component) — Festa's own card never reads this field.
+    badges: ["freezer", "lunchbox"],
     // General/day-to-day photo unchanged. Festa gets its own gallery of real
     // decorated/personalized donuts — the simple everyday presentation
     // above isn't the right protagonist there. Hero is the green/yellow
@@ -126,6 +137,7 @@ export const PRODUCTS = [
     kind: "cake",
     tint: COLORS.caramelDark,
     moments: ["festa", "dia-dificil"],
+    badges: ["deserve"],
     // `photos` is the general photo, still shown everywhere outside Festa
     // (dia-dificil, Feed/Search, etc.) — untouched. Festa gets its own
     // gallery, leading with the Minnie-personalized cone (communicates
@@ -182,6 +194,7 @@ export const PRODUCTS = [
     kind: "sandwich",
     tint: COLORS.caramelDark,
     moments: ["dia-dificil"],
+    badges: ["coffee"],
     photos: [REAL_PHOTOS.alfajorCoco],
   },
   {
@@ -205,6 +218,7 @@ export const PRODUCTS = [
     kind: "cake",
     tint: COLORS.caramelDark,
     moments: ["dia-dificil"],
+    badges: ["freezer", "deserve"],
     photos: [REAL_PHOTOS.visita, REAL_PHOTOS.paodemel2],
   },
   {
@@ -216,6 +230,7 @@ export const PRODUCTS = [
     kind: "cake",
     tint: COLORS.caramelLight,
     moments: ["dia-dificil"],
+    badges: ["coffee", "freezer"],
     photos: [REAL_PHOTOS.boloCenouraTray, REAL_PHOTOS.boloCenouraFatias],
   },
   {
@@ -227,6 +242,7 @@ export const PRODUCTS = [
     kind: "sandwich",
     tint: COLORS.creamYellow,
     moments: ["dia-dificil", "freezer"],
+    badges: ["coffee", "lunchbox"],
     // "dia-dificil" surfaces the real photo previously shown only under
     // the (now-removed) "cafe" moment, alongside this product's other
     // real photos — one single gallery, nothing lost. `photos` below
@@ -256,6 +272,7 @@ export const PRODUCTS = [
     kind: "sandwich",
     tint: COLORS.creamYellow,
     moments: ["dia-dificil", "freezer"],
+    badges: ["coffee", "lunchbox"],
     // The real photo previously bundled into the regular Biscoito
     // Amanteigado's own gallery (see comment above) — raw dough disks in
     // a freezer bag, i.e. this exact unbaked/frozen product.
@@ -270,6 +287,7 @@ export const PRODUCTS = [
     kind: "sandwich",
     tint: COLORS.caramelLight,
     moments: ["dia-dificil"],
+    badges: ["coffee"],
     photos: [REAL_PHOTOS.casadinhoGoiabada],
   },
   {
@@ -281,6 +299,7 @@ export const PRODUCTS = [
     kind: "bites",
     tint: COLORS.creamYellow,
     moments: ["dia-dificil"],
+    badges: ["coffee", "glutenFree"],
     photos: [REAL_PHOTOS.sequilhoNatural, REAL_PHOTOS.sequilhoRosa],
   },
   {
@@ -292,6 +311,9 @@ export const PRODUCTS = [
     kind: "dipped",
     tint: COLORS.caramelLight,
     moments: ["dia-dificil", "festa"],
+    // Badges are Dias de luta-only (ProductCard gates on momentId — see
+    // that component) — Festa's own card never reads this field.
+    badges: ["deserve", "freezer"],
     // General/day-to-day photo unchanged. Festa gets its own gallery — real
     // decorated Chocobombs across several themes/personalizations, so a
     // customer can picture matching it to their own party.
@@ -321,6 +343,7 @@ export const PRODUCTS = [
     kind: "candy",
     tint: COLORS.creamYellow,
     moments: ["dia-dificil", "freezer"],
+    badges: ["vegan", "freezer"],
     photos: [REAL_PHOTOS.balaDeCoco],
   },
   // Unit and sensory are still pending real data from Naia — left blank
@@ -339,6 +362,7 @@ export const PRODUCTS = [
     kind: "cake",
     tint: COLORS.caramelDark,
     moments: ["dia-dificil"],
+    badges: ["deserve", "freezer"],
     photos: [REAL_PHOTOS.boloDePoteCamadas, REAL_PHOTOS.boloDePoteMorango, REAL_PHOTOS.boloDePoteVariedade],
   },
   // Brownlito belongs to two journeys at once (the "dia-dificil" moment
@@ -358,6 +382,9 @@ export const PRODUCTS = [
     tint: COLORS.ink,
     moments: ["dia-dificil"],
     presenteGroup: "mimos",
+    // "hardDay" is a deliberate one-off personality moment for Brownlito
+    // specifically — see src/data/badges.js. Do not reuse it elsewhere.
+    badges: ["hardDay", "freezer"],
     // "dia-dificil" gets its own curated gallery — brownlitoEmbalado
     // (individually wrapped, coconut on top) in, brownlitoInteiro (the
     // green-ribbon photo) out, at Naia's request; `photos` below stays

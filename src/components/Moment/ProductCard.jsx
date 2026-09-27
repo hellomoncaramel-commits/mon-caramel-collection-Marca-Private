@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Heart, Snowflake, Sparkles } from "lucide-react";
+import { Heart, Sparkles } from "lucide-react";
 import { COLORS } from "../../styles/colors";
 import { MOMENT_ICON } from "../../data/moments";
 import { photosForMoment, parseQuantityOptions } from "../../utils/products";
 import PhotoCarousel from "../shared/PhotoCarousel";
 import ProductArt from "../shared/ProductArt";
+import ProductBadges from "../shared/ProductBadges";
 import FlavorConfigurator from "./FlavorConfigurator";
 
 // A single product card — photo first, everything else light. Doubles as
@@ -28,10 +29,6 @@ export default function ProductCard({
   const existing = selection.find((it) => it.kind === "product" && it.productId === p.id);
   const [open, setOpen] = useState(false);
   const partyEntry = partyItems?.find((it) => it.id === p.id);
-
-  // Badges are derived straight from real product data — never invented
-  // labels — so a product only wears the ones that are actually true of it.
-  const canFreeze = p.moments.includes("freezer");
 
   const confirmAdd = ({ qty, flavorBreakdown }) => {
     addToSelection({
@@ -77,6 +74,12 @@ export default function ProductCard({
         {!isFesta && <p className="text-xs mt-0.5 text-brand-muted">{p.unit}</p>}
         <p className="text-xs mt-2 leading-relaxed flex-1 text-brand-inkSoft">{p.sensory}</p>
 
+        {/* "Insight" badges — Dias de luta only (per Naia's brief); Festa's
+            card never renders this, even for a product that also carries a
+            `badges` array (e.g. Mini Cake Donuts, Cones Trufados, Chocobomb
+            are cross-tagged to both moments). */}
+        {!isFesta && <ProductBadges badges={p.badges} />}
+
         {!isFesta && (
           <div className="flex flex-wrap gap-1.5 mt-2.5">
             {isCustomizable ? (
@@ -89,11 +92,6 @@ export default function ProductCard({
             ) : (
               <span className="inline-flex items-center gap-1 text-3xs font-medium rounded-full px-2 py-1 bg-brand-subtle text-brand-inkSoft">
                 Sabor fixo
-              </span>
-            )}
-            {canFreeze && (
-              <span className="inline-flex items-center gap-1 text-3xs font-medium rounded-full px-2 py-1 bg-brand-subtle text-brand-inkSoft">
-                <Snowflake size={10} /> Pode congelar
               </span>
             )}
           </div>
