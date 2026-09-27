@@ -50,13 +50,12 @@ export default {
         // section / body / utility), not one size per component. Product
         // names/prices get their own two entries since they sit between
         // body and utility.
-        // Home's hero needs to read as the page's clear textual protagonist —
-        // bigger than MomentPicker's own headline (clamp(30,8vw,36)), since
-        // Home's sentence is longer and wraps to two lines regardless of
-        // size, so it can afford (and needs) more scale to still command
-        // the top of the page rather than reading as "a slightly large
-        // paragraph".
-        "mc-home-hero": ["clamp(32px, 9.5vw, 40px)", { lineHeight: "0.98", letterSpacing: "-0.02em" }],
+        // Home's hero still has to read as the page's clear textual
+        // protagonist — personality/serif italic, 2-3 line wrap — but it no
+        // longer needs to dominate the first viewport: the two discovery
+        // actions must be visible right below it, not pushed down by a
+        // headline sized like a magazine cover.
+        "mc-home-hero": ["clamp(24px, 6.8vw, 29px)", { lineHeight: "1.08", letterSpacing: "-0.015em" }],
         "mc-home-section": ["18px", { lineHeight: "1.1" }],
         "mc-home-body": ["12.5px", { lineHeight: "1.35" }],
         // Card title/subtitle bumped alongside the card's own min-height
