@@ -39,10 +39,9 @@ const BUTTON_BG = COLORS.caramelDarker;
 
 // Home's composition, top to bottom: pergunta → escolha (na própria foto).
 // Foto + gradient + ações continuam como uma única peça editorial (essa
-// estrutura já está aprovada) — esta é uma correção cirúrgica: fotografia
-// trocada (a anterior duplicava o card "Dias de luta" do MomentPicker) e os
-// dois botões voltam a ter fundo marrom escuro sólido para affordance clara
-// — nada mais na composição mudou.
+// estrutura está aprovada) — hero photo restored to casadinhoGoiabada
+// (the approved original) after two rounds of photo swaps; buttons stay
+// solid dark brown.
 export default function HomeScreen({ onSelect }) {
   return (
     <div className="w-full md:max-w-2xl lg:max-w-3xl xl:max-w-4xl md:mx-auto px-gutter pt-2 pb-8 fade-up">
@@ -77,15 +76,12 @@ export default function HomeScreen({ onSelect }) {
           into a full-screen hero — and, unlike a wider ratio (e.g. 16:9),
           stays narrow enough relative to the source photo that
           object-cover always crops horizontally rather than exposing a raw
-          edge of the photo itself. brigadeiroDiaDificil (not
-          biscoitoVariedade, which turned out to be the exact same
-          photograph as MomentPicker's "dias-de-luta" cover — the very next
-          screen from "Me ajuda a escolher" — just under a different
-          filename) — a distinct, appetizing shot not used by any of
-          MomentPicker's three moment cards. */}
+          edge of the photo itself. Restored to casadinhoGoiabada — the
+          original Home hero photo, approved before the last two rounds'
+          photo swaps. */}
       <div className="relative mt-5 rounded-3xl overflow-hidden aspect-mc-portrait">
         <Photo
-          src={REAL_PHOTOS.brigadeiroDiaDificil}
+          src={REAL_PHOTOS.casadinhoGoiabada}
           alt=""
           className="absolute inset-0 w-full h-full object-cover"
           loading="eager"

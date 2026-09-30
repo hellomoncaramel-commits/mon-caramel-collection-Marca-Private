@@ -1,9 +1,9 @@
 import { useMemo } from "react";
-import { MessageCircle, X, Sparkles, Plus, Gift } from "lucide-react";
+import { MessageCircle, X, Sparkles, Gift } from "lucide-react";
 import { buildSelectionMessage } from "../../utils/messages";
 import { entryKey } from "../../utils/selectionKey";
 import { PRODUCTS } from "../../data/products";
-import { defaultPhotos, pickSelectionCrossSell } from "../../utils/products";
+import { defaultPhotos } from "../../utils/products";
 import { entryPrice } from "../../utils/pricing";
 import Photo from "../shared/Photo";
 import SiteHeader from "../shared/SiteHeader";
@@ -98,9 +98,8 @@ function EntryCard({ it, product, onRemove }) {
 // Shared "Minha Seleção" — not a checkout cart. Its job is to help build an
 // idea of an order before talking to Naia; the finish line is one organized
 // WhatsApp message, not a purchase.
-export default function SelectionScreen({ selection, removeFromSelection, addToSelection, onBack, onSend }) {
+export default function SelectionScreen({ selection, removeFromSelection, onBack, onSend }) {
   const productsById = useMemo(() => new Map(PRODUCTS.map((p) => [p.id, p])), []);
-  const suggestion = useMemo(() => pickSelectionCrossSell(selection), [selection]);
 
   return (
     <div className="max-w-2xl mx-auto px-gutter pt-2 pb-10 fade-up">
@@ -131,25 +130,6 @@ export default function SelectionScreen({ selection, removeFromSelection, addToS
               />
             ))}
           </div>
-
-          {suggestion && (
-            <div className="rounded-2xl border border-brand-border bg-brand-subtle p-4 mb-6 flex items-center gap-3">
-              <Thumb photo={defaultPhotos(suggestion)?.[0]} fallbackIcon={<Sparkles size={20} className="text-brand-caramelDark" />} />
-              <div className="min-w-0 flex-1">
-                <p className="text-xs text-brand-muted mb-0.5">Só mais uma coisinha... 👀</p>
-                <p className="font-display text-sm text-brand-ink truncate">{suggestion.name}</p>
-              </div>
-              <button
-                onClick={() =>
-                  addToSelection({ kind: "product", productId: suggestion.id, name: suggestion.name, unit: suggestion.unit, qty: 1, flavors: null })
-                }
-                className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 text-white bg-brand-caramelDark"
-                aria-label={`Adicionar ${suggestion.name}`}
-              >
-                <Plus size={16} />
-              </button>
-            </div>
-          )}
 
           <div className="flex flex-col gap-2">
             <button

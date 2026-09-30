@@ -55,7 +55,7 @@ function ResultRow({ p, isAdded, onQuickAdd, onOpen }) {
   );
 }
 
-export default function SearchScreen({ onBack, onGoCatalog, selection, addToSelection, onOpenProduct, onSend }) {
+export default function SearchScreen({ onBack, selection, addToSelection, onOpenProduct, onSend }) {
   const [query, setQuery] = useState("");
 
   const results = useMemo(() => {
@@ -101,12 +101,6 @@ export default function SearchScreen({ onBack, onGoCatalog, selection, addToSele
               {term}
             </button>
           ))}
-          <button
-            onClick={onGoCatalog}
-            className="text-sm font-medium rounded-full px-4 py-2 border border-brand-caramelDark text-brand-caramelDark min-h-11"
-          >
-            Ver tudo
-          </button>
         </div>
       )}
 
