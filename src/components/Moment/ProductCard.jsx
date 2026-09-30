@@ -24,7 +24,6 @@ export default function ProductCard({
   partyItems,
   onOpenPartyModal,
   onOpenDetail,
-  onAdded,
 }) {
   const isFav = favorites.includes(p.id);
   const isCustomizable = p.customizable === true;
@@ -42,7 +41,6 @@ export default function ProductCard({
       flavors: isCustomizable && flavorBreakdown.length > 0 ? flavorBreakdown : null,
     });
     setOpen(false);
-    onAdded?.(p);
   };
 
   const photos = photosForMoment(p, momentId);
@@ -106,20 +104,14 @@ export default function ProductCard({
             are cross-tagged to both moments). */}
         {!isFesta && <ProductBadges badges={p.badges} />}
 
-        {!isFesta && (
+        {!isFesta && isCustomizable && (
           <div className="flex flex-wrap gap-1.5 mt-2.5">
-            {isCustomizable ? (
-              <span
-                className="inline-flex items-center gap-1 text-3xs font-medium rounded-full px-2 py-1"
-                style={{ backgroundColor: `${COLORS.caramelLight}30`, color: COLORS.caramelDark }}
-              >
-                <Sparkles size={10} /> Escolha seus sabores ✨
-              </span>
-            ) : (
-              <span className="inline-flex items-center gap-1 text-3xs font-medium rounded-full px-2 py-1 bg-brand-subtle text-brand-inkSoft">
-                Sabor fixo
-              </span>
-            )}
+            <span
+              className="inline-flex items-center gap-1 text-3xs font-medium rounded-full px-2 py-1"
+              style={{ backgroundColor: `${COLORS.caramelLight}30`, color: COLORS.caramelDark }}
+            >
+              <Sparkles size={10} /> Escolha seus sabores ✨
+            </span>
           </div>
         )}
 

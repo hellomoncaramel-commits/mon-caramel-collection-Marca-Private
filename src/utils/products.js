@@ -40,23 +40,19 @@ export function photosForMoment(product, momentId) {
 }
 
 // Whether a product belongs in general, price-showing browsing (the feed,
-// search, favorites). Excludes: presente items (inspiration, not individual
-// SKUs — they live in PresenteScreen) and festa-exclusive items, since the
-// Festa flow deliberately never shows a price or mixes with Minha Seleção;
-// a product cross-tagged to festa *and* another moment is fine here, since
-// it already shows its price in that other moment.
+// search, favorites). Excludes: presente-exclusive items (pure inspiration,
+// not an individual SKU with its own day-to-day moment — they live only in
+// PresenteScreen) and festa-exclusive items, since the Festa flow
+// deliberately never shows a price or mixes with Minha Seleção. A product
+// with `presenteGroup` set that *also* belongs to a real moment (e.g.
+// Brownlito — dia-dificil catalog AND Presentes → Pequenos Mimos, see
+// data/products.js) stays browsable: `presenteGroup` only means "also
+// featured in Presentes," not "exclusive to Presentes."
 export function isBrowsable(product) {
-  if (product.presenteGroup) return false;
+  const hasRealMoment = product.moments.some((m) => m !== "presente" && m !== "festa");
+  if (product.presenteGroup && !hasRealMoment) return false;
   if (product.moments.length === 1 && product.moments[0] === "festa") return false;
   return true;
-}
-
-// Minha Seleção's single cross-sell nudge — no current moment to lean on
-// here (the selection mixes entries from every screen), so it just offers
-// the first browsable product not already in the selection.
-export function pickSelectionCrossSell(selection) {
-  const selectedIds = new Set(selection.filter((it) => !it.kind || it.kind === "product").map((it) => it.productId));
-  return PRODUCTS.find((p) => isBrowsable(p) && !selectedIds.has(p.id)) || null;
 }
 
 // Same idea as photosForMoment, but for contexts with no moment in play
