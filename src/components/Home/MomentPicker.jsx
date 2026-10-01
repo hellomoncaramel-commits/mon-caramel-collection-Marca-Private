@@ -179,8 +179,10 @@ export default function MomentPicker({ onBack, onSelectMoment }) {
     <div className="w-full md:max-w-2xl lg:max-w-4xl xl:max-w-5xl md:mx-auto px-gutter pt-2 pb-3 fade-up flex flex-col h-[calc(100dvh-6rem)] md:h-auto">
       <SiteHeader onBack={onBack} />
 
-      {/* Intro */}
-      <h1 className="font-display italic text-brand-ink text-center shrink-0 text-[clamp(30px,8vw,36px)] md:text-[26px] leading-[1.05]">
+      {/* Intro — Fraunces roman medium, matching the Home headline's own
+          treatment (italic is an accent now, not the default headline
+          voice). */}
+      <h1 className="font-display font-medium text-brand-ink text-center shrink-0 text-[clamp(30px,8vw,36px)] md:text-[26px] leading-[1.05]">
         Como você está hoje?
       </h1>
       <p className="text-brand-inkSoft text-center mt-1.5 shrink-0 text-[15px] md:text-mc-home-body leading-[1.35]">

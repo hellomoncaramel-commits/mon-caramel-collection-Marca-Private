@@ -16,7 +16,7 @@ const PartyPanel = forwardRef(function PartyPanel({ items, theme, notes, onSubmi
     >
       <p className="text-lg mb-1 font-display text-brand-ink">🎉 Minha Festa</p>
       {items.length === 0 ? (
-        <p className="text-sm italic leading-relaxed font-subtitle text-brand-inkSoft">
+        <p className="text-sm leading-relaxed font-display text-brand-inkSoft">
           Sua festa é única. Escolha os docinhos e detalhes que mais combinam com esse momento.
         </p>
       ) : (

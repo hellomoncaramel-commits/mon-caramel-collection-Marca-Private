@@ -61,8 +61,10 @@ export default function HomeScreen({ onSelect }) {
 
       {/* A regular space before the emoji risks it wrapping onto its own
           orphan line at some widths (e.g. 390px) — a non-breaking space
-          keeps "hoje?" and "💛" glued together as one unit. */}
-      <h1 className="text-mc-home-hero mt-3 font-display italic text-brand-ink">O que a gente vai adoçar hoje?&nbsp;💛</h1>
+          keeps "hoje?" and "💛" glued together as one unit. Fraunces roman
+          medium, not italic — italic is an accent elsewhere in the system
+          now, not the default voice for a headline this prominent. */}
+      <h1 className="text-mc-home-hero mt-3 font-display font-medium text-brand-ink">O que a gente vai adoçar hoje?&nbsp;💛</h1>
       {/* max-w keeps this a clearly shorter, subordinate line under the
           hero — it would otherwise stretch nearly full-width on a
           390–430px phone and start competing with the headline above it. */}
@@ -99,8 +101,11 @@ export default function HomeScreen({ onSelect }) {
               >
                 <a.Icon size={19} strokeWidth={2} className="shrink-0 text-brand-beige" />
                 <span className="min-w-0 flex-1">
+                  {/* Button label — DM Sans, not Fraunces: this is an
+                      action/CTA, not an editorial moment (personality lives
+                      in the headline above, not in the buttons). */}
                   <span
-                    className={`block font-display text-brand-beige leading-snug ${
+                    className={`block text-brand-beige leading-snug ${
                       a.primary ? "text-[16.5px] font-semibold" : "text-[15.5px] font-medium"
                     }`}
                   >

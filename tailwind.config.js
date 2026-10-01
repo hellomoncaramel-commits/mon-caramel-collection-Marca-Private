@@ -36,10 +36,15 @@ export default {
           subtle: "#F4EBDA",
         },
       },
+      // Two voices, consciously: Fraunces (personality/editorial — headlines,
+      // product names, card titles) and DM Sans (functional/interface —
+      // body text, buttons, prices, badges, nav). Cormorant Garamond
+      // ("subtitle") and Roboto ("body") are retired — every former
+      // font-subtitle use was migrated to font-display or plain body text,
+      // not kept as a third/fourth voice.
       fontFamily: {
         display: ["Fraunces", "serif"],
-        subtitle: ['"Cormorant Garamond"', "serif"],
-        body: ["Roboto", "sans-serif"],
+        body: ['"DM Sans"', "sans-serif"],
       },
       fontSize: {
         "3xs": ["0.65rem", { lineHeight: "0.9rem" }],

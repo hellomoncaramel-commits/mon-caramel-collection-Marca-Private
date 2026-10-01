@@ -33,7 +33,9 @@ export default function FlavorConfigurator({ product, existing, onConfirm }) {
     <div className="fade-up">
       {qtyOptions.length > 1 && (
         <>
-          <p className="text-sm font-display text-brand-ink mb-2">Quantidade</p>
+          {/* Functional label, not an editorial moment — DM Sans (plain,
+              no font-display override). */}
+          <p className="text-sm font-medium text-brand-ink mb-2">Quantidade</p>
           <div className="inline-flex items-center gap-1 rounded-full border border-brand-border mb-4">
             <button
               onClick={() => stepQty(-1)}
@@ -59,10 +61,11 @@ export default function FlavorConfigurator({ product, existing, onConfirm }) {
       )}
 
       {product.flavors.length === 0 ? (
-        <p className="text-xs italic text-brand-muted">Sabores em breve — fala com a gente pra combinar.</p>
+        <p className="text-xs text-brand-muted">Sabores em breve — fala com a gente pra combinar.</p>
       ) : (
         <>
-          <p className="text-sm font-display text-brand-ink mb-2">Escolha seus sabores</p>
+          {/* Functional label — DM Sans, same treatment as "Quantidade" above. */}
+          <p className="text-sm font-medium text-brand-ink mb-2">Escolha seus sabores</p>
           <div className="flex flex-wrap gap-1.5 mb-3">
             {product.flavors.map((f) => {
               const on = selectedFlavors.includes(f);
