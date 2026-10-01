@@ -53,7 +53,7 @@ const OPTIONS = [
 // products, leads straight to a small catalog.
 export default function PresenteEntryScreen({ onBack, onSelect }) {
   return (
-    <div className="max-w-xl md:max-w-3xl mx-auto px-gutter pt-2 pb-10 fade-up">
+    <div className="max-w-xl md:max-w-3xl lg:max-w-5xl mx-auto px-gutter pt-2 pb-10 fade-up">
       <SiteHeader onBack={onBack} />
       <h1 className="mc-page-title">É só uma lembrancinha.</h1>
       <p className="mc-page-subtitle">

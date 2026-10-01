@@ -69,7 +69,7 @@ export default function ProductDetailSheet({
     <div className="fixed inset-0 z-modal flex items-end sm:items-center justify-center">
       <div className="absolute inset-0 bg-black/50" onClick={onClose} />
       <div
-        className="relative bg-brand-beige w-full sm:max-w-md sm:rounded-3xl rounded-t-3xl overflow-y-auto fade-up"
+        className="relative bg-brand-beige w-full sm:max-w-md sm:rounded-3xl rounded-t-3xl overflow-y-auto fade-up lg:max-w-4xl lg:grid lg:grid-cols-2 lg:overflow-hidden lg:max-h-[88vh]"
         style={{ maxHeight: "92vh" }}
         role="dialog"
         aria-modal="true"
@@ -100,13 +100,20 @@ export default function ProductDetailSheet({
           </button>
         </div>
 
-        {photos && photos.length > 0 ? (
-          <PhotoCarousel photos={photos} alt={p.name} />
-        ) : (
-          <ProductArt kind={p.kind} tint={p.tint} />
-        )}
+        {/* Desktop (lg+): this becomes the modal's left column via the
+            panel's own lg:grid-cols-2 above — same PhotoCarousel/ProductArt,
+            just centered in a fixed-height column instead of a full-width
+            top band. Mobile/tablet below lg: completely unchanged (no
+            wrapper classes apply below lg). */}
+        <div className="lg:h-full lg:overflow-hidden lg:flex lg:items-center lg:justify-center lg:bg-brand-subtle">
+          {photos && photos.length > 0 ? (
+            <PhotoCarousel photos={photos} alt={p.name} />
+          ) : (
+            <ProductArt kind={p.kind} tint={p.tint} />
+          )}
+        </div>
 
-        <div className="p-5">
+        <div className="p-5 lg:h-full lg:overflow-y-auto">
           <h2 id="product-detail-title" className="text-2xl font-display text-brand-ink leading-tight">
             {p.name}
           </h2>

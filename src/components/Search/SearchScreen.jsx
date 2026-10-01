@@ -71,7 +71,7 @@ export default function SearchScreen({ onBack, selection, addToSelection, onOpen
     addToSelection({ kind: "product", productId: p.id, name: p.name, unit: p.unit, qty, flavors: null });
 
   return (
-    <div className="max-w-xl mx-auto px-gutter pt-2 pb-10 fade-up">
+    <div className="max-w-xl lg:max-w-3xl mx-auto px-gutter pt-2 pb-10 fade-up">
       <SiteHeader onBack={onBack} />
       <h1 className="mc-page-title mb-4">O que você está procurando?</h1>
 

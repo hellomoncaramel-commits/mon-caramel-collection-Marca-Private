@@ -102,7 +102,7 @@ export default function SelectionScreen({ selection, removeFromSelection, onBack
   const productsById = useMemo(() => new Map(PRODUCTS.map((p) => [p.id, p])), []);
 
   return (
-    <div className="max-w-2xl mx-auto px-gutter pt-2 pb-10 fade-up">
+    <div className="max-w-2xl lg:max-w-4xl mx-auto px-gutter pt-2 pb-10 fade-up">
       <SiteHeader onBack={onBack} />
       <h2 className="mc-page-title">♡ Minha Seleção</h2>
       <p className="mc-page-subtitle">

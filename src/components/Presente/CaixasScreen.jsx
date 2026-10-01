@@ -28,7 +28,7 @@ export default function CaixasScreen({ onBack, addToSelection }) {
   }
 
   return (
-    <div className="max-w-xl md:max-w-3xl mx-auto px-gutter pt-2 pb-10 fade-up">
+    <div className="max-w-xl md:max-w-3xl lg:max-w-4xl mx-auto px-gutter pt-2 pb-10 fade-up">
       <SiteHeader onBack={onBack} />
       <h1 className="mc-page-title">Caixas para inspirar</h1>
       <p className="mc-page-subtitle">

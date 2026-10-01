@@ -17,6 +17,7 @@ import SearchScreen from "./components/Search/SearchScreen";
 import SelectionScreen from "./components/Selection/SelectionScreen";
 import SendModal from "./components/shared/SendModal";
 import BottomNav from "./components/shared/BottomNav";
+import DesktopNav from "./components/shared/DesktopNav";
 import Toast from "./components/shared/Toast";
 
 // "cafe" and "freezer" were standalone moments, both since folded into
@@ -66,6 +67,8 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-brand-beige font-body">
+      <DesktopNav active={activeNav} onNavigate={onNavigate} selectionCount={selection.length} favoritesCount={favorites.length} />
+
       <div className="pb-24 md:pb-0">
         {!screen && <HomeScreen onSelect={setScreen} />}
 
@@ -165,12 +168,15 @@ export default function App() {
         favoritesCount={favorites.length}
       />
 
-      {/* Desktop-only fallback: BottomNav is hidden at md+, so Minha Seleção
-          still needs a way in without the mobile nav. */}
+      {/* Tablet-only fallback: BottomNav is hidden at md+, and DesktopNav
+          only takes over at lg+ (tablet keeps its existing, unredesigned
+          behavior per this round's scope) — so this covers the md–lg gap.
+          Hidden at lg+ since DesktopNav's own "Seleção" link/count makes it
+          redundant there. */}
       {selection.length > 0 && screen !== "selecao" && (
         <button
           onClick={onGoSelection}
-          className="hidden md:flex fixed bottom-6 left-6 z-40 rounded-full px-5 py-3 text-sm font-medium text-white bg-brand-caramelDark items-center gap-2 shadow-lg"
+          className="hidden md:flex lg:hidden fixed bottom-6 left-6 z-40 rounded-full px-5 py-3 text-sm font-medium text-white bg-brand-caramelDark items-center gap-2 shadow-lg"
         >
           <Heart size={15} fill="white" />
           Minha seleção · {selection.length}

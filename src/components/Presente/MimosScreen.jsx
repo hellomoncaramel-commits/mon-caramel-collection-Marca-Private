@@ -9,7 +9,7 @@ import PresenteCTA from "./PresenteCTA";
 // existing WhatsApp flow — generically, not tied to any specific mimo.
 export default function MimosScreen({ onBack, onGoSelection }) {
   return (
-    <div className="max-w-xl md:max-w-3xl mx-auto px-gutter pt-2 pb-10 fade-up">
+    <div className="max-w-xl md:max-w-3xl lg:max-w-4xl mx-auto px-gutter pt-2 pb-10 fade-up">
       <SiteHeader onBack={onBack} />
       <h1 className="mc-page-title">Pequenos mimos 💛</h1>
       {/* Plain style, matching Caixas/Bandejas' subtitle exactly — was the

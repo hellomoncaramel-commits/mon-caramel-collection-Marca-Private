@@ -56,17 +56,18 @@ export default function MomentScreen({
     // bottom nav on its own, so this only needs to close out the content,
     // not double up on nav clearance (Festa's floating button is `fixed`,
     // independent of this padding either way).
-    <div className="max-w-2xl mx-auto px-gutter pt-2 pb-10 fade-up">
+    <div className="max-w-2xl lg:max-w-6xl xl:max-w-7xl mx-auto px-gutter pt-2 pb-10 fade-up">
       <SiteHeader onBack={onBack} />
 
       {/* Fraunces roman, not the old Cormorant italic — personality comes
           from the family + copy, not from italicizing every editorial
-          paragraph. */}
+          paragraph. Capped width at lg+ so a single line doesn't stretch
+          the full desktop container (readability only, same text). */}
       {MOMENT_INTRO[momentId] && (
-        <p className="text-base leading-relaxed mb-6 font-display text-brand-inkSoft">{MOMENT_INTRO[momentId]}</p>
+        <p className="text-base leading-relaxed mb-6 font-display text-brand-inkSoft lg:max-w-2xl">{MOMENT_INTRO[momentId]}</p>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-5">
         {matched.map((p) => (
           <ProductCard key={p.id} p={p} momentId={momentId} {...cardProps} />
         ))}
@@ -79,7 +80,7 @@ export default function MomentScreen({
             <span className="text-2xs uppercase tracking-wide font-medium">Já que você tá por aqui...</span>
           </div>
           <p className="text-sm mb-4 text-brand-muted">Coisas que combinam com outros momentos, mas ninguém disse que era só um.</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-5">
             {crossSell.map((p) => (
               <ProductCard key={p.id} p={p} momentId={momentId} {...cardProps} />
             ))}
@@ -88,16 +89,20 @@ export default function MomentScreen({
       )}
 
       {isFesta ? (
-        <PartyPanel
-          ref={partyPanelRef}
-          items={party.items}
-          theme={party.theme}
-          notes={party.notes}
-          onSubmit={() => onSend(buildPartyMessage({ items: party.items, theme: party.theme, notes: party.notes }))}
-        />
+        // Capped at lg+ so the planner panel doesn't stretch across the
+        // whole 7xl product grid — PartyPanel itself is untouched.
+        <div className="lg:max-w-2xl lg:mx-auto">
+          <PartyPanel
+            ref={partyPanelRef}
+            items={party.items}
+            theme={party.theme}
+            notes={party.notes}
+            onSubmit={() => onSend(buildPartyMessage({ items: party.items, theme: party.theme, notes: party.notes }))}
+          />
+        </div>
       ) : (
         selection.length > 0 && (
-          <div className="mt-6 rounded-2xl border border-brand-caramelDark p-4 bg-white/95 backdrop-blur">
+          <div className="mt-6 rounded-2xl border border-brand-caramelDark p-4 bg-white/95 backdrop-blur lg:max-w-md lg:mx-auto">
             <p className="text-xs uppercase tracking-wide mb-2 text-brand-muted">Você escolheu ({selection.length})</p>
             <button
               onClick={onOpenSelection}
@@ -124,7 +129,7 @@ export default function MomentScreen({
       {/* Dias de luta is meant to be the whole day-to-day universe — no
           parallel "catalog" exit. Festa keeps this link. */}
       {!isDiaDificil && (
-        <button onClick={onGoCatalog} className="w-full text-center text-xs mt-8 py-2 underline text-brand-muted">
+        <button onClick={onGoCatalog} className="w-full text-center text-xs mt-8 py-2 underline text-brand-muted lg:max-w-md lg:mx-auto lg:block">
           Não encontrou o que imaginava? Explore toda a coleção.
         </button>
       )}

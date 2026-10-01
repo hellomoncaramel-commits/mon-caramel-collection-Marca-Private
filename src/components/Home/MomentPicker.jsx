@@ -176,12 +176,14 @@ export default function MomentPicker({ onBack, onSelectMoment }) {
   };
 
   return (
-    <div className="w-full md:max-w-2xl lg:max-w-4xl xl:max-w-5xl md:mx-auto px-gutter pt-2 pb-3 fade-up flex flex-col h-[calc(100dvh-6rem)] md:h-auto">
+    <div className="w-full md:max-w-2xl lg:max-w-5xl xl:max-w-6xl md:mx-auto px-gutter pt-2 pb-3 fade-up flex flex-col h-[calc(100dvh-6rem)] md:h-auto lg:h-auto">
       <SiteHeader onBack={onBack} />
 
       {/* Intro — Fraunces roman medium, matching the Home headline's own
           treatment (italic is an accent now, not the default headline
-          voice). */}
+          voice). Copy unchanged at lg+ even though "Deslize" no longer
+          applies once all 3 cards show at once (see final report) — this
+          task's scope doesn't include rewriting copy. */}
       <h1 className="font-display font-medium text-brand-ink text-center shrink-0 text-[clamp(30px,8vw,36px)] md:text-[26px] leading-[1.05]">
         Como você está hoje?
       </h1>
@@ -193,9 +195,12 @@ export default function MomentPicker({ onBack, onSelectMoment }) {
       {/* Carousel — the real photo is the protagonist. Mobile: one
           compact card (width/aspect-ratio driven, not viewport-height
           driven) with a peek of the previous/next card on both sides.
-          Desktop (untouched): two full cards + a peek of the third,
-          left-aligned, filling the fixed md:h-[520px] row. */}
-      <div className="relative flex-1 mt-6 md:mt-3 flex flex-col justify-center md:flex-none md:h-[520px]">
+          Tablet (untouched): two full cards + a peek of the third,
+          left-aligned, filling the fixed md:h-[520px] row. Hidden at lg+,
+          where the 3-card grid below takes over — same MomentCard, same
+          MOMENTS/MOMENT_PHOTO/onSelectMoment, no carousel logic needed
+          since there's nothing to scroll through anymore. */}
+      <div className="relative flex-1 mt-6 md:mt-3 flex flex-col justify-center md:flex-none md:h-[520px] lg:hidden">
         <div
           ref={trackRef}
           onKeyDown={onTrackKeyDown}
@@ -245,8 +250,8 @@ export default function MomentPicker({ onBack, onSelectMoment }) {
         </button>
       </div>
 
-      {/* Pagination */}
-      <div className="flex items-center justify-center shrink-0 mt-4 md:mt-2" role="tablist" aria-label="Ir para momento">
+      {/* Pagination — hidden at lg+ along with the carousel it belongs to. */}
+      <div className="flex items-center justify-center shrink-0 mt-4 md:mt-2 lg:hidden" role="tablist" aria-label="Ir para momento">
         {MOMENTS.map((m, i) => {
           const active = i === index;
           const dotSize = active ? 9 : 7;
@@ -264,6 +269,17 @@ export default function MomentPicker({ onBack, onSelectMoment }) {
             </button>
           );
         })}
+      </div>
+
+      {/* Desktop (lg+) — exactly 3 journeys, shown simultaneously, no
+          scroll/arrows/dots needed. aspect-[3/4] keeps all three a
+          consistent, comfortable height regardless of column width. */}
+      <div className="hidden lg:grid lg:grid-cols-3 lg:gap-8 lg:mt-8">
+        {MOMENTS.map((m, i) => (
+          <div key={m.id} className="aspect-[3/4]">
+            <MomentCard moment={m} photoSrc={MOMENT_PHOTO[m.id]} eager={i === 0} onSelect={() => onSelectMoment(m.id)} />
+          </div>
+        ))}
       </div>
     </div>
   );

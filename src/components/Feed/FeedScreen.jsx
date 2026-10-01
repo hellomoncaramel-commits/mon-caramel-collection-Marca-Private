@@ -27,7 +27,7 @@ export default function FeedScreen({ onBack, favorites, toggleFavorite, selectio
   }, [filter]);
 
   return (
-    <div className="max-w-xl mx-auto px-gutter pt-2 pb-10 fade-up">
+    <div className="max-w-xl lg:max-w-3xl mx-auto px-gutter pt-2 pb-10 fade-up">
       <SiteHeader onBack={onBack} />
       <h1 className="mc-page-title">Só olha... 👀</h1>
       <p className="mc-page-subtitle">Vai rolando. A gente não conta pra ninguém se você ficar com vontade.</p>
