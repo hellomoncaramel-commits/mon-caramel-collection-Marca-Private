@@ -45,9 +45,13 @@ const BUTTON_BG = COLORS.caramelDarker;
 export default function HomeScreen({ onSelect }) {
   return (
     <div className="w-full md:max-w-2xl lg:max-w-3xl xl:max-w-4xl md:mx-auto px-gutter pt-2 pb-8 fade-up">
+      {/* Same logo size/row height as every other screen (SiteHeader's own
+          defaults) — the previous "homeCompact" 52px override made the logo
+          read as a micro decoration instead of a brand signature. 92px is
+          still well within the cropped asset's native 332px height even at
+          3x DPR (no upscaling), and it's the exact size already used and
+          already validated everywhere else, not a new arbitrary value. */}
       <SiteHeader
-        logoSize="homeCompact"
-        rowHeight={60}
         rightSlot={
           <button
             onClick={() => onSelect("salvos")}

@@ -10,11 +10,6 @@ const SIZES = {
   // tightly-cropped asset below, whose visible artwork nearly fills its own
   // frame, unlike the source file's ~15% transparent margin on every side.
   home: 92,
-  // Home-only compact variant — the logo functions as the page's brand
-  // signature here, not its first big content block (see HomeScreen.jsx).
-  // Same cropped asset, just smaller, and small enough to sit inside
-  // SiteHeader's own compact rowHeight without overflowing it.
-  homeCompact: 52,
   md: 120,
   lg: 200,
 };
@@ -23,7 +18,7 @@ const SIZES = {
 // "Not your average sweet." tagline all baked in), supplied directly by
 // Naia — see public/images/brand/logo-mon-caramel.webp.
 export default function Logo({ size = "md" }) {
-  if (size === "home" || size === "homeCompact") {
+  if (size === "home") {
     return (
       <img
         src="/images/brand/logo-mon-caramel-cropped.webp"
