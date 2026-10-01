@@ -7,7 +7,11 @@ export default function MonCaramelNote({ label, note }) {
 
   return (
     <div className="mt-4 rounded-2xl p-3.5 bg-brand-subtle">
-      <p className="text-xs font-medium text-brand-caramelDark">{label}</p>
+      {/* The one controlled italic touch in this component — a small,
+          conversational "deixa eu te contar uma coisa" aside, not a
+          decorative quote. The note itself stays plain DM Sans for
+          legibility. */}
+      <p className="text-xs font-display italic text-brand-caramelDark">{label}</p>
       <p className="text-sm mt-1 leading-relaxed text-brand-inkSoft">{note}</p>
     </div>
   );

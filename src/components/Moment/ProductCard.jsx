@@ -88,10 +88,12 @@ export default function ProductCard({
 
         {/* Dias de luta: the short "teaser" carries the vitrine — the full
             sensory description now lives in the detail sheet only (see
-            progressive-disclosure split in the brief). Festa keeps showing
+            progressive-disclosure split in the brief). Fraunces roman, not
+            italic — personality comes from the family + copy, not from
+            treating every teaser like a literary quote. Festa keeps showing
             its own sensory line unchanged. */}
         {!isFesta ? (
-          <p className="text-sm mt-2 leading-relaxed flex-1 font-subtitle italic text-brand-ink">
+          <p className="text-sm mt-2 leading-relaxed flex-1 font-display text-brand-ink">
             {p.experience?.teaser ?? p.sensory}
           </p>
         ) : (

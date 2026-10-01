@@ -14,7 +14,9 @@ export default function NextTemptation({ line, product, photo, onOpen }) {
       className="w-full mt-6 pt-5 border-t border-brand-border flex items-center gap-3 text-left"
     >
       <div className="min-w-0 flex-1">
-        <p className="text-sm font-subtitle italic leading-snug text-brand-ink">{line}</p>
+        {/* The enticement line in Fraunces roman (personality); the product
+            name below stays plain DM Sans (functional information). */}
+        <p className="text-sm font-display leading-snug text-brand-ink">{line}</p>
         <p className="text-xs mt-1 text-brand-caramelDark">{product.name}</p>
       </div>
       <div className="w-14 h-14 shrink-0 rounded-xl overflow-hidden bg-brand-subtle">

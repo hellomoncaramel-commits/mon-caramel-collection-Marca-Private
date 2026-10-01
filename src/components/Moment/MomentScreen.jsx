@@ -59,8 +59,11 @@ export default function MomentScreen({
     <div className="max-w-2xl mx-auto px-gutter pt-2 pb-10 fade-up">
       <SiteHeader onBack={onBack} />
 
+      {/* Fraunces roman, not the old Cormorant italic — personality comes
+          from the family + copy, not from italicizing every editorial
+          paragraph. */}
       {MOMENT_INTRO[momentId] && (
-        <p className="text-base leading-relaxed mb-6 font-subtitle italic text-brand-inkSoft">{MOMENT_INTRO[momentId]}</p>
+        <p className="text-base leading-relaxed mb-6 font-display text-brand-inkSoft">{MOMENT_INTRO[momentId]}</p>
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
