@@ -6,6 +6,8 @@ import { defaultPhotos } from "../../utils/products";
 import { COLORS } from "../../styles/colors";
 import Logo from "../shared/Logo";
 import Photo from "../shared/Photo";
+import HeroMedia from "../shared/HeroMedia";
+import { useDragScroll } from "../../hooks/useDragScroll";
 
 // The Home's two real decisions — same ids/handler (onSelect(id) →
 // App.jsx's screen state) on mobile and desktop, so the two don't diverge
@@ -71,7 +73,7 @@ function HeroActionCard({ a, onSelect, height, radius, iconSize, emojiSize, titl
 function FavoriteProductCard({ p, isFav, onToggleFavorite, onOpen, className, style }) {
   const photo = defaultPhotos(p)?.[0];
   return (
-    <button onClick={() => onOpen?.(p)} className={`text-left ${className}`} style={style}>
+    <button onClick={() => onOpen?.(p)} className={`text-left transition-transform duration-200 lg:hover:scale-[1.03] active:scale-[0.98] ${className}`} style={style}>
       <div className="relative rounded-2xl overflow-hidden aspect-square">
         <Photo src={photo} alt="" className="w-full h-full object-cover" loading="lazy" />
         <span
@@ -112,6 +114,7 @@ export default function HomeScreen({ onSelect, onOpenProduct, favorites, toggleF
   const favoriteProducts = FAVORITE_PRODUCT_IDS.map((id) => PRODUCTS.find((p) => p.id === id)).filter(Boolean);
   const favoritesCount = favorites?.length ?? 0;
   const selectionCount = selection?.length ?? 0;
+  const dragScroll = useDragScroll();
 
   // Screens are swapped by conditional rendering (see App.jsx), not
   // routing, so the window keeps whatever scroll position the previous
@@ -141,7 +144,7 @@ export default function HomeScreen({ onSelect, onOpenProduct, favorites, toggleF
           <div className="w-11" />
           <Logo size="home" />
           <div className="flex items-center">
-            <button onClick={() => onSelect("salvos")} aria-label="Ver salvos" className="relative w-11 h-11 flex items-center justify-center">
+            <button onClick={() => onSelect("salvos")} aria-label="Ver salvos" className="relative w-11 h-11 flex items-center justify-center transition-transform active:scale-90">
               <Heart size={20} className="text-brand-caramelDark" />
               {favoritesCount > 0 && (
                 <span
@@ -152,7 +155,7 @@ export default function HomeScreen({ onSelect, onOpenProduct, favorites, toggleF
                 </span>
               )}
             </button>
-            <button onClick={() => onSelect("selecao")} aria-label="Ver seleção" className="relative w-11 h-11 flex items-center justify-center">
+            <button onClick={() => onSelect("selecao")} aria-label="Ver seleção" className="relative w-11 h-11 flex items-center justify-center transition-transform active:scale-90">
               <ShoppingBag size={20} className="text-brand-caramelDark" />
               {selectionCount > 0 && (
                 <span
@@ -182,13 +185,15 @@ export default function HomeScreen({ onSelect, onOpenProduct, favorites, toggleF
               boloCenouraTray ("mar de granulado", no identifiable single
               product), brigadeiroDiaDificil (production-tray texture),
               chocobomb/alfajorClassico (mosaics of repeated pieces). Still a
-              placeholder per the brief — may be swapped again later. */}
-          <Photo
-            src={REAL_PHOTOS.brownlitoInteiro}
-            alt=""
+              placeholder per the brief — may be swapped again later.
+              brownlitoRecheio joins as a second frame (same product, cut
+              open — "a dessert being opened") so the hero isn't a dead
+              photo; HeroMedia crossfades slowly between the two, no video
+              asset exists yet to plug in instead (see HeroMedia.jsx). */}
+          <HeroMedia
+            frames={[REAL_PHOTOS.brownlitoInteiro, REAL_PHOTOS.brownlitoRecheio]}
             className="absolute inset-0 w-full h-full object-cover"
-            style={{ objectPosition: "50% 38%" }}
-            loading="eager"
+            imgStyle={{ objectPosition: "50% 38%" }}
           />
           <div className="absolute inset-0 pointer-events-none" style={{ background: MOBILE_HERO_GRADIENT }} />
 
@@ -239,7 +244,15 @@ export default function HomeScreen({ onSelect, onOpenProduct, favorites, toggleF
               Ver todos →
             </button>
           </div>
-          <div className="flex gap-3 overflow-x-auto no-scrollbar -mx-gutter px-gutter">
+          <div
+            ref={dragScroll.ref}
+            onPointerDown={dragScroll.onPointerDown}
+            onPointerMove={dragScroll.onPointerMove}
+            onPointerUp={dragScroll.onPointerUp}
+            onPointerLeave={dragScroll.onPointerLeave}
+            onClickCapture={dragScroll.onClickCapture}
+            className={`flex gap-3 overflow-x-auto no-scrollbar snap-x snap-mandatory -mx-gutter px-gutter ${dragScroll.className}`}
+          >
             {favoriteProducts.map((p) => (
               <FavoriteProductCard
                 key={p.id}
@@ -247,7 +260,7 @@ export default function HomeScreen({ onSelect, onOpenProduct, favorites, toggleF
                 isFav={favorites?.includes(p.id)}
                 onToggleFavorite={toggleFavorite}
                 onOpen={onOpenProduct}
-                className="shrink-0"
+                className="shrink-0 snap-start"
                 style={{ width: 140 }}
               />
             ))}
@@ -272,13 +285,14 @@ export default function HomeScreen({ onSelect, onOpenProduct, favorites, toggleF
             with the jars' rich chocolate/strawberry layers reading as a
             real protagonist on the right. No scale()/distortion — only
             object-position picks which vertical band of the (portrait)
-            source shows. */}
-        <Photo
-          src={REAL_PHOTOS.boloDePoteCamadas}
-          alt=""
+            source shows. boloDePoteMorango (same bolo-de-pote family, a
+            different jar) joins as a second HeroMedia frame for slow
+            crossfade movement — no real video exists yet to plug in via
+            HeroMedia's `videoSrc` prop instead. */}
+        <HeroMedia
+          frames={[REAL_PHOTOS.boloDePoteCamadas, REAL_PHOTOS.boloDePoteMorango]}
           className="absolute inset-0 w-full h-full object-cover"
-          style={{ objectPosition: "48% 58%" }}
-          loading="eager"
+          imgStyle={{ objectPosition: "48% 58%" }}
         />
         <div className="absolute inset-0 pointer-events-none" style={{ background: HERO_GRADIENT }} />
 
@@ -319,8 +333,8 @@ export default function HomeScreen({ onSelect, onOpenProduct, favorites, toggleF
         </div>
         <div className="grid grid-cols-4 gap-5">
           {favoriteProducts.map((p) => (
-            <button key={p.id} onClick={() => onOpenProduct?.(p)} className="text-left">
-              <div className="rounded-2xl overflow-hidden aspect-square">
+            <button key={p.id} onClick={() => onOpenProduct?.(p)} className="text-left group">
+              <div className="rounded-2xl overflow-hidden aspect-square transition-transform duration-200 group-hover:scale-[1.02]">
                 <Photo src={defaultPhotos(p)?.[0]} alt="" className="w-full h-full object-cover" loading="lazy" />
               </div>
               <p className="mt-2.5 text-base font-display text-brand-ink leading-tight">{p.name}</p>

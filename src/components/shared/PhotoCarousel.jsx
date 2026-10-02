@@ -1,13 +1,16 @@
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Photo from "./Photo";
 
 // Rotates automatically every ~3s (briefing section 7 — many customers don't
 // notice they can drag/see more photos). Pauses as soon as someone
-// interacts manually with the arrows.
+// interacts manually — arrows, or now a real drag/swipe.
 export default function PhotoCarousel({ photos, alt }) {
   const [i, setI] = useState(0);
   const [paused, setPaused] = useState(false);
+  // Plain ref, not state: a drag updates every pointermove and must never
+  // trigger a re-render mid-gesture, only the eventual setI/setPaused does.
+  const drag = useRef({ down: false, startX: 0, moved: false });
 
   useEffect(() => {
     if (!photos || photos.length <= 1 || paused) return;
@@ -24,8 +27,52 @@ export default function PhotoCarousel({ photos, alt }) {
     setI((cur) => (cur + dir + photos.length) % photos.length);
   };
 
+  // Swipe-to-advance — mouse and touch alike (pointer events unify both).
+  // `touchAction: pan-y` below tells the browser to keep handling vertical
+  // scroll natively while leaving horizontal gestures free for this to
+  // read, so a swipe here doesn't fight the page's own scroll.
+  const onPointerDown = (e) => {
+    if (photos.length <= 1) return;
+    drag.current = { down: true, startX: e.clientX, moved: false };
+    e.currentTarget.setPointerCapture?.(e.pointerId);
+  };
+  const onPointerMove = (e) => {
+    const d = drag.current;
+    if (!d.down) return;
+    if (Math.abs(e.clientX - d.startX) > 8) d.moved = true;
+  };
+  const onPointerUp = (e) => {
+    const d = drag.current;
+    if (!d.down) return;
+    d.down = false;
+    const dx = e.clientX - d.startX;
+    if (Math.abs(dx) > 40) {
+      setPaused(true);
+      setI((cur) => (cur + (dx < 0 ? 1 : -1) + photos.length) % photos.length);
+    }
+  };
+  // A real drag (not a plain tap) shouldn't also fire whatever onClick the
+  // parent card has for "open product" — capture phase runs before that
+  // bubbling click, so it can cancel it without needing the parent's
+  // cooperation.
+  const onClickCapture = (e) => {
+    if (drag.current.moved) {
+      e.preventDefault();
+      e.stopPropagation();
+      drag.current.moved = false;
+    }
+  };
+
   return (
-    <div className="relative w-full overflow-hidden select-none aspect-photo">
+    <div
+      className="relative w-full overflow-hidden select-none aspect-photo"
+      style={{ touchAction: "pan-y" }}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+      onPointerCancel={onPointerUp}
+      onClickCapture={onClickCapture}
+    >
       {/* The very first photo (i === 0, shown on mount with no interaction
           needed) is already in the viewport the instant this card renders —
           marking it "lazy" gave it no fetch priority and could leave it

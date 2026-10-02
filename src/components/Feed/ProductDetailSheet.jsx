@@ -78,7 +78,7 @@ export default function ProductDetailSheet({
         <button
           onClick={onClose}
           aria-label="Fechar"
-          className="absolute top-3 left-3 z-10 w-11 h-11 rounded-full bg-white/90 flex items-center justify-center"
+          className="absolute top-3 left-3 z-10 w-11 h-11 rounded-full bg-white/90 flex items-center justify-center transition-transform active:scale-90"
         >
           <X size={18} className="text-brand-ink" />
         </button>
@@ -94,7 +94,7 @@ export default function ProductDetailSheet({
           <button
             onClick={share}
             aria-label="Compartilhar"
-            className="w-11 h-11 rounded-full bg-white/90 flex items-center justify-center"
+            className="w-11 h-11 rounded-full bg-white/90 flex items-center justify-center transition-transform active:scale-90"
           >
             <Share2 size={16} className="text-brand-ink" />
           </button>
@@ -184,7 +184,7 @@ export default function ProductDetailSheet({
               <QuantityStepper value={qty} onChange={setQty} />
               <button
                 onClick={() => (existing ? removeFromSelection(existing) : add())}
-                className="flex-1 text-sm font-medium rounded-full py-3 lg:py-3.5 min-h-11 flex items-center justify-center gap-2"
+                className="flex-1 text-sm font-medium rounded-full py-3 lg:py-3.5 min-h-11 flex items-center justify-center gap-2 transition-transform active:scale-95"
                 style={{ backgroundColor: COLORS.caramelDark, color: "white" }}
               >
                 <Heart size={14} fill="white" />

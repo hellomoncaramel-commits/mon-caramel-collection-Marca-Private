@@ -20,7 +20,7 @@ function ResultRow({ p, isAdded, onQuickAdd, onOpen }) {
   const isCustomizable = p.customizable === true;
 
   return (
-    <button onClick={() => onOpen(p)} className="w-full flex items-center gap-3 lg:gap-4 text-left py-2 lg:py-3">
+    <button onClick={() => onOpen(p)} className="w-full flex items-center gap-3 lg:gap-4 text-left py-2 lg:py-3 rounded-2xl transition-colors lg:hover:bg-brand-subtle">
       <div className="w-16 h-16 lg:w-20 lg:h-20 shrink-0 rounded-2xl overflow-hidden">
         {photo ? <Photo src={photo} alt="" className="w-full h-full object-cover" loading="lazy" /> : <ProductArt kind={p.kind} tint={p.tint} h="h-16" />}
       </div>
@@ -46,7 +46,7 @@ function ResultRow({ p, isAdded, onQuickAdd, onOpen }) {
           }
         }}
         aria-label={isAdded ? `${p.name} já está na seleção` : `Adicionar ${p.name} à seleção`}
-        className="shrink-0 w-11 h-11 rounded-full flex items-center justify-center"
+        className="shrink-0 w-11 h-11 rounded-full flex items-center justify-center transition-transform active:scale-90"
         style={{ backgroundColor: isAdded ? COLORS.caramelDark : `${COLORS.caramelDark}15` }}
       >
         {isAdded ? <Check size={16} className="text-white" /> : <Plus size={16} style={{ color: COLORS.caramelDark }} />}
@@ -96,7 +96,7 @@ export default function SearchScreen({ onBack, selection, addToSelection, onOpen
             <button
               key={term}
               onClick={() => setQuery(term)}
-              className="text-sm lg:text-base rounded-full px-4 lg:px-5 py-2 lg:py-2.5 border border-brand-border bg-white text-brand-ink min-h-11"
+              className="text-sm lg:text-base rounded-full px-4 lg:px-5 py-2 lg:py-2.5 border border-brand-border bg-white text-brand-ink min-h-11 transition-transform active:scale-95 lg:hover:border-brand-caramelDark"
             >
               {term}
             </button>
