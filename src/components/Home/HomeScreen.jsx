@@ -51,18 +51,21 @@ function ActionIcon({ a }) {
 // lg:grid` separado, reaproveitando os mesmos ACTIONS/REAL_PHOTOS/onSelect,
 // não uma refatoração do mobile.
 export default function HomeScreen({ onSelect }) {
+  // Hidden at lg+: DesktopNav's own "Salvos" link already covers this
+  // exact action there, so this would otherwise be a second, redundant way
+  // to do the same thing right under the unified header.
   const favoritesButton = (
     <button
       onClick={() => onSelect("salvos")}
       aria-label="Ver salvos"
-      className="w-11 h-11 flex items-center justify-center"
+      className="w-11 h-11 flex items-center justify-center lg:hidden"
     >
       <Heart size={20} className="text-brand-caramelDark" />
     </button>
   );
 
   return (
-    <div className="w-full md:max-w-2xl lg:max-w-6xl xl:max-w-7xl md:mx-auto px-gutter pt-2 pb-8 fade-up">
+    <div className="w-full md:max-w-2xl lg:max-w-6xl xl:max-w-7xl md:mx-auto px-gutter lg:px-8 xl:px-12 pt-2 pb-8 fade-up">
       {/* Same logo size/row height as every other screen (SiteHeader's own
           defaults) — the previous "homeCompact" 52px override made the logo
           read as a micro decoration instead of a brand signature. 92px is
@@ -138,9 +141,13 @@ export default function HomeScreen({ onSelect }) {
       {/* ============================= DESKTOP (>=lg) ============================= */}
       {/* Two-column editorial layout — no gradient, no buttons over the
           photo. Same copy, same photo, same ACTIONS/onSelect as mobile;
-          only the composition changes. */}
-      <div className="hidden lg:grid lg:grid-cols-12 lg:gap-10 xl:gap-14 lg:items-center lg:mt-8">
-        <div className="lg:col-span-5">
+          only the composition changes. Columns are an even 6/6 split (was
+          5/7) — the photo at 7/12 read as too dominant relative to the
+          text column; 6/6 keeps "foto limpa à direita" while giving the
+          headline/CTAs equal visual weight instead of competing with an
+          oversized photo. */}
+      <div className="hidden lg:grid lg:grid-cols-12 lg:gap-10 xl:gap-14 lg:items-center lg:mt-10">
+        <div className="lg:col-span-6">
           <h1 className="font-display font-medium text-brand-ink text-[48px] xl:text-[56px] leading-[1.08] tracking-[-0.01em]">
             O que a gente vai adoçar hoje?&nbsp;💛
           </h1>
@@ -148,7 +155,10 @@ export default function HomeScreen({ onSelect }) {
             Me conta o que você precisa. A gente acha um doce pra isso.
           </p>
 
-          <div className="flex flex-col gap-3 mt-9">
+          {/* A touch more room than the subtitle→button gap had before —
+              gives the subtitle its own beat instead of the CTAs crowding
+              in right underneath it. */}
+          <div className="flex flex-col gap-3.5 mt-10">
             {ACTIONS.map((a) => (
               <button
                 key={a.id}
@@ -173,7 +183,7 @@ export default function HomeScreen({ onSelect }) {
           </div>
         </div>
 
-        <div className="lg:col-span-7">
+        <div className="lg:col-span-6">
           {/* Clean, editorial crop — not the mobile portrait ratio blown up.
               4:3 keeps the same real photo (casadinhoGoiabada) reading as a
               proper desktop photograph rather than a mobile card stretched

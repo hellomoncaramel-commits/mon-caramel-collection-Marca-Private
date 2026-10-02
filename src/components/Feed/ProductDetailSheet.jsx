@@ -103,9 +103,12 @@ export default function ProductDetailSheet({
         {/* Desktop (lg+): this becomes the modal's left column via the
             panel's own lg:grid-cols-2 above — same PhotoCarousel/ProductArt,
             just centered in a fixed-height column instead of a full-width
-            top band. Mobile/tablet below lg: completely unchanged (no
-            wrapper classes apply below lg). */}
-        <div className="lg:h-full lg:overflow-hidden lg:flex lg:items-center lg:justify-center lg:bg-brand-subtle">
+            top band. The lg:p-6 inset keeps the photo from touching the
+            panel's own edges, reading as a mounted photograph rather than a
+            bleed — a small balance fix between the two columns. Mobile/
+            tablet below lg: completely unchanged (no wrapper classes apply
+            below lg). */}
+        <div className="lg:h-full lg:overflow-hidden lg:flex lg:items-center lg:justify-center lg:bg-brand-subtle lg:p-6">
           {photos && photos.length > 0 ? (
             <PhotoCarousel photos={photos} alt={p.name} />
           ) : (
@@ -113,12 +116,12 @@ export default function ProductDetailSheet({
           )}
         </div>
 
-        <div className="p-5 lg:h-full lg:overflow-y-auto">
-          <h2 id="product-detail-title" className="text-2xl font-display text-brand-ink leading-tight">
+        <div className="p-5 lg:p-8 lg:h-full lg:overflow-y-auto">
+          <h2 id="product-detail-title" className="text-2xl lg:text-3xl font-display text-brand-ink leading-tight">
             {p.name}
           </h2>
-          <p className="text-sm mt-0.5 text-brand-muted">{p.unit}</p>
-          <p className="text-sm mt-3 leading-relaxed text-brand-inkSoft">{p.sensory}</p>
+          <p className="text-sm mt-0.5 lg:mt-1 text-brand-muted">{p.unit}</p>
+          <p className="text-sm lg:text-base mt-3 lg:mt-4 leading-relaxed lg:leading-[1.6] text-brand-inkSoft">{p.sensory}</p>
 
           {/* Dias de luta only — the curated badge matrix. Suppresses the
               older `canFreeze` list item just below when it's showing
@@ -128,7 +131,7 @@ export default function ProductDetailSheet({
               already says "congelado" deliberately skip the badge). */}
           {showExperience && <ProductBadges badges={p.badges} />}
 
-          <p className="text-xl font-medium mt-4 text-brand-caramelDark">{p.price}</p>
+          <p className="text-xl lg:text-2xl font-medium mt-4 lg:mt-5 text-brand-caramelDark">{p.price}</p>
 
           {((canFreeze && !showExperience) || isCustomizable) && (
             <ul className="flex flex-col gap-2 mt-4">
@@ -156,10 +159,14 @@ export default function ProductDetailSheet({
 
           {/* Mon Caramel's own voice — a short editorial aside, Dias de
               luta only, right before the purchase decision. */}
-          {showExperience && <MonCaramelNote label={p.experience?.noteLabel} note={p.experience?.note} />}
+          {showExperience && (
+            <div className="lg:mt-5">
+              <MonCaramelNote label={p.experience?.noteLabel} note={p.experience?.note} />
+            </div>
+          )}
 
           {isCustomizable ? (
-            <div className="mt-4 pt-4 border-t border-dashed border-brand-border">
+            <div className="mt-4 lg:mt-6 pt-4 lg:pt-5 border-t border-dashed border-brand-border">
               <FlavorConfigurator product={p} existing={existing} onConfirm={({ qty: q, flavorBreakdown }) => {
                 addToSelection({
                   kind: "product",
@@ -173,11 +180,11 @@ export default function ProductDetailSheet({
               }} />
             </div>
           ) : (
-            <div className="flex items-center justify-between mt-5 gap-3">
+            <div className="flex items-center justify-between mt-5 lg:mt-7 gap-3">
               <QuantityStepper value={qty} onChange={setQty} />
               <button
                 onClick={() => (existing ? removeFromSelection(existing) : add())}
-                className="flex-1 text-sm font-medium rounded-full py-3 min-h-11 flex items-center justify-center gap-2"
+                className="flex-1 text-sm font-medium rounded-full py-3 lg:py-3.5 min-h-11 flex items-center justify-center gap-2"
                 style={{ backgroundColor: COLORS.caramelDark, color: "white" }}
               >
                 <Heart size={14} fill="white" />
@@ -191,12 +198,14 @@ export default function ProductDetailSheet({
               at once). Hidden outright if the suggested product is already
               in the selection, per the brief, rather than insisting on it. */}
           {showExperience && temptationProduct && !temptationAlreadySelected && (
-            <NextTemptation
-              line={temptation.line}
-              product={temptationProduct}
-              photo={defaultPhotos(temptationProduct)?.[0]}
-              onOpen={(product) => onOpenProduct?.(product, momentId)}
-            />
+            <div className="lg:mt-6">
+              <NextTemptation
+                line={temptation.line}
+                product={temptationProduct}
+                photo={defaultPhotos(temptationProduct)?.[0]}
+                onOpen={(product) => onOpenProduct?.(product, momentId)}
+              />
+            </div>
           )}
 
           {!showExperience && related.length > 0 && (

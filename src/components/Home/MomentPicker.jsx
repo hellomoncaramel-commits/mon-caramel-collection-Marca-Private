@@ -52,7 +52,7 @@ const CARD_PANEL_TAN = "250,217,196";
 const TEXT_PANEL_GRADIENT_DESKTOP = `linear-gradient(to bottom, rgba(${CARD_PANEL_TAN},0) 0%, rgba(${CARD_PANEL_TAN},0) 45%, rgba(${CARD_PANEL_TAN},0.28) 58%, rgba(${CARD_PANEL_TAN},0.74) 72%, rgba(${CARD_PANEL_TAN},0.95) 86%, rgba(${CARD_PANEL_TAN},1) 100%)`;
 const TEXT_PANEL_GRADIENT_MOBILE = `linear-gradient(to bottom, rgba(${CARD_PANEL_TAN},0) 0%, rgba(${CARD_PANEL_TAN},0) 38%, rgba(${CARD_PANEL_TAN},0.35) 52%, rgba(${CARD_PANEL_TAN},0.78) 66%, rgba(${CARD_PANEL_TAN},0.95) 80%, rgba(${CARD_PANEL_TAN},1) 100%)`;
 
-function MomentCard({ moment, photoSrc, eager, onSelect }) {
+function MomentCard({ moment, photoSrc, eager, featured, onSelect }) {
   const lines = moment.titleLines ?? [moment.label];
   const photoStyle = MOMENT_PHOTO_STYLE[moment.id];
   return (
@@ -71,7 +71,13 @@ function MomentCard({ moment, photoSrc, eager, onSelect }) {
 
       <div className="absolute left-6 right-6 bottom-[22px] md:left-5 md:right-5 md:bottom-5 flex flex-col items-start">
         <h3
-          className="font-display font-semibold text-brand-ink max-w-[230px] md:max-w-none text-[clamp(26px,7vw,31px)] md:text-[25px] leading-[0.98] md:leading-[1.08] tracking-[-0.02em] md:tracking-normal"
+          className={`font-display font-semibold text-brand-ink max-w-[230px] md:max-w-none text-[clamp(26px,7vw,31px)] md:text-[25px] leading-[0.98] md:leading-[1.08] tracking-[-0.02em] md:tracking-normal ${
+            // Dias de luta gets a discreet lg+ size bump over the other two
+            // journeys — same card, same clarity, just a touch more weight
+            // since it's the site's primary, highest-traffic path. Equal
+            // everywhere below lg (no mobile/tablet change).
+            featured ? "lg:text-[29px]" : "lg:text-[25px]"
+          }`}
           aria-label={moment.label}
         >
           {/* Mobile: editorial, explicitly-broken lines, no emoji in the
@@ -176,20 +182,25 @@ export default function MomentPicker({ onBack, onSelectMoment }) {
   };
 
   return (
-    <div className="w-full md:max-w-2xl lg:max-w-5xl xl:max-w-6xl md:mx-auto px-gutter pt-2 pb-3 fade-up flex flex-col h-[calc(100dvh-6rem)] md:h-auto lg:h-auto">
+    <div className="w-full md:max-w-2xl lg:max-w-6xl xl:max-w-7xl md:mx-auto px-gutter lg:px-8 xl:px-12 pt-2 pb-3 fade-up flex flex-col h-[calc(100dvh-6rem)] md:h-auto lg:h-auto">
       <SiteHeader onBack={onBack} />
 
       {/* Intro — Fraunces roman medium, matching the Home headline's own
           treatment (italic is an accent now, not the default headline
-          voice). Copy unchanged at lg+ even though "Deslize" no longer
-          applies once all 3 cards show at once (see final report) — this
-          task's scope doesn't include rewriting copy. */}
-      <h1 className="font-display font-medium text-brand-ink text-center shrink-0 text-[clamp(30px,8vw,36px)] md:text-[26px] leading-[1.05]">
+          voice). lg+ gets its own larger size for more editorial presence
+          (three full cards deserve a heavier anchor above them) and its
+          own copy: "Deslize" literally doesn't apply once there's nothing
+          to swipe through, so lg+ swaps it for a direct, non-gesture line
+          — mobile/tablet copy is untouched. */}
+      <h1 className="font-display font-medium text-brand-ink text-center shrink-0 text-[clamp(30px,8vw,36px)] md:text-[26px] lg:text-[38px] leading-[1.05]">
         Como você está hoje?
       </h1>
-      <p className="text-brand-inkSoft text-center mt-1.5 shrink-0 text-[15px] md:text-mc-home-body leading-[1.35]">
+      <p className="text-brand-inkSoft text-center mt-1.5 shrink-0 text-[15px] md:text-mc-home-body lg:hidden leading-[1.35]">
         Deslize para ver os momentos
         <br />e encontre o doce perfeito.
+      </p>
+      <p className="text-brand-inkSoft text-center mt-2.5 shrink-0 hidden lg:block text-lg leading-[1.4]">
+        Escolha o que combina com o que você precisa hoje.
       </p>
 
       {/* Carousel — the real photo is the protagonist. Mobile: one
@@ -273,11 +284,20 @@ export default function MomentPicker({ onBack, onSelectMoment }) {
 
       {/* Desktop (lg+) — exactly 3 journeys, shown simultaneously, no
           scroll/arrows/dots needed. aspect-[3/4] keeps all three a
-          consistent, comfortable height regardless of column width. */}
-      <div className="hidden lg:grid lg:grid-cols-3 lg:gap-8 lg:mt-8">
+          consistent, comfortable height regardless of column width; the
+          wider lg:max-w-6xl/xl:max-w-7xl container above (was 5xl/6xl)
+          gives each card meaningfully more room, so they read as three
+          large editorial photographs rather than small dashboard tiles. */}
+      <div className="hidden lg:grid lg:grid-cols-3 lg:gap-8 lg:mt-10">
         {MOMENTS.map((m, i) => (
           <div key={m.id} className="aspect-[3/4]">
-            <MomentCard moment={m} photoSrc={MOMENT_PHOTO[m.id]} eager={i === 0} onSelect={() => onSelectMoment(m.id)} />
+            <MomentCard
+              moment={m}
+              photoSrc={MOMENT_PHOTO[m.id]}
+              eager={i === 0}
+              featured={m.id === "dia-dificil"}
+              onSelect={() => onSelectMoment(m.id)}
+            />
           </div>
         ))}
       </div>

@@ -1,5 +1,6 @@
 import { Home, Heart, Search, ShoppingBag } from "lucide-react";
 import { COLORS } from "../../styles/colors";
+import Logo from "./Logo";
 
 const ITEMS = [
   { id: "home", Icon: Home, label: "Início" },
@@ -9,18 +10,23 @@ const ITEMS = [
 ];
 
 // Desktop-only top navigation (lg+) — BottomNav's own mobile/tablet
-// behavior (hidden from md up) is untouched; this exists only because
-// hiding it left desktop with no persistent way back to Salvos/Buscar/
-// Seleção beyond the floating "Minha seleção" button. Same four
-// destinations, same onNavigate/active semantics as BottomNav (App.jsx's
-// own `activeNav`), same counts — no new routes, no new logic, just a
-// second, desktop-shaped rendering of the identical nav state.
+// behavior (hidden from md up) is untouched. This is now the ONE brand
+// header on desktop: logo left, nav right, in a single bar — every
+// screen's own SiteHeader hides its centered logo at lg+ (see
+// SiteHeader.jsx) so the brand mark only appears once per page instead of
+// stacking two headers. Same four destinations, same onNavigate/active
+// semantics as BottomNav (App.jsx's own `activeNav`), same counts — no new
+// routes, no new logic, just a second, desktop-shaped rendering of the
+// identical nav state.
 export default function DesktopNav({ active, onNavigate, selectionCount, favoritesCount }) {
   const badge = { salvos: favoritesCount, selecao: selectionCount };
 
   return (
     <div className="hidden lg:block border-b border-brand-border">
-      <div className="max-w-6xl xl:max-w-7xl mx-auto px-gutter h-14 flex items-center justify-center">
+      <div className="max-w-6xl xl:max-w-7xl mx-auto px-gutter lg:px-8 xl:px-12 h-20 flex items-center justify-between">
+        <button onClick={() => onNavigate("home")} aria-label="Ir para o início" className="shrink-0">
+          <Logo size="header" />
+        </button>
         <nav aria-label="Navegação principal" className="flex items-center gap-1">
           {ITEMS.map(({ id, Icon, label }) => {
             const isActive = active === id;

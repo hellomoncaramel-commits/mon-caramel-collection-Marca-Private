@@ -76,10 +76,10 @@ export default function ProductCard({
           </button>
         )}
       </div>
-      <div className="p-4 flex flex-col flex-1">
+      <div className="p-4 lg:p-5 flex flex-col flex-1">
         {onOpenDetail ? (
           <button onClick={() => onOpenDetail(p)} className="text-left">
-            <h3 className="text-lg font-display text-brand-ink leading-tight">{p.name}</h3>
+            <h3 className="text-lg lg:text-xl font-display text-brand-ink leading-tight">{p.name}</h3>
           </button>
         ) : (
           <h3 className="text-lg font-display text-brand-ink leading-tight">{p.name}</h3>
@@ -90,14 +90,17 @@ export default function ProductCard({
             sensory description now lives in the detail sheet only (see
             progressive-disclosure split in the brief). Fraunces roman, not
             italic — personality comes from the family + copy, not from
-            treating every teaser like a literary quote. Festa keeps showing
-            its own sensory line unchanged. */}
+            treating every teaser like a literary quote. Given more
+            presence at lg+ (was reading as metadata, not the desire-copy it
+            actually is) — size/spacing only, same text. Festa keeps
+            showing its own sensory line, kept compact at lg+ (2-line clamp)
+            so the photo stays the protagonist instead of growing text. */}
         {!isFesta ? (
-          <p className="text-sm mt-2 leading-relaxed flex-1 font-display text-brand-ink">
+          <p className="text-sm lg:text-base mt-2 lg:mt-2.5 leading-relaxed lg:leading-[1.5] flex-1 font-display text-brand-ink">
             {p.experience?.teaser ?? p.sensory}
           </p>
         ) : (
-          <p className="text-xs mt-2 leading-relaxed flex-1 text-brand-inkSoft">{p.sensory}</p>
+          <p className="text-xs mt-2 leading-relaxed flex-1 text-brand-inkSoft lg:line-clamp-2">{p.sensory}</p>
         )}
 
         {/* "Insight" badges — Dias de luta only (per Naia's brief); Festa's

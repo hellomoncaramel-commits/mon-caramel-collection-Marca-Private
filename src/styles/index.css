@@ -23,11 +23,17 @@ html {
      coincidence. MomentScreen intentionally has no page title (its own
      moment-intro paragraph fills that role) and Product Detail stays
      image-first by design — neither uses this pair, on purpose. */
+  /* lg+ sizes are additive only (mobile text-2xl/text-sm untouched) — part
+     of the desktop art-direction pass: every screen built on this pair
+     (Catalog, Feed, Saved, Search, Selection, Caixas/Bandejas/Mimos,
+     Presente entry) gets a touch more editorial presence on desktop for
+     free, consistently, instead of landing-page-sized titles on some
+     screens and not others. */
   .mc-page-title {
-    @apply text-2xl font-display text-brand-ink leading-tight mb-1;
+    @apply text-2xl lg:text-[32px] font-display text-brand-ink leading-tight mb-1 lg:mb-2;
   }
   .mc-page-subtitle {
-    @apply text-sm text-brand-inkSoft leading-relaxed mb-6;
+    @apply text-sm lg:text-base text-brand-inkSoft leading-relaxed mb-6 lg:mb-8;
   }
 }
 
