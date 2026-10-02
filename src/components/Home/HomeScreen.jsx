@@ -41,12 +41,12 @@ const MOBILE_HERO_GRADIENT =
 const HERO_GRADIENT =
   "linear-gradient(90deg, rgba(255,249,241,0.72) 0%, rgba(255,249,241,0.5) 15%, rgba(255,249,241,0.22) 30%, rgba(255,249,241,0.05) 42%, rgba(255,249,241,0) 55%)";
 
-function HeroActionCard({ a, onSelect, height, radius, iconSize, emojiSize, titleSize, subtitleSize, chevronSize, padding }) {
+function HeroActionCard({ a, onSelect, height, radius, iconSize, emojiSize, titleSize, subtitleSize, chevronSize, padding, bg = COLORS.caramelDark }) {
   return (
     <button
       onClick={() => onSelect(a.id)}
       className="w-full flex items-center gap-3 text-left transition-transform duration-150 active:scale-[0.99] motion-reduce:transition-none motion-reduce:active:scale-100"
-      style={{ minHeight: height, borderRadius: radius, padding, backgroundColor: COLORS.caramelDark, boxShadow: "0 2px 8px rgba(61,36,24,0.14)" }}
+      style={{ minHeight: height, borderRadius: radius, padding, backgroundColor: bg, boxShadow: "0 2px 8px rgba(61,36,24,0.14)" }}
     >
       {a.emoji ? (
         <span className="shrink-0" style={{ fontSize: emojiSize, lineHeight: 1 }}>
@@ -68,10 +68,10 @@ function HeroActionCard({ a, onSelect, height, radius, iconSize, emojiSize, titl
   );
 }
 
-function FavoriteProductCard({ p, isFav, onToggleFavorite, onOpen, className }) {
+function FavoriteProductCard({ p, isFav, onToggleFavorite, onOpen, className, style }) {
   const photo = defaultPhotos(p)?.[0];
   return (
-    <button onClick={() => onOpen?.(p)} className={`text-left ${className}`}>
+    <button onClick={() => onOpen?.(p)} className={`text-left ${className}`} style={style}>
       <div className="relative rounded-2xl overflow-hidden aspect-square">
         <Photo src={photo} alt="" className="w-full h-full object-cover" loading="lazy" />
         <span
@@ -89,13 +89,13 @@ function FavoriteProductCard({ p, isFav, onToggleFavorite, onOpen, className }) 
             }
           }}
           aria-label={isFav ? `Remover ${p.name} dos salvos` : `Salvar ${p.name}`}
-          className="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center"
+          className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/90 flex items-center justify-center"
         >
-          <Heart size={14} fill={isFav ? COLORS.caramelDark : "none"} stroke={COLORS.caramelDark} />
+          <Heart size={12} fill={isFav ? COLORS.caramelDark : "none"} stroke={COLORS.caramelDark} />
         </span>
       </div>
-      <p className="mt-2 text-sm lg:text-base font-display text-brand-ink leading-tight truncate">{p.name}</p>
-      <p className="text-xs lg:text-sm font-medium mt-0.5" style={{ color: COLORS.caramelDark }}>
+      <p className="mt-2 text-xs font-display text-brand-ink leading-tight truncate">{p.name}</p>
+      <p className="text-3xs font-medium mt-0.5" style={{ color: COLORS.caramelDark }}>
         {p.price}
       </p>
     </button>
@@ -137,7 +137,7 @@ export default function HomeScreen({ onSelect, onOpenProduct, favorites, toggleF
             presence (same "home" preset used by every other screen's
             SiteHeader), Salvos/Seleção on the right are the two real,
             existing destinations — no invented hamburger/menu/account. */}
-        <div className="flex items-center justify-between" style={{ height: 68 }}>
+        <div className="flex items-center justify-between" style={{ height: 76 }}>
           <div className="w-11" />
           <Logo size="home" />
           <div className="flex items-center">
@@ -191,10 +191,10 @@ export default function HomeScreen({ onSelect, onOpenProduct, favorites, toggleF
           <div className="absolute inset-0 pointer-events-none" style={{ background: MOBILE_HERO_GRADIENT }} />
 
           <div className="absolute left-5 right-5" style={{ top: 26 }}>
-            <h1 className="font-display font-semibold text-brand-beige" style={{ fontSize: 42, lineHeight: 1.08, maxWidth: 300 }}>
+            <h1 className="font-display font-semibold text-brand-beige" style={{ fontSize: 43, lineHeight: 0.98, maxWidth: 300 }}>
               O que a gente vai adoçar hoje?&nbsp;💛
             </h1>
-            <p className="text-brand-beige/85" style={{ fontSize: 15.5, lineHeight: 1.42, maxWidth: 320, marginTop: 10 }}>
+            <p className="text-brand-beige/85" style={{ fontSize: 14, lineHeight: 1.3, maxWidth: 300, marginTop: 8 }}>
               Escolha pelo momento, procure alguma coisa específica ou simplesmente fique olhando...
             </p>
           </div>
@@ -205,7 +205,7 @@ export default function HomeScreen({ onSelect, onOpenProduct, favorites, toggleF
                 key={a.id}
                 a={a}
                 onSelect={onSelect}
-                height={76}
+                height={84}
                 radius={17}
                 iconSize={20}
                 emojiSize={21}
@@ -213,6 +213,7 @@ export default function HomeScreen({ onSelect, onOpenProduct, favorites, toggleF
                 subtitleSize={12.5}
                 chevronSize={16}
                 padding="12px 16px"
+                bg={COLORS.caramelDarker}
               />
             ))}
           </div>
@@ -222,9 +223,11 @@ export default function HomeScreen({ onSelect, onOpenProduct, favorites, toggleF
             products/photos/prices, favorite toggle, ProductDetail on tap
             (same openProductDetail App.jsx already uses everywhere else). */}
         <div className="mt-7">
-          <div className="flex items-center justify-between mb-3.5">
-            <h2 className="font-display font-medium text-brand-ink text-2xl">Nossos doces favoritos&nbsp;💛</h2>
-            <button onClick={() => onSelect("catalogo")} className="text-sm font-medium shrink-0" style={{ color: COLORS.caramelDark }}>
+          <div className="flex items-center justify-between mb-3.5 gap-2">
+            <h2 className="font-display font-medium text-brand-ink whitespace-nowrap" style={{ fontSize: 26 }}>
+              Nossos doces favoritos&nbsp;💛
+            </h2>
+            <button onClick={() => onSelect("catalogo")} className="text-xs font-medium shrink-0" style={{ color: COLORS.caramelDark }}>
               Ver todos →
             </button>
           </div>
@@ -236,7 +239,8 @@ export default function HomeScreen({ onSelect, onOpenProduct, favorites, toggleF
                 isFav={favorites?.includes(p.id)}
                 onToggleFavorite={toggleFavorite}
                 onOpen={onOpenProduct}
-                className="shrink-0 w-36"
+                className="shrink-0"
+                style={{ width: 140 }}
               />
             ))}
           </div>
