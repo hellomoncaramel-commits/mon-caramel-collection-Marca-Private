@@ -54,11 +54,11 @@ const FAVORITE_PRODUCT_IDS = ["chocobomb", "cone-trufado", "brownlito", "casadin
 const PHOTO_GRADIENT =
   "linear-gradient(to bottom, rgba(244,235,218,0) 0%, rgba(244,235,218,0) 48%, rgba(244,235,218,0.4) 62%, rgba(244,235,218,0.75) 74%, rgba(244,235,218,0.92) 85%, rgba(255,252,245,0.97) 94%, rgba(255,252,245,0.99) 100%)";
 
-// lg+ hero only — horizontal fade, left to right: opaque over the text
-// zone, fully clear by ~70% so the photo reads uninterrupted behind the
-// center/right and behind the journey cards at the bottom.
+// lg+ hero only — a light scrim, not a wash: just enough to keep the
+// headline readable, clearing fast so the photo stays visible behind and
+// around the text instead of half the hero reading as flat cream.
 const HERO_GRADIENT =
-  "linear-gradient(90deg, rgba(255,249,241,0.98) 0%, rgba(255,249,241,0.92) 18%, rgba(255,249,241,0.72) 31%, rgba(255,249,241,0.34) 44%, rgba(255,249,241,0.08) 58%, rgba(255,249,241,0) 70%)";
+  "linear-gradient(90deg, rgba(255,249,241,0.72) 0%, rgba(255,249,241,0.5) 15%, rgba(255,249,241,0.22) 30%, rgba(255,249,241,0.05) 42%, rgba(255,249,241,0) 55%)";
 
 // Same dark brown MomentPicker's own "Quero isso →" button already uses
 // (see MomentPicker.jsx) — the existing token for a CTA on Mon Caramel,
@@ -74,10 +74,9 @@ function ActionIcon({ a }) {
 // Home's composition, top to bottom: pergunta → escolha (na própria foto).
 // Foto + gradient + ações continuam como uma única peça editorial no mobile
 // (essa estrutura está aprovada, INTOCADA abaixo de lg — ver o bloco
-// `lg:hidden`). A partir de lg (>=1024px) a composição muda para duas
-// colunas editoriais (texto | foto limpa, sem overlay) — um bloco `hidden
-// lg:grid` separado, reaproveitando os mesmos ACTIONS/REAL_PHOTOS/onSelect,
-// não uma refatoração do mobile.
+// `lg:hidden`). A partir de lg (>=1024px) a Home usa uma composição
+// completamente diferente: um único hero fotográfico panorâmico (ver o
+// bloco `hidden lg:block` abaixo) — não duas colunas, não um grid.
 export default function HomeScreen({ onSelect, onOpenProduct }) {
   const favoriteProducts = FAVORITE_PRODUCT_IDS.map((id) => PRODUCTS.find((p) => p.id === id)).filter(Boolean);
   // Hidden at lg+: DesktopNav's own "Salvos" link already covers this
@@ -95,11 +94,12 @@ export default function HomeScreen({ onSelect, onOpenProduct }) {
 
   return (
     // lg+: max-width dropped (was lg:max-w-6xl xl:max-w-7xl) and the gutter
-    // narrowed to ~24px (was 32/48px) — this round's reference wants Home
-    // to read as a wide, edge-to-edge page, not a centered column. This is
-    // a Home-specific override; every other screen keeps its own existing
-    // container system untouched.
-    <div className="w-full md:max-w-2xl lg:max-w-none md:mx-auto px-gutter lg:px-6 pt-2 pb-8 fade-up">
+    // widened to 32px/side (64px total) — the hero itself then caps at
+    // max-w-[1376px] and centers within this, so at 1440 it runs edge to
+    // edge (1440-64=1376) and at wider viewports it stays capped instead
+    // of stretching. Home-specific override; every other screen keeps its
+    // own existing container system untouched.
+    <div className="w-full md:max-w-2xl lg:max-w-none md:mx-auto px-gutter lg:px-8 pt-2 pb-8 fade-up">
       {/* Same logo size/row height as every other screen (SiteHeader's own
           defaults) — the previous "homeCompact" 52px override made the logo
           read as a micro decoration instead of a brand signature. 92px is
@@ -178,73 +178,86 @@ export default function HomeScreen({ onSelect, onOpenProduct }) {
       </div>
 
       {/* ============================= DESKTOP (>=lg) ============================= */}
-      {/* Recomposed this round from a two-column (text | photo) layout to a
-          single panoramic photo hero, per the approved reference: there is
-          no left/right split — one photo covers the entire hero, with the
-          headline/subtext and the three journey cards sitting ON TOP of it
-          (readability via HERO_GRADIENT, not a separate image panel). Same
-          handlers as mobile (onSelect(id) → App.jsx's screen state); the
-          third journey ("feed") already exists as a real screen, just
-          without a Home entry point before this round. */}
-      <div className="hidden lg:block relative mt-4 overflow-hidden" style={{ height: 635 }}>
+      {/* One panoramic photo hero, capped at max-w-[1376px] and centered —
+          at 1440 (this round's primary target) that's edge to edge within
+          the 32px/side gutter above; at wider viewports it stays capped
+          rather than stretching. Headline/subtext/journey cards sit ON TOP
+          of the photo (readability via the light HERO_GRADIENT scrim, not
+          a separate image panel or a second transform/scale crop trick).
+          Same handlers as mobile (onSelect(id) → App.jsx's screen state);
+          "feed" ("Só quero olhar e passar vontade") already exists as a
+          real screen, just without a Home entry point before this round. */}
+      <div className="hidden lg:block relative mt-5 mx-auto overflow-hidden" style={{ maxWidth: 1376, height: 665, borderRadius: 24 }}>
+        {/* bolo-de-pote-camadas: chosen after comparing several real
+            candidates (brigadeiro trays, chocobomb, cone trufado, alfajor,
+            bolo de cenoura) — this is the one real photo in the catalog
+            that already has genuine depth of field (soft, out-of-focus
+            kitchen behind) instead of a flat, edge-to-edge texture/mosaic,
+            with the jars' rich chocolate/strawberry layers reading as a
+            real protagonist on the right. No scale()/distortion — only
+            object-position picks which vertical band of the (portrait)
+            source shows. */}
         <Photo
-          src={REAL_PHOTOS.brigadeiroDiaDificil}
+          src={REAL_PHOTOS.boloDePoteCamadas}
           alt=""
           className="absolute inset-0 w-full h-full object-cover"
-          style={{ objectPosition: "42% 55%", transform: "scale(1.22)", transformOrigin: "42% 55%" }}
+          style={{ objectPosition: "48% 58%" }}
           loading="eager"
         />
         <div className="absolute inset-0 pointer-events-none" style={{ background: HERO_GRADIENT }} />
 
-        <div className="absolute" style={{ left: 60, top: 130, maxWidth: 600 }}>
-          <h1
-            className="font-display font-semibold text-brand-ink"
-            style={{ fontSize: 72, lineHeight: 0.98 }}
-          >
+        <div className="absolute" style={{ left: 64, top: 84, maxWidth: 560 }}>
+          <h1 className="font-display font-semibold text-brand-ink" style={{ fontSize: 80, lineHeight: 0.97 }}>
             O que a gente vai adoçar hoje?&nbsp;💛
           </h1>
-          <p className="text-brand-inkSoft" style={{ fontSize: 21, lineHeight: 1.4, maxWidth: 500, marginTop: 24 }}>
+          <p className="text-brand-inkSoft" style={{ fontSize: 19, lineHeight: 1.45, maxWidth: 430, marginTop: 20 }}>
             Escolha pelo momento, procure alguma coisa específica ou simplesmente fique olhando...
           </p>
         </div>
 
-        <div className="absolute grid grid-cols-3 gap-4" style={{ left: 58, right: 58, bottom: 55 }}>
+        <div className="absolute grid grid-cols-3 gap-4" style={{ left: 64, right: 64, bottom: 40 }}>
           {DESKTOP_HERO_ACTIONS.map((a) => (
             <button
               key={a.id}
               onClick={() => onSelect(a.id)}
-              className="flex items-center gap-4 text-left transition-transform duration-150 active:scale-[0.99] motion-reduce:transition-none motion-reduce:active:scale-100"
-              style={{ height: 135, borderRadius: 20, padding: "24px 26px", backgroundColor: COLORS.caramelDark, boxShadow: "0 4px 14px rgba(61,36,24,0.22)" }}
+              className="flex items-center gap-3 text-left transition-transform duration-150 active:scale-[0.99] motion-reduce:transition-none motion-reduce:active:scale-100"
+              style={{
+                height: 116,
+                borderRadius: 18,
+                padding: "18px 20px",
+                backgroundColor: COLORS.caramelDark,
+                boxShadow: "0 2px 8px rgba(61,36,24,0.14)",
+              }}
             >
               {a.emoji ? (
-                <span className="shrink-0" style={{ fontSize: 40, lineHeight: 1 }}>
+                <span className="shrink-0" style={{ fontSize: 25, lineHeight: 1 }}>
                   {a.emoji}
                 </span>
               ) : (
-                <a.Icon size={40} strokeWidth={1.75} className="shrink-0 text-brand-beige" />
+                <a.Icon size={22} strokeWidth={2} className="shrink-0 text-brand-beige" />
               )}
               <span className="min-w-0 flex-1">
-                <span className="block text-brand-beige font-semibold leading-snug" style={{ fontSize: 19 }}>
+                <span className="block text-brand-beige font-semibold leading-snug" style={{ fontSize: 17 }}>
                   {a.title}
                 </span>
-                <span className="block text-brand-beige/85 mt-1 leading-snug" style={{ fontSize: 15.5 }}>
+                <span className="block text-brand-beige/80 mt-0.5 leading-snug" style={{ fontSize: 13 }}>
                   {a.subtitle}
                 </span>
               </span>
-              <ChevronRight size={28} className="shrink-0 text-brand-beige/85" />
+              <ChevronRight size={18} className="shrink-0 text-brand-beige/70" />
             </button>
           ))}
         </div>
       </div>
 
-      {/* "Nossos doces favoritos" — starts right after the hero, no empty
-          band between them. Real products/photos/prices, ProductDetail on
-          click (same openProductDetail App.jsx already uses everywhere
-          else). First row is allowed to run past the fold at 900px tall —
-          that's the point, it signals there's more page below. */}
-      <div className="hidden lg:block mt-10">
+      {/* "Nossos doces favoritos" — real products/photos/prices,
+          ProductDetail on click (same openProductDetail App.jsx already
+          uses everywhere else). First row is allowed to run past the fold
+          at 900px tall — that's the point, it signals there's more page
+          below (same as the reference). */}
+      <div className="hidden lg:block" style={{ marginTop: 48 }}>
         <div className="flex items-end justify-between mb-5">
-          <h2 className="font-display font-medium text-brand-ink" style={{ fontSize: 32 }}>
+          <h2 className="font-display font-medium text-brand-ink" style={{ fontSize: 34 }}>
             Nossos doces favoritos&nbsp;💛
           </h2>
           <button
