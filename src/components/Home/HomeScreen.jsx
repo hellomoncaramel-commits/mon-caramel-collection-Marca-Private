@@ -26,14 +26,13 @@ const HERO_ACTIONS = [
 // follows that same existing pattern, not a new one).
 const FAVORITE_PRODUCT_IDS = ["chocobomb", "cone-trufado", "brownlito", "casadinho"];
 
-// Mobile hero overlay — the photo itself is dark/saturated enough to carry
-// cream text directly, so this is a thin dark scrim, not a wash: just
-// enough contrast behind the headline for legibility, clearing immediately
-// after so most of the photo stays untouched (full contrast, color,
-// texture). No light/cream wash here — that's what flattened the previous
-// brigadeiro photo.
+// Mobile hero overlay — a dark scrim, not a wash: just enough contrast
+// behind the headline/copy for the cream text to read, clearing well before
+// the journey cards (opaque caramel surfaces that need no help from the
+// photo underneath). No light/cream wash here — that's what flattened the
+// previous brigadeiro photo.
 const MOBILE_HERO_GRADIENT =
-  "linear-gradient(to bottom, rgba(32,18,10,0.55) 0%, rgba(32,18,10,0.32) 22%, rgba(32,18,10,0.08) 38%, rgba(32,18,10,0) 48%)";
+  "linear-gradient(to bottom, rgba(28,16,9,0.68) 0%, rgba(28,16,9,0.48) 24%, rgba(28,16,9,0.18) 42%, rgba(28,16,9,0) 54%)";
 
 // lg+ hero only — a light scrim, not a wash: just enough to keep the
 // headline readable, clearing fast so the photo stays visible behind and
@@ -173,19 +172,21 @@ export default function HomeScreen({ onSelect, onOpenProduct, favorites, toggleF
             editorial piece, not a title block + a separate photo card +
             buttons underneath. */}
         <div className="relative -mx-gutter mt-2 overflow-hidden" style={{ height: 528 }}>
-          {/* bolo-cenoura-tray, cropped tight (object-position + scale) into
-              its glossy ganache surface — dark, close-up, saturated enough
-              to carry cream text directly, no light wash needed. Avoids
-              brigadeiroDiaDificil (rejected: reads as a production tray of
-              many small repeated pieces, flat lighting, too light),
-              casadinhoGoiabada (prior mobile hero) and boloDePoteCamadas
-              (now the desktop hero) per this round's brief. Provisional
-              pick pending final photo approval/production. */}
+          {/* brownlitoInteiro — a single, clearly-identifiable dark-chocolate
+              product in the foreground (plate + table behind it, not a
+              texture/mosaic of many small pieces). Portrait source (900×1200,
+              ratio ~0.75) already near-matches this container's own ratio
+              (390×528, ~0.74), so object-cover needs almost no crop — the
+              photo shows essentially uncropped. Rejected before this:
+              boloCenouraTray ("mar de granulado", no identifiable single
+              product), brigadeiroDiaDificil (production-tray texture),
+              chocobomb/alfajorClassico (mosaics of repeated pieces). Still a
+              placeholder per the brief — may be swapped again later. */}
           <Photo
-            src={REAL_PHOTOS.boloCenouraTray}
+            src={REAL_PHOTOS.brownlitoInteiro}
             alt=""
             className="absolute inset-0 w-full h-full object-cover"
-            style={{ objectPosition: "30% 45%", transform: "scale(1.35)", transformOrigin: "30% 45%" }}
+            style={{ objectPosition: "50% 38%" }}
             loading="eager"
           />
           <div className="absolute inset-0 pointer-events-none" style={{ background: MOBILE_HERO_GRADIENT }} />
