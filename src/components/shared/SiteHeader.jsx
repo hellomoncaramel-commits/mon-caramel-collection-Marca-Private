@@ -15,6 +15,14 @@ import Logo from "./Logo";
 // uses (unchanged for all of them) — only Home passes its own compact
 // values, so this stays a same-component, additive change rather than a
 // second header.
+//
+// At lg+, DesktopNav (App.jsx) is now the one brand header — its own logo
+// sits top-left there, so this row's centered logo would be a second,
+// redundant brand mark directly below it. Only the logo is hidden at lg+;
+// the back button and rightSlot stay exactly as they are (still visible,
+// still at the same absolute positions, still fully functional) since
+// DesktopNav doesn't carry a page's own back affordance or page-specific
+// actions.
 export default function SiteHeader({ onBack, rightSlot, logoSize = "home", rowHeight = 76 }) {
   // Screens are swapped by conditional rendering (see App.jsx), not
   // routing, so the window keeps whatever scroll position the previous
@@ -36,7 +44,9 @@ export default function SiteHeader({ onBack, rightSlot, logoSize = "home", rowHe
           <div className="w-11" />
         )}
       </div>
-      <Logo size={logoSize} />
+      <div className="lg:hidden">
+        <Logo size={logoSize} />
+      </div>
       <div className="absolute right-0">{rightSlot ?? <div className="w-11" />}</div>
     </div>
   );

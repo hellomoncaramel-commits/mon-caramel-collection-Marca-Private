@@ -20,14 +20,14 @@ function ResultRow({ p, isAdded, onQuickAdd, onOpen }) {
   const isCustomizable = p.customizable === true;
 
   return (
-    <button onClick={() => onOpen(p)} className="w-full flex items-center gap-3 text-left py-2">
-      <div className="w-16 h-16 shrink-0 rounded-2xl overflow-hidden">
+    <button onClick={() => onOpen(p)} className="w-full flex items-center gap-3 lg:gap-4 text-left py-2 lg:py-3">
+      <div className="w-16 h-16 lg:w-20 lg:h-20 shrink-0 rounded-2xl overflow-hidden">
         {photo ? <Photo src={photo} alt="" className="w-full h-full object-cover" loading="lazy" /> : <ProductArt kind={p.kind} tint={p.tint} h="h-16" />}
       </div>
       <div className="min-w-0 flex-1">
-        <h3 className="text-base font-display text-brand-ink leading-tight truncate">{p.name}</h3>
-        <p className="text-xs text-brand-inkSoft leading-snug line-clamp-1">{p.sensory}</p>
-        <p className="text-sm font-medium mt-0.5 text-brand-caramelDark">{p.price}</p>
+        <h3 className="text-base lg:text-lg font-display text-brand-ink leading-tight truncate">{p.name}</h3>
+        <p className="text-xs lg:text-sm text-brand-inkSoft leading-snug line-clamp-1">{p.sensory}</p>
+        <p className="text-sm lg:text-base font-medium mt-0.5 text-brand-caramelDark">{p.price}</p>
       </div>
       <span
         onClick={(e) => {
@@ -71,32 +71,32 @@ export default function SearchScreen({ onBack, selection, addToSelection, onOpen
     addToSelection({ kind: "product", productId: p.id, name: p.name, unit: p.unit, qty, flavors: null });
 
   return (
-    <div className="max-w-xl mx-auto px-gutter pt-2 pb-10 fade-up">
+    <div className="max-w-xl lg:max-w-[880px] mx-auto px-gutter lg:px-8 pt-2 pb-10 fade-up">
       <SiteHeader onBack={onBack} />
-      <h1 className="mc-page-title mb-4">O que você está procurando?</h1>
+      <h1 className="mc-page-title mb-4 lg:mt-2">O que você está procurando?</h1>
 
       <label htmlFor="search-input" className="sr-only">
         Buscar produto
       </label>
-      <div className="relative mb-4">
-        <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-brand-muted" />
+      <div className="relative mb-4 lg:mb-5">
+        <Search size={18} className="absolute left-4 lg:left-5 top-1/2 -translate-y-1/2 text-brand-muted" />
         <input
           id="search-input"
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Buscar brigadeiro, pão de mel..."
-          className="w-full rounded-full border border-brand-border pl-11 pr-4 py-3 text-sm bg-white min-h-11"
+          className="w-full rounded-full border border-brand-border pl-11 lg:pl-14 pr-4 py-3 lg:py-4 text-sm lg:text-base bg-white min-h-11"
         />
       </div>
 
       {!query && (
-        <div className="flex flex-wrap gap-2 mb-6">
+        <div className="flex flex-wrap gap-2 lg:gap-2.5 mb-6 lg:mb-8">
           {QUICK_TERMS.map((term) => (
             <button
               key={term}
               onClick={() => setQuery(term)}
-              className="text-sm rounded-full px-4 py-2 border border-brand-border bg-white text-brand-ink min-h-11"
+              className="text-sm lg:text-base rounded-full px-4 lg:px-5 py-2 lg:py-2.5 border border-brand-border bg-white text-brand-ink min-h-11"
             >
               {term}
             </button>

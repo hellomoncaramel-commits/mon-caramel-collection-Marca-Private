@@ -11,6 +11,37 @@ import PartyPanel from "../Party/PartyPanel";
 import PartyModal from "../Party/PartyModal";
 import PartyFloatingButton from "../Party/PartyFloatingButton";
 
+// Dias de luta only, lg+ only: breaks the product list into an alternating
+// 2-up/3-up rhythm (2,3,2,3,...) instead of one uniform grid — a
+// "controlled editorial grid," not masonry. Never reorders `matched` itself
+// (same products, same sequence; this only decides how many sit in each
+// row). With 15 dia-dificil products the pattern divides evenly (2+3
+// repeated 3×=15); any other count just ends on a partial final row, which
+// is fine — the rhythm doesn't need to land on a round number.
+function chunkEditorialRhythm(items) {
+  const pattern = [2, 3];
+  const chunks = [];
+  let i = 0;
+  let p = 0;
+  while (i < items.length) {
+    const size = pattern[p % pattern.length];
+    chunks.push(items.slice(i, i + size));
+    i += size;
+    p += 1;
+  }
+  return chunks;
+}
+
+// Short editorial asides dropped between a couple of the rhythm's rows —
+// not filters, not categories, not product cards, just Mon Caramel's own
+// voice breaking up the scroll. Keyed by chunk index (which row they sit
+// before). Used sparingly on purpose (2 of this task's 3 approved lines) —
+// dia-dificil, lg+ only; mobile is untouched.
+const DIA_DIFICIL_ASIDES = {
+  1: "Tá procurando alguma coisa pro café? ☕ Continua descendo. Tem coisa boa vindo.",
+  4: "Chegamos oficialmente na parte \"hoje eu mereço\". 💛",
+};
+
 // Matched products for the chosen moment (dia-dificil or festa —
 // "presente" has its own dedicated PresenteScreen), plus cross-sell
 // discovery and the "Minha Seleção" / "Minha Festa" baskets.
@@ -56,21 +87,56 @@ export default function MomentScreen({
     // bottom nav on its own, so this only needs to close out the content,
     // not double up on nav clearance (Festa's floating button is `fixed`,
     // independent of this padding either way).
-    <div className="max-w-2xl mx-auto px-gutter pt-2 pb-10 fade-up">
+    <div className="max-w-2xl lg:max-w-6xl xl:max-w-7xl mx-auto px-gutter lg:px-8 xl:px-12 pt-2 pb-10 fade-up">
       <SiteHeader onBack={onBack} />
 
       {/* Fraunces roman, not the old Cormorant italic — personality comes
           from the family + copy, not from italicizing every editorial
-          paragraph. */}
+          paragraph. Capped width at lg+ so a single line doesn't stretch
+          the full desktop container (readability only, same text). */}
       {MOMENT_INTRO[momentId] && (
-        <p className="text-base leading-relaxed mb-6 font-display text-brand-inkSoft">{MOMENT_INTRO[momentId]}</p>
+        <p className="text-base lg:text-lg leading-relaxed mb-6 lg:mb-8 font-display text-brand-inkSoft lg:max-w-2xl">
+          {MOMENT_INTRO[momentId]}
+        </p>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      {/* Mobile/tablet (all moments) and the lg+ grid for every moment
+          OTHER than dia-dificil (Festa explicitly keeps this same simple,
+          uniform 3-column grid at desktop too — see section 11 of the
+          brief: Festa is a portfolio, not the "controlled editorial grid"
+          below). Below lg this is the only grid rendered, unchanged. */}
+      <div
+        className={`grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-5 ${
+          isDiaDificil ? "lg:hidden" : "lg:grid-cols-3"
+        }`}
+      >
         {matched.map((p) => (
           <ProductCard key={p.id} p={p} momentId={momentId} {...cardProps} />
         ))}
       </div>
+
+      {/* Dias de luta, lg+ only: the editorial 2-up/3-up rhythm grid, with
+          at most a couple of short editorial asides breaking up the scroll.
+          Same `matched` array/order/ProductCard/cardProps as the grid
+          above — just a different row structure. */}
+      {isDiaDificil && (
+        <div className="hidden lg:block">
+          {chunkEditorialRhythm(matched).map((chunk, i) => (
+            <div key={i}>
+              {DIA_DIFICIL_ASIDES[i] && (
+                <p className="font-display text-xl text-brand-ink text-center my-10 max-w-lg mx-auto">
+                  {DIA_DIFICIL_ASIDES[i]}
+                </p>
+              )}
+              <div className={`grid gap-5 ${chunk.length === 2 ? "grid-cols-2" : "grid-cols-3"} ${i > 0 && !DIA_DIFICIL_ASIDES[i] ? "mt-5" : ""}`}>
+                {chunk.map((p) => (
+                  <ProductCard key={p.id} p={p} momentId={momentId} {...cardProps} />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       {crossSell.length > 0 && momentId !== "dia-dificil" && momentId !== "festa" && (
         <div className="mt-9">
@@ -79,7 +145,7 @@ export default function MomentScreen({
             <span className="text-2xs uppercase tracking-wide font-medium">Já que você tá por aqui...</span>
           </div>
           <p className="text-sm mb-4 text-brand-muted">Coisas que combinam com outros momentos, mas ninguém disse que era só um.</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-5">
             {crossSell.map((p) => (
               <ProductCard key={p.id} p={p} momentId={momentId} {...cardProps} />
             ))}
@@ -88,16 +154,20 @@ export default function MomentScreen({
       )}
 
       {isFesta ? (
-        <PartyPanel
-          ref={partyPanelRef}
-          items={party.items}
-          theme={party.theme}
-          notes={party.notes}
-          onSubmit={() => onSend(buildPartyMessage({ items: party.items, theme: party.theme, notes: party.notes }))}
-        />
+        // Capped at lg+ so the planner panel doesn't stretch across the
+        // whole 7xl product grid — PartyPanel itself is untouched.
+        <div className="lg:max-w-2xl lg:mx-auto">
+          <PartyPanel
+            ref={partyPanelRef}
+            items={party.items}
+            theme={party.theme}
+            notes={party.notes}
+            onSubmit={() => onSend(buildPartyMessage({ items: party.items, theme: party.theme, notes: party.notes }))}
+          />
+        </div>
       ) : (
         selection.length > 0 && (
-          <div className="mt-6 rounded-2xl border border-brand-caramelDark p-4 bg-white/95 backdrop-blur">
+          <div className="mt-6 rounded-2xl border border-brand-caramelDark p-4 bg-white/95 backdrop-blur lg:max-w-md lg:mx-auto">
             <p className="text-xs uppercase tracking-wide mb-2 text-brand-muted">Você escolheu ({selection.length})</p>
             <button
               onClick={onOpenSelection}
@@ -124,7 +194,7 @@ export default function MomentScreen({
       {/* Dias de luta is meant to be the whole day-to-day universe — no
           parallel "catalog" exit. Festa keeps this link. */}
       {!isDiaDificil && (
-        <button onClick={onGoCatalog} className="w-full text-center text-xs mt-8 py-2 underline text-brand-muted">
+        <button onClick={onGoCatalog} className="w-full text-center text-xs mt-8 py-2 underline text-brand-muted lg:max-w-md lg:mx-auto lg:block">
           Não encontrou o que imaginava? Explore toda a coleção.
         </button>
       )}

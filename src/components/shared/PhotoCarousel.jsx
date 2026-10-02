@@ -26,7 +26,14 @@ export default function PhotoCarousel({ photos, alt }) {
 
   return (
     <div className="relative w-full overflow-hidden select-none aspect-photo">
-      <Photo src={photos[i]} alt={alt} className="w-full h-full object-cover" loading="lazy" />
+      {/* The very first photo (i === 0, shown on mount with no interaction
+          needed) is already in the viewport the instant this card renders —
+          marking it "lazy" gave it no fetch priority and could leave it
+          blank for a beat right when it's most visible. Any later photo
+          (reached via arrows or the auto-rotate timer) stays lazy, since
+          those loads are already deferred until the user/timer asks for
+          them. */}
+      <Photo src={photos[i]} alt={alt} className="w-full h-full object-cover" loading={i === 0 ? "eager" : "lazy"} />
       {photos.length > 1 && (
         <>
           <button

@@ -28,21 +28,30 @@ export default function CaixasScreen({ onBack, addToSelection }) {
   }
 
   return (
-    <div className="max-w-xl md:max-w-3xl mx-auto px-gutter pt-2 pb-10 fade-up">
+    <div className="max-w-xl md:max-w-3xl lg:max-w-5xl xl:max-w-6xl mx-auto px-gutter lg:px-8 xl:px-12 pt-2 pb-10 fade-up">
       <SiteHeader onBack={onBack} />
       <h1 className="mc-page-title">Caixas para inspirar</h1>
       <p className="mc-page-subtitle">
         Algumas ideias que já passaram por aqui. Escolha uma inspiração e a gente adapta do seu jeito.
       </p>
 
-      <InspirationCarousel items={BOX_INSPIRATIONS} ariaLabel="Fotos de caixas" />
-
-      <PresenteCTA
-        onAction={() => setShowWizard(true)}
-        title="Gostou de alguma ideia?"
-        body="A sua pode ser completamente diferente. Escolha os doces, cores e detalhes do seu jeito."
-        label="Montar a sua →"
-      />
+      {/* lg+: carousel left, copy+CTA right — real two-column use of the
+          desktop width instead of the mobile "photo, then a CTA band
+          below" stack. Below lg this is a plain block container (no grid
+          classes apply), so mobile/tablet stay exactly as they were. */}
+      <div className="lg:grid lg:grid-cols-12 lg:gap-10 xl:gap-14 lg:items-center">
+        <div className="lg:col-span-7">
+          <InspirationCarousel items={BOX_INSPIRATIONS} ariaLabel="Fotos de caixas" />
+        </div>
+        <div className="lg:col-span-5">
+          <PresenteCTA
+            onAction={() => setShowWizard(true)}
+            title="Gostou de alguma ideia?"
+            body="A sua pode ser completamente diferente. Escolha os doces, cores e detalhes do seu jeito."
+            label="Montar a sua →"
+          />
+        </div>
+      </div>
     </div>
   );
 }

@@ -10,6 +10,12 @@ const SIZES = {
   // tightly-cropped asset below, whose visible artwork nearly fills its own
   // frame, unlike the source file's ~15% transparent margin on every side.
   home: 92,
+  // Unified desktop header (DesktopNav) — same tightly-cropped asset as
+  // "home", sized so it reads as ~125px WIDE (the brand mark needs real
+  // presence in the new ~100px-tall header, not a micro icon) — taller
+  // than the 100px row on purpose, overflowing it centered the same way
+  // SIZES.home already overflows its own row.
+  header: 116,
   md: 120,
   lg: 200,
 };
@@ -18,7 +24,7 @@ const SIZES = {
 // "Not your average sweet." tagline all baked in), supplied directly by
 // Naia — see public/images/brand/logo-mon-caramel.webp.
 export default function Logo({ size = "md" }) {
-  if (size === "home") {
+  if (size === "home" || size === "header") {
     return (
       <img
         src="/images/brand/logo-mon-caramel-cropped.webp"

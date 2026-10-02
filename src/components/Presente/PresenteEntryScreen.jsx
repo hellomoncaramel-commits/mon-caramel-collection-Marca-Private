@@ -40,10 +40,14 @@ const OPTIONS = [
     cta: "Quero ver produtos →",
     tint: COLORS.caramelLight,
     photo: REAL_PHOTOS.presentinhoTrufas,
-    // Contain, not cover: this is the reference container fit — the
-    // photo is already close to the slot's own aspect, so contain already
-    // fills it edge to edge with no cropping. Left as is per instruction.
+    // Contain, not cover, on mobile/tablet — the reference container fit
+    // there, kept exactly as approved (locked, not touched this round). At
+    // lg+ this card sat visibly smaller/weaker than Caixas/Bandejas (whose
+    // photos fill their frame edge to edge via cover) since "contain"
+    // leaves cream space on the sides — a local, per-card fix (see
+    // photoFitLg below), not a change to object-fit globally.
     photoFit: "contain",
+    photoFitLg: "cover",
   },
 ];
 
@@ -53,7 +57,7 @@ const OPTIONS = [
 // products, leads straight to a small catalog.
 export default function PresenteEntryScreen({ onBack, onSelect }) {
   return (
-    <div className="max-w-xl md:max-w-3xl mx-auto px-gutter pt-2 pb-10 fade-up">
+    <div className="max-w-xl md:max-w-3xl lg:max-w-5xl mx-auto px-gutter lg:px-8 xl:px-12 pt-2 pb-10 fade-up">
       <SiteHeader onBack={onBack} />
       <h1 className="mc-page-title">É só uma lembrancinha.</h1>
       <p className="mc-page-subtitle">
@@ -87,13 +91,13 @@ export default function PresenteEntryScreen({ onBack, onSelect }) {
                 {o.cta}
               </span>
             </div>
-            <div className="relative overflow-hidden min-h-[130px] md:h-36 order-2 md:order-1 p-1">
+            <div className="relative overflow-hidden min-h-[130px] md:h-36 lg:h-48 order-2 md:order-1 p-1">
               <Photo
                 src={o.photo}
                 alt=""
                 className={`absolute inset-0 w-full h-full ${o.photoFit === "contain" ? "object-contain" : "object-cover"}${
-                  o.photoPosition ? ` ${o.photoPosition}` : ""
-                }`}
+                  o.photoFitLg === "cover" ? " lg:object-cover" : ""
+                }${o.photoPosition ? ` ${o.photoPosition}` : ""}`}
                 loading="lazy"
               />
             </div>

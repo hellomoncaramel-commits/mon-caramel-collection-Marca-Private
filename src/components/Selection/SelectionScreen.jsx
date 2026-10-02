@@ -102,7 +102,12 @@ export default function SelectionScreen({ selection, removeFromSelection, onBack
   const productsById = useMemo(() => new Map(PRODUCTS.map((p) => [p.id, p])), []);
 
   return (
-    <div className="max-w-2xl mx-auto px-gutter pt-2 pb-10 fade-up">
+    // Minha Seleção is a pre-WhatsApp summary, not a marketplace checkout —
+    // lg:max-w-4xl (896px) read as too wide for a short list of compact
+    // rows. Narrowed to ~820px, well within the 760–850px the brief asks
+    // for; the WhatsApp CTA stays full-width of THIS container, so it
+    // naturally stops being a 1200px-wide bar too.
+    <div className="max-w-2xl lg:max-w-[820px] mx-auto px-gutter lg:px-8 pt-2 pb-10 fade-up">
       <SiteHeader onBack={onBack} />
       <h2 className="mc-page-title">♡ Minha Seleção</h2>
       <p className="mc-page-subtitle">

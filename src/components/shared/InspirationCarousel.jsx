@@ -12,6 +12,14 @@ import InspirationImage from "./InspirationImage";
 // searching the file's raw text, so a template-literal interpolation like
 // `w-[${SLIDE}]` never produces the real class text and silently emits no
 // CSS for it.
+//
+// At lg+ this carousel now also sits inside a narrower column (the 2-col
+// "carousel | copy" desktop layout on Caixas/Bandejas/Mimos — see those
+// screens), not the full page width, so the 84vw/460px mobile formula
+// would badly undersize it there. "min(90%,680px)" below is deliberately
+// %-based, not vw-based — % resolves against the track's own container
+// (the column), so it actually fills most of that column regardless of
+// viewport size, instead of racing against the full browser width.
 
 // The slide FRAME (aspect-photo, rounded-3xl, overflow-hidden below) is the
 // only thing with a fixed size — it stays identical for every photo, now
@@ -97,10 +105,10 @@ export default function InspirationCarousel({ items, ariaLabel }) {
           role="region"
           aria-roledescription="carousel"
           aria-label={ariaLabel}
-          className="flex gap-3 overflow-x-auto snap-x snap-mandatory no-scrollbar focus:outline-none pl-[calc((100%-min(84vw,460px))/2)] pr-[calc((100%-min(84vw,460px))/2)]"
+          className="flex gap-3 overflow-x-auto snap-x snap-mandatory no-scrollbar focus:outline-none pl-[calc((100%-min(84vw,460px))/2)] pr-[calc((100%-min(84vw,460px))/2)] lg:pl-[calc((100%-min(90%,680px))/2)] lg:pr-[calc((100%-min(90%,680px))/2)]"
         >
           {items.map((item) => (
-            <div key={item.id} className="shrink-0 snap-center w-[min(84vw,460px)]">
+            <div key={item.id} className="shrink-0 snap-center w-[min(84vw,460px)] lg:w-[min(90%,680px)]">
               <div className="relative aspect-photo rounded-3xl overflow-hidden bg-brand-subtle">
                 <InspirationImage src={item.src} alt={item.alt || ""} />
               </div>
@@ -114,7 +122,7 @@ export default function InspirationCarousel({ items, ariaLabel }) {
               onClick={() => goTo(index - 1)}
               disabled={index === 0}
               aria-label="Foto anterior"
-              className="absolute top-1/2 -translate-y-1/2 left-[calc((100%-min(84vw,460px))/2+4px)] w-11 h-11 rounded-full bg-white/90 flex items-center justify-center disabled:opacity-0 disabled:pointer-events-none transition-opacity"
+              className="absolute top-1/2 -translate-y-1/2 left-[calc((100%-min(84vw,460px))/2+4px)] lg:left-[calc((100%-min(90%,680px))/2+4px)] w-11 h-11 rounded-full bg-white/90 flex items-center justify-center disabled:opacity-0 disabled:pointer-events-none transition-opacity"
             >
               <ChevronLeft size={18} className="text-brand-ink" />
             </button>
@@ -122,7 +130,7 @@ export default function InspirationCarousel({ items, ariaLabel }) {
               onClick={() => goTo(index + 1)}
               disabled={index === items.length - 1}
               aria-label="Próxima foto"
-              className="absolute top-1/2 -translate-y-1/2 right-[calc((100%-min(84vw,460px))/2+4px)] w-11 h-11 rounded-full bg-white/90 flex items-center justify-center disabled:opacity-0 disabled:pointer-events-none transition-opacity"
+              className="absolute top-1/2 -translate-y-1/2 right-[calc((100%-min(84vw,460px))/2+4px)] lg:right-[calc((100%-min(90%,680px))/2+4px)] w-11 h-11 rounded-full bg-white/90 flex items-center justify-center disabled:opacity-0 disabled:pointer-events-none transition-opacity"
             >
               <ChevronRight size={18} className="text-brand-ink" />
             </button>
