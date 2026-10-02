@@ -3,8 +3,13 @@ import { REAL_PHOTOS } from "./photos";
 
 // ===========================================================================
 // PRODUCTS — real catalog, cross-tagged to multiple emotional "moments".
-// Price fixed at $1 as a placeholder where the real price isn't set yet —
-// Naia is still finalizing pricing in Excel (briefing section 6).
+// Price shown as "Sob consulta 💬" as a placeholder where the real price
+// isn't set yet — Naia is still finalizing pricing in Excel (briefing
+// section 6). Never use a numeric placeholder like "$1": parsePrice()
+// (utils/pricing.js) reads any clean "$N" string as a real price and feeds
+// it into Minha Seleção's per-item total, so a numeric placeholder shows up
+// to the customer as an actual price instead of being excluded like
+// "Sob consulta" correctly is.
 //
 // Optional field, not set on any product yet: `relatedProducts: string[]`,
 // an array of other product ids to show as "já que você chegou até aqui"
@@ -79,7 +84,7 @@ export const PRODUCTS = [
     id: "mini-donut-simples",
     name: "Mini Cake Donuts — assados e congelados",
     unit: "unidade",
-    price: "$1",
+    price: "Sob consulta 💬",
     sensory:
       "Mini cake donut simples, sem recheio, nos sabores baunilha e chocolate — prático pra ter sempre no freezer.",
     kind: "cake",
@@ -126,7 +131,7 @@ export const PRODUCTS = [
     id: "mini-donut-decorado",
     name: "Mini Cake Donuts",
     unit: "unidade",
-    price: "$1",
+    price: "Sob consulta 💬",
     sensory: "Mini cake donut coberto de chocolate, decorado à mão no tema da sua festa — de flores ao fundo do mar.",
     kind: "cake",
     tint: COLORS.ink,
@@ -153,7 +158,7 @@ export const PRODUCTS = [
     id: "cone-trufado",
     name: "Cones Trufados",
     unit: "unidade",
-    price: "$1",
+    price: "Sob consulta 💬",
     sensory: "Cone crocante coberto de trufa cremosa, decorado à mão no tema da sua festa.",
     kind: "cake",
     tint: COLORS.caramelDark,
@@ -177,7 +182,7 @@ export const PRODUCTS = [
     id: "pirulito-decorado",
     name: "Pirulitos Decorados",
     unit: "unidade",
-    price: "$1",
+    price: "Sob consulta 💬",
     sensory:
       "Chocolate coberto com pasta de leite em pó, decorado à mão no tema da sua festa — de flores a futebol, tem pra tudo.",
     kind: "cake",
@@ -189,7 +194,7 @@ export const PRODUCTS = [
     id: "bolo-palito",
     name: "Bolo no Palito",
     unit: "unidade",
-    price: "$1",
+    price: "Sob consulta 💬",
     sensory:
       "Bolinho de pão de mel com especiarias e recheio de doce de leite, coberto com Fondelle (pasta de leite em pó) — customizado pro tema da sua festa.",
     kind: "cake",
@@ -201,7 +206,7 @@ export const PRODUCTS = [
     id: "piramide",
     name: "Lembrancinhas Pirâmide",
     unit: "~60g bala de coco por unidade",
-    price: "$1",
+    price: "Sob consulta 💬",
     sensory: "Bala de coco caseira que derrete na boca, dentro de uma pirâmide personalizada no tema da sua festa.",
     kind: "candy",
     tint: COLORS.caramelDark,
@@ -246,7 +251,7 @@ export const PRODUCTS = [
     id: "pao-de-mel",
     name: "Pão de Mel",
     unit: "3 unidades",
-    price: "$1",
+    price: "Sob consulta 💬",
     sensory: "Bolinho macio de mel e especiarias, recheado com doce de leite, coberto de chocolate.",
     kind: "cake",
     tint: COLORS.caramelDark,
@@ -264,7 +269,7 @@ export const PRODUCTS = [
     id: "bolo-cenoura",
     name: "Bolo de Cenoura",
     unit: "fatia",
-    price: "$1",
+    price: "Sob consulta 💬",
     sensory: "Bolo de cenoura fofinho, coberto com chocolate cremoso e granulado — clássico que nunca falha.",
     kind: "cake",
     tint: COLORS.caramelLight,
@@ -282,7 +287,7 @@ export const PRODUCTS = [
     id: "butter-cookies",
     name: "Biscoito Amanteigado",
     unit: "12 unidades",
-    price: "$1",
+    price: "Sob consulta 💬",
     sensory: "Biscoitinho amanteigado que derrete na boca — o queridinho pra acompanhar um café.",
     kind: "sandwich",
     tint: COLORS.creamYellow,
@@ -342,7 +347,7 @@ export const PRODUCTS = [
     id: "casadinho",
     name: "Casadinhos Goiabada",
     unit: "6 unidades",
-    price: "$1",
+    price: "Sob consulta 💬",
     sensory: "Biscoito amanteigado recheado de goiabada — outros sabores? É só chamar a gente.",
     kind: "sandwich",
     tint: COLORS.caramelLight,
@@ -360,7 +365,7 @@ export const PRODUCTS = [
     id: "melties",
     name: "Sequilhos",
     unit: "250g",
-    price: "$1",
+    price: "Sob consulta 💬",
     sensory: "Derrete na boca, crocante por fora — sem glúten, o queridinho de sempre.",
     kind: "bites",
     tint: COLORS.creamYellow,
@@ -378,7 +383,7 @@ export const PRODUCTS = [
     id: "chocobomb",
     name: "Chocobomb",
     unit: "unidade",
-    price: "$1",
+    price: "Sob consulta 💬",
     sensory: "Oreo mergulhado em fudge cremoso — pra quando bate aquela vontade impossível de ignorar.",
     kind: "dipped",
     tint: COLORS.caramelLight,
