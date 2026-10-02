@@ -50,7 +50,7 @@ export default function ProductCard({
 
   return (
     <div
-      className="rounded-3xl border bg-white overflow-hidden transition-all h-full flex flex-col"
+      className="rounded-3xl border bg-white overflow-hidden transition-all duration-200 h-full flex flex-col lg:hover:shadow-lg lg:hover:-translate-y-0.5"
       style={{ borderColor: existing ? COLORS.caramelDark : COLORS.border, borderWidth: existing ? "2px" : "1px" }}
     >
       <div

@@ -29,7 +29,7 @@ export default function FeedCard({ product, isFavorite, onToggleFavorite, isAdde
           prev/next buttons for multi-photo products, and buttons can't
           nest. The name button below is the keyboard- and screen-reader-
           accessible way to open the product. */}
-      <div onClick={() => onOpen(product)} className="relative rounded-3xl overflow-hidden cursor-pointer">
+      <div onClick={() => onOpen(product)} className="relative rounded-3xl overflow-hidden cursor-pointer transition-transform duration-200 lg:hover:scale-[1.015]">
         {photos && photos.length > 0 ? (
           <PhotoCarousel photos={photos} alt={product.name} />
         ) : (

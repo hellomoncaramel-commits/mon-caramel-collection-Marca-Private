@@ -171,7 +171,7 @@ export default function MomentScreen({
             <p className="text-xs uppercase tracking-wide mb-2 text-brand-muted">Você escolheu ({selection.length})</p>
             <button
               onClick={onOpenSelection}
-              className="w-full text-sm font-medium text-white bg-brand-caramelDark rounded-full py-3 flex items-center justify-center gap-2"
+              className="w-full text-sm font-medium text-white bg-brand-caramelDark rounded-full py-3 flex items-center justify-center gap-2 transition-transform active:scale-95"
             >
               <Heart size={15} />
               Ver Minha Seleção

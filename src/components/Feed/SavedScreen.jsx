@@ -18,7 +18,7 @@ export default function SavedScreen({ onBack, favorites, toggleFavorite, selecti
       {items.length === 0 ? (
         <button
           onClick={onGoFeed}
-          className="w-full text-sm font-medium rounded-full py-3 border border-brand-caramelDark text-brand-caramelDark min-h-11"
+          className="w-full text-sm font-medium rounded-full py-3 border border-brand-caramelDark text-brand-caramelDark min-h-11 transition-transform active:scale-95"
         >
           Só olhar... 👀
         </button>
