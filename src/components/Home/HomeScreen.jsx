@@ -26,14 +26,13 @@ const HERO_ACTIONS = [
 // follows that same existing pattern, not a new one).
 const FAVORITE_PRODUCT_IDS = ["chocobomb", "cone-trufado", "brownlito", "casadinho"];
 
-// Mobile hero gradient — cream wash concentrated at the TOP (behind the
-// headline/subtitle, which sit directly on the photo, no card backing),
-// clearing by the lower third where the three journey cards sit: those
-// are opaque caramel surfaces, so they need no legibility help from the
-// photo underneath at all. Vertical, not horizontal — mobile is a single
-// narrow column, not a left-text/right-photo split like desktop.
+// Mobile hero overlay — a dark scrim, not a wash: just enough contrast
+// behind the headline/copy for the cream text to read, clearing well before
+// the journey cards (opaque caramel surfaces that need no help from the
+// photo underneath). No light/cream wash here — that's what flattened the
+// previous brigadeiro photo.
 const MOBILE_HERO_GRADIENT =
-  "linear-gradient(to bottom, rgba(255,249,241,0.93) 0%, rgba(255,249,241,0.8) 18%, rgba(255,249,241,0.45) 34%, rgba(255,249,241,0.12) 48%, rgba(255,249,241,0) 60%)";
+  "linear-gradient(to bottom, rgba(28,16,9,0.68) 0%, rgba(28,16,9,0.48) 24%, rgba(28,16,9,0.18) 42%, rgba(28,16,9,0) 54%)";
 
 // lg+ hero only — a light scrim, not a wash: just enough to keep the
 // headline readable, clearing fast so the photo stays visible behind and
@@ -41,12 +40,12 @@ const MOBILE_HERO_GRADIENT =
 const HERO_GRADIENT =
   "linear-gradient(90deg, rgba(255,249,241,0.72) 0%, rgba(255,249,241,0.5) 15%, rgba(255,249,241,0.22) 30%, rgba(255,249,241,0.05) 42%, rgba(255,249,241,0) 55%)";
 
-function HeroActionCard({ a, onSelect, height, radius, iconSize, emojiSize, titleSize, subtitleSize, chevronSize, padding }) {
+function HeroActionCard({ a, onSelect, height, radius, iconSize, emojiSize, titleSize, subtitleSize, chevronSize, padding, bg = COLORS.caramelDark }) {
   return (
     <button
       onClick={() => onSelect(a.id)}
       className="w-full flex items-center gap-3 text-left transition-transform duration-150 active:scale-[0.99] motion-reduce:transition-none motion-reduce:active:scale-100"
-      style={{ minHeight: height, borderRadius: radius, padding, backgroundColor: COLORS.caramelDark, boxShadow: "0 2px 8px rgba(61,36,24,0.14)" }}
+      style={{ minHeight: height, borderRadius: radius, padding, backgroundColor: bg, boxShadow: "0 2px 8px rgba(61,36,24,0.14)" }}
     >
       {a.emoji ? (
         <span className="shrink-0" style={{ fontSize: emojiSize, lineHeight: 1 }}>
@@ -68,10 +67,10 @@ function HeroActionCard({ a, onSelect, height, radius, iconSize, emojiSize, titl
   );
 }
 
-function FavoriteProductCard({ p, isFav, onToggleFavorite, onOpen, className }) {
+function FavoriteProductCard({ p, isFav, onToggleFavorite, onOpen, className, style }) {
   const photo = defaultPhotos(p)?.[0];
   return (
-    <button onClick={() => onOpen?.(p)} className={`text-left ${className}`}>
+    <button onClick={() => onOpen?.(p)} className={`text-left ${className}`} style={style}>
       <div className="relative rounded-2xl overflow-hidden aspect-square">
         <Photo src={photo} alt="" className="w-full h-full object-cover" loading="lazy" />
         <span
@@ -89,13 +88,13 @@ function FavoriteProductCard({ p, isFav, onToggleFavorite, onOpen, className }) 
             }
           }}
           aria-label={isFav ? `Remover ${p.name} dos salvos` : `Salvar ${p.name}`}
-          className="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center"
+          className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/90 flex items-center justify-center"
         >
-          <Heart size={14} fill={isFav ? COLORS.caramelDark : "none"} stroke={COLORS.caramelDark} />
+          <Heart size={12} fill={isFav ? COLORS.caramelDark : "none"} stroke={COLORS.caramelDark} />
         </span>
       </div>
-      <p className="mt-2 text-sm lg:text-base font-display text-brand-ink leading-tight truncate">{p.name}</p>
-      <p className="text-xs lg:text-sm font-medium mt-0.5" style={{ color: COLORS.caramelDark }}>
+      <p className="mt-2 text-xs font-display text-brand-ink leading-tight truncate">{p.name}</p>
+      <p className="text-3xs font-medium mt-0.5" style={{ color: COLORS.caramelDark }}>
         {p.price}
       </p>
     </button>
@@ -137,7 +136,7 @@ export default function HomeScreen({ onSelect, onOpenProduct, favorites, toggleF
             presence (same "home" preset used by every other screen's
             SiteHeader), Salvos/Seleção on the right are the two real,
             existing destinations — no invented hamburger/menu/account. */}
-        <div className="flex items-center justify-between" style={{ height: 68 }}>
+        <div className="flex items-center justify-between" style={{ height: 76 }}>
           <div className="w-11" />
           <Logo size="home" />
           <div className="flex items-center">
@@ -173,26 +172,30 @@ export default function HomeScreen({ onSelect, onOpenProduct, favorites, toggleF
             editorial piece, not a title block + a separate photo card +
             buttons underneath. */}
         <div className="relative -mx-gutter mt-2 overflow-hidden" style={{ height: 528 }}>
-          {/* brigadeiro-dia-dificil, cropped tight (object-position +
-              scale) into a close cluster of pieces — a deliberate crop of
-              a real photo, not a different photo and not a generated one.
-              Avoids casadinhoGoiabada (prior mobile hero) and
-              boloDePoteCamadas (now the desktop hero) per this round's
-              brief. */}
+          {/* brownlitoInteiro — a single, clearly-identifiable dark-chocolate
+              product in the foreground (plate + table behind it, not a
+              texture/mosaic of many small pieces). Portrait source (900×1200,
+              ratio ~0.75) already near-matches this container's own ratio
+              (390×528, ~0.74), so object-cover needs almost no crop — the
+              photo shows essentially uncropped. Rejected before this:
+              boloCenouraTray ("mar de granulado", no identifiable single
+              product), brigadeiroDiaDificil (production-tray texture),
+              chocobomb/alfajorClassico (mosaics of repeated pieces). Still a
+              placeholder per the brief — may be swapped again later. */}
           <Photo
-            src={REAL_PHOTOS.brigadeiroDiaDificil}
+            src={REAL_PHOTOS.brownlitoInteiro}
             alt=""
             className="absolute inset-0 w-full h-full object-cover"
-            style={{ objectPosition: "35% 60%", transform: "scale(1.55)", transformOrigin: "35% 60%" }}
+            style={{ objectPosition: "50% 38%" }}
             loading="eager"
           />
           <div className="absolute inset-0 pointer-events-none" style={{ background: MOBILE_HERO_GRADIENT }} />
 
           <div className="absolute left-5 right-5" style={{ top: 26 }}>
-            <h1 className="font-display font-semibold text-brand-ink" style={{ fontSize: 42, lineHeight: 1.08, maxWidth: 300 }}>
+            <h1 className="font-display font-semibold text-brand-beige" style={{ fontSize: 43, lineHeight: 0.98, maxWidth: 300 }}>
               O que a gente vai adoçar hoje?&nbsp;💛
             </h1>
-            <p className="text-brand-inkSoft" style={{ fontSize: 15.5, lineHeight: 1.42, maxWidth: 320, marginTop: 10 }}>
+            <p className="text-brand-beige/85" style={{ fontSize: 14, lineHeight: 1.3, maxWidth: 300, marginTop: 8 }}>
               Escolha pelo momento, procure alguma coisa específica ou simplesmente fique olhando...
             </p>
           </div>
@@ -203,7 +206,7 @@ export default function HomeScreen({ onSelect, onOpenProduct, favorites, toggleF
                 key={a.id}
                 a={a}
                 onSelect={onSelect}
-                height={76}
+                height={84}
                 radius={17}
                 iconSize={20}
                 emojiSize={21}
@@ -211,6 +214,7 @@ export default function HomeScreen({ onSelect, onOpenProduct, favorites, toggleF
                 subtitleSize={12.5}
                 chevronSize={16}
                 padding="12px 16px"
+                bg={COLORS.caramelDarker}
               />
             ))}
           </div>
@@ -220,9 +224,11 @@ export default function HomeScreen({ onSelect, onOpenProduct, favorites, toggleF
             products/photos/prices, favorite toggle, ProductDetail on tap
             (same openProductDetail App.jsx already uses everywhere else). */}
         <div className="mt-7">
-          <div className="flex items-center justify-between mb-3.5">
-            <h2 className="font-display font-medium text-brand-ink text-2xl">Nossos doces favoritos&nbsp;💛</h2>
-            <button onClick={() => onSelect("catalogo")} className="text-sm font-medium shrink-0" style={{ color: COLORS.caramelDark }}>
+          <div className="flex items-center justify-between mb-3.5 gap-2">
+            <h2 className="font-display font-medium text-brand-ink whitespace-nowrap" style={{ fontSize: 26 }}>
+              Nossos doces favoritos&nbsp;💛
+            </h2>
+            <button onClick={() => onSelect("catalogo")} className="text-xs font-medium shrink-0" style={{ color: COLORS.caramelDark }}>
               Ver todos →
             </button>
           </div>
@@ -234,7 +240,8 @@ export default function HomeScreen({ onSelect, onOpenProduct, favorites, toggleF
                 isFav={favorites?.includes(p.id)}
                 onToggleFavorite={toggleFavorite}
                 onOpen={onOpenProduct}
-                className="shrink-0 w-36"
+                className="shrink-0"
+                style={{ width: 140 }}
               />
             ))}
           </div>
