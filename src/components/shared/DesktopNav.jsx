@@ -24,19 +24,19 @@ const PRIMARY_ITEMS = [
 export default function DesktopNav({ active, onNavigate, selectionCount, favoritesCount }) {
   return (
     <div className="hidden lg:block border-b border-brand-border">
-      <div className="w-full px-6 h-[100px] flex items-center gap-10">
+      <div className="w-full px-8 flex items-center gap-12" style={{ height: 84 }}>
         <button onClick={() => onNavigate("home")} aria-label="Ir para o início" className="shrink-0">
           <Logo size="header" />
         </button>
 
-        <nav aria-label="Navegação principal" className="flex items-center gap-8 shrink-0">
+        <nav aria-label="Navegação principal" className="flex items-center gap-10 shrink-0">
           {PRIMARY_ITEMS.map(({ id, label }) => {
             const isActive = active === id;
             return (
               <button
                 key={id}
                 onClick={() => onNavigate(id)}
-                className="text-[15px] font-medium pb-1 border-b-2"
+                className="text-base font-medium pb-1.5 border-b-2"
                 style={{
                   color: isActive ? COLORS.caramelDark : COLORS.ink,
                   borderColor: isActive ? COLORS.caramelDark : "transparent",
@@ -54,7 +54,7 @@ export default function DesktopNav({ active, onNavigate, selectionCount, favorit
         <button
           onClick={() => onNavigate("busca")}
           aria-label="Buscar doces, sabores"
-          className="flex items-center gap-2.5 w-[260px] h-[52px] rounded-full px-5 shrink-0"
+          className="flex items-center gap-2.5 w-[270px] h-[50px] rounded-full px-5 shrink-0"
           style={{ backgroundColor: COLORS.subtle, border: `1px solid ${COLORS.border}`, boxShadow: "0 1px 3px rgba(61,36,24,0.06)" }}
         >
           <Search size={17} className="text-brand-muted shrink-0" />
