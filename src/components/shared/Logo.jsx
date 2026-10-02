@@ -11,9 +11,11 @@ const SIZES = {
   // frame, unlike the source file's ~15% transparent margin on every side.
   home: 92,
   // Unified desktop header (DesktopNav) — same tightly-cropped asset as
-  // "home", just small enough to sit left-aligned in a slim lg+ nav bar
-  // instead of centered as a hero element.
-  header: 44,
+  // "home", sized so it reads as ~125px WIDE (the brand mark needs real
+  // presence in the new ~100px-tall header, not a micro icon) — taller
+  // than the 100px row on purpose, overflowing it centered the same way
+  // SIZES.home already overflows its own row.
+  header: 116,
   md: 120,
   lg: 200,
 };

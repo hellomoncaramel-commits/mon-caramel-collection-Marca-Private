@@ -70,7 +70,7 @@ export default function App() {
       <DesktopNav active={activeNav} onNavigate={onNavigate} selectionCount={selection.length} favoritesCount={favorites.length} />
 
       <div className="pb-24 md:pb-0">
-        {!screen && <HomeScreen onSelect={setScreen} />}
+        {!screen && <HomeScreen onSelect={setScreen} onOpenProduct={openProductDetail} />}
 
         {screen === "momentos" && <MomentPicker onBack={() => setScreen(null)} onSelectMoment={setScreen} />}
 
