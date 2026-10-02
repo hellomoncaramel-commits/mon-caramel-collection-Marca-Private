@@ -40,17 +40,19 @@ const MOMENT_PHOTO_STYLE = {
 // The photo covers the whole card; this is a warm caramel/cream gradient
 // laid over it (full card height, not just a lower "panel") so the text
 // has a legible platform without a hard, separate rectangle — the photo
-// stays essentially untouched through the top ~45%, then the same warm
+// stays essentially untouched through the top ~45-50%, then the same warm
 // hue ramps in and carries through solid at the bottom. The tan
 // (#FAD9C4 ≈ rgb(250,217,196)) was sampled from the approved reference
 // mockup rather than picked by eye; it's a one-off tint from the brand's
 // caramel family (not one of the existing brand.* tokens), scoped here.
 const CARD_PANEL_TAN = "250,217,196";
 // Desktop keeps the exact approved gradient from the previous round
-// untouched; mobile gets earlier, steeper stops since its taller
-// (line-broken) heading needs a cream backdrop to start higher up.
+// untouched. Mobile now clears later, not earlier — the top half of the
+// card stays essentially untouched photo (0% through 50%), so the card
+// reads as photography first, cream panel second; the tint only takes
+// over fast enough to back the text once it actually starts (~51% down).
 const TEXT_PANEL_GRADIENT_DESKTOP = `linear-gradient(to bottom, rgba(${CARD_PANEL_TAN},0) 0%, rgba(${CARD_PANEL_TAN},0) 45%, rgba(${CARD_PANEL_TAN},0.28) 58%, rgba(${CARD_PANEL_TAN},0.74) 72%, rgba(${CARD_PANEL_TAN},0.95) 86%, rgba(${CARD_PANEL_TAN},1) 100%)`;
-const TEXT_PANEL_GRADIENT_MOBILE = `linear-gradient(to bottom, rgba(${CARD_PANEL_TAN},0) 0%, rgba(${CARD_PANEL_TAN},0) 38%, rgba(${CARD_PANEL_TAN},0.35) 52%, rgba(${CARD_PANEL_TAN},0.78) 66%, rgba(${CARD_PANEL_TAN},0.95) 80%, rgba(${CARD_PANEL_TAN},1) 100%)`;
+const TEXT_PANEL_GRADIENT_MOBILE = `linear-gradient(to bottom, rgba(${CARD_PANEL_TAN},0) 0%, rgba(${CARD_PANEL_TAN},0) 50%, rgba(${CARD_PANEL_TAN},0.32) 60%, rgba(${CARD_PANEL_TAN},0.76) 72%, rgba(${CARD_PANEL_TAN},0.95) 84%, rgba(${CARD_PANEL_TAN},1) 98%)`;
 
 function MomentCard({ moment, photoSrc, eager, featured, onSelect }) {
   const lines = moment.titleLines ?? [moment.label];
