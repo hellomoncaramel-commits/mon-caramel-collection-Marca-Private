@@ -1,58 +1,39 @@
-import { ChevronRight, Heart, Search, Sparkles } from "lucide-react";
+import { useEffect } from "react";
+import { ChevronRight, Heart, Search, ShoppingBag } from "lucide-react";
 import { REAL_PHOTOS } from "../../data/photos";
 import { PRODUCTS } from "../../data/products";
 import { defaultPhotos } from "../../utils/products";
 import { COLORS } from "../../styles/colors";
-import SiteHeader from "../shared/SiteHeader";
+import Logo from "../shared/Logo";
 import Photo from "../shared/Photo";
 
-// The two paths that answer the Home question directly ("Me ajuda a
-// escolher" / "Já sei o que quero") — same routes/behavior as before
-// (onSelect(id) → App.jsx's screen state). Home now offers exactly these
-// two decisions and nothing else (no third exit) — `primary` only nudges
-// the discovery path's own title weight slightly; both buttons otherwise
-// share the exact same dark-brown surface (consistency over an artificial
-// second shade). MOBILE ONLY — see the `lg:hidden` block below. The lg+
-// hero has its own, separate three-item array (DESKTOP_HERO_ACTIONS)
-// further down; this one is untouched.
-const ACTIONS = [
-  {
-    id: "momentos",
-    Icon: Sparkles,
-    title: "Me ajuda a escolher",
-    subtitle: "Quero descobrir o que combina comigo.",
-    primary: true,
-  },
-  { id: "busca", Icon: Search, title: "Já sei o que quero", subtitle: "Me leva direto pro doce." },
-];
-
-// lg+ hero only — three real journeys, same destinations/handler
-// (onSelect(id) → App.jsx's screen state) as everywhere else in the app.
-// "feed" already exists as a screen in App.jsx (FeedScreen, "Só quero
-// olhar e passar vontade") but had no entry point from Home — this
-// restores one, desktop-only, per this round's reference design.
-const DESKTOP_HERO_ACTIONS = [
+// The three real journeys — same ids/handler (onSelect(id) → App.jsx's
+// screen state) on mobile and desktop, so the two no longer diverge on
+// what Home actually offers. "feed" ("Só quero olhar e passar vontade")
+// and "busca" already exist as real screens in App.jsx; "momentos" opens
+// MomentPicker. Card 3 uses the lucide Search icon (not an emoji) to match
+// the approved reference on both breakpoints.
+const HERO_ACTIONS = [
   { id: "momentos", emoji: "💛", title: "Me ajuda a escolher", subtitle: "Escolho pelo momento." },
   { id: "feed", emoji: "👀", title: "Só quero olhar e passar vontade", subtitle: "Por sua conta e risco." },
   { id: "busca", Icon: Search, title: "Já sei o que quero", subtitle: "Me leva pros doces." },
 ];
 
 // Four real, strongly-photographed products for the "Nossos doces
-// favoritos" strip below the hero — same PRODUCTS data/photos/price
-// convention as every other card in the app (ProductCard, FeedCard,
-// SearchScreen all just render `p.price` raw, including "Sob consulta 💬"
-// — Brownlito here follows that same existing pattern, not a new one).
+// favoritos" strip — same PRODUCTS data/photos/price convention as every
+// other card in the app (ProductCard, FeedCard, SearchScreen all just
+// render `p.price` raw, including "Sob consulta 💬" — Brownlito here
+// follows that same existing pattern, not a new one).
 const FAVORITE_PRODUCT_IDS = ["chocobomb", "cone-trufado", "brownlito", "casadinho"];
 
-// Vertical gradient the two buttons sit on — warm cream/beige (the app's
-// own `brand.subtle` → `brand.beige` tokens), never black. Fully
-// transparent through nearly the whole top half of the photo so the
-// product stays the clear protagonist there; the buttons themselves are
-// solid dark brown now (see BUTTON_BG), so this gradient no longer carries
-// legibility duty — it just keeps the transition from photo to button
-// looking like one continuous surface instead of a hard seam.
-const PHOTO_GRADIENT =
-  "linear-gradient(to bottom, rgba(244,235,218,0) 0%, rgba(244,235,218,0) 48%, rgba(244,235,218,0.4) 62%, rgba(244,235,218,0.75) 74%, rgba(244,235,218,0.92) 85%, rgba(255,252,245,0.97) 94%, rgba(255,252,245,0.99) 100%)";
+// Mobile hero gradient — cream wash concentrated at the TOP (behind the
+// headline/subtitle, which sit directly on the photo, no card backing),
+// clearing by the lower third where the three journey cards sit: those
+// are opaque caramel surfaces, so they need no legibility help from the
+// photo underneath at all. Vertical, not horizontal — mobile is a single
+// narrow column, not a left-text/right-photo split like desktop.
+const MOBILE_HERO_GRADIENT =
+  "linear-gradient(to bottom, rgba(255,249,241,0.93) 0%, rgba(255,249,241,0.8) 18%, rgba(255,249,241,0.45) 34%, rgba(255,249,241,0.12) 48%, rgba(255,249,241,0) 60%)";
 
 // lg+ hero only — a light scrim, not a wash: just enough to keep the
 // headline readable, clearing fast so the photo stays visible behind and
@@ -60,37 +41,86 @@ const PHOTO_GRADIENT =
 const HERO_GRADIENT =
   "linear-gradient(90deg, rgba(255,249,241,0.72) 0%, rgba(255,249,241,0.5) 15%, rgba(255,249,241,0.22) 30%, rgba(255,249,241,0.05) 42%, rgba(255,249,241,0) 55%)";
 
-// Same dark brown MomentPicker's own "Quero isso →" button already uses
-// (see MomentPicker.jsx) — the existing token for a CTA on Mon Caramel,
-// reused rather than inventing a second one. Mobile only.
-const BUTTON_BG = COLORS.caramelDarker;
-
-// Shared pieces between the mobile photo-overlay composition and the lg+
-// two-column one — same markup, reused instead of copy-pasted twice.
-function ActionIcon({ a }) {
-  return <a.Icon size={19} strokeWidth={2} className="shrink-0 text-brand-beige" />;
-}
-
-// Home's composition, top to bottom: pergunta → escolha (na própria foto).
-// Foto + gradient + ações continuam como uma única peça editorial no mobile
-// (essa estrutura está aprovada, INTOCADA abaixo de lg — ver o bloco
-// `lg:hidden`). A partir de lg (>=1024px) a Home usa uma composição
-// completamente diferente: um único hero fotográfico panorâmico (ver o
-// bloco `hidden lg:block` abaixo) — não duas colunas, não um grid.
-export default function HomeScreen({ onSelect, onOpenProduct }) {
-  const favoriteProducts = FAVORITE_PRODUCT_IDS.map((id) => PRODUCTS.find((p) => p.id === id)).filter(Boolean);
-  // Hidden at lg+: DesktopNav's own "Salvos" link already covers this
-  // exact action there, so this would otherwise be a second, redundant way
-  // to do the same thing right under the unified header.
-  const favoritesButton = (
+function HeroActionCard({ a, onSelect, height, radius, iconSize, emojiSize, titleSize, subtitleSize, chevronSize, padding }) {
+  return (
     <button
-      onClick={() => onSelect("salvos")}
-      aria-label="Ver salvos"
-      className="w-11 h-11 flex items-center justify-center lg:hidden"
+      onClick={() => onSelect(a.id)}
+      className="w-full flex items-center gap-3 text-left transition-transform duration-150 active:scale-[0.99] motion-reduce:transition-none motion-reduce:active:scale-100"
+      style={{ minHeight: height, borderRadius: radius, padding, backgroundColor: COLORS.caramelDark, boxShadow: "0 2px 8px rgba(61,36,24,0.14)" }}
     >
-      <Heart size={20} className="text-brand-caramelDark" />
+      {a.emoji ? (
+        <span className="shrink-0" style={{ fontSize: emojiSize, lineHeight: 1 }}>
+          {a.emoji}
+        </span>
+      ) : (
+        <a.Icon size={iconSize} strokeWidth={2} className="shrink-0 text-brand-beige" />
+      )}
+      <span className="min-w-0 flex-1">
+        <span className="block text-brand-beige font-semibold leading-snug" style={{ fontSize: titleSize }}>
+          {a.title}
+        </span>
+        <span className="block text-brand-beige/80 mt-0.5 leading-snug" style={{ fontSize: subtitleSize }}>
+          {a.subtitle}
+        </span>
+      </span>
+      <ChevronRight size={chevronSize} className="shrink-0 text-brand-beige/70" />
     </button>
   );
+}
+
+function FavoriteProductCard({ p, isFav, onToggleFavorite, onOpen, className }) {
+  const photo = defaultPhotos(p)?.[0];
+  return (
+    <button onClick={() => onOpen?.(p)} className={`text-left ${className}`}>
+      <div className="relative rounded-2xl overflow-hidden aspect-square">
+        <Photo src={photo} alt="" className="w-full h-full object-cover" loading="lazy" />
+        <span
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleFavorite?.(p.id);
+          }}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              e.stopPropagation();
+              onToggleFavorite?.(p.id);
+            }
+          }}
+          aria-label={isFav ? `Remover ${p.name} dos salvos` : `Salvar ${p.name}`}
+          className="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center"
+        >
+          <Heart size={14} fill={isFav ? COLORS.caramelDark : "none"} stroke={COLORS.caramelDark} />
+        </span>
+      </div>
+      <p className="mt-2 text-sm lg:text-base font-display text-brand-ink leading-tight truncate">{p.name}</p>
+      <p className="text-xs lg:text-sm font-medium mt-0.5" style={{ color: COLORS.caramelDark }}>
+        {p.price}
+      </p>
+    </button>
+  );
+}
+
+// Home: one hero (photo + headline + 3 journey cards, all one composed
+// piece) followed by "Nossos doces favoritos" — same structure on mobile
+// and desktop now, each with its own sizing/layout (mobile: full-bleed
+// photo + stacked cards + horizontal scroll strip; desktop: contained,
+// capped hero + a 4-column grid — see the `lg:hidden`/`hidden lg:block`
+// blocks below). No more two-button mobile overlay + separate headline.
+export default function HomeScreen({ onSelect, onOpenProduct, favorites, toggleFavorite, selection }) {
+  const favoriteProducts = FAVORITE_PRODUCT_IDS.map((id) => PRODUCTS.find((p) => p.id === id)).filter(Boolean);
+  const favoritesCount = favorites?.length ?? 0;
+  const selectionCount = selection?.length ?? 0;
+
+  // Screens are swapped by conditional rendering (see App.jsx), not
+  // routing, so the window keeps whatever scroll position the previous
+  // screen was left at — reset it on arrival, same behavior SiteHeader
+  // already provides everywhere else (Home no longer renders SiteHeader
+  // itself, see below, so this replaces that effect for Home specifically).
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     // lg+: max-width dropped (was lg:max-w-6xl xl:max-w-7xl) and the gutter
@@ -100,79 +130,113 @@ export default function HomeScreen({ onSelect, onOpenProduct }) {
     // of stretching. Home-specific override; every other screen keeps its
     // own existing container system untouched.
     <div className="w-full md:max-w-2xl lg:max-w-none md:mx-auto px-gutter lg:px-8 pt-2 pb-8 fade-up">
-      {/* Same logo size/row height as every other screen (SiteHeader's own
-          defaults) — the previous "homeCompact" 52px override made the logo
-          read as a micro decoration instead of a brand signature. 92px is
-          still well within the cropped asset's native 332px height even at
-          3x DPR (no upscaling), and it's the exact size already used and
-          already validated everywhere else, not a new arbitrary value.
-          lg+: DesktopNav is now the one complete header (logo + nav +
-          search + Salvos/Seleção) — this row would just be a second, empty
-          76px band underneath it, so it's hidden entirely on desktop. */}
+      {/* ============================= MOBILE/TABLET (<lg) ============================= */}
       <div className="lg:hidden">
-        <SiteHeader rightSlot={favoritesButton} />
-      </div>
+        {/* Home-specific brand header — not the generic SiteHeader (no back
+            button here; Home is the root screen). Logo gets real size/
+            presence (same "home" preset used by every other screen's
+            SiteHeader), Salvos/Seleção on the right are the two real,
+            existing destinations — no invented hamburger/menu/account. */}
+        <div className="flex items-center justify-between" style={{ height: 68 }}>
+          <div className="w-11" />
+          <Logo size="home" />
+          <div className="flex items-center">
+            <button onClick={() => onSelect("salvos")} aria-label="Ver salvos" className="relative w-11 h-11 flex items-center justify-center">
+              <Heart size={20} className="text-brand-caramelDark" />
+              {favoritesCount > 0 && (
+                <span
+                  className="absolute top-1 right-1 min-w-4 h-4 px-1 rounded-full text-white text-3xs font-medium flex items-center justify-center"
+                  style={{ backgroundColor: COLORS.caramelDark }}
+                >
+                  {favoritesCount}
+                </span>
+              )}
+            </button>
+            <button onClick={() => onSelect("selecao")} aria-label="Ver seleção" className="relative w-11 h-11 flex items-center justify-center">
+              <ShoppingBag size={20} className="text-brand-caramelDark" />
+              {selectionCount > 0 && (
+                <span
+                  className="absolute top-1 right-1 min-w-4 h-4 px-1 rounded-full text-white text-3xs font-medium flex items-center justify-center"
+                  style={{ backgroundColor: COLORS.caramelDark }}
+                >
+                  {selectionCount}
+                </span>
+              )}
+            </button>
+          </div>
+        </div>
 
-      {/* ============================= MOBILE/TABLET (<lg) — UNCHANGED ============================= */}
-      <div className="lg:hidden">
-        {/* A regular space before the emoji risks it wrapping onto its own
-            orphan line at some widths (e.g. 390px) — a non-breaking space
-            keeps "hoje?" and "💛" glued together as one unit. Fraunces roman
-            medium, not italic — italic is an accent elsewhere in the system
-            now, not the default voice for a headline this prominent. */}
-        <h1 className="text-mc-home-hero mt-3 font-display font-medium text-brand-ink">O que a gente vai adoçar hoje?&nbsp;💛</h1>
-        {/* max-w keeps this a clearly shorter, subordinate line under the
-            hero — it would otherwise stretch nearly full-width on a
-            390–430px phone and start competing with the headline above it. */}
-        <p className="text-[15px] leading-[1.45] mt-2 max-w-[300px] text-brand-inkSoft">
-          Me conta o que você precisa. A gente acha um doce pra isso.
-        </p>
-
-        {/* The single editorial stage — photo, gradient and the two actions
-            layered as one piece. aspect-mc-portrait (4:5, an existing token)
-            keeps most of the photo visible above the actions without turning
-            into a full-screen hero — and, unlike a wider ratio (e.g. 16:9),
-            stays narrow enough relative to the source photo that
-            object-cover always crops horizontally rather than exposing a raw
-            edge of the photo itself. Restored to casadinhoGoiabada — the
-            original Home hero photo, approved before the last two rounds'
-            photo swaps. */}
-        <div className="relative mt-5 rounded-3xl overflow-hidden aspect-mc-portrait">
+        {/* One composed hero: full-bleed photo (breaks out of the page's
+            own px-gutter via -mx-gutter), headline/subtitle sitting
+            directly on it (legible via MOBILE_HERO_GRADIENT, concentrated
+            at the top), three journey cards over the bottom — a single
+            editorial piece, not a title block + a separate photo card +
+            buttons underneath. */}
+        <div className="relative -mx-gutter mt-2 overflow-hidden" style={{ height: 528 }}>
+          {/* brigadeiro-dia-dificil, cropped tight (object-position +
+              scale) into a close cluster of pieces — a deliberate crop of
+              a real photo, not a different photo and not a generated one.
+              Avoids casadinhoGoiabada (prior mobile hero) and
+              boloDePoteCamadas (now the desktop hero) per this round's
+              brief. */}
           <Photo
-            src={REAL_PHOTOS.casadinhoGoiabada}
+            src={REAL_PHOTOS.brigadeiroDiaDificil}
             alt=""
             className="absolute inset-0 w-full h-full object-cover"
+            style={{ objectPosition: "35% 60%", transform: "scale(1.55)", transformOrigin: "35% 60%" }}
             loading="eager"
           />
-          <div className="absolute inset-0 pointer-events-none" style={{ background: PHOTO_GRADIENT }} />
+          <div className="absolute inset-0 pointer-events-none" style={{ background: MOBILE_HERO_GRADIENT }} />
 
-          <div className="absolute inset-x-0 bottom-0 px-gutter pb-4 pt-8">
-            <div className="flex flex-col gap-2.5">
-              {ACTIONS.map((a) => (
-                <button
-                  key={a.id}
-                  onClick={() => onSelect(a.id)}
-                  className="w-full flex items-center gap-3 rounded-2xl px-3.5 py-3 text-left transition-transform duration-150 active:scale-[0.99] motion-reduce:transition-none motion-reduce:active:scale-100"
-                  style={{ minHeight: 44, backgroundColor: BUTTON_BG, boxShadow: "0 3px 10px rgba(61,36,24,0.22)" }}
-                >
-                  <ActionIcon a={a} />
-                  <span className="min-w-0 flex-1">
-                    {/* Button label — DM Sans, not Fraunces: this is an
-                        action/CTA, not an editorial moment (personality lives
-                        in the headline above, not in the buttons). */}
-                    <span
-                      className={`block text-brand-beige leading-snug ${
-                        a.primary ? "text-[16.5px] font-semibold" : "text-[15.5px] font-medium"
-                      }`}
-                    >
-                      {a.title}
-                    </span>
-                    <span className="block text-xs text-brand-beige/80 mt-0.5 leading-snug">{a.subtitle}</span>
-                  </span>
-                  <ChevronRight size={16} className="shrink-0 text-brand-beige/85" />
-                </button>
-              ))}
-            </div>
+          <div className="absolute left-5 right-5" style={{ top: 26 }}>
+            <h1 className="font-display font-semibold text-brand-ink" style={{ fontSize: 42, lineHeight: 1.08, maxWidth: 300 }}>
+              O que a gente vai adoçar hoje?&nbsp;💛
+            </h1>
+            <p className="text-brand-inkSoft" style={{ fontSize: 15.5, lineHeight: 1.42, maxWidth: 320, marginTop: 10 }}>
+              Escolha pelo momento, procure alguma coisa específica ou simplesmente fique olhando...
+            </p>
+          </div>
+
+          <div className="absolute left-5 right-5 flex flex-col gap-2.5" style={{ bottom: 20 }}>
+            {HERO_ACTIONS.map((a) => (
+              <HeroActionCard
+                key={a.id}
+                a={a}
+                onSelect={onSelect}
+                height={76}
+                radius={17}
+                iconSize={20}
+                emojiSize={21}
+                titleSize={15.5}
+                subtitleSize={12.5}
+                chevronSize={16}
+                padding="12px 16px"
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* "Nossos doces favoritos" — horizontal scroll strip, real
+            products/photos/prices, favorite toggle, ProductDetail on tap
+            (same openProductDetail App.jsx already uses everywhere else). */}
+        <div className="mt-7">
+          <div className="flex items-center justify-between mb-3.5">
+            <h2 className="font-display font-medium text-brand-ink text-2xl">Nossos doces favoritos&nbsp;💛</h2>
+            <button onClick={() => onSelect("catalogo")} className="text-sm font-medium shrink-0" style={{ color: COLORS.caramelDark }}>
+              Ver todos →
+            </button>
+          </div>
+          <div className="flex gap-3 overflow-x-auto no-scrollbar -mx-gutter px-gutter">
+            {favoriteProducts.map((p) => (
+              <FavoriteProductCard
+                key={p.id}
+                p={p}
+                isFav={favorites?.includes(p.id)}
+                onToggleFavorite={toggleFavorite}
+                onOpen={onOpenProduct}
+                className="shrink-0 w-36"
+              />
+            ))}
           </div>
         </div>
       </div>
@@ -184,9 +248,7 @@ export default function HomeScreen({ onSelect, onOpenProduct }) {
           rather than stretching. Headline/subtext/journey cards sit ON TOP
           of the photo (readability via the light HERO_GRADIENT scrim, not
           a separate image panel or a second transform/scale crop trick).
-          Same handlers as mobile (onSelect(id) → App.jsx's screen state);
-          "feed" ("Só quero olhar e passar vontade") already exists as a
-          real screen, just without a Home entry point before this round. */}
+          APPROVED (PR #96) — not touched this round. */}
       <div className="hidden lg:block relative mt-5 mx-auto overflow-hidden" style={{ maxWidth: 1376, height: 665, borderRadius: 24 }}>
         {/* bolo-de-pote-camadas: chosen after comparing several real
             candidates (brigadeiro trays, chocobomb, cone trufado, alfajor,
@@ -216,36 +278,8 @@ export default function HomeScreen({ onSelect, onOpenProduct }) {
         </div>
 
         <div className="absolute grid grid-cols-3 gap-4" style={{ left: 64, right: 64, bottom: 40 }}>
-          {DESKTOP_HERO_ACTIONS.map((a) => (
-            <button
-              key={a.id}
-              onClick={() => onSelect(a.id)}
-              className="flex items-center gap-3 text-left transition-transform duration-150 active:scale-[0.99] motion-reduce:transition-none motion-reduce:active:scale-100"
-              style={{
-                height: 116,
-                borderRadius: 18,
-                padding: "18px 20px",
-                backgroundColor: COLORS.caramelDark,
-                boxShadow: "0 2px 8px rgba(61,36,24,0.14)",
-              }}
-            >
-              {a.emoji ? (
-                <span className="shrink-0" style={{ fontSize: 25, lineHeight: 1 }}>
-                  {a.emoji}
-                </span>
-              ) : (
-                <a.Icon size={22} strokeWidth={2} className="shrink-0 text-brand-beige" />
-              )}
-              <span className="min-w-0 flex-1">
-                <span className="block text-brand-beige font-semibold leading-snug" style={{ fontSize: 17 }}>
-                  {a.title}
-                </span>
-                <span className="block text-brand-beige/80 mt-0.5 leading-snug" style={{ fontSize: 13 }}>
-                  {a.subtitle}
-                </span>
-              </span>
-              <ChevronRight size={18} className="shrink-0 text-brand-beige/70" />
-            </button>
+          {HERO_ACTIONS.map((a) => (
+            <HeroActionCard key={a.id} a={a} onSelect={onSelect} height={116} radius={18} iconSize={22} emojiSize={25} titleSize={17} subtitleSize={13} chevronSize={18} padding="18px 20px" />
           ))}
         </div>
       </div>
@@ -254,17 +288,15 @@ export default function HomeScreen({ onSelect, onOpenProduct }) {
           ProductDetail on click (same openProductDetail App.jsx already
           uses everywhere else). First row is allowed to run past the fold
           at 900px tall — that's the point, it signals there's more page
-          below (same as the reference). */}
+          below (same as the reference). APPROVED (PR #96) — not touched
+          this round beyond reusing the same FavoriteProductCard/
+          favoriteProducts the mobile strip above now also uses. */}
       <div className="hidden lg:block" style={{ marginTop: 48 }}>
         <div className="flex items-end justify-between mb-5">
           <h2 className="font-display font-medium text-brand-ink" style={{ fontSize: 34 }}>
             Nossos doces favoritos&nbsp;💛
           </h2>
-          <button
-            onClick={() => onSelect("catalogo")}
-            className="text-sm font-medium shrink-0"
-            style={{ color: COLORS.caramelDark }}
-          >
+          <button onClick={() => onSelect("catalogo")} className="text-sm font-medium shrink-0" style={{ color: COLORS.caramelDark }}>
             Ver todos os doces →
           </button>
         </div>
