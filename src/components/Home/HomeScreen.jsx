@@ -7,16 +7,17 @@ import { COLORS } from "../../styles/colors";
 import Logo from "../shared/Logo";
 import Photo from "../shared/Photo";
 
-// The three real journeys — same ids/handler (onSelect(id) → App.jsx's
-// screen state) on mobile and desktop, so the two no longer diverge on
-// what Home actually offers. "feed" ("Só quero olhar e passar vontade")
-// and "busca" already exist as real screens in App.jsx; "momentos" opens
-// MomentPicker. Card 3 uses the lucide Search icon (not an emoji) to match
-// the approved reference on both breakpoints.
+// The Home's two real decisions — same ids/handler (onSelect(id) →
+// App.jsx's screen state) on mobile and desktop, so the two don't diverge
+// on what Home offers. "momentos" opens MomentPicker; "busca" already
+// exists as a real screen in App.jsx. Card 2 uses the lucide Search icon
+// (not an emoji) to match the approved reference on both breakpoints.
+// Feed ("Só quero olhar e passar vontade") is no longer one of Home's
+// headline choices — it stays a real, reachable screen (see App.jsx), just
+// not offered here anymore.
 const HERO_ACTIONS = [
-  { id: "momentos", emoji: "💛", title: "Me ajuda a escolher", subtitle: "Escolho pelo momento." },
-  { id: "feed", emoji: "👀", title: "Só quero olhar e passar vontade", subtitle: "Por sua conta e risco." },
-  { id: "busca", Icon: Search, title: "Já sei o que quero", subtitle: "Me leva pros doces." },
+  { id: "momentos", emoji: "💛", title: "Me ajuda a escolher", subtitle: "Quero descobrir o que combina comigo." },
+  { id: "busca", Icon: Search, title: "Já sei o que quero", subtitle: "Me leva direto pro doce." },
 ];
 
 // Four real, strongly-photographed products for the "Nossos doces
@@ -101,7 +102,7 @@ function FavoriteProductCard({ p, isFav, onToggleFavorite, onOpen, className, st
   );
 }
 
-// Home: one hero (photo + headline + 3 journey cards, all one composed
+// Home: one hero (photo + headline + 2 journey cards, all one composed
 // piece) followed by "Nossos doces favoritos" — same structure on mobile
 // and desktop now, each with its own sizing/layout (mobile: full-bleed
 // photo + stacked cards + horizontal scroll strip; desktop: contained,
@@ -168,7 +169,7 @@ export default function HomeScreen({ onSelect, onOpenProduct, favorites, toggleF
         {/* One composed hero: full-bleed photo (breaks out of the page's
             own px-gutter via -mx-gutter), headline/subtitle sitting
             directly on it (legible via MOBILE_HERO_GRADIENT, concentrated
-            at the top), three journey cards over the bottom — a single
+            at the top), two journey cards over the bottom — a single
             editorial piece, not a title block + a separate photo card +
             buttons underneath. */}
         <div className="relative -mx-gutter mt-2 overflow-hidden" style={{ height: 528 }}>
@@ -196,17 +197,23 @@ export default function HomeScreen({ onSelect, onOpenProduct, favorites, toggleF
               O que a gente vai adoçar hoje?&nbsp;💛
             </h1>
             <p className="text-brand-beige/85" style={{ fontSize: 14, lineHeight: 1.3, maxWidth: 300, marginTop: 8 }}>
-              Escolha pelo momento, procure alguma coisa específica ou simplesmente fique olhando...
+              Me conta o que você precisa. A gente acha um doce pra isso.
             </p>
           </div>
 
-          <div className="absolute left-5 right-5 flex flex-col gap-2.5" style={{ bottom: 20 }}>
+          {/* Two cards now, not three — height nudged up slightly (84→92)
+              and the gap widened (gap-2.5→gap-3.5) so the pair reads as a
+              deliberate, balanced pairing low in the hero rather than a
+              shrunken stack with empty photo where a third card used to
+              sit. Still well short of stretching each card to fill the old
+              three-card footprint. */}
+          <div className="absolute left-5 right-5 flex flex-col gap-3.5" style={{ bottom: 22 }}>
             {HERO_ACTIONS.map((a) => (
               <HeroActionCard
                 key={a.id}
                 a={a}
                 onSelect={onSelect}
-                height={84}
+                height={92}
                 radius={17}
                 iconSize={20}
                 emojiSize={21}
@@ -280,11 +287,14 @@ export default function HomeScreen({ onSelect, onOpenProduct, favorites, toggleF
             O que a gente vai adoçar hoje?&nbsp;💛
           </h1>
           <p className="text-brand-inkSoft" style={{ fontSize: 19, lineHeight: 1.45, maxWidth: 430, marginTop: 20 }}>
-            Escolha pelo momento, procure alguma coisa específica ou simplesmente fique olhando...
+            Me conta o que você precisa. A gente acha um doce pra isso.
           </p>
         </div>
 
-        <div className="absolute grid grid-cols-3 gap-4" style={{ left: 64, right: 64, bottom: 40 }}>
+        {/* grid-cols-3 → grid-cols-2: same two decisions as mobile, same
+            left/right/bottom footprint — just one fewer, wider column
+            instead of a 3-up grid with an empty third slot. */}
+        <div className="absolute grid grid-cols-2 gap-4" style={{ left: 64, right: 64, bottom: 40 }}>
           {HERO_ACTIONS.map((a) => (
             <HeroActionCard key={a.id} a={a} onSelect={onSelect} height={116} radius={18} iconSize={22} emojiSize={25} titleSize={17} subtitleSize={13} chevronSize={18} padding="18px 20px" />
           ))}
