@@ -26,14 +26,14 @@ const HERO_ACTIONS = [
 // follows that same existing pattern, not a new one).
 const FAVORITE_PRODUCT_IDS = ["chocobomb", "cone-trufado", "brownlito", "casadinho"];
 
-// Mobile hero gradient — cream wash concentrated at the TOP (behind the
-// headline/subtitle, which sit directly on the photo, no card backing),
-// clearing by the lower third where the three journey cards sit: those
-// are opaque caramel surfaces, so they need no legibility help from the
-// photo underneath at all. Vertical, not horizontal — mobile is a single
-// narrow column, not a left-text/right-photo split like desktop.
+// Mobile hero overlay — the photo itself is dark/saturated enough to carry
+// cream text directly, so this is a thin dark scrim, not a wash: just
+// enough contrast behind the headline for legibility, clearing immediately
+// after so most of the photo stays untouched (full contrast, color,
+// texture). No light/cream wash here — that's what flattened the previous
+// brigadeiro photo.
 const MOBILE_HERO_GRADIENT =
-  "linear-gradient(to bottom, rgba(255,249,241,0.93) 0%, rgba(255,249,241,0.8) 18%, rgba(255,249,241,0.45) 34%, rgba(255,249,241,0.12) 48%, rgba(255,249,241,0) 60%)";
+  "linear-gradient(to bottom, rgba(32,18,10,0.55) 0%, rgba(32,18,10,0.32) 22%, rgba(32,18,10,0.08) 38%, rgba(32,18,10,0) 48%)";
 
 // lg+ hero only — a light scrim, not a wash: just enough to keep the
 // headline readable, clearing fast so the photo stays visible behind and
@@ -173,26 +173,28 @@ export default function HomeScreen({ onSelect, onOpenProduct, favorites, toggleF
             editorial piece, not a title block + a separate photo card +
             buttons underneath. */}
         <div className="relative -mx-gutter mt-2 overflow-hidden" style={{ height: 528 }}>
-          {/* brigadeiro-dia-dificil, cropped tight (object-position +
-              scale) into a close cluster of pieces — a deliberate crop of
-              a real photo, not a different photo and not a generated one.
-              Avoids casadinhoGoiabada (prior mobile hero) and
-              boloDePoteCamadas (now the desktop hero) per this round's
-              brief. */}
+          {/* bolo-cenoura-tray, cropped tight (object-position + scale) into
+              its glossy ganache surface — dark, close-up, saturated enough
+              to carry cream text directly, no light wash needed. Avoids
+              brigadeiroDiaDificil (rejected: reads as a production tray of
+              many small repeated pieces, flat lighting, too light),
+              casadinhoGoiabada (prior mobile hero) and boloDePoteCamadas
+              (now the desktop hero) per this round's brief. Provisional
+              pick pending final photo approval/production. */}
           <Photo
-            src={REAL_PHOTOS.brigadeiroDiaDificil}
+            src={REAL_PHOTOS.boloCenouraTray}
             alt=""
             className="absolute inset-0 w-full h-full object-cover"
-            style={{ objectPosition: "35% 60%", transform: "scale(1.55)", transformOrigin: "35% 60%" }}
+            style={{ objectPosition: "30% 45%", transform: "scale(1.35)", transformOrigin: "30% 45%" }}
             loading="eager"
           />
           <div className="absolute inset-0 pointer-events-none" style={{ background: MOBILE_HERO_GRADIENT }} />
 
           <div className="absolute left-5 right-5" style={{ top: 26 }}>
-            <h1 className="font-display font-semibold text-brand-ink" style={{ fontSize: 42, lineHeight: 1.08, maxWidth: 300 }}>
+            <h1 className="font-display font-semibold text-brand-beige" style={{ fontSize: 42, lineHeight: 1.08, maxWidth: 300 }}>
               O que a gente vai adoçar hoje?&nbsp;💛
             </h1>
-            <p className="text-brand-inkSoft" style={{ fontSize: 15.5, lineHeight: 1.42, maxWidth: 320, marginTop: 10 }}>
+            <p className="text-brand-beige/85" style={{ fontSize: 15.5, lineHeight: 1.42, maxWidth: 320, marginTop: 10 }}>
               Escolha pelo momento, procure alguma coisa específica ou simplesmente fique olhando...
             </p>
           </div>
