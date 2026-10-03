@@ -1,4 +1,3 @@
-import { COLORS } from "../../styles/colors";
 import { REAL_PHOTOS } from "../../data/photos";
 import SiteHeader from "../shared/SiteHeader";
 import Photo from "../shared/Photo";
@@ -11,13 +10,9 @@ const OPTIONS = [
     title: "Caixas",
     description: "Um presente montado do jeitinho que quem vai receber merece.",
     cta: "Quero ver ideias →",
-    tint: COLORS.caramelDark,
     photo: REAL_PHOTOS.presenteRosas,
-    // Cover, not contain: the source is landscape (4:3) in a portrait
-    // slot, and cover fills the whole container the way Mimos' does — no
-    // manual zoom added on top, just the browser's own fit. Positioned
-    // toward the top-left to keep the ribbon knot and the rosas visible;
-    // only the empty wood-grain margin at the edges is what gets trimmed.
+    // Positioned toward the top-left to keep the ribbon knot and the rosas
+    // in frame; only the empty wood-grain margin at the edges gets trimmed.
     photoPosition: "object-[20%_25%]",
   },
   {
@@ -26,7 +21,6 @@ const OPTIONS = [
     title: "Bandejas",
     description: "Para transformar qualquer dia em uma comemoração.",
     cta: "Quero ver ideias →",
-    tint: COLORS.creamYellow,
     photo: REAL_PHOTOS.bandejaMario,
     // Positioned to keep the balloons, the cake and the treats box in
     // frame together — only the thin wall margin above them is trimmed.
@@ -38,16 +32,12 @@ const OPTIONS = [
     title: "Pequenos mimos",
     description: "Um jeitinho pequeno de fazer alguém sorrir.",
     cta: "Quero ver produtos →",
-    tint: COLORS.caramelLight,
     photo: REAL_PHOTOS.presentinhoTrufas,
-    // Contain, not cover, on mobile/tablet — the reference container fit
-    // there, kept exactly as approved (locked, not touched this round). At
-    // lg+ this card sat visibly smaller/weaker than Caixas/Bandejas (whose
-    // photos fill their frame edge to edge via cover) since "contain"
-    // leaves cream space on the sides — a local, per-card fix (see
-    // photoFitLg below), not a change to object-fit globally.
+    // Contain, not cover — this source has real empty margin around the
+    // subject that cover would crop into; a local, per-card fit choice
+    // (see Mimos' own screen for the same reasoning), not a change to
+    // object-fit globally.
     photoFit: "contain",
-    photoFitLg: "cover",
   },
 ];
 
@@ -55,6 +45,14 @@ const OPTIONS = [
 // screens (never a rigid catalog of fixed boxes). Caixas/Bandejas lead into
 // inspiration + a light idea-builder; Mimos, being real individual
 // products, leads straight to a small catalog.
+//
+// Each option is a photo-led tile, not a tinted menu button: the photo
+// (same aspect-photo ratio every other photo on the site uses) is the
+// thing that actually sells the format, title sits right under it, and the
+// CTA is a quiet text link — not a filled pill competing with the photo
+// for attention. All three tiles read the same weight/size now (equally
+// important, per the brief), with the photo itself — not a per-category
+// tint color — doing the work of telling them apart.
 export default function PresenteEntryScreen({ onBack, onSelect }) {
   return (
     <div className="max-w-xl md:max-w-3xl lg:max-w-5xl mx-auto px-gutter lg:px-8 xl:px-12 pt-2 pb-10 fade-up">
@@ -64,42 +62,26 @@ export default function PresenteEntryScreen({ onBack, onSelect }) {
         Pra gente, é muito mais que isso. Cada presente é único, pensado pra quem vai receber se sentir especial.
       </p>
 
-      <div className="flex flex-col gap-2.5 md:grid md:grid-cols-3 md:gap-4">
+      <div className="flex flex-col gap-6 md:grid md:grid-cols-3 md:gap-5">
         {OPTIONS.map((o) => (
-          <button
-            key={o.id}
-            onClick={() => onSelect(o.id)}
-            // min-h here is one shared rule, not a per-card value: mobile
-            // cards are stacked in a flex column (no automatic sibling
-            // stretch like a grid row gets), so without it each card — and
-            // therefore its photo container — settles to its own text
-            // height instead of matching the other two. Sized with margin
-            // above the tallest real content (Caixas' description wraps to
-            // 3 lines on some devices/widths) so every card clears the
-            // floor the same way instead of sitting right at the edge.
-            className="grid grid-cols-[minmax(0,53%)_minmax(0,47%)] md:grid-cols-1 items-stretch rounded-2xl overflow-hidden text-left min-h-[204px] md:min-h-0"
-            style={{ backgroundColor: `${o.tint}22` }}
-          >
-            <div className="min-w-0 pl-4 pr-2.5 py-4 md:p-4 flex flex-col justify-center gap-1 order-1 md:order-2">
-              <span className="text-xl leading-none">{o.emoji}</span>
-              <p className="font-display text-lg text-brand-ink leading-tight">{o.title}</p>
-              <p className="text-xs leading-snug text-brand-inkSoft">{o.description}</p>
-              <span
-                className="inline-flex self-start items-center mt-2 rounded-full px-3.5 py-2 text-xs font-medium text-white"
-                style={{ backgroundColor: COLORS.caramelDarker }}
-              >
-                {o.cta}
-              </span>
-            </div>
-            <div className="relative overflow-hidden min-h-[130px] md:h-36 lg:h-48 order-2 md:order-1 p-1">
+          <button key={o.id} onClick={() => onSelect(o.id)} className="text-left group">
+            <div className="relative overflow-hidden rounded-3xl aspect-photo bg-brand-subtle">
               <Photo
                 src={o.photo}
                 alt=""
-                className={`absolute inset-0 w-full h-full ${o.photoFit === "contain" ? "object-contain" : "object-cover"}${
-                  o.photoFitLg === "cover" ? " lg:object-cover" : ""
+                className={`w-full h-full transition-transform duration-300 lg:group-hover:scale-[1.03] ${
+                  o.photoFit === "contain" ? "object-contain" : "object-cover"
                 }${o.photoPosition ? ` ${o.photoPosition}` : ""}`}
                 loading="lazy"
               />
+            </div>
+            <div className="pt-3 flex flex-col gap-1">
+              <p className="font-display text-xl text-brand-ink leading-tight">
+                <span className="mr-1.5">{o.emoji}</span>
+                {o.title}
+              </p>
+              <p className="text-sm leading-snug text-brand-inkSoft">{o.description}</p>
+              <span className="inline-flex items-center gap-1 mt-1 text-sm font-medium text-brand-caramelDark">{o.cta}</span>
             </div>
           </button>
         ))}
