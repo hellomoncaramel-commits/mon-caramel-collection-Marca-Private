@@ -1,5 +1,6 @@
 import { Fragment, useMemo, useRef } from "react";
 import { Heart, Sparkles } from "lucide-react";
+import { COLORS } from "../../styles/colors";
 import { MOMENT_INTRO } from "../../data/moments";
 import { pickForMoment, pickCrossSell } from "../../utils/products";
 import { buildPartyMessage } from "../../utils/messages";
@@ -93,9 +94,20 @@ export default function MomentScreen({
       {/* Fraunces roman, not the old Cormorant italic — personality comes
           from the family + copy, not from italicizing every editorial
           paragraph. Capped width at lg+ so a single line doesn't stretch
-          the full desktop container (readability only, same text). */}
+          the full desktop container (readability only, same text).
+          Dias de luta only: real headline scale (art-direction pass) —
+          this is the page's one piece of running prose, so it needs to
+          read with actual presence instead of sitting at roughly the same
+          weight as a card's teaser line below it. ink (not inkSoft) for a
+          more confident color too. Festa's intro is untouched this round. */}
       {MOMENT_INTRO[momentId] && (
-        <p className="text-base lg:text-lg leading-relaxed mb-6 lg:mb-8 font-display text-brand-inkSoft lg:max-w-2xl">
+        <p
+          className={
+            isDiaDificil
+              ? "text-xl sm:text-2xl lg:text-3xl leading-[1.2] lg:leading-[1.25] mb-7 lg:mb-10 font-display text-brand-ink max-w-[21rem] sm:max-w-xl lg:max-w-2xl"
+              : "text-base lg:text-lg leading-relaxed mb-6 lg:mb-8 font-display text-brand-inkSoft lg:max-w-2xl"
+          }
+        >
           {MOMENT_INTRO[momentId]}
         </p>
       )}
@@ -121,11 +133,18 @@ export default function MomentScreen({
         {isDiaDificil
           ? chunkEditorialRhythm(matched).map((chunk, i) => (
               <Fragment key={i}>
+                {/* A real pause, not a caption between products — soft
+                    caramel-tinted band, full-bleed against the page's own
+                    gutter, generous padding, bigger Fraunces. Rare enough
+                    (2 of 6 chunks) that it reads as a brand moment, not
+                    wallpaper. */}
                 {DIA_DIFICIL_ASIDES[i] && (
-                  <p className="col-span-full font-display text-lg text-brand-ink text-center my-3 px-2">{DIA_DIFICIL_ASIDES[i]}</p>
+                  <div className="col-span-full -mx-gutter px-gutter py-9 my-1" style={{ backgroundColor: `${COLORS.caramelLight}22` }}>
+                    <p className="font-display text-2xl leading-[1.25] text-brand-ink text-center max-w-xs mx-auto">{DIA_DIFICIL_ASIDES[i]}</p>
+                  </div>
                 )}
-                {chunk.map((p) => (
-                  <ProductCard key={p.id} p={p} momentId={momentId} {...cardProps} />
+                {chunk.map((p, idx) => (
+                  <ProductCard key={p.id} p={p} momentId={momentId} featured={idx === 0} {...cardProps} />
                 ))}
               </Fragment>
             ))
@@ -141,13 +160,15 @@ export default function MomentScreen({
           {chunkEditorialRhythm(matched).map((chunk, i) => (
             <div key={i}>
               {DIA_DIFICIL_ASIDES[i] && (
-                <p className="font-display text-xl text-brand-ink text-center my-10 max-w-lg mx-auto">
-                  {DIA_DIFICIL_ASIDES[i]}
-                </p>
+                <div className="-mx-8 xl:-mx-12 px-8 xl:px-12 py-14 my-10 rounded-3xl" style={{ backgroundColor: `${COLORS.caramelLight}22` }}>
+                  <p className="font-display text-3xl leading-[1.25] text-brand-ink text-center max-w-lg mx-auto">
+                    {DIA_DIFICIL_ASIDES[i]}
+                  </p>
+                </div>
               )}
               <div className={`grid gap-5 ${chunk.length === 2 ? "grid-cols-2" : "grid-cols-3"} ${i > 0 && !DIA_DIFICIL_ASIDES[i] ? "mt-5" : ""}`}>
-                {chunk.map((p) => (
-                  <ProductCard key={p.id} p={p} momentId={momentId} {...cardProps} />
+                {chunk.map((p, idx) => (
+                  <ProductCard key={p.id} p={p} momentId={momentId} featured={idx === 0} {...cardProps} />
                 ))}
               </div>
             </div>

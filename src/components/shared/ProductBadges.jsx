@@ -11,14 +11,14 @@ export default function ProductBadges({ badges }) {
   if (!badges || badges.length === 0) return null;
 
   return (
-    <div className="flex flex-wrap gap-1.5 mt-2">
+    <div className="flex flex-wrap gap-1 mt-2">
       {badges.map((key) => {
         const badge = BADGES[key];
         if (!badge) return null;
         return (
           <span
             key={key}
-            className="inline-flex items-center gap-1 text-2xs font-medium rounded-full px-2.5 py-1 bg-brand-subtle text-brand-inkSoft"
+            className="inline-flex items-center gap-1 text-3xs font-medium rounded-full px-2 py-0.5 bg-brand-subtle text-brand-inkSoft"
           >
             <span aria-hidden="true">{badge.emoji}</span>
             {badge.label}
