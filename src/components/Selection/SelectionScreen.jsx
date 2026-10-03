@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { MessageCircle, X, Sparkles, Gift, Heart } from "lucide-react";
+import { MessageCircle, X, Sparkles, Gift } from "lucide-react";
 import { COLORS } from "../../styles/colors";
 import { buildSelectionMessage } from "../../utils/messages";
 import { entryKey } from "../../utils/selectionKey";
@@ -138,19 +138,22 @@ export default function SelectionScreen({ selection, removeFromSelection, onBack
             ))}
           </div>
 
-          {/* Closing moment, art-direction pass — the same warm gradient
-              panel "Minha Festa" (PartyPanel.jsx) closes its own journey
-              with, reused here on purpose: one small, consistent device for
-              "you've reached the end, here's the brand seeing you off,"
-              not a plain button sitting at the bottom of a list. WhatsApp
-              stays the one real action inside it — no new copy, no
-              subtotal/checkout language, just a frame around what was
-              already there. */}
+          {/* Closing moment — the same warm gradient panel "Minha Festa"
+              (PartyPanel.jsx) closes its own journey with, reused here on
+              purpose: one small, consistent device for "you've reached the
+              end, here's the brand seeing you off," not a plain button at
+              the bottom of a list. Visual-correction pass: compacted the
+              panel and swapped the oversized heart icon for a short title +
+              line (matching the approved reference), reusing the "a gente
+              cuida do resto" phrase SendModal.jsx already uses elsewhere —
+              same voice, not new invented copy. WhatsApp is still the one
+              real action inside it; no subtotal/checkout language added. */}
           <div
-            className="rounded-3xl p-5 lg:p-6 text-center"
+            className="rounded-3xl p-4 lg:p-5 text-center"
             style={{ background: `linear-gradient(150deg, ${COLORS.caramelDark}1F, ${COLORS.caramelLight}12)` }}
           >
-            <Heart size={26} className="mx-auto mb-3" fill={COLORS.caramelDark} stroke={COLORS.caramelDark} />
+            <p className="font-display text-lg text-brand-ink mb-1">Pronto pra conversar?</p>
+            <p className="text-sm text-brand-inkSoft mb-3.5">Chama a gente no WhatsApp pra finalizar — a gente cuida do resto daqui.</p>
             <div className="flex flex-col gap-2">
               <button
                 onClick={() => onSend(buildSelectionMessage(selection))}

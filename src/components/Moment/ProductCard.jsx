@@ -8,30 +8,22 @@ import ProductArt from "../shared/ProductArt";
 import ProductBadges from "../shared/ProductBadges";
 import FlavorConfigurator from "./FlavorConfigurator";
 
-// Scrim for the `featured` photo-overlay name (Dias de luta only, see
-// below) — dark ink, not black, so it stays in the brand's own warm-brown
-// family rather than reading as a generic UI overlay. Bottom-weighted: the
-// top of the photo stays fully clear, only enough of the bottom darkens for
-// the overlaid name to stay legible over any photo.
-const FEATURED_SCRIM = `linear-gradient(to top, ${COLORS.ink}CC 0%, ${COLORS.ink}66 42%, ${COLORS.ink}00 72%)`;
-
 // A single product card — photo first, everything else light. Doubles as
 // the "Minha Seleção" flavor configurator entry point outside Festa, and as
 // a plain "add to Minha Festa" trigger inside Festa (these two flows never
 // mix — see hooks/useParty.js).
 //
-// `featured`: Dias de luta only (see MomentScreen.jsx) — the lead card of
-// each editorial-rhythm chunk gets the "FOTO GRANDE, pequena informação
-// abaixo" composition (name overlaid on a bigger photo, no separate teaser/
-// badges block) instead of the standard stacked card every other product
-// uses. Real scale contrast within the scroll, not a uniform grid of
-// identically-weighted cards — see the art-direction pass notes. Festa
-// never receives this prop as true.
+// Visual-correction pass: an earlier round gave repeated "featured" cards
+// (bigger photo, name overlaid) to the lead item of every editorial-rhythm
+// chunk — with 6 chunks that meant 6 featured products, which defeats
+// hierarchy (when everything is emphasized, nothing is). Removed entirely:
+// every card now uses the same compact composition, matching the approved
+// reference density. Hierarchy in Dias de luta now comes from the editorial
+// asides and intro, not from inflating individual cards.
 export default function ProductCard({
   p,
   momentId,
   isFesta,
-  featured = false,
   favorites,
   toggleFavorite,
   selection,
@@ -48,11 +40,10 @@ export default function ProductCard({
   const partyEntry = partyItems?.find((it) => it.id === p.id);
   // Only Dias de luta gets this round's lighter, photo-forward treatment —
   // Festa (and anything else reusing this card) keeps the exact border/
-  // shadow/photo-ratio it already had. Never infer this from `!isFesta`:
-  // that would also catch a hypothetical future non-festa, non-dia-dificil
-  // caller and silently change its look too.
+  // shadow it already had. Never infer this from `!isFesta`: that would
+  // also catch a hypothetical future non-festa, non-dia-dificil caller and
+  // silently change its look too.
   const isDiaDificil = momentId === "dia-dificil";
-  const isFeatured = isDiaDificil && featured;
 
   const confirmAdd = ({ qty, flavorBreakdown }) => {
     addToSelection({
@@ -75,29 +66,15 @@ export default function ProductCard({
     <div
       className={`rounded-3xl bg-white overflow-hidden transition-all duration-200 h-full flex flex-col lg:hover:-translate-y-0.5 ${
         // Dias de luta: no resting border/shadow — the photo and the
-        // generous gap between cards (see MomentScreen.jsx) do the work of
+        // gap between cards (see MomentScreen.jsx) do the work of
         // separating one card from the next, not a box around each one.
         // The "already selected" ring stays — that border means something
         // (it's feedback, not decoration).
         // Festa keeps its border on purpose — it's a portfolio of finished
         // pieces shown edge to edge in a tight 3-column grid, and the frame
         // reads as "mounted photograph," not decoration-for-decoration's-
-        // sake; explicitly NOT converging on Dias de luta's borderless look
-        // (brief section 11). Only the hover shadow got a touch lighter
-        // (shadow-lg → shadow-md), per the global "shadows stay discreet"
-        // rule — composition does the depth work, the shadow is just a
-        // hover cue.
+        // sake; explicitly NOT converging on Dias de luta's borderless look.
         isDiaDificil ? "" : isFesta ? "border lg:hover:shadow-md" : "border lg:hover:shadow-lg"
-      } ${
-        // Mobile/tablet: the featured card takes the full row (real size
-        // contrast, not just internal styling — see MomentScreen.jsx's
-        // grid-cols-1 sm:grid-cols-2). Desktop: reverts to a normal single
-        // grid cell — the chunked 2/3-column editorial rhythm there
-        // (MomentScreen.jsx) already carries its own row-height math, and
-        // an uneven-height card inside it would stretch its row siblings
-        // into awkward empty space. Scale contrast on desktop comes from
-        // the photo-overlay composition below instead, not from spanning.
-        isFeatured ? "col-span-full lg:col-span-1" : ""
       }`}
       style={
         isDiaDificil
@@ -112,25 +89,9 @@ export default function ProductCard({
         onClick={onOpenDetail ? () => onOpenDetail(p) : undefined}
       >
         {photos && photos.length > 0 ? (
-          <PhotoCarousel
-            photos={photos}
-            alt={p.name}
-            aspectClassName={isFeatured ? "aspect-mc-portrait lg:aspect-photo" : isDiaDificil ? "aspect-square lg:aspect-photo" : "aspect-photo"}
-          />
+          <PhotoCarousel photos={photos} alt={p.name} />
         ) : (
           <ProductArt kind={p.kind} tint={p.tint} contextIcon={MOMENT_ICON[momentId]} />
-        )}
-        {/* Featured only: name lives on the photo itself (the "FOTO
-            GRANDE, pequena informação abaixo" composition), with a bottom-
-            weighted scrim for legibility — pointer-events-none so it never
-            steals the carousel's own swipe/click handling underneath it. */}
-        {isFeatured && (
-          <div className="absolute inset-0 pointer-events-none" style={{ background: FEATURED_SCRIM }} />
-        )}
-        {isFeatured && (
-          <div className="absolute left-4 right-4 bottom-3.5 pointer-events-none">
-            <h3 className="font-display text-2xl leading-[1.08] text-white">{p.name}</h3>
-          </div>
         )}
         {!isFesta && (
           <button
@@ -146,67 +107,51 @@ export default function ProductCard({
           </button>
         )}
       </div>
-      <div className={`flex flex-col flex-1 ${isDiaDificil ? "p-3.5 lg:p-5" : "p-4 lg:p-5"}`}>
-        {/* Featured: the name already lives on the photo above — this
-            whole block (name button, unit, teaser, badges, customizable
-            chip) only renders for the standard stacked composition.
-            "Pequena informação abaixo" per the art-direction brief — the
-            lead card's text footprint stays deliberately light so the
-            photo (and its overlaid name) keep the scale contrast with the
-            compact cards around it. */}
-        {!isFeatured && (
-          <>
-            {onOpenDetail ? (
-              <button onClick={() => onOpenDetail(p)} className="text-left">
-                <h3 className="text-lg lg:text-xl font-display text-brand-ink leading-tight">{p.name}</h3>
-              </button>
-            ) : (
-              <h3 className="text-lg font-display text-brand-ink leading-tight">{p.name}</h3>
-            )}
-            {!isFesta && <p className="text-xs mt-0.5 text-brand-muted">{p.unit}</p>}
+      <div className={`flex flex-col flex-1 ${isDiaDificil ? "p-3.5 lg:p-4" : "p-4 lg:p-5"}`}>
+        {onOpenDetail ? (
+          <button onClick={() => onOpenDetail(p)} className="text-left">
+            <h3 className="text-lg font-display text-brand-ink leading-tight">{p.name}</h3>
+          </button>
+        ) : (
+          <h3 className="text-lg font-display text-brand-ink leading-tight">{p.name}</h3>
+        )}
+        {!isFesta && <p className="text-xs mt-0.5 text-brand-muted">{p.unit}</p>}
 
-            {/* Dias de luta: the short "teaser" carries the vitrine — the full
-                sensory description now lives in the detail sheet only (see
-                progressive-disclosure split in the brief). Fraunces roman, not
-                italic — personality comes from the family + copy, not from
-                treating every teaser like a literary quote. Given more
-                presence at lg+ (was reading as metadata, not the desire-copy it
-                actually is) — size/spacing only, same text. Tightened top
-                margin on dia-dificil so name→teaser reads as one block, not two
-                stacked elements. Festa keeps showing its own sensory line, kept
-                compact at lg+ (2-line clamp) so the photo stays the protagonist
-                instead of growing text. */}
-            {!isFesta ? (
-              <p className={`text-sm lg:text-base leading-relaxed lg:leading-[1.5] flex-1 font-display text-brand-ink ${isDiaDificil ? "mt-1.5 lg:mt-2" : "mt-2 lg:mt-2.5"}`}>
-                {p.experience?.teaser ?? p.sensory}
-              </p>
-            ) : (
-              <p className="text-xs mt-2 leading-relaxed flex-1 text-brand-inkSoft lg:line-clamp-2">{p.sensory}</p>
-            )}
+        {/* Dias de luta: the short "teaser" carries the vitrine — the full
+            sensory description now lives in the detail sheet only (see
+            progressive-disclosure split in the brief). Fraunces roman, not
+            italic — personality comes from the family + copy, not from
+            treating every teaser like a literary quote. Festa keeps
+            showing its own sensory line, kept compact at lg+ (2-line
+            clamp) so the photo stays the protagonist instead of growing
+            text. */}
+        {!isFesta ? (
+          <p className="text-sm leading-snug mt-1 flex-1 font-display text-brand-ink">{p.experience?.teaser ?? p.sensory}</p>
+        ) : (
+          <p className="text-xs mt-2 leading-relaxed flex-1 text-brand-inkSoft lg:line-clamp-2">{p.sensory}</p>
+        )}
 
-            {/* "Insight" badges — Dias de luta only (per Naia's brief); Festa's
-                card never renders this, even for a product that also carries a
-                `badges` array (e.g. Mini Cake Donuts, Cones Trufados, Chocobomb
-                are cross-tagged to both moments). */}
-            {!isFesta && <ProductBadges badges={p.badges} />}
+        {/* "Insight" badges — Dias de luta only (per Naia's brief); Festa's
+            card never renders this, even for a product that also carries a
+            `badges` array (e.g. Mini Cake Donuts, Cones Trufados, Chocobomb
+            are cross-tagged to both moments). */}
+        {!isFesta && <ProductBadges badges={p.badges} />}
 
-            {!isFesta && isCustomizable && (
-              <div className="flex flex-wrap gap-1.5 mt-2.5">
-                <span
-                  className="inline-flex items-center gap-1 text-3xs font-medium rounded-full px-2 py-1"
-                  style={{ backgroundColor: `${COLORS.caramelLight}30`, color: COLORS.caramelDark }}
-                >
-                  <Sparkles size={10} /> Escolha seus sabores ✨
-                </span>
-              </div>
-            )}
-          </>
+        {!isFesta && isCustomizable && (
+          <div className="flex flex-wrap gap-1.5 mt-1.5">
+            <span
+              className="inline-flex items-center gap-1 text-3xs font-medium rounded-full px-2 py-1"
+              style={{ backgroundColor: `${COLORS.caramelLight}30`, color: COLORS.caramelDark }}
+            >
+              <Sparkles size={10} /> Escolha seus sabores ✨
+            </span>
+          </div>
         )}
 
         {isFesta ? (
           <button
             onClick={() => onOpenPartyModal(p)}
-            className="w-full mt-3 text-sm font-medium rounded-full px-3.5 min-h-11 flex items-center justify-center gap-1.5 border border-brand-caramelDark"
+            className="w-full mt-2.5 text-sm font-medium rounded-full px-3.5 min-h-11 flex items-center justify-center gap-1.5 border border-brand-caramelDark"
             style={{
               backgroundColor: partyEntry ? COLORS.caramelDark : "transparent",
               color: partyEntry ? "white" : COLORS.caramelDark,
@@ -216,10 +161,14 @@ export default function ProductCard({
           </button>
         ) : (
           <>
-            <div className="flex items-center justify-between mt-3">
-              <span className={isDiaDificil ? "text-xs font-medium text-brand-caramelDark" : "text-sm font-medium text-brand-caramelDark"}>
-                {p.price}
-              </span>
+            {/* CTA restored to real presence — a prior round made this a
+                quiet text link for Dias de luta, which went too discreet:
+                "Quero esse" is the one important action on the card and
+                reads better as a small filled pill, same as Festa's own
+                CTA and the approved reference, not a plain word in the
+                corner. */}
+            <div className="flex items-center justify-between mt-2.5 gap-2">
+              <span className="text-sm font-medium text-brand-caramelDark">{p.price}</span>
               <button
                 onClick={() =>
                   isCustomizable
@@ -228,19 +177,13 @@ export default function ProductCard({
                     ? removeFromSelection(existing)
                     : confirmAdd({ qty: defaultQty, flavorBreakdown: [] })
                 }
-                className={`font-medium rounded-full min-h-11 inline-flex items-center gap-1 ${
-                  // Dias de luta: a quiet text-link affordance, not a bordered
-                  // pill competing with the photo above it — the selected
-                  // state still needs a filled, obviously-different look, so
-                  // that one case keeps a background (just no border).
-                  isDiaDificil ? "text-xs px-2.5" : "text-sm px-3.5 border border-brand-caramelDark"
-                }`}
+                className="text-xs font-medium rounded-full px-3.5 min-h-11 inline-flex items-center gap-1.5"
                 style={{
-                  backgroundColor: existing ? COLORS.caramelDark : "transparent",
-                  color: existing ? "white" : COLORS.caramelDark,
+                  backgroundColor: COLORS.caramelDark,
+                  color: "white",
                 }}
               >
-                <Heart size={12} fill={existing ? "white" : "none"} />
+                <Heart size={12} fill="white" />
                 {existing
                   ? isCustomizable
                     ? `Na seleção (${existing.qty})`

@@ -1,6 +1,13 @@
+import { COLORS } from "../../styles/colors";
 import { REAL_PHOTOS } from "../../data/photos";
 import SiteHeader from "../shared/SiteHeader";
 import Photo from "../shared/Photo";
+
+// Bottom-weighted scrim so the title/CTA overlaid on each photo stay
+// legible regardless of what's in frame — same mechanism the Home
+// MomentPicker cards already use (ink, not black, to stay in the brand's
+// warm-brown family), reused here rather than inventing a second one.
+const SCRIM = `linear-gradient(to top, ${COLORS.ink}CC 0%, ${COLORS.ink}4D 50%, ${COLORS.ink}00 78%)`;
 
 // Real Mon Caramel photography — no AI, no stock, no edited files.
 const OPTIONS = [
@@ -33,11 +40,12 @@ const OPTIONS = [
     description: "Um jeitinho pequeno de fazer alguém sorrir.",
     cta: "Quero ver produtos →",
     photo: REAL_PHOTOS.presentinhoTrufas,
-    // Contain, not cover — this source has real empty margin around the
-    // subject that cover would crop into; a local, per-card fit choice
-    // (see Mimos' own screen for the same reasoning), not a change to
-    // object-fit globally.
-    photoFit: "contain",
+    // Visual-correction pass: this tile moved from photo-above/text-below
+    // to text overlaid on the photo (see below), which needs the photo to
+    // fill the frame edge to edge — switched from contain to cover.
+    // Positioned low to keep the three wrapped truffles in frame; only the
+    // empty marble background at the top gets trimmed.
+    photoPosition: "object-[center_75%]",
   },
 ];
 
@@ -57,36 +65,37 @@ export default function PresenteEntryScreen({ onBack, onSelect }) {
   return (
     <div className="max-w-xl md:max-w-3xl lg:max-w-5xl mx-auto px-gutter lg:px-8 xl:px-12 pt-2 pb-10 fade-up">
       <SiteHeader onBack={onBack} />
-      {/* mc-page-title at its own default size (text-2xl) still reads
-          closer to a form-field label than a page the brief wants to feel
-          "mais inspiracional" — a local override (not a change to the
-          shared class, which 7 other screens also use) gives just this
-          one headline real editorial scale. */}
-      <h1 className="mc-page-title text-3xl lg:text-4xl">É só uma lembrancinha.</h1>
+      {/* Visual-correction pass: reverted a one-off size bump here back to
+          the shared mc-page-title default — same size every other
+          catalog-style screen uses, consistent rather than one more
+          variation. */}
+      <h1 className="mc-page-title">É só uma lembrancinha.</h1>
       <p className="mc-page-subtitle">
         Pra gente, é muito mais que isso. Cada presente é único, pensado pra quem vai receber se sentir especial.
       </p>
 
-      <div className="flex flex-col gap-6 md:grid md:grid-cols-3 md:gap-5">
+      {/* Visual-correction pass: title/description/CTA moved from a
+          separate block under the photo to an overlay directly on it (per
+          the approved reference) — the three tiles read as one compact
+          group now instead of three photo-then-text sections stacked with
+          a lot of space between them. */}
+      <div className="flex flex-col gap-3 md:grid md:grid-cols-3 md:gap-4">
         {OPTIONS.map((o) => (
-          <button key={o.id} onClick={() => onSelect(o.id)} className="text-left group">
-            <div className="relative overflow-hidden rounded-3xl aspect-photo bg-brand-subtle">
-              <Photo
-                src={o.photo}
-                alt=""
-                className={`w-full h-full transition-transform duration-300 lg:group-hover:scale-[1.03] ${
-                  o.photoFit === "contain" ? "object-contain" : "object-cover"
-                }${o.photoPosition ? ` ${o.photoPosition}` : ""}`}
-                loading="lazy"
-              />
-            </div>
-            <div className="pt-3 flex flex-col gap-1">
-              <p className="font-display text-xl text-brand-ink leading-tight">
+          <button key={o.id} onClick={() => onSelect(o.id)} className="relative overflow-hidden rounded-2xl aspect-photo text-left group bg-brand-subtle">
+            <Photo
+              src={o.photo}
+              alt=""
+              className={`absolute inset-0 w-full h-full object-cover transition-transform duration-300 lg:group-hover:scale-[1.03]${o.photoPosition ? ` ${o.photoPosition}` : ""}`}
+              loading="lazy"
+            />
+            <div className="absolute inset-0 pointer-events-none" style={{ background: SCRIM }} />
+            <div className="absolute left-3.5 right-3.5 bottom-3">
+              <p className="font-display text-lg text-white leading-tight">
                 <span className="mr-1.5">{o.emoji}</span>
                 {o.title}
               </p>
-              <p className="text-sm leading-snug text-brand-inkSoft">{o.description}</p>
-              <span className="inline-flex items-center gap-1 mt-1 text-sm font-medium text-brand-caramelDark">{o.cta}</span>
+              <p className="text-xs leading-snug text-white/85 mt-0.5">{o.description}</p>
+              <span className="inline-flex items-center gap-1 mt-1 text-xs font-medium text-white">{o.cta}</span>
             </div>
           </button>
         ))}

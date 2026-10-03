@@ -121,12 +121,16 @@ export default function ProductDetailSheet({
           )}
         </div>
 
-        <div className="p-5 lg:p-8 lg:h-full lg:overflow-y-auto">
-          <h2 id="product-detail-title" className="text-2xl lg:text-3xl font-display text-brand-ink leading-tight">
+        <div className="p-4 lg:p-6 lg:h-full lg:overflow-y-auto">
+          <h2 id="product-detail-title" className="text-xl lg:text-2xl font-display text-brand-ink leading-tight">
             {p.name}
           </h2>
-          <p className="text-sm mt-0.5 lg:mt-1 text-brand-muted">{p.unit}</p>
-          <p className="text-sm lg:text-base mt-3 lg:mt-4 leading-relaxed lg:leading-[1.6] text-brand-inkSoft">{p.sensory}</p>
+          <p className="text-sm mt-0.5 text-brand-muted">{p.unit}</p>
+          {/* Price right under the name — reads as the first two facts
+              about the product together, the way the approved reference
+              shows it, not pushed down to sit beside the CTA. */}
+          <p className="text-lg font-medium mt-1 text-brand-caramelDark">{p.price}</p>
+          <p className="text-sm mt-2 leading-snug text-brand-inkSoft">{p.sensory}</p>
 
           {/* Dias de luta only — the curated badge matrix. Suppresses the
               older `canFreeze` list item just below when it's showing
@@ -137,22 +141,22 @@ export default function ProductDetailSheet({
           {showExperience && <ProductBadges badges={p.badges} />}
 
           {((canFreeze && !showExperience) || isCustomizable) && (
-            <ul className="flex flex-col gap-2 mt-4">
+            <ul className="flex flex-col gap-1.5 mt-2.5">
               {canFreeze && !showExperience && (
-                <li className="flex items-center gap-2.5 text-sm text-brand-inkSoft">
-                  <span className="w-8 h-8 shrink-0 rounded-full flex items-center justify-center bg-brand-subtle">
-                    <Snowflake size={14} className="text-brand-caramelDark" />
+                <li className="flex items-center gap-2 text-sm text-brand-inkSoft">
+                  <span className="w-7 h-7 shrink-0 rounded-full flex items-center justify-center bg-brand-subtle">
+                    <Snowflake size={13} className="text-brand-caramelDark" />
                   </span>
                   Pode congelar
                 </li>
               )}
               {isCustomizable && (
-                <li className="flex items-center gap-2.5 text-sm text-brand-inkSoft">
+                <li className="flex items-center gap-2 text-sm text-brand-inkSoft">
                   <span
-                    className="w-8 h-8 shrink-0 rounded-full flex items-center justify-center"
+                    className="w-7 h-7 shrink-0 rounded-full flex items-center justify-center"
                     style={{ backgroundColor: `${COLORS.caramelLight}30` }}
                   >
-                    <Sparkles size={14} className="text-brand-caramelDark" />
+                    <Sparkles size={13} className="text-brand-caramelDark" />
                   </span>
                   Escolha seus sabores
                 </li>
@@ -162,66 +166,55 @@ export default function ProductDetailSheet({
 
           {/* Mon Caramel's own voice — a short editorial aside, Dias de
               luta only, right before the purchase decision. */}
-          {showExperience && (
-            <div className="lg:mt-5">
-              <MonCaramelNote label={p.experience?.noteLabel} note={p.experience?.note} />
+          {showExperience && <MonCaramelNote label={p.experience?.noteLabel} note={p.experience?.note} />}
+
+          {/* Configuração + CTA — directly on the page, no extra panel
+              around it (a prior round wrapped this in its own tinted box;
+              the reference just places it right after the note, closely
+              spaced, so it reads as the next step, not a separate card). */}
+          {isCustomizable ? (
+            <div className="mt-4 pt-3 border-t border-dashed border-brand-border">
+              <FlavorConfigurator product={p} existing={existing} onConfirm={({ qty: q, flavorBreakdown }) => {
+                addToSelection({
+                  kind: "product",
+                  productId: p.id,
+                  name: p.name,
+                  unit: p.unit,
+                  qty: q,
+                  flavors: flavorBreakdown.length > 0 ? flavorBreakdown : null,
+                });
+                onClose();
+              }} />
+            </div>
+          ) : (
+            <div className="flex items-center justify-between mt-4 gap-3">
+              <QuantityStepper value={qty} onChange={setQty} />
+              <button
+                onClick={() => (existing ? removeFromSelection(existing) : add())}
+                className="flex-1 text-sm font-medium rounded-full py-3 min-h-11 flex items-center justify-center gap-2 transition-transform active:scale-95"
+                style={{ backgroundColor: COLORS.caramelDark, color: "white" }}
+              >
+                <Heart size={14} fill="white" />
+                {existing ? "Adicionado ✓ — remover" : "Quero esse"}
+              </button>
             </div>
           )}
-
-          {/* Decision chapter — price, then quantity/flavors and the CTA,
-              grouped in its own soft panel so it reads as a distinct step
-              ("deciding what to get") rather than one more paragraph in the
-              reading flow above (name/description/badges/note). Same
-              price value/formatting as before, just visually chaptered. */}
-          <div className="mt-5 lg:mt-7 rounded-3xl p-4 lg:p-5" style={{ backgroundColor: COLORS.subtle }}>
-            <p className="text-xl lg:text-2xl font-medium text-brand-caramelDark">{p.price}</p>
-
-            {isCustomizable ? (
-              <div className="mt-4 pt-4 border-t border-dashed border-brand-border">
-                <FlavorConfigurator product={p} existing={existing} onConfirm={({ qty: q, flavorBreakdown }) => {
-                  addToSelection({
-                    kind: "product",
-                    productId: p.id,
-                    name: p.name,
-                    unit: p.unit,
-                    qty: q,
-                    flavors: flavorBreakdown.length > 0 ? flavorBreakdown : null,
-                  });
-                  onClose();
-                }} />
-              </div>
-            ) : (
-              <div className="flex items-center justify-between mt-4 gap-3">
-                <QuantityStepper value={qty} onChange={setQty} />
-                <button
-                  onClick={() => (existing ? removeFromSelection(existing) : add())}
-                  className="flex-1 text-sm font-medium rounded-full py-3 lg:py-3.5 min-h-11 flex items-center justify-center gap-2 transition-transform active:scale-95"
-                  style={{ backgroundColor: COLORS.caramelDark, color: "white" }}
-                >
-                  <Heart size={14} fill="white" />
-                  {existing ? "Adicionado ✓ — remover" : "Quero esse"}
-                </button>
-              </div>
-            )}
-          </div>
 
           {/* Dias de luta's manual, one-at-a-time cross-sell — replaces the
               generic auto-related block below for this context (never both
               at once). Hidden outright if the suggested product is already
               in the selection, per the brief, rather than insisting on it. */}
           {showExperience && temptationProduct && !temptationAlreadySelected && (
-            <div className="lg:mt-6">
-              <NextTemptation
-                line={temptation.line}
-                product={temptationProduct}
-                photo={defaultPhotos(temptationProduct)?.[0]}
-                onOpen={(product) => onOpenProduct?.(product, momentId)}
-              />
-            </div>
+            <NextTemptation
+              line={temptation.line}
+              product={temptationProduct}
+              photo={defaultPhotos(temptationProduct)?.[0]}
+              onOpen={(product) => onOpenProduct?.(product, momentId)}
+            />
           )}
 
           {!showExperience && related.length > 0 && (
-            <div className="mt-8 pt-6 border-t border-brand-border">
+            <div className="mt-5 pt-4 border-t border-brand-border">
               <p className="text-sm font-display text-brand-ink mb-3">Já que você chegou até aqui... 👀</p>
               <div className="flex gap-3 overflow-x-auto no-scrollbar -mx-5 px-5">
                 {related.map((r) => (
