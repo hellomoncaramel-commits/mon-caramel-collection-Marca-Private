@@ -95,19 +95,13 @@ export default function MomentScreen({
           from the family + copy, not from italicizing every editorial
           paragraph. Capped width at lg+ so a single line doesn't stretch
           the full desktop container (readability only, same text).
-          Dias de luta only: real headline scale (art-direction pass) —
-          this is the page's one piece of running prose, so it needs to
-          read with actual presence instead of sitting at roughly the same
-          weight as a card's teaser line below it. ink (not inkSoft) for a
-          more confident color too. Festa's intro is untouched this round. */}
+          Real headline scale (art-direction pass, now shared by both
+          moments this screen renders) — this is each page's one piece of
+          running prose, so it needs to read with actual presence instead
+          of sitting at roughly the same weight as a card's teaser line
+          below it. ink (not inkSoft) for a more confident color too. */}
       {MOMENT_INTRO[momentId] && (
-        <p
-          className={
-            isDiaDificil
-              ? "text-xl sm:text-2xl lg:text-3xl leading-[1.2] lg:leading-[1.25] mb-7 lg:mb-10 font-display text-brand-ink max-w-[21rem] sm:max-w-xl lg:max-w-2xl"
-              : "text-base lg:text-lg leading-relaxed mb-6 lg:mb-8 font-display text-brand-inkSoft lg:max-w-2xl"
-          }
-        >
+        <p className="text-xl sm:text-2xl lg:text-3xl leading-[1.2] lg:leading-[1.25] mb-7 lg:mb-10 font-display text-brand-ink max-w-[21rem] sm:max-w-xl lg:max-w-2xl">
           {MOMENT_INTRO[momentId]}
         </p>
       )}

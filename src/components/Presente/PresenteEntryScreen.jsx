@@ -57,7 +57,12 @@ export default function PresenteEntryScreen({ onBack, onSelect }) {
   return (
     <div className="max-w-xl md:max-w-3xl lg:max-w-5xl mx-auto px-gutter lg:px-8 xl:px-12 pt-2 pb-10 fade-up">
       <SiteHeader onBack={onBack} />
-      <h1 className="mc-page-title">É só uma lembrancinha.</h1>
+      {/* mc-page-title at its own default size (text-2xl) still reads
+          closer to a form-field label than a page the brief wants to feel
+          "mais inspiracional" — a local override (not a change to the
+          shared class, which 7 other screens also use) gives just this
+          one headline real editorial scale. */}
+      <h1 className="mc-page-title text-3xl lg:text-4xl">É só uma lembrancinha.</h1>
       <p className="mc-page-subtitle">
         Pra gente, é muito mais que isso. Cada presente é único, pensado pra quem vai receber se sentir especial.
       </p>
