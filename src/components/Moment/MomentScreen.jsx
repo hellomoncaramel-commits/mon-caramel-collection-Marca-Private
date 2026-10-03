@@ -95,13 +95,14 @@ export default function MomentScreen({
           from the family + copy, not from italicizing every editorial
           paragraph. Capped width at lg+ so a single line doesn't stretch
           the full desktop container (readability only, same text).
-          Real headline scale (art-direction pass, now shared by both
-          moments this screen renders) — this is each page's one piece of
-          running prose, so it needs to read with actual presence instead
-          of sitting at roughly the same weight as a card's teaser line
-          below it. ink (not inkSoft) for a more confident color too. */}
+          Visual-correction pass: a prior round pushed this to near-
+          headline scale with generous margin, which ate close to half the
+          first mobile viewport before a single product appeared — pulled
+          back to a size with real presence but compact enough that the
+          intro + a product both show up in the first screen. ink (not
+          inkSoft) for a confident color. */}
       {MOMENT_INTRO[momentId] && (
-        <p className="text-xl sm:text-2xl lg:text-3xl leading-[1.2] lg:leading-[1.25] mb-7 lg:mb-10 font-display text-brand-ink max-w-[21rem] sm:max-w-xl lg:max-w-2xl">
+        <p className="text-lg sm:text-xl lg:text-2xl leading-snug mb-4 lg:mb-6 font-display text-brand-ink max-w-xs sm:max-w-md lg:max-w-xl">
           {MOMENT_INTRO[momentId]}
         </p>
       )}
@@ -127,18 +128,18 @@ export default function MomentScreen({
         {isDiaDificil
           ? chunkEditorialRhythm(matched).map((chunk, i) => (
               <Fragment key={i}>
-                {/* A real pause, not a caption between products — soft
-                    caramel-tinted band, full-bleed against the page's own
-                    gutter, generous padding, bigger Fraunces. Rare enough
-                    (2 of 6 chunks) that it reads as a brand moment, not
-                    wallpaper. */}
+                {/* A quick pause, not a new screen — soft caramel-tinted
+                    band, full-bleed against the page's own gutter, but
+                    compact: a small heart (the one delicate graphic touch)
+                    above a short line, then straight back to products. */}
                 {DIA_DIFICIL_ASIDES[i] && (
-                  <div className="col-span-full -mx-gutter px-gutter py-9 my-1" style={{ backgroundColor: `${COLORS.caramelLight}22` }}>
-                    <p className="font-display text-2xl leading-[1.25] text-brand-ink text-center max-w-xs mx-auto">{DIA_DIFICIL_ASIDES[i]}</p>
+                  <div className="col-span-full -mx-gutter px-gutter py-6" style={{ backgroundColor: `${COLORS.caramelLight}1A` }}>
+                    <Heart size={16} className="mx-auto mb-1.5" fill={COLORS.caramelDark} stroke={COLORS.caramelDark} />
+                    <p className="font-display text-lg leading-snug text-brand-ink text-center max-w-xs mx-auto">{DIA_DIFICIL_ASIDES[i]}</p>
                   </div>
                 )}
-                {chunk.map((p, idx) => (
-                  <ProductCard key={p.id} p={p} momentId={momentId} featured={idx === 0} {...cardProps} />
+                {chunk.map((p) => (
+                  <ProductCard key={p.id} p={p} momentId={momentId} {...cardProps} />
                 ))}
               </Fragment>
             ))
@@ -154,15 +155,14 @@ export default function MomentScreen({
           {chunkEditorialRhythm(matched).map((chunk, i) => (
             <div key={i}>
               {DIA_DIFICIL_ASIDES[i] && (
-                <div className="-mx-8 xl:-mx-12 px-8 xl:px-12 py-14 my-10 rounded-3xl" style={{ backgroundColor: `${COLORS.caramelLight}22` }}>
-                  <p className="font-display text-3xl leading-[1.25] text-brand-ink text-center max-w-lg mx-auto">
-                    {DIA_DIFICIL_ASIDES[i]}
-                  </p>
+                <div className="-mx-8 xl:-mx-12 px-8 xl:px-12 py-8 my-6 rounded-3xl flex items-center justify-center gap-3" style={{ backgroundColor: `${COLORS.caramelLight}1A` }}>
+                  <Heart size={20} className="shrink-0" fill={COLORS.caramelDark} stroke={COLORS.caramelDark} />
+                  <p className="font-display text-xl leading-snug text-brand-ink max-w-lg">{DIA_DIFICIL_ASIDES[i]}</p>
                 </div>
               )}
               <div className={`grid gap-5 ${chunk.length === 2 ? "grid-cols-2" : "grid-cols-3"} ${i > 0 && !DIA_DIFICIL_ASIDES[i] ? "mt-5" : ""}`}>
-                {chunk.map((p, idx) => (
-                  <ProductCard key={p.id} p={p} momentId={momentId} featured={idx === 0} {...cardProps} />
+                {chunk.map((p) => (
+                  <ProductCard key={p.id} p={p} momentId={momentId} {...cardProps} />
                 ))}
               </div>
             </div>

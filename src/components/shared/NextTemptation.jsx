@@ -6,32 +6,28 @@ import Photo from "./Photo";
 // `product` come from a single hand-written pairing per product (see
 // data/products.js `experience.nextTemptation`), never picked automatically.
 //
-// A real rectangular photo (same aspect-photo ratio as everywhere else on
-// the site), not a small thumbnail — the whole point of "próxima tentação"
-// is the next photo doing the tempting, so it gets to read as its own
-// little card (soft shadow, same discreet value used elsewhere) instead of
-// a thin row with an icon-sized crop.
+// A small labeled section, matching the approved reference — a compact row
+// (square thumbnail, not a bigger rectangular card) under a quiet "Próxima
+// tentação" label, not its own featured block. Visual-correction pass:
+// reverted from a taller shadowed mini-card back to this tighter row.
 export default function NextTemptation({ line, product, photo, onOpen }) {
   if (!product || !line) return null;
 
   return (
-    <button
-      onClick={() => onOpen(product)}
-      className="w-full mt-6 rounded-2xl bg-white overflow-hidden flex items-stretch text-left"
-      style={{ boxShadow: "0 1px 3px rgba(61,36,24,0.08)" }}
-    >
-      <div className="w-24 sm:w-28 shrink-0 aspect-photo overflow-hidden">
-        {photo && <Photo src={photo} alt={product.name} className="w-full h-full object-cover" loading="lazy" />}
-      </div>
-      <div className="min-w-0 flex-1 p-3.5 flex flex-col justify-center">
-        {/* The enticement line in Fraunces roman (personality); the product
-            name below stays plain DM Sans (functional information). */}
-        <p className="text-sm font-display leading-snug text-brand-ink">{line}</p>
-        <p className="text-xs mt-1 text-brand-caramelDark">{product.name}</p>
-      </div>
-      <div className="flex items-center pr-3 shrink-0">
-        <ChevronRight size={16} className="text-brand-muted" />
-      </div>
-    </button>
+    <div className="mt-4">
+      <p className="text-3xs uppercase tracking-wide font-medium text-brand-muted mb-1.5">Próxima tentação</p>
+      <button onClick={() => onOpen(product)} className="w-full flex items-center gap-2.5 text-left">
+        <div className="w-14 h-14 shrink-0 rounded-xl overflow-hidden bg-brand-subtle">
+          {photo && <Photo src={photo} alt={product.name} className="w-full h-full object-cover" loading="lazy" />}
+        </div>
+        <div className="min-w-0 flex-1">
+          {/* The enticement line in Fraunces roman (personality); the product
+              name below stays plain DM Sans (functional information). */}
+          <p className="text-sm font-display leading-snug text-brand-ink">{line}</p>
+          <p className="text-xs mt-0.5 text-brand-caramelDark">{product.name}</p>
+        </div>
+        <ChevronRight size={16} className="shrink-0 text-brand-muted" />
+      </button>
+    </div>
   );
 }
