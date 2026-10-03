@@ -172,8 +172,14 @@ export default function MomentScreen({
           Design-refinement pass: a 2-up row used to stretch both cards to
           fill the full container width (~580px cards) — exactly the "mobile
           card blown up" look that was flagged. A 2-item chunk now caps its
-          own row width and centers it, leaving deliberate negative space on
-          both sides instead of stretching to fill the container. */}
+          own row width instead of stretching to fill the container.
+          Final visual QA pass: that capped row was centered (mx-auto),
+          which floated it in the middle of the container disconnected from
+          everything else — the title, intro and every 3-up row above/below
+          it all sit flush with the container's left edge. Left-aligning it
+          instead anchors it to that same edge, with the negative space
+          deliberately on the right, reading as one consistent composition
+          rather than a centered block dropped into a left-aligned page. */}
       {isDiaDificil && (
         <div className="hidden lg:block">
           {chunkEditorialRhythm(matched).map((chunk, i) => (
@@ -186,7 +192,7 @@ export default function MomentScreen({
               )}
               <div
                 className={`grid gap-5 ${
-                  chunk.length === 2 ? "grid-cols-2 max-w-[720px] mx-auto" : "grid-cols-3"
+                  chunk.length === 2 ? "grid-cols-2 max-w-[720px]" : "grid-cols-3"
                 } ${i > 0 && !DIA_DIFICIL_ASIDES[i] ? "mt-5" : ""}`}
               >
                 {chunk.map((p) => (

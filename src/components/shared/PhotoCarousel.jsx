@@ -98,8 +98,8 @@ export default function PhotoCarousel({ photos, alt, aspectClassName = "aspect-p
             type="button"
             onClick={(e) => go(-1, e)}
             aria-label="Foto anterior"
-            className={`absolute left-1.5 top-1/2 -translate-y-1/2 rounded-full bg-white/85 flex items-center justify-center z-10 ${
-              compact ? "w-8 h-8" : "w-11 h-11"
+            className={`absolute left-1.5 top-1/2 -translate-y-1/2 rounded-full flex items-center justify-center z-10 ${
+              compact ? "w-8 h-8 bg-white/90" : "w-11 h-11 bg-white/85"
             }`}
           >
             <ChevronLeft size={compact ? 13 : 16} className="text-brand-ink" />
@@ -108,8 +108,8 @@ export default function PhotoCarousel({ photos, alt, aspectClassName = "aspect-p
             type="button"
             onClick={(e) => go(1, e)}
             aria-label="Próxima foto"
-            className={`absolute right-1.5 top-1/2 -translate-y-1/2 rounded-full bg-white/85 flex items-center justify-center z-10 ${
-              compact ? "w-8 h-8" : "w-11 h-11"
+            className={`absolute right-1.5 top-1/2 -translate-y-1/2 rounded-full flex items-center justify-center z-10 ${
+              compact ? "w-8 h-8 bg-white/90" : "w-11 h-11 bg-white/85"
             }`}
           >
             <ChevronRight size={compact ? 13 : 16} className="text-brand-ink" />

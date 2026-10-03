@@ -39,6 +39,15 @@ import FlavorConfigurator from "./FlavorConfigurator";
 // favorite circle, the carousel arrows, the CTA) got smaller — the visible
 // circle/pill shrinks while the tap target stays >=44px via padding, not a
 // smaller hit area. Festa untouched throughout.
+//
+// Final visual QA pass: the content block's own horizontal padding (px-1)
+// sat on top of the card's outer p-2, insetting text 12px from the card
+// edge while the photo above it (which only gets the outer p-2) sat at 8px
+// — a 4px mismatch that read as an implementation seam. Content now shares
+// the exact same inset as the photo (no extra horizontal padding of its
+// own). Unit stepped down a size to read as true microinformation; teaser
+// switched from ink to inkSoft so it's legible but clearly secondary to the
+// name above it — hierarchy now comes from weight/color, not just size.
 export default function ProductCard({
   p,
   momentId,
@@ -125,7 +134,7 @@ export default function ProductCard({
           </button>
         )}
       </div>
-      <div className={`flex flex-col flex-1 ${isDiaDificil ? "pt-2.5 px-1 pb-1" : "p-4 lg:p-5"}`}>
+      <div className={`flex flex-col flex-1 ${isDiaDificil ? "pt-2.5 pb-1" : "p-4 lg:p-5"}`}>
         {onOpenDetail ? (
           <button onClick={() => onOpenDetail(p)} className="text-left">
             <h3 className={`font-display text-brand-ink leading-tight ${isDiaDificil ? "text-xl" : "text-lg"}`}>{p.name}</h3>
@@ -133,7 +142,7 @@ export default function ProductCard({
         ) : (
           <h3 className={`font-display text-brand-ink leading-tight ${isDiaDificil ? "text-xl" : "text-lg"}`}>{p.name}</h3>
         )}
-        {!isFesta && <p className="text-xs mt-0.5 text-brand-muted">{p.unit}</p>}
+        {!isFesta && <p className={`mt-0.5 text-brand-muted ${isDiaDificil ? "text-3xs" : "text-xs"}`}>{p.unit}</p>}
 
         {/* Dias de luta: the short "teaser" carries the vitrine — the full
             sensory description now lives in the detail sheet only (see
@@ -144,7 +153,9 @@ export default function ProductCard({
             clamp) so the photo stays the protagonist instead of growing
             text. */}
         {!isFesta ? (
-          <p className="text-sm leading-snug mt-1 flex-1 font-display text-brand-ink">{p.experience?.teaser ?? p.sensory}</p>
+          <p className={`text-sm leading-snug mt-1 flex-1 font-display ${isDiaDificil ? "text-brand-inkSoft" : "text-brand-ink"}`}>
+            {p.experience?.teaser ?? p.sensory}
+          </p>
         ) : (
           <p className="text-xs mt-2 leading-relaxed flex-1 text-brand-inkSoft lg:line-clamp-2">{p.sensory}</p>
         )}
@@ -153,7 +164,7 @@ export default function ProductCard({
             card never renders this, even for a product that also carries a
             `badges` array (e.g. Mini Cake Donuts, Cones Trufados, Chocobomb
             are cross-tagged to both moments). */}
-        {!isFesta && <ProductBadges badges={p.badges} />}
+        {!isFesta && <ProductBadges badges={p.badges} onSubtle={isDiaDificil} />}
 
         {!isFesta && isCustomizable && (
           <div className="flex flex-wrap gap-1.5 mt-1.5">
