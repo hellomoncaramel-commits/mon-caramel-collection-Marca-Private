@@ -61,9 +61,16 @@ export default function ProductCard({
         // generous gap between cards (see MomentScreen.jsx) do the work of
         // separating one card from the next, not a box around each one.
         // The "already selected" ring stays — that border means something
-        // (it's feedback, not decoration) — everything else (Festa
-        // included) keeps its original border + hover shadow untouched.
-        isDiaDificil ? "" : "border lg:hover:shadow-lg"
+        // (it's feedback, not decoration).
+        // Festa keeps its border on purpose — it's a portfolio of finished
+        // pieces shown edge to edge in a tight 3-column grid, and the frame
+        // reads as "mounted photograph," not decoration-for-decoration's-
+        // sake; explicitly NOT converging on Dias de luta's borderless look
+        // (brief section 11). Only the hover shadow got a touch lighter
+        // (shadow-lg → shadow-md), per the global "shadows stay discreet"
+        // rule — composition does the depth work, the shadow is just a
+        // hover cue.
+        isDiaDificil ? "" : isFesta ? "border lg:hover:shadow-md" : "border lg:hover:shadow-lg"
       }`}
       style={
         isDiaDificil
