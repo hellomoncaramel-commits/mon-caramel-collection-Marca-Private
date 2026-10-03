@@ -30,6 +30,12 @@ export default function ProductCard({
   const existing = selection.find((it) => it.kind === "product" && it.productId === p.id);
   const [open, setOpen] = useState(false);
   const partyEntry = partyItems?.find((it) => it.id === p.id);
+  // Only Dias de luta gets this round's lighter, photo-forward treatment —
+  // Festa (and anything else reusing this card) keeps the exact border/
+  // shadow/photo-ratio it already had. Never infer this from `!isFesta`:
+  // that would also catch a hypothetical future non-festa, non-dia-dificil
+  // caller and silently change its look too.
+  const isDiaDificil = momentId === "dia-dificil";
 
   const confirmAdd = ({ qty, flavorBreakdown }) => {
     addToSelection({
@@ -50,15 +56,36 @@ export default function ProductCard({
 
   return (
     <div
-      className="rounded-3xl border bg-white overflow-hidden transition-all duration-200 h-full flex flex-col lg:hover:shadow-lg lg:hover:-translate-y-0.5"
-      style={{ borderColor: existing ? COLORS.caramelDark : COLORS.border, borderWidth: existing ? "2px" : "1px" }}
+      className={`rounded-3xl bg-white overflow-hidden transition-all duration-200 h-full flex flex-col lg:hover:-translate-y-0.5 ${
+        // Dias de luta: no resting border/shadow — the photo and the
+        // generous gap between cards (see MomentScreen.jsx) do the work of
+        // separating one card from the next, not a box around each one.
+        // The "already selected" ring stays — that border means something
+        // (it's feedback, not decoration).
+        // Festa keeps its border on purpose — it's a portfolio of finished
+        // pieces shown edge to edge in a tight 3-column grid, and the frame
+        // reads as "mounted photograph," not decoration-for-decoration's-
+        // sake; explicitly NOT converging on Dias de luta's borderless look
+        // (brief section 11). Only the hover shadow got a touch lighter
+        // (shadow-lg → shadow-md), per the global "shadows stay discreet"
+        // rule — composition does the depth work, the shadow is just a
+        // hover cue.
+        isDiaDificil ? "" : isFesta ? "border lg:hover:shadow-md" : "border lg:hover:shadow-lg"
+      }`}
+      style={
+        isDiaDificil
+          ? existing
+            ? { outline: `2px solid ${COLORS.caramelDark}`, outlineOffset: "-2px" }
+            : undefined
+          : { borderColor: existing ? COLORS.caramelDark : COLORS.border, borderWidth: existing ? "2px" : "1px" }
+      }
     >
       <div
         className={`relative ${onOpenDetail ? "cursor-pointer" : ""}`}
         onClick={onOpenDetail ? () => onOpenDetail(p) : undefined}
       >
         {photos && photos.length > 0 ? (
-          <PhotoCarousel photos={photos} alt={p.name} />
+          <PhotoCarousel photos={photos} alt={p.name} aspectClassName={isDiaDificil ? "aspect-square lg:aspect-photo" : "aspect-photo"} />
         ) : (
           <ProductArt kind={p.kind} tint={p.tint} contextIcon={MOMENT_ICON[momentId]} />
         )}
@@ -76,7 +103,7 @@ export default function ProductCard({
           </button>
         )}
       </div>
-      <div className="p-4 lg:p-5 flex flex-col flex-1">
+      <div className={`flex flex-col flex-1 ${isDiaDificil ? "p-3.5 lg:p-5" : "p-4 lg:p-5"}`}>
         {onOpenDetail ? (
           <button onClick={() => onOpenDetail(p)} className="text-left">
             <h3 className="text-lg lg:text-xl font-display text-brand-ink leading-tight">{p.name}</h3>
@@ -92,11 +119,13 @@ export default function ProductCard({
             italic — personality comes from the family + copy, not from
             treating every teaser like a literary quote. Given more
             presence at lg+ (was reading as metadata, not the desire-copy it
-            actually is) — size/spacing only, same text. Festa keeps
-            showing its own sensory line, kept compact at lg+ (2-line clamp)
-            so the photo stays the protagonist instead of growing text. */}
+            actually is) — size/spacing only, same text. Tightened top
+            margin on dia-dificil so name→teaser reads as one block, not two
+            stacked elements. Festa keeps showing its own sensory line, kept
+            compact at lg+ (2-line clamp) so the photo stays the protagonist
+            instead of growing text. */}
         {!isFesta ? (
-          <p className="text-sm lg:text-base mt-2 lg:mt-2.5 leading-relaxed lg:leading-[1.5] flex-1 font-display text-brand-ink">
+          <p className={`text-sm lg:text-base leading-relaxed lg:leading-[1.5] flex-1 font-display text-brand-ink ${isDiaDificil ? "mt-1.5 lg:mt-2" : "mt-2 lg:mt-2.5"}`}>
             {p.experience?.teaser ?? p.sensory}
           </p>
         ) : (
@@ -134,7 +163,9 @@ export default function ProductCard({
         ) : (
           <>
             <div className="flex items-center justify-between mt-3">
-              <span className="text-sm font-medium text-brand-caramelDark">{p.price}</span>
+              <span className={isDiaDificil ? "text-xs font-medium text-brand-caramelDark" : "text-sm font-medium text-brand-caramelDark"}>
+                {p.price}
+              </span>
               <button
                 onClick={() =>
                   isCustomizable
@@ -143,8 +174,17 @@ export default function ProductCard({
                     ? removeFromSelection(existing)
                     : confirmAdd({ qty: defaultQty, flavorBreakdown: [] })
                 }
-                className="text-sm font-medium rounded-full px-3.5 min-h-11 inline-flex items-center gap-1 border border-brand-caramelDark"
-                style={{ backgroundColor: existing ? COLORS.caramelDark : "transparent", color: existing ? "white" : COLORS.caramelDark }}
+                className={`font-medium rounded-full min-h-11 inline-flex items-center gap-1 ${
+                  // Dias de luta: a quiet text-link affordance, not a bordered
+                  // pill competing with the photo above it — the selected
+                  // state still needs a filled, obviously-different look, so
+                  // that one case keeps a background (just no border).
+                  isDiaDificil ? "text-xs px-2.5" : "text-sm px-3.5 border border-brand-caramelDark"
+                }`}
+                style={{
+                  backgroundColor: existing ? COLORS.caramelDark : "transparent",
+                  color: existing ? "white" : COLORS.caramelDark,
+                }}
               >
                 <Heart size={12} fill={existing ? "white" : "none"} />
                 {existing

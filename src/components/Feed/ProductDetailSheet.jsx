@@ -110,7 +110,12 @@ export default function ProductDetailSheet({
             below lg). */}
         <div className="lg:h-full lg:overflow-hidden lg:flex lg:items-center lg:justify-center lg:bg-brand-subtle lg:p-6">
           {photos && photos.length > 0 ? (
-            <PhotoCarousel photos={photos} alt={p.name} />
+            // Mobile/tablet: taller than the site's default 4:3 — this is
+            // the one photo the whole sheet is built around, so it gets to
+            // dominate the first screen instead of reading as a thumbnail
+            // above a form. Desktop reverts to aspect-photo (unchanged —
+            // its own column already gives the photo real presence).
+            <PhotoCarousel photos={photos} alt={p.name} aspectClassName="aspect-square lg:aspect-photo" />
           ) : (
             <ProductArt kind={p.kind} tint={p.tint} />
           )}
@@ -130,8 +135,6 @@ export default function ProductDetailSheet({
               the hand-curated badge list — e.g. products whose name
               already says "congelado" deliberately skip the badge). */}
           {showExperience && <ProductBadges badges={p.badges} />}
-
-          <p className="text-xl lg:text-2xl font-medium mt-4 lg:mt-5 text-brand-caramelDark">{p.price}</p>
 
           {((canFreeze && !showExperience) || isCustomizable) && (
             <ul className="flex flex-col gap-2 mt-4">
@@ -164,6 +167,12 @@ export default function ProductDetailSheet({
               <MonCaramelNote label={p.experience?.noteLabel} note={p.experience?.note} />
             </div>
           )}
+
+          {/* Price moved here (was right after badges) — reads as part of
+              "deciding what to get" alongside the quantity/flavor picker
+              and the CTA, not as a detached fact announced right after the
+              description. Same value, same formatting, just regrouped. */}
+          <p className="text-xl lg:text-2xl font-medium mt-4 text-brand-caramelDark">{p.price}</p>
 
           {isCustomizable ? (
             <div className="mt-4 lg:mt-6 pt-4 lg:pt-5 border-t border-dashed border-brand-border">

@@ -15,12 +15,30 @@ const QUICK_TERMS = ["Brigadeiros", "Pão de Mel", "Biscoito Amanteigado", "Alfa
 // Compact row (thumbnail + name + short description + price + quick add) —
 // search results favor speed and scannability over the feed's big-photo
 // seduction, since whoever's here already knows what they want.
+//
+// The row and the quick-add control are two separate clickable targets, so
+// this is a <div role="button"> wrapping a real <button>, not a <button>
+// nested inside a <button> (invalid HTML — browsers silently fix it by
+// closing the outer button early, which made the quick-add control's own
+// click/keyboard handling unreliable). Same two behaviors as before: tap
+// the row to open the product, tap the circle to quick-add.
 function ResultRow({ p, isAdded, onQuickAdd, onOpen }) {
   const photo = defaultPhotos(p)?.[0];
   const isCustomizable = p.customizable === true;
 
   return (
-    <button onClick={() => onOpen(p)} className="w-full flex items-center gap-3 lg:gap-4 text-left py-2 lg:py-3 rounded-2xl transition-colors lg:hover:bg-brand-subtle">
+    <div
+      role="button"
+      tabIndex={0}
+      onClick={() => onOpen(p)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onOpen(p);
+        }
+      }}
+      className="w-full flex items-center gap-3 lg:gap-4 text-left py-2 lg:py-3 rounded-2xl transition-colors cursor-pointer lg:hover:bg-brand-subtle"
+    >
       <div className="w-16 h-16 lg:w-20 lg:h-20 shrink-0 rounded-2xl overflow-hidden">
         {photo ? <Photo src={photo} alt="" className="w-full h-full object-cover" loading="lazy" /> : <ProductArt kind={p.kind} tint={p.tint} h="h-16" />}
       </div>
@@ -29,29 +47,20 @@ function ResultRow({ p, isAdded, onQuickAdd, onOpen }) {
         <p className="text-xs lg:text-sm text-brand-inkSoft leading-snug line-clamp-1">{p.sensory}</p>
         <p className="text-sm lg:text-base font-medium mt-0.5 text-brand-caramelDark">{p.price}</p>
       </div>
-      <span
+      <button
+        type="button"
         onClick={(e) => {
           e.stopPropagation();
           if (isCustomizable) onOpen(p);
           else onQuickAdd(p, parseQuantityOptions(p.unit)[0]);
-        }}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            e.stopPropagation();
-            if (isCustomizable) onOpen(p);
-            else onQuickAdd(p, parseQuantityOptions(p.unit)[0]);
-          }
         }}
         aria-label={isAdded ? `${p.name} já está na seleção` : `Adicionar ${p.name} à seleção`}
         className="shrink-0 w-11 h-11 rounded-full flex items-center justify-center transition-transform active:scale-90"
         style={{ backgroundColor: isAdded ? COLORS.caramelDark : `${COLORS.caramelDark}15` }}
       >
         {isAdded ? <Check size={16} className="text-white" /> : <Plus size={16} style={{ color: COLORS.caramelDark }} />}
-      </span>
-    </button>
+      </button>
+    </div>
   );
 }
 

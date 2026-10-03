@@ -10,87 +10,88 @@ import SiteHeader from "../shared/SiteHeader";
 
 function Thumb({ photo, fallbackIcon }) {
   return (
-    <div className="w-14 h-14 rounded-xl overflow-hidden shrink-0 bg-brand-subtle flex items-center justify-center">
+    <div className="w-16 h-16 rounded-2xl overflow-hidden shrink-0 bg-brand-subtle flex items-center justify-center">
       {photo ? <Photo src={photo} alt="" className="w-full h-full object-cover" loading="lazy" /> : fallbackIcon}
     </div>
   );
 }
 
+// A line-item, not a cart row — no box, no border, just the entry and a
+// hairline separator from the list wrapper below (matches Busca's
+// ResultRow treatment, same "scannable list" language). The photo still
+// gets real size (64px) so it reads as the actual sweet, not a form field.
 function EntryCard({ it, product, onRemove }) {
   const isProduct = !it.kind || it.kind === "product";
   const photo = isProduct ? defaultPhotos(product)?.[0] : it.kind === "inspiration" ? it.photo : null;
   const price = isProduct ? entryPrice(product, it.qty) : null;
 
   return (
-    <div className="rounded-2xl border border-brand-border bg-white p-4">
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex items-start gap-3 min-w-0">
-          <Thumb
-            photo={photo}
-            fallbackIcon={
-              it.kind === "gift-idea" ? (
-                <Gift size={20} className="text-brand-caramelDark" />
-              ) : (
-                <Sparkles size={20} className="text-brand-caramelDark" />
-              )
-            }
-          />
+    <div className="flex items-start gap-3 lg:gap-4 py-4">
+      <Thumb
+        photo={photo}
+        fallbackIcon={
+          it.kind === "gift-idea" ? (
+            <Gift size={20} className="text-brand-caramelDark" />
+          ) : (
+            <Sparkles size={20} className="text-brand-caramelDark" />
+          )
+        }
+      />
 
-          <div className="min-w-0">
-            {isProduct && (
-              <>
-                <p className="font-display text-base text-brand-ink">
-                  {it.qty} {it.name}
-                </p>
-                {!it.flavors && <p className="text-xs mt-0.5 text-brand-muted">{it.unit}</p>}
-                {it.flavors && (
-                  <ul className="text-xs mt-1.5 space-y-0.5 text-brand-inkSoft">
-                    {it.flavors.map((f) => (
-                      <li key={f.name}>
-                        • {f.qty} {f.name}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-                {price != null && <p className="text-xs mt-1 font-medium text-brand-caramelDark">${price.toFixed(2)}</p>}
-              </>
+      <div className="min-w-0 flex-1">
+        {isProduct && (
+          <>
+            <p className="font-display text-base text-brand-ink">
+              {it.qty} {it.name}
+            </p>
+            {!it.flavors && <p className="text-xs mt-0.5 text-brand-muted">{it.unit}</p>}
+            {it.flavors && (
+              <ul className="text-xs mt-1.5 space-y-0.5 text-brand-inkSoft">
+                {it.flavors.map((f) => (
+                  <li key={f.name}>
+                    • {f.qty} {f.name}
+                  </li>
+                ))}
+              </ul>
             )}
+            {price != null && <p className="text-xs mt-1 font-medium text-brand-caramelDark">${price.toFixed(2)}</p>}
+          </>
+        )}
 
-            {it.kind === "inspiration" && (
-              <>
-                <span className="inline-flex items-center gap-1 text-3xs font-medium text-brand-caramelDark mb-1">
-                  <Sparkles size={10} /> Referência
-                </span>
-                <p className="font-display text-base text-brand-ink">{it.title}</p>
-              </>
-            )}
+        {it.kind === "inspiration" && (
+          <>
+            <span className="inline-flex items-center gap-1 text-3xs font-medium text-brand-caramelDark mb-1">
+              <Sparkles size={10} /> Referência
+            </span>
+            <p className="font-display text-base text-brand-ink">{it.title}</p>
+          </>
+        )}
 
-            {it.kind === "gift-idea" && (
-              <>
-                <span className="inline-flex items-center gap-1 text-3xs font-medium text-brand-caramelDark mb-1">
-                  💌 Ideia de {it.groupLabel}
-                </span>
-                {it.items?.length > 0 && <p className="font-display text-base text-brand-ink">{it.items.join(", ")}</p>}
-                <ul className="text-xs mt-1.5 space-y-0.5 text-brand-inkSoft">
-                  {it.occasion && <li>Ocasião: {it.occasion}</li>}
-                  {it.personalization?.name && <li>Nome: {it.personalization.name}</li>}
-                  {it.personalization?.colors && <li>Cores: {it.personalization.colors}</li>}
-                  {it.personalization?.theme && <li>Tema: {it.personalization.theme}</li>}
-                  {it.personalization?.message && <li>Mensagem: {it.personalization.message}</li>}
-                  {it.budget && <li>Faixa: {it.budget}</li>}
-                </ul>
-              </>
-            )}
-          </div>
-        </div>
-        <button
-          onClick={() => onRemove(it)}
-          className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 border border-brand-border text-brand-muted"
-          aria-label="Remover"
-        >
-          <X size={13} />
-        </button>
+        {it.kind === "gift-idea" && (
+          <>
+            <span className="inline-flex items-center gap-1 text-3xs font-medium text-brand-caramelDark mb-1">
+              💌 Ideia de {it.groupLabel}
+            </span>
+            {it.items?.length > 0 && <p className="font-display text-base text-brand-ink">{it.items.join(", ")}</p>}
+            <ul className="text-xs mt-1.5 space-y-0.5 text-brand-inkSoft">
+              {it.occasion && <li>Ocasião: {it.occasion}</li>}
+              {it.personalization?.name && <li>Nome: {it.personalization.name}</li>}
+              {it.personalization?.colors && <li>Cores: {it.personalization.colors}</li>}
+              {it.personalization?.theme && <li>Tema: {it.personalization.theme}</li>}
+              {it.personalization?.message && <li>Mensagem: {it.personalization.message}</li>}
+              {it.budget && <li>Faixa: {it.budget}</li>}
+            </ul>
+          </>
+        )}
       </div>
+
+      <button
+        onClick={() => onRemove(it)}
+        aria-label="Remover"
+        className="w-11 h-11 rounded-full flex items-center justify-center shrink-0 text-brand-muted transition-transform active:scale-90 lg:hover:text-brand-caramelDark"
+      >
+        <X size={15} />
+      </button>
     </div>
   );
 }
@@ -125,7 +126,7 @@ export default function SelectionScreen({ selection, removeFromSelection, onBack
         </button>
       ) : (
         <>
-          <div className="space-y-3 mb-6">
+          <div className="mb-6 divide-y divide-brand-border">
             {selection.map((it) => (
               <EntryCard
                 key={entryKey(it)}

@@ -150,7 +150,12 @@ export default function App() {
         )}
 
         {screen === "presente-mimos" && (
-          <MimosScreen onBack={() => setScreen("presente")} onGoSelection={onGoSelection} />
+          <MimosScreen
+            onBack={() => setScreen("presente")}
+            selection={selection}
+            addToSelection={addToSelection}
+            onGoSelection={onGoSelection}
+          />
         )}
 
         {screen && !NON_MOMENT_SCREENS.includes(screen) && (
