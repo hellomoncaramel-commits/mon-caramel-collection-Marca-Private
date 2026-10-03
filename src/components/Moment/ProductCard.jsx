@@ -20,6 +20,43 @@ import FlavorConfigurator from "./FlavorConfigurator";
 // every card now uses the same compact composition, matching the approved
 // reference density. Hierarchy in Dias de luta now comes from the editorial
 // asides and intro, not from inflating individual cards.
+//
+// Photo/composition-balance pass: the photo alone was still reading as
+// nearly the whole card, with the name/price/CTA underneath feeling like
+// loose metadata rather than part of one designed piece. For Dias de luta,
+// the photo is now inset inside a warm beige card (p-2, COLORS.subtle)
+// instead of bleeding to the card's own edges — "a photograph mounted on a
+// card," not "a photo that is the card" — and the text block below got a
+// real type-scale bump (name/price/CTA) so it carries enough visual weight
+// to balance the photo instead of trailing off as small print. Festa is
+// untouched: still bg-white, border, photo flush to the card's top edge.
+//
+// Design-refinement pass: the beige card worked as a concept but still read
+// as "a big rectangle," not an editorial frame — radius pulled in from 24px
+// to 16/12px (card/photo), a near-invisible hairline border added for
+// definition instead of relying on color contrast alone, no shadow. Every
+// piece of chrome that used to compete with the photo for weight (the
+// favorite circle, the carousel arrows, the CTA) got smaller — the visible
+// circle/pill shrinks while the tap target stays >=44px via padding, not a
+// smaller hit area. Festa untouched throughout.
+//
+// Final visual QA pass: the content block's own horizontal padding (px-1)
+// sat on top of the card's outer p-2, insetting text 12px from the card
+// edge while the photo above it (which only gets the outer p-2) sat at 8px
+// — a 4px mismatch that read as an implementation seam. Content now shares
+// the exact same inset as the photo (no extra horizontal padding of its
+// own). Unit stepped down a size to read as true microinformation; teaser
+// switched from ink to inkSoft so it's legible but clearly secondary to the
+// name above it — hierarchy now comes from weight/color, not just size.
+//
+// Final-correction pass: the photo was still the single largest lever on
+// how much of the card (and the viewport) it ate — stepped from 4:3 down to
+// a wider 5:3 just for this card (opt-in via PhotoCarousel's own
+// aspectClassName prop, the shared "aspect-photo" token and every other
+// caller are untouched), ~20% shorter at the same card width. Card surface
+// also eased back a notch so it reads less like a filled rectangle: the
+// beige fill and the hairline border both dropped in opacity, and the
+// content block got a touch more breathing room at the bottom.
 export default function ProductCard({
   p,
   momentId,
@@ -64,32 +101,34 @@ export default function ProductCard({
 
   return (
     <div
-      className={`rounded-3xl bg-white overflow-hidden transition-all duration-200 h-full flex flex-col lg:hover:-translate-y-0.5 ${
-        // Dias de luta: no resting border/shadow — the photo and the
-        // gap between cards (see MomentScreen.jsx) do the work of
-        // separating one card from the next, not a box around each one.
-        // The "already selected" ring stays — that border means something
-        // (it's feedback, not decoration).
-        // Festa keeps its border on purpose — it's a portfolio of finished
-        // pieces shown edge to edge in a tight 3-column grid, and the frame
-        // reads as "mounted photograph," not decoration-for-decoration's-
-        // sake; explicitly NOT converging on Dias de luta's borderless look.
-        isDiaDificil ? "" : isFesta ? "border lg:hover:shadow-md" : "border lg:hover:shadow-lg"
+      className={`overflow-hidden transition-all duration-200 h-full flex flex-col lg:hover:-translate-y-0.5 ${
+        // Dias de luta: tight editorial frame — small radius, hairline
+        // border for definition, no shadow. The gap between cards (see
+        // MomentScreen.jsx) still does most of the work of separating one
+        // card from the next; the border is just enough to give this one
+        // its own edge, not a heavy box.
+        // Festa keeps its own border/shadow/radius on purpose — it's a
+        // portfolio of finished pieces shown edge to edge in a tight
+        // 3-column grid; explicitly NOT converging on Dias de luta's look.
+        isDiaDificil ? "rounded-2xl border p-2" : isFesta ? "rounded-3xl bg-white border lg:hover:shadow-md" : "rounded-3xl bg-white border lg:hover:shadow-lg"
       }`}
       style={
         isDiaDificil
-          ? existing
-            ? { outline: `2px solid ${COLORS.caramelDark}`, outlineOffset: "-2px" }
-            : undefined
+          ? { backgroundColor: existing ? COLORS.subtle : `${COLORS.subtle}D9`, borderColor: existing ? COLORS.caramelDark : `${COLORS.border}80`, borderWidth: existing ? "1.5px" : "1px" }
           : { borderColor: existing ? COLORS.caramelDark : COLORS.border, borderWidth: existing ? "2px" : "1px" }
       }
     >
       <div
-        className={`relative ${onOpenDetail ? "cursor-pointer" : ""}`}
+        className={`relative ${isDiaDificil ? "rounded-xl overflow-hidden" : ""} ${onOpenDetail ? "cursor-pointer" : ""}`}
         onClick={onOpenDetail ? () => onOpenDetail(p) : undefined}
       >
         {photos && photos.length > 0 ? (
-          <PhotoCarousel photos={photos} alt={p.name} />
+          <PhotoCarousel
+            photos={photos}
+            alt={p.name}
+            compact={isDiaDificil}
+            aspectClassName={isDiaDificil ? "aspect-[5/3]" : undefined}
+          />
         ) : (
           <ProductArt kind={p.kind} tint={p.tint} contextIcon={MOMENT_ICON[momentId]} />
         )}
@@ -99,23 +138,25 @@ export default function ProductCard({
               e.stopPropagation();
               toggleFavorite(p.id);
             }}
-            className="absolute top-2 right-2 w-11 h-11 rounded-full bg-white/90 flex items-center justify-center"
+            className={`absolute top-1.5 right-1.5 flex items-center justify-center ${isDiaDificil ? "w-9 h-9" : "w-11 h-11"}`}
             aria-label={isFav ? `Remover ${p.name} dos salvos` : `Salvar ${p.name}`}
             aria-pressed={isFav}
           >
-            <Heart size={16} fill={isFav ? COLORS.caramelDark : "none"} stroke={COLORS.caramelDark} />
+            <span className={`rounded-full bg-white/90 flex items-center justify-center ${isDiaDificil ? "w-7 h-7" : "w-full h-full"}`}>
+              <Heart size={isDiaDificil ? 13 : 16} fill={isFav ? COLORS.caramelDark : "none"} stroke={COLORS.caramelDark} />
+            </span>
           </button>
         )}
       </div>
-      <div className={`flex flex-col flex-1 ${isDiaDificil ? "p-3.5 lg:p-4" : "p-4 lg:p-5"}`}>
+      <div className={`flex flex-col flex-1 ${isDiaDificil ? "pt-2.5 pb-1.5" : "p-4 lg:p-5"}`}>
         {onOpenDetail ? (
           <button onClick={() => onOpenDetail(p)} className="text-left">
-            <h3 className="text-lg font-display text-brand-ink leading-tight">{p.name}</h3>
+            <h3 className={`font-display text-brand-ink leading-tight ${isDiaDificil ? "text-xl" : "text-lg"}`}>{p.name}</h3>
           </button>
         ) : (
-          <h3 className="text-lg font-display text-brand-ink leading-tight">{p.name}</h3>
+          <h3 className={`font-display text-brand-ink leading-tight ${isDiaDificil ? "text-xl" : "text-lg"}`}>{p.name}</h3>
         )}
-        {!isFesta && <p className="text-xs mt-0.5 text-brand-muted">{p.unit}</p>}
+        {!isFesta && <p className={`mt-0.5 text-brand-muted ${isDiaDificil ? "text-3xs" : "text-xs"}`}>{p.unit}</p>}
 
         {/* Dias de luta: the short "teaser" carries the vitrine — the full
             sensory description now lives in the detail sheet only (see
@@ -126,7 +167,9 @@ export default function ProductCard({
             clamp) so the photo stays the protagonist instead of growing
             text. */}
         {!isFesta ? (
-          <p className="text-sm leading-snug mt-1 flex-1 font-display text-brand-ink">{p.experience?.teaser ?? p.sensory}</p>
+          <p className={`text-sm leading-snug mt-1 flex-1 font-display ${isDiaDificil ? "text-brand-inkSoft" : "text-brand-ink"}`}>
+            {p.experience?.teaser ?? p.sensory}
+          </p>
         ) : (
           <p className="text-xs mt-2 leading-relaxed flex-1 text-brand-inkSoft lg:line-clamp-2">{p.sensory}</p>
         )}
@@ -135,7 +178,7 @@ export default function ProductCard({
             card never renders this, even for a product that also carries a
             `badges` array (e.g. Mini Cake Donuts, Cones Trufados, Chocobomb
             are cross-tagged to both moments). */}
-        {!isFesta && <ProductBadges badges={p.badges} />}
+        {!isFesta && <ProductBadges badges={p.badges} onSubtle={isDiaDificil} />}
 
         {!isFesta && isCustomizable && (
           <div className="flex flex-wrap gap-1.5 mt-1.5">
@@ -167,8 +210,8 @@ export default function ProductCard({
                 reads better as a small filled pill, same as Festa's own
                 CTA and the approved reference, not a plain word in the
                 corner. */}
-            <div className="flex items-center justify-between mt-2.5 gap-2">
-              <span className="text-sm font-medium text-brand-caramelDark">{p.price}</span>
+            <div className={`flex items-center justify-between gap-2 ${isDiaDificil ? "mt-2" : "mt-2.5"}`}>
+              <span className={`font-medium text-brand-caramelDark ${isDiaDificil ? "text-base" : "text-sm"}`}>{p.price}</span>
               <button
                 onClick={() =>
                   isCustomizable
@@ -177,13 +220,15 @@ export default function ProductCard({
                     ? removeFromSelection(existing)
                     : confirmAdd({ qty: defaultQty, flavorBreakdown: [] })
                 }
-                className="text-xs font-medium rounded-full px-3.5 min-h-11 inline-flex items-center gap-1.5"
+                className={`font-medium rounded-full inline-flex items-center gap-1.5 ${
+                  isDiaDificil ? "text-xs px-3.5 h-10" : "text-xs px-3.5 min-h-11"
+                }`}
                 style={{
                   backgroundColor: COLORS.caramelDark,
                   color: "white",
                 }}
               >
-                <Heart size={12} fill="white" />
+                <Heart size={isDiaDificil ? 10 : 12} fill="white" />
                 {existing
                   ? isCustomizable
                     ? `Na seleção (${existing.qty})`

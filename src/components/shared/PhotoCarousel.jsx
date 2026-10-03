@@ -11,7 +11,12 @@ import Photo from "./Photo";
 // wants its photo taller/more dominant (e.g. Dias de luta's cards and
 // detail sheet on mobile, see ProductCard.jsx/ProductDetailSheet.jsx).
 // Every other usage (FeedCard, Festa, Search, etc.) is untouched.
-export default function PhotoCarousel({ photos, alt, aspectClassName = "aspect-photo" }) {
+//
+// `compact`: opt-in, default false — shrinks the arrow buttons and dots for
+// a context where the full-size controls read as too heavy against a
+// smaller photo (Dias de luta's card, see ProductCard.jsx). Every other
+// caller keeps the original 44px arrows/dots exactly as before.
+export default function PhotoCarousel({ photos, alt, aspectClassName = "aspect-photo", compact = false }) {
   const [i, setI] = useState(0);
   const [paused, setPaused] = useState(false);
   // Plain ref, not state: a drag updates every pointermove and must never
@@ -93,23 +98,27 @@ export default function PhotoCarousel({ photos, alt, aspectClassName = "aspect-p
             type="button"
             onClick={(e) => go(-1, e)}
             aria-label="Foto anterior"
-            className="absolute left-1.5 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/85 flex items-center justify-center z-10"
+            className={`absolute left-1.5 top-1/2 -translate-y-1/2 rounded-full flex items-center justify-center z-10 ${
+              compact ? "w-8 h-8 bg-white/90" : "w-11 h-11 bg-white/85"
+            }`}
           >
-            <ChevronLeft size={16} className="text-brand-ink" />
+            <ChevronLeft size={compact ? 13 : 16} className="text-brand-ink" />
           </button>
           <button
             type="button"
             onClick={(e) => go(1, e)}
             aria-label="Próxima foto"
-            className="absolute right-1.5 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/85 flex items-center justify-center z-10"
+            className={`absolute right-1.5 top-1/2 -translate-y-1/2 rounded-full flex items-center justify-center z-10 ${
+              compact ? "w-8 h-8 bg-white/90" : "w-11 h-11 bg-white/85"
+            }`}
           >
-            <ChevronRight size={16} className="text-brand-ink" />
+            <ChevronRight size={compact ? 13 : 16} className="text-brand-ink" />
           </button>
           <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
             {photos.map((_, dotIdx) => (
               <span
                 key={dotIdx}
-                className="w-1.5 h-1.5 rounded-full"
+                className={compact ? "w-1 h-1 rounded-full" : "w-1.5 h-1.5 rounded-full"}
                 style={{ backgroundColor: dotIdx === i ? "white" : "rgba(255,255,255,0.5)" }}
               />
             ))}

@@ -105,31 +105,36 @@ export default function ProductDetailSheet({
             just centered in a fixed-height column instead of a full-width
             top band. The lg:p-6 inset keeps the photo from touching the
             panel's own edges, reading as a mounted photograph rather than a
-            bleed — a small balance fix between the two columns. Mobile/
-            tablet below lg: completely unchanged (no wrapper classes apply
-            below lg). */}
-        <div className="lg:h-full lg:overflow-hidden lg:flex lg:items-center lg:justify-center lg:bg-brand-subtle lg:p-6">
+            bleed — a small balance fix between the two columns.
+            Photo/composition-balance pass: mobile/tablet dropped the
+            dominant aspect-square (it made the photo read as nearly the
+            whole first screen, with name/price/description trailing off as
+            small print below) down to the site's own aspect-photo (4:3) —
+            same ratio the feed and every card already use, so the sheet's
+            hero photo is still the biggest single thing on screen without
+            swallowing the screen. */}
+        <div className="p-3 pb-0 lg:p-6 lg:h-full lg:overflow-hidden lg:flex lg:items-center lg:justify-center lg:bg-brand-subtle">
           {photos && photos.length > 0 ? (
-            // Mobile/tablet: taller than the site's default 4:3 — this is
-            // the one photo the whole sheet is built around, so it gets to
-            // dominate the first screen instead of reading as a thumbnail
-            // above a form. Desktop reverts to aspect-photo (unchanged —
-            // its own column already gives the photo real presence).
-            <PhotoCarousel photos={photos} alt={p.name} aspectClassName="aspect-square lg:aspect-photo" />
+            <div className="rounded-2xl overflow-hidden lg:rounded-none">
+              <PhotoCarousel photos={photos} alt={p.name} aspectClassName="aspect-photo" />
+            </div>
           ) : (
             <ProductArt kind={p.kind} tint={p.tint} />
           )}
         </div>
 
         <div className="p-4 lg:p-6 lg:h-full lg:overflow-y-auto">
-          <h2 id="product-detail-title" className="text-xl lg:text-2xl font-display text-brand-ink leading-tight">
+          <h2 id="product-detail-title" className="text-2xl lg:text-2xl font-display text-brand-ink leading-tight">
             {p.name}
           </h2>
           <p className="text-sm mt-0.5 text-brand-muted">{p.unit}</p>
           {/* Price right under the name — reads as the first two facts
               about the product together, the way the approved reference
-              shows it, not pushed down to sit beside the CTA. */}
-          <p className="text-lg font-medium mt-1 text-brand-caramelDark">{p.price}</p>
+              shows it, not pushed down to sit beside the CTA. Bumped from
+              text-lg: with the photo no longer a dominant square, this is
+              now one of two things carrying real visual weight on first
+              screen, alongside the name. */}
+          <p className="text-xl font-medium mt-1 text-brand-caramelDark">{p.price}</p>
           <p className="text-sm mt-2 leading-snug text-brand-inkSoft">{p.sensory}</p>
 
           {/* Dias de luta only — the curated badge matrix. Suppresses the
