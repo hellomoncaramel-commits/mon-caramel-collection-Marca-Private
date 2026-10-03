@@ -5,7 +5,13 @@ import Photo from "./Photo";
 // Rotates automatically every ~3s (briefing section 7 — many customers don't
 // notice they can drag/see more photos). Pauses as soon as someone
 // interacts manually — arrows, or now a real drag/swipe.
-export default function PhotoCarousel({ photos, alt }) {
+//
+// `aspectClassName` defaults to the original "aspect-photo" (4:3) every
+// existing caller already got — opt-in only, for a specific context that
+// wants its photo taller/more dominant (e.g. Dias de luta's cards and
+// detail sheet on mobile, see ProductCard.jsx/ProductDetailSheet.jsx).
+// Every other usage (FeedCard, Festa, Search, etc.) is untouched.
+export default function PhotoCarousel({ photos, alt, aspectClassName = "aspect-photo" }) {
   const [i, setI] = useState(0);
   const [paused, setPaused] = useState(false);
   // Plain ref, not state: a drag updates every pointermove and must never
@@ -65,7 +71,7 @@ export default function PhotoCarousel({ photos, alt }) {
 
   return (
     <div
-      className="relative w-full overflow-hidden select-none aspect-photo"
+      className={`relative w-full overflow-hidden select-none ${aspectClassName}`}
       style={{ touchAction: "pan-y" }}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}

@@ -1,4 +1,4 @@
-import { useMemo, useRef } from "react";
+import { Fragment, useMemo, useRef } from "react";
 import { Heart, Sparkles } from "lucide-react";
 import { MOMENT_INTRO } from "../../data/moments";
 import { pickForMoment, pickCrossSell } from "../../utils/products";
@@ -104,15 +104,32 @@ export default function MomentScreen({
           OTHER than dia-dificil (Festa explicitly keeps this same simple,
           uniform 3-column grid at desktop too — see section 11 of the
           brief: Festa is a portfolio, not the "controlled editorial grid"
-          below). Below lg this is the only grid rendered, unchanged. */}
+          below). Below lg this is the only grid rendered.
+          Dias de luta only: 15 visually-identical cards in a row read as
+          monotonous, so the same two editorial asides already used to
+          break up the lg+ rhythm (DIA_DIFICIL_ASIDES below) now also land
+          here, at the same product-count boundaries — reusing existing
+          copy, not inventing new text. `col-span-full` breaks each aside
+          across both the 1-col and sm:2-col widths so it never sits beside
+          a product card. Festa (and anything else) keeps the plain flat
+          map it always had. */}
       <div
         className={`grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-5 ${
           isDiaDificil ? "lg:hidden" : "lg:grid-cols-3"
         }`}
       >
-        {matched.map((p) => (
-          <ProductCard key={p.id} p={p} momentId={momentId} {...cardProps} />
-        ))}
+        {isDiaDificil
+          ? chunkEditorialRhythm(matched).map((chunk, i) => (
+              <Fragment key={i}>
+                {DIA_DIFICIL_ASIDES[i] && (
+                  <p className="col-span-full font-display text-lg text-brand-ink text-center my-3 px-2">{DIA_DIFICIL_ASIDES[i]}</p>
+                )}
+                {chunk.map((p) => (
+                  <ProductCard key={p.id} p={p} momentId={momentId} {...cardProps} />
+                ))}
+              </Fragment>
+            ))
+          : matched.map((p) => <ProductCard key={p.id} p={p} momentId={momentId} {...cardProps} />)}
       </div>
 
       {/* Dias de luta, lg+ only: the editorial 2-up/3-up rhythm grid, with
