@@ -1,5 +1,6 @@
 import { useMemo } from "react";
-import { MessageCircle, X, Sparkles, Gift } from "lucide-react";
+import { MessageCircle, X, Sparkles, Gift, Heart } from "lucide-react";
+import { COLORS } from "../../styles/colors";
 import { buildSelectionMessage } from "../../utils/messages";
 import { entryKey } from "../../utils/selectionKey";
 import { PRODUCTS } from "../../data/products";
@@ -137,17 +138,31 @@ export default function SelectionScreen({ selection, removeFromSelection, onBack
             ))}
           </div>
 
-          <div className="flex flex-col gap-2">
-            <button
-              onClick={() => onSend(buildSelectionMessage(selection))}
-              className="w-full text-sm font-medium text-white bg-brand-caramelDark rounded-full py-3 flex items-center justify-center gap-2"
-            >
-              <MessageCircle size={15} />
-              Finalizar pelo WhatsApp
-            </button>
-            <button onClick={onBack} className="w-full text-sm rounded-full py-3 text-brand-muted">
-              Continuar escolhendo
-            </button>
+          {/* Closing moment, art-direction pass — the same warm gradient
+              panel "Minha Festa" (PartyPanel.jsx) closes its own journey
+              with, reused here on purpose: one small, consistent device for
+              "you've reached the end, here's the brand seeing you off,"
+              not a plain button sitting at the bottom of a list. WhatsApp
+              stays the one real action inside it — no new copy, no
+              subtotal/checkout language, just a frame around what was
+              already there. */}
+          <div
+            className="rounded-3xl p-5 lg:p-6 text-center"
+            style={{ background: `linear-gradient(150deg, ${COLORS.caramelDark}1F, ${COLORS.caramelLight}12)` }}
+          >
+            <Heart size={26} className="mx-auto mb-3" fill={COLORS.caramelDark} stroke={COLORS.caramelDark} />
+            <div className="flex flex-col gap-2">
+              <button
+                onClick={() => onSend(buildSelectionMessage(selection))}
+                className="w-full text-sm font-medium text-white bg-brand-caramelDark rounded-full py-3 flex items-center justify-center gap-2 transition-transform active:scale-95"
+              >
+                <MessageCircle size={15} />
+                Finalizar pelo WhatsApp
+              </button>
+              <button onClick={onBack} className="w-full text-sm rounded-full py-3 text-brand-muted">
+                Continuar escolhendo
+              </button>
+            </div>
           </div>
         </>
       )}

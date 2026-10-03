@@ -168,39 +168,42 @@ export default function ProductDetailSheet({
             </div>
           )}
 
-          {/* Price moved here (was right after badges) — reads as part of
-              "deciding what to get" alongside the quantity/flavor picker
-              and the CTA, not as a detached fact announced right after the
-              description. Same value, same formatting, just regrouped. */}
-          <p className="text-xl lg:text-2xl font-medium mt-4 text-brand-caramelDark">{p.price}</p>
+          {/* Decision chapter — price, then quantity/flavors and the CTA,
+              grouped in its own soft panel so it reads as a distinct step
+              ("deciding what to get") rather than one more paragraph in the
+              reading flow above (name/description/badges/note). Same
+              price value/formatting as before, just visually chaptered. */}
+          <div className="mt-5 lg:mt-7 rounded-3xl p-4 lg:p-5" style={{ backgroundColor: COLORS.subtle }}>
+            <p className="text-xl lg:text-2xl font-medium text-brand-caramelDark">{p.price}</p>
 
-          {isCustomizable ? (
-            <div className="mt-4 lg:mt-6 pt-4 lg:pt-5 border-t border-dashed border-brand-border">
-              <FlavorConfigurator product={p} existing={existing} onConfirm={({ qty: q, flavorBreakdown }) => {
-                addToSelection({
-                  kind: "product",
-                  productId: p.id,
-                  name: p.name,
-                  unit: p.unit,
-                  qty: q,
-                  flavors: flavorBreakdown.length > 0 ? flavorBreakdown : null,
-                });
-                onClose();
-              }} />
-            </div>
-          ) : (
-            <div className="flex items-center justify-between mt-5 lg:mt-7 gap-3">
-              <QuantityStepper value={qty} onChange={setQty} />
-              <button
-                onClick={() => (existing ? removeFromSelection(existing) : add())}
-                className="flex-1 text-sm font-medium rounded-full py-3 lg:py-3.5 min-h-11 flex items-center justify-center gap-2 transition-transform active:scale-95"
-                style={{ backgroundColor: COLORS.caramelDark, color: "white" }}
-              >
-                <Heart size={14} fill="white" />
-                {existing ? "Adicionado ✓ — remover" : "Quero esse"}
-              </button>
-            </div>
-          )}
+            {isCustomizable ? (
+              <div className="mt-4 pt-4 border-t border-dashed border-brand-border">
+                <FlavorConfigurator product={p} existing={existing} onConfirm={({ qty: q, flavorBreakdown }) => {
+                  addToSelection({
+                    kind: "product",
+                    productId: p.id,
+                    name: p.name,
+                    unit: p.unit,
+                    qty: q,
+                    flavors: flavorBreakdown.length > 0 ? flavorBreakdown : null,
+                  });
+                  onClose();
+                }} />
+              </div>
+            ) : (
+              <div className="flex items-center justify-between mt-4 gap-3">
+                <QuantityStepper value={qty} onChange={setQty} />
+                <button
+                  onClick={() => (existing ? removeFromSelection(existing) : add())}
+                  className="flex-1 text-sm font-medium rounded-full py-3 lg:py-3.5 min-h-11 flex items-center justify-center gap-2 transition-transform active:scale-95"
+                  style={{ backgroundColor: COLORS.caramelDark, color: "white" }}
+                >
+                  <Heart size={14} fill="white" />
+                  {existing ? "Adicionado ✓ — remover" : "Quero esse"}
+                </button>
+              </div>
+            )}
+          </div>
 
           {/* Dias de luta's manual, one-at-a-time cross-sell — replaces the
               generic auto-related block below for this context (never both
