@@ -169,38 +169,55 @@ export default function MomentScreen({
           at most a couple of short editorial asides breaking up the scroll.
           Same `matched` array/order/ProductCard/cardProps as the grid
           above — just a different row structure.
-          Design-refinement pass: a 2-up row used to stretch both cards to
-          fill the full container width (~580px cards) — exactly the "mobile
-          card blown up" look that was flagged. A 2-item chunk now caps its
-          own row width instead of stretching to fill the container.
-          Final visual QA pass: that capped row was centered (mx-auto),
-          which floated it in the middle of the container disconnected from
-          everything else — the title, intro and every 3-up row above/below
-          it all sit flush with the container's left edge. Left-aligning it
-          instead anchors it to that same edge, with the negative space
-          deliberately on the right, reading as one consistent composition
-          rather than a centered block dropped into a left-aligned page. */}
+          Final-correction pass: a 2-item row used to be its own
+          narrower grid (grid-cols-2, capped width), which made its cards a
+          different width than every 3-up row's cards and left a block of
+          plain negative space beside it that read as a missing third card,
+          not a deliberate composition. Every row — 2-item or 3-item — now
+          shares the exact same grid-cols-3 track, so card width never
+          changes between rows. A 2-item row's third track either carries
+          the next DIA_DIFICIL_ASIDES line (existing copy, no filler
+          invented) when one lines up with that row, or is left as true
+          empty grid space — negative space that belongs to the same system
+          as every other column, not a custom-sized leftover. */}
       {isDiaDificil && (
         <div className="hidden lg:block">
-          {chunkEditorialRhythm(matched).map((chunk, i) => (
-            <div key={i}>
-              {DIA_DIFICIL_ASIDES[i] && (
-                <div className="px-8 py-5 my-5 rounded-2xl flex items-center justify-center gap-3" style={{ backgroundColor: `${COLORS.caramelLight}1A` }}>
-                  <Heart size={16} className="shrink-0" fill={COLORS.caramelDark} stroke={COLORS.caramelDark} />
-                  <p className="font-display text-lg leading-snug text-brand-ink max-w-lg">{DIA_DIFICIL_ASIDES[i]}</p>
+          {chunkEditorialRhythm(matched).map((chunk, i) => {
+            const aside = DIA_DIFICIL_ASIDES[i];
+            // Only fold the aside into the row when it actually has a
+            // spare third track to sit in — a 3-item row already fills all
+            // three, so its aside (if any) stays as its own compact band
+            // above the row, just width-capped instead of stretched edge
+            // to edge.
+            const asideInRow = Boolean(aside) && chunk.length === 2;
+            return (
+              <div key={i}>
+                {aside && !asideInRow && (
+                  <div
+                    className="inline-flex items-center gap-3 rounded-2xl px-6 py-4 my-5 max-w-xl"
+                    style={{ backgroundColor: `${COLORS.caramelLight}1A` }}
+                  >
+                    <Heart size={16} className="shrink-0" fill={COLORS.caramelDark} stroke={COLORS.caramelDark} />
+                    <p className="font-display text-lg leading-snug text-brand-ink">{aside}</p>
+                  </div>
+                )}
+                <div className={`grid grid-cols-3 gap-5 ${i > 0 && (!aside || asideInRow) ? "mt-5" : ""}`}>
+                  {chunk.map((p) => (
+                    <ProductCard key={p.id} p={p} momentId={momentId} {...cardProps} />
+                  ))}
+                  {asideInRow && (
+                    <div
+                      className="rounded-2xl p-5 flex flex-col justify-center gap-2"
+                      style={{ backgroundColor: `${COLORS.caramelLight}1A` }}
+                    >
+                      <Heart size={16} className="shrink-0" fill={COLORS.caramelDark} stroke={COLORS.caramelDark} />
+                      <p className="font-display text-base leading-snug text-brand-ink">{aside}</p>
+                    </div>
+                  )}
                 </div>
-              )}
-              <div
-                className={`grid gap-5 ${
-                  chunk.length === 2 ? "grid-cols-2 max-w-[720px]" : "grid-cols-3"
-                } ${i > 0 && !DIA_DIFICIL_ASIDES[i] ? "mt-5" : ""}`}
-              >
-                {chunk.map((p) => (
-                  <ProductCard key={p.id} p={p} momentId={momentId} {...cardProps} />
-                ))}
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 

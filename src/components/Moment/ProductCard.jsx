@@ -48,6 +48,15 @@ import FlavorConfigurator from "./FlavorConfigurator";
 // own). Unit stepped down a size to read as true microinformation; teaser
 // switched from ink to inkSoft so it's legible but clearly secondary to the
 // name above it — hierarchy now comes from weight/color, not just size.
+//
+// Final-correction pass: the photo was still the single largest lever on
+// how much of the card (and the viewport) it ate — stepped from 4:3 down to
+// a wider 5:3 just for this card (opt-in via PhotoCarousel's own
+// aspectClassName prop, the shared "aspect-photo" token and every other
+// caller are untouched), ~20% shorter at the same card width. Card surface
+// also eased back a notch so it reads less like a filled rectangle: the
+// beige fill and the hairline border both dropped in opacity, and the
+// content block got a touch more breathing room at the bottom.
 export default function ProductCard({
   p,
   momentId,
@@ -105,7 +114,7 @@ export default function ProductCard({
       }`}
       style={
         isDiaDificil
-          ? { backgroundColor: COLORS.subtle, borderColor: existing ? COLORS.caramelDark : `${COLORS.border}B3`, borderWidth: existing ? "1.5px" : "1px" }
+          ? { backgroundColor: existing ? COLORS.subtle : `${COLORS.subtle}D9`, borderColor: existing ? COLORS.caramelDark : `${COLORS.border}80`, borderWidth: existing ? "1.5px" : "1px" }
           : { borderColor: existing ? COLORS.caramelDark : COLORS.border, borderWidth: existing ? "2px" : "1px" }
       }
     >
@@ -114,7 +123,12 @@ export default function ProductCard({
         onClick={onOpenDetail ? () => onOpenDetail(p) : undefined}
       >
         {photos && photos.length > 0 ? (
-          <PhotoCarousel photos={photos} alt={p.name} compact={isDiaDificil} />
+          <PhotoCarousel
+            photos={photos}
+            alt={p.name}
+            compact={isDiaDificil}
+            aspectClassName={isDiaDificil ? "aspect-[5/3]" : undefined}
+          />
         ) : (
           <ProductArt kind={p.kind} tint={p.tint} contextIcon={MOMENT_ICON[momentId]} />
         )}
@@ -134,7 +148,7 @@ export default function ProductCard({
           </button>
         )}
       </div>
-      <div className={`flex flex-col flex-1 ${isDiaDificil ? "pt-2.5 pb-1" : "p-4 lg:p-5"}`}>
+      <div className={`flex flex-col flex-1 ${isDiaDificil ? "pt-2.5 pb-1.5" : "p-4 lg:p-5"}`}>
         {onOpenDetail ? (
           <button onClick={() => onOpenDetail(p)} className="text-left">
             <h3 className={`font-display text-brand-ink leading-tight ${isDiaDificil ? "text-xl" : "text-lg"}`}>{p.name}</h3>
@@ -207,7 +221,7 @@ export default function ProductCard({
                     : confirmAdd({ qty: defaultQty, flavorBreakdown: [] })
                 }
                 className={`font-medium rounded-full inline-flex items-center gap-1.5 ${
-                  isDiaDificil ? "text-xs px-3 h-10" : "text-xs px-3.5 min-h-11"
+                  isDiaDificil ? "text-xs px-3.5 h-10" : "text-xs px-3.5 min-h-11"
                 }`}
                 style={{
                   backgroundColor: COLORS.caramelDark,
