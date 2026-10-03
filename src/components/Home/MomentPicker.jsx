@@ -37,22 +37,17 @@ const MOMENT_PHOTO_STYLE = {
 // places below — the peek padding on the track and the arrow offsets
 // both need to know it too, so it can't be simplified away.
 
-// The photo covers the whole card; this is a warm caramel/cream gradient
-// laid over it (full card height, not just a lower "panel") so the text
-// has a legible platform without a hard, separate rectangle — the photo
-// stays essentially untouched through the top ~45-50%, then the same warm
-// hue ramps in and carries through solid at the bottom. The tan
-// (#FAD9C4 ≈ rgb(250,217,196)) was sampled from the approved reference
-// mockup rather than picked by eye; it's a one-off tint from the brand's
-// caramel family (not one of the existing brand.* tokens), scoped here.
-const CARD_PANEL_TAN = "250,217,196";
-// Desktop keeps the exact approved gradient from the previous round
-// untouched. Mobile now clears later, not earlier — the top half of the
-// card stays essentially untouched photo (0% through 50%), so the card
-// reads as photography first, cream panel second; the tint only takes
-// over fast enough to back the text once it actually starts (~51% down).
-const TEXT_PANEL_GRADIENT_DESKTOP = `linear-gradient(to bottom, rgba(${CARD_PANEL_TAN},0) 0%, rgba(${CARD_PANEL_TAN},0) 45%, rgba(${CARD_PANEL_TAN},0.28) 58%, rgba(${CARD_PANEL_TAN},0.74) 72%, rgba(${CARD_PANEL_TAN},0.95) 86%, rgba(${CARD_PANEL_TAN},1) 100%)`;
-const TEXT_PANEL_GRADIENT_MOBILE = `linear-gradient(to bottom, rgba(${CARD_PANEL_TAN},0) 0%, rgba(${CARD_PANEL_TAN},0) 50%, rgba(${CARD_PANEL_TAN},0.32) 60%, rgba(${CARD_PANEL_TAN},0.76) 72%, rgba(${CARD_PANEL_TAN},0.95) 84%, rgba(${CARD_PANEL_TAN},1) 98%)`;
+// Visual-correction pass: the previous gradient used a warm tan sampled as
+// its own one-off color, covering roughly the bottom half of the card — it
+// read as a colored wash over the photo rather than a shadow. Replaced with
+// an ink-based scrim (same COLORS.ink token and "to bottom, transparent to
+// dark" logic PresenteEntryScreen.jsx already uses for photo-overlay text),
+// concentrated in only the band the text actually needs — the photo stays
+// untouched through roughly two-thirds of the card now, not half. Text
+// below switched from ink to white/cream to stay legible against the
+// darker scrim (see MomentCard's h3/p below).
+const TEXT_PANEL_GRADIENT_DESKTOP = `linear-gradient(to bottom, ${COLORS.ink}00 0%, ${COLORS.ink}00 58%, ${COLORS.ink}1F 70%, ${COLORS.ink}78 84%, ${COLORS.ink}C7 95%, ${COLORS.ink}E0 100%)`;
+const TEXT_PANEL_GRADIENT_MOBILE = `linear-gradient(to bottom, ${COLORS.ink}00 0%, ${COLORS.ink}00 64%, ${COLORS.ink}1F 75%, ${COLORS.ink}78 87%, ${COLORS.ink}C7 96%, ${COLORS.ink}E0 100%)`;
 
 function MomentCard({ moment, photoSrc, eager, featured, onSelect }) {
   const lines = moment.titleLines ?? [moment.label];
@@ -73,7 +68,7 @@ function MomentCard({ moment, photoSrc, eager, featured, onSelect }) {
 
       <div className="absolute left-6 right-6 bottom-[22px] md:left-5 md:right-5 md:bottom-5 flex flex-col items-start">
         <h3
-          className={`font-display font-semibold text-brand-ink max-w-[230px] md:max-w-none text-[clamp(26px,7vw,31px)] md:text-[25px] leading-[0.98] md:leading-[1.08] tracking-[-0.02em] md:tracking-normal ${
+          className={`font-display font-semibold text-white max-w-[230px] md:max-w-none text-[clamp(26px,7vw,31px)] md:text-[25px] leading-[0.98] md:leading-[1.08] tracking-[-0.02em] md:tracking-normal ${
             // Dias de luta gets a discreet lg+ size bump over the other two
             // journeys — same card, same clarity, just a touch more weight
             // since it's the site's primary, highest-traffic path. Equal
@@ -100,12 +95,15 @@ function MomentCard({ moment, photoSrc, eager, featured, onSelect }) {
             {moment.label}
           </span>
         </h3>
-        <p className="text-brand-inkSoft mt-3.5 md:mt-1.5 max-w-[210px] md:max-w-none text-[15px] md:text-[13px] leading-[1.3] md:leading-[1.35]">
+        <p className="text-white/85 mt-3.5 md:mt-1.5 max-w-[210px] md:max-w-none text-[15px] md:text-[13px] leading-[1.3] md:leading-[1.35]">
           {MOMENT_TAGLINE[moment.id]}
         </p>
+        {/* Visual-correction pass: a touch more compact (was h-11/px-[18px])
+            now that it sits on a tighter, darker scrim — reads as refined,
+            not a default-sized button dropped onto the card. */}
         <button
           onClick={onSelect}
-          className="mt-4 md:mt-3 self-end shrink-0 font-semibold md:font-medium h-11 md:h-[43px] px-[18px] text-[14px]"
+          className="mt-4 md:mt-3 self-end shrink-0 font-semibold md:font-medium h-10 md:h-10 px-4 text-[13.5px]"
           style={{ backgroundColor: COLORS.caramelDarker, color: COLORS.beige, borderRadius: 999 }}
         >
           Quero isso →
@@ -185,7 +183,12 @@ export default function MomentPicker({ onBack, onSelectMoment }) {
 
   return (
     <div className="w-full md:max-w-2xl lg:max-w-6xl xl:max-w-7xl md:mx-auto px-gutter lg:px-8 xl:px-12 pt-2 pb-3 fade-up flex flex-col h-[calc(100dvh-6rem)] md:h-auto lg:h-auto">
-      <SiteHeader onBack={onBack} />
+      {/* Visual-correction pass: bigger brand presence here specifically
+          (logoSize="heroLogo", see Logo.jsx) — explicit override, so every
+          other SiteHeader caller relying on the default "home" size is
+          unaffected. rowHeight bumped to give the taller logo room, same
+          overflow-the-row allowance "home" already uses at its own size. */}
+      <SiteHeader onBack={onBack} logoSize="heroLogo" rowHeight={92} />
 
       {/* Intro — Fraunces roman medium, matching the Home headline's own
           treatment (italic is an accent now, not the default headline

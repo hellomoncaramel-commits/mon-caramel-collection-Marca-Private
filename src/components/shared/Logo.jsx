@@ -18,13 +18,20 @@ const SIZES = {
   header: 116,
   md: 120,
   lg: 200,
+  // Bigger brand presence for two specific headers — MomentPicker's "Como
+  // você está hoje?" and Dias de luta's compact header — without touching
+  // SIZES.home (every other SiteHeader caller, plus HomeScreen's own direct
+  // <Logo size="home" />, relies on that default staying exactly 92px).
+  // Reuses the same tightly-cropped asset as "home"/"header" — a real,
+  // already-tight crop of the artwork, not a reason to invent a new file.
+  heroLogo: 108,
 };
 
 // The real Mon Caramel logo artwork (heart-shaped cookie mark, wordmark and
 // "Not your average sweet." tagline all baked in), supplied directly by
 // Naia — see public/images/brand/logo-mon-caramel.webp.
 export default function Logo({ size = "md" }) {
-  if (size === "home" || size === "header") {
+  if (size === "home" || size === "header" || size === "heroLogo") {
     return (
       <img
         src="/images/brand/logo-mon-caramel-cropped.webp"

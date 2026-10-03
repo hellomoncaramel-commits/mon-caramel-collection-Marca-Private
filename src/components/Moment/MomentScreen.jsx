@@ -2,11 +2,13 @@ import { Fragment, useMemo, useRef } from "react";
 import { Heart, Sparkles } from "lucide-react";
 import { COLORS } from "../../styles/colors";
 import { MOMENT_INTRO, MOMENT_SHORT } from "../../data/moments";
+import { REAL_PHOTOS } from "../../data/photos";
 import { pickForMoment, pickCrossSell } from "../../utils/products";
 import { buildPartyMessage } from "../../utils/messages";
 import { useParty } from "../../hooks/useParty";
 import SiteHeader from "../shared/SiteHeader";
 import Toast from "../shared/Toast";
+import Photo from "../shared/Photo";
 import ProductCard from "./ProductCard";
 import PartyPanel from "../Party/PartyPanel";
 import PartyModal from "../Party/PartyModal";
@@ -37,11 +39,58 @@ function chunkEditorialRhythm(items) {
 // not filters, not categories, not product cards, just Mon Caramel's own
 // voice breaking up the scroll. Keyed by chunk index (which row they sit
 // before). Used sparingly on purpose (2 of this task's 3 approved lines) —
-// dia-dificil, lg+ only; mobile is untouched.
+// shown on mobile AND desktop now (see EditorialAside below).
+//
+// Real-photos pass: each aside now carries a real product photo instead of
+// reading as plain text — the product was picked because it actually
+// carries the badge the aside is about (never an unrelated photo standing
+// in for a vibe). No AI, no stock — both are existing files already used
+// elsewhere in the catalog (see data/photos.js / data/products.js).
 const DIA_DIFICIL_ASIDES = {
-  1: "Tá procurando alguma coisa pro café? ☕ Continua descendo. Tem coisa boa vindo.",
-  4: "Chegamos oficialmente na parte \"hoje eu mereço\". 💛",
+  // Biscoito Amanteigado ("butter-cookies" in products.js) carries the
+  // "coffee" badge — the one dia-dificil product most directly about café.
+  1: {
+    text: "Tá procurando alguma coisa pro café? ☕ Continua descendo. Tem coisa boa vindo.",
+    photo: REAL_PHOTOS.biscoitoVariedade,
+    photoAlt: "Biscoitos amanteigados variados",
+    photoSide: "left",
+  },
+  // Bolo de Pote ("bolo-de-pote" in products.js) carries the "deserve"
+  // badge — "hoje eu mereço" is literally that product's own tag.
+  4: {
+    text: "Chegamos oficialmente na parte \"hoje eu mereço\". 💛",
+    photo: REAL_PHOTOS.boloDePoteMorango,
+    photoAlt: "Bolo de pote de morango",
+    photoSide: "right",
+  },
 };
+
+// A small editorial "chapter break" — real photo + a line of copy, same
+// cream/peach family and radius as the rest of Dias de luta, but built
+// differently from ProductCard on purpose (no price, no CTA, no badges) so
+// it never reads as just another product. `layout="row"` (mobile full-width
+// band, desktop standalone band before a 3-item row) puts the photo beside
+// the text; `layout="column"` (folded into a 2-item row's spare third grid
+// track, see below) stacks photo over text to fit that narrower, taller
+// slot. Same component, same visual family, shape adapted to where it sits.
+function EditorialAside({ aside, layout = "row" }) {
+  const isColumn = layout === "column";
+  return (
+    <div
+      className={`rounded-2xl overflow-hidden flex ${
+        isColumn ? "flex-col h-full" : `min-h-28 ${aside.photoSide === "right" ? "flex-row-reverse" : "flex-row"}`
+      }`}
+      style={{ backgroundColor: `${COLORS.caramelLight}1A` }}
+    >
+      <div className={isColumn ? "w-full aspect-[3/2] shrink-0" : "w-28 sm:w-32 shrink-0 self-stretch"}>
+        <Photo src={aside.photo} alt={aside.photoAlt} className="w-full h-full object-cover" loading="lazy" />
+      </div>
+      <div className={`flex items-center ${isColumn ? "flex-1 p-4" : "flex-1 px-4 py-3.5"}`}>
+        <p className="font-display text-base leading-snug text-brand-ink">{aside.text}</p>
+      </div>
+    </div>
+  );
+}
 
 // Matched products for the chosen moment (dia-dificil or festa —
 // "presente" has its own dedicated PresenteScreen), plus cross-sell
@@ -98,11 +147,16 @@ export default function MomentScreen({
         isDiaDificil ? "lg:max-w-[1180px] lg:px-10" : "lg:max-w-6xl xl:max-w-7xl lg:px-8 xl:px-12"
       }`}
     >
-      {/* Design-refinement pass: Dias de luta gets the compact header every
-          other catalog-style screen already uses (small logo, not the big
-          centered Home lockup) — the branding stays present but stops
-          eating the first viewport. Festa keeps the default (unchanged). */}
-      <SiteHeader onBack={onBack} logoSize={isDiaDificil ? "sm" : "home"} rowHeight={isDiaDificil ? 56 : 76} />
+      {/* Design-refinement pass: Dias de luta gets a compact header row,
+          not the big centered Home lockup — the branding stays present but
+          stops eating the first viewport. Festa keeps the default
+          (unchanged).
+          Visual-correction pass: the logo itself (logoSize) was too small
+          at "sm" — bumped to "heroLogo", the same bigger, tighter-cropped
+          size MomentPicker now uses (see Logo.jsx), with rowHeight nudged
+          up a little to give it room. Still clearly more compact than the
+          76px/"home" default every other screen's header uses. */}
+      <SiteHeader onBack={onBack} logoSize={isDiaDificil ? "heroLogo" : "home"} rowHeight={isDiaDificil ? 68 : 76} />
 
       {/* Design-refinement pass: Dias de luta now gets an actual title —
           reusing the shared mc-page-title/mc-page-subtitle pair every other
@@ -146,15 +200,13 @@ export default function MomentScreen({
         {isDiaDificil
           ? chunkEditorialRhythm(matched).map((chunk, i) => (
               <Fragment key={i}>
-                {/* Design-refinement pass: this was a centered, full-bleed
-                    band (py-6, text-lg, icon above text) reading as its own
-                    mini-screen. Pulled down to a compact single-line-ish
-                    note: small heart beside the text, left-aligned, meant
-                    to be read in ~2 seconds, not a pause. */}
+                {/* Real-photos pass: this was plain text in a tinted band
+                    (no photo) — now a real-photo mini-card (EditorialAside,
+                    "row" layout), so it reads as a small chapter of the
+                    catalog rather than a banner cutting across the grid. */}
                 {DIA_DIFICIL_ASIDES[i] && (
-                  <div className="col-span-full -mx-gutter px-gutter py-5 flex items-center gap-2.5" style={{ backgroundColor: `${COLORS.caramelLight}1A` }}>
-                    <Heart size={14} className="shrink-0" fill={COLORS.caramelDark} stroke={COLORS.caramelDark} />
-                    <p className="font-display text-base leading-snug text-brand-ink">{DIA_DIFICIL_ASIDES[i]}</p>
+                  <div className="col-span-full">
+                    <EditorialAside aside={DIA_DIFICIL_ASIDES[i]} layout="row" />
                   </div>
                 )}
                 {chunk.map((p) => (
@@ -193,27 +245,15 @@ export default function MomentScreen({
             return (
               <div key={i}>
                 {aside && !asideInRow && (
-                  <div
-                    className="inline-flex items-center gap-3 rounded-2xl px-6 py-4 my-5 max-w-xl"
-                    style={{ backgroundColor: `${COLORS.caramelLight}1A` }}
-                  >
-                    <Heart size={16} className="shrink-0" fill={COLORS.caramelDark} stroke={COLORS.caramelDark} />
-                    <p className="font-display text-lg leading-snug text-brand-ink">{aside}</p>
+                  <div className="max-w-xl my-5">
+                    <EditorialAside aside={aside} layout="row" />
                   </div>
                 )}
                 <div className={`grid grid-cols-3 gap-5 ${i > 0 && (!aside || asideInRow) ? "mt-5" : ""}`}>
                   {chunk.map((p) => (
                     <ProductCard key={p.id} p={p} momentId={momentId} {...cardProps} />
                   ))}
-                  {asideInRow && (
-                    <div
-                      className="rounded-2xl p-5 flex flex-col justify-center gap-2"
-                      style={{ backgroundColor: `${COLORS.caramelLight}1A` }}
-                    >
-                      <Heart size={16} className="shrink-0" fill={COLORS.caramelDark} stroke={COLORS.caramelDark} />
-                      <p className="font-display text-base leading-snug text-brand-ink">{aside}</p>
-                    </div>
-                  )}
+                  {asideInRow && <EditorialAside aside={aside} layout="column" />}
                 </div>
               </div>
             );
