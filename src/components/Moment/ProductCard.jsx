@@ -30,6 +30,15 @@ import FlavorConfigurator from "./FlavorConfigurator";
 // real type-scale bump (name/price/CTA) so it carries enough visual weight
 // to balance the photo instead of trailing off as small print. Festa is
 // untouched: still bg-white, border, photo flush to the card's top edge.
+//
+// Design-refinement pass: the beige card worked as a concept but still read
+// as "a big rectangle," not an editorial frame — radius pulled in from 24px
+// to 16/12px (card/photo), a near-invisible hairline border added for
+// definition instead of relying on color contrast alone, no shadow. Every
+// piece of chrome that used to compete with the photo for weight (the
+// favorite circle, the carousel arrows, the CTA) got smaller — the visible
+// circle/pill shrinks while the tap target stays >=44px via padding, not a
+// smaller hit area. Festa untouched throughout.
 export default function ProductCard({
   p,
   momentId,
@@ -74,33 +83,29 @@ export default function ProductCard({
 
   return (
     <div
-      className={`rounded-3xl overflow-hidden transition-all duration-200 h-full flex flex-col lg:hover:-translate-y-0.5 ${
-        // Dias de luta: no resting border/shadow — the photo and the
-        // gap between cards (see MomentScreen.jsx) do the work of
-        // separating one card from the next, not a box around each one.
-        // The "already selected" ring stays — that border means something
-        // (it's feedback, not decoration).
-        // Festa keeps its border on purpose — it's a portfolio of finished
-        // pieces shown edge to edge in a tight 3-column grid, and the frame
-        // reads as "mounted photograph," not decoration-for-decoration's-
-        // sake; explicitly NOT converging on Dias de luta's borderless look.
-        isDiaDificil ? "p-2" : isFesta ? "bg-white border lg:hover:shadow-md" : "bg-white border lg:hover:shadow-lg"
+      className={`overflow-hidden transition-all duration-200 h-full flex flex-col lg:hover:-translate-y-0.5 ${
+        // Dias de luta: tight editorial frame — small radius, hairline
+        // border for definition, no shadow. The gap between cards (see
+        // MomentScreen.jsx) still does most of the work of separating one
+        // card from the next; the border is just enough to give this one
+        // its own edge, not a heavy box.
+        // Festa keeps its own border/shadow/radius on purpose — it's a
+        // portfolio of finished pieces shown edge to edge in a tight
+        // 3-column grid; explicitly NOT converging on Dias de luta's look.
+        isDiaDificil ? "rounded-2xl border p-2" : isFesta ? "rounded-3xl bg-white border lg:hover:shadow-md" : "rounded-3xl bg-white border lg:hover:shadow-lg"
       }`}
       style={
         isDiaDificil
-          ? {
-              backgroundColor: COLORS.subtle,
-              ...(existing ? { outline: `2px solid ${COLORS.caramelDark}`, outlineOffset: "-2px" } : {}),
-            }
+          ? { backgroundColor: COLORS.subtle, borderColor: existing ? COLORS.caramelDark : `${COLORS.border}B3`, borderWidth: existing ? "1.5px" : "1px" }
           : { borderColor: existing ? COLORS.caramelDark : COLORS.border, borderWidth: existing ? "2px" : "1px" }
       }
     >
       <div
-        className={`relative ${isDiaDificil ? "rounded-2xl overflow-hidden" : ""} ${onOpenDetail ? "cursor-pointer" : ""}`}
+        className={`relative ${isDiaDificil ? "rounded-xl overflow-hidden" : ""} ${onOpenDetail ? "cursor-pointer" : ""}`}
         onClick={onOpenDetail ? () => onOpenDetail(p) : undefined}
       >
         {photos && photos.length > 0 ? (
-          <PhotoCarousel photos={photos} alt={p.name} />
+          <PhotoCarousel photos={photos} alt={p.name} compact={isDiaDificil} />
         ) : (
           <ProductArt kind={p.kind} tint={p.tint} contextIcon={MOMENT_ICON[momentId]} />
         )}
@@ -110,15 +115,17 @@ export default function ProductCard({
               e.stopPropagation();
               toggleFavorite(p.id);
             }}
-            className="absolute top-2 right-2 w-11 h-11 rounded-full bg-white/90 flex items-center justify-center"
+            className={`absolute top-1.5 right-1.5 flex items-center justify-center ${isDiaDificil ? "w-9 h-9" : "w-11 h-11"}`}
             aria-label={isFav ? `Remover ${p.name} dos salvos` : `Salvar ${p.name}`}
             aria-pressed={isFav}
           >
-            <Heart size={16} fill={isFav ? COLORS.caramelDark : "none"} stroke={COLORS.caramelDark} />
+            <span className={`rounded-full bg-white/90 flex items-center justify-center ${isDiaDificil ? "w-7 h-7" : "w-full h-full"}`}>
+              <Heart size={isDiaDificil ? 13 : 16} fill={isFav ? COLORS.caramelDark : "none"} stroke={COLORS.caramelDark} />
+            </span>
           </button>
         )}
       </div>
-      <div className={`flex flex-col flex-1 ${isDiaDificil ? "pt-3 px-0.5 pb-1" : "p-4 lg:p-5"}`}>
+      <div className={`flex flex-col flex-1 ${isDiaDificil ? "pt-2.5 px-1 pb-1" : "p-4 lg:p-5"}`}>
         {onOpenDetail ? (
           <button onClick={() => onOpenDetail(p)} className="text-left">
             <h3 className={`font-display text-brand-ink leading-tight ${isDiaDificil ? "text-xl" : "text-lg"}`}>{p.name}</h3>
@@ -178,7 +185,7 @@ export default function ProductCard({
                 reads better as a small filled pill, same as Festa's own
                 CTA and the approved reference, not a plain word in the
                 corner. */}
-            <div className="flex items-center justify-between mt-2.5 gap-2">
+            <div className={`flex items-center justify-between gap-2 ${isDiaDificil ? "mt-2" : "mt-2.5"}`}>
               <span className={`font-medium text-brand-caramelDark ${isDiaDificil ? "text-base" : "text-sm"}`}>{p.price}</span>
               <button
                 onClick={() =>
@@ -188,13 +195,15 @@ export default function ProductCard({
                     ? removeFromSelection(existing)
                     : confirmAdd({ qty: defaultQty, flavorBreakdown: [] })
                 }
-                className={`font-medium rounded-full px-3.5 min-h-11 inline-flex items-center gap-1.5 ${isDiaDificil ? "text-sm" : "text-xs"}`}
+                className={`font-medium rounded-full inline-flex items-center gap-1.5 ${
+                  isDiaDificil ? "text-xs px-3 h-10" : "text-xs px-3.5 min-h-11"
+                }`}
                 style={{
                   backgroundColor: COLORS.caramelDark,
                   color: "white",
                 }}
               >
-                <Heart size={12} fill="white" />
+                <Heart size={isDiaDificil ? 10 : 12} fill="white" />
                 {existing
                   ? isCustomizable
                     ? `Na seleção (${existing.qty})`

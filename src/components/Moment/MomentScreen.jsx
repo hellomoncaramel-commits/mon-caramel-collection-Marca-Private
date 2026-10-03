@@ -1,7 +1,7 @@
 import { Fragment, useMemo, useRef } from "react";
 import { Heart, Sparkles } from "lucide-react";
 import { COLORS } from "../../styles/colors";
-import { MOMENT_INTRO } from "../../data/moments";
+import { MOMENT_INTRO, MOMENT_SHORT } from "../../data/moments";
 import { pickForMoment, pickCrossSell } from "../../utils/products";
 import { buildPartyMessage } from "../../utils/messages";
 import { useParty } from "../../hooks/useParty";
@@ -88,23 +88,41 @@ export default function MomentScreen({
     // bottom nav on its own, so this only needs to close out the content,
     // not double up on nav clearance (Festa's floating button is `fixed`,
     // independent of this padding either way).
-    <div className="max-w-2xl lg:max-w-6xl xl:max-w-7xl mx-auto px-gutter lg:px-8 xl:px-12 pt-2 pb-10 fade-up">
-      <SiteHeader onBack={onBack} />
+    // Design-refinement pass: Dias de luta's desktop container is narrower
+    // (max-w-[1180px] vs the shared 6xl/7xl) — a 3-up row at the old width
+    // put ~380px+ cards on screen, and a 2-up row put ~580px ones, both far
+    // past "card with real composition." Festa (and anything else reusing
+    // this screen) keeps the original container untouched.
+    <div
+      className={`max-w-2xl mx-auto px-gutter pt-2 pb-10 fade-up ${
+        isDiaDificil ? "lg:max-w-[1180px] lg:px-10" : "lg:max-w-6xl xl:max-w-7xl lg:px-8 xl:px-12"
+      }`}
+    >
+      {/* Design-refinement pass: Dias de luta gets the compact header every
+          other catalog-style screen already uses (small logo, not the big
+          centered Home lockup) — the branding stays present but stops
+          eating the first viewport. Festa keeps the default (unchanged). */}
+      <SiteHeader onBack={onBack} logoSize={isDiaDificil ? "sm" : "home"} rowHeight={isDiaDificil ? 56 : 76} />
 
-      {/* Fraunces roman, not the old Cormorant italic — personality comes
-          from the family + copy, not from italicizing every editorial
-          paragraph. Capped width at lg+ so a single line doesn't stretch
-          the full desktop container (readability only, same text).
-          Visual-correction pass: a prior round pushed this to near-
-          headline scale with generous margin, which ate close to half the
-          first mobile viewport before a single product appeared — pulled
-          back to a size with real presence but compact enough that the
-          intro + a product both show up in the first screen. ink (not
-          inkSoft) for a confident color. */}
-      {MOMENT_INTRO[momentId] && (
-        <p className="text-lg sm:text-xl lg:text-2xl leading-snug mb-4 lg:mb-6 font-display text-brand-ink max-w-xs sm:max-w-md lg:max-w-xl">
-          {MOMENT_INTRO[momentId]}
-        </p>
+      {/* Design-refinement pass: Dias de luta now gets an actual title —
+          reusing the shared mc-page-title/mc-page-subtitle pair every other
+          screen (Busca, Minha Seleção, Presentes, Caixas/Bandejas/Mimos)
+          already uses, instead of letting the long intro paragraph alone
+          carry headline weight. MOMENT_SHORT is existing copy (already the
+          moment's own short name, used elsewhere for nav/shortcuts) — no
+          new text invented. Festa is untouched: same single intro
+          paragraph at the same size it always had. */}
+      {isDiaDificil ? (
+        <>
+          <h1 className="mc-page-title">{MOMENT_SHORT[momentId]}</h1>
+          <p className="mc-page-subtitle max-w-xs sm:max-w-md lg:max-w-xl">{MOMENT_INTRO[momentId]}</p>
+        </>
+      ) : (
+        MOMENT_INTRO[momentId] && (
+          <p className="text-lg sm:text-xl lg:text-2xl leading-snug mb-4 lg:mb-6 font-display text-brand-ink max-w-xs sm:max-w-md lg:max-w-xl">
+            {MOMENT_INTRO[momentId]}
+          </p>
+        )
       )}
 
       {/* Mobile/tablet (all moments) and the lg+ grid for every moment
@@ -128,14 +146,15 @@ export default function MomentScreen({
         {isDiaDificil
           ? chunkEditorialRhythm(matched).map((chunk, i) => (
               <Fragment key={i}>
-                {/* A quick pause, not a new screen — soft caramel-tinted
-                    band, full-bleed against the page's own gutter, but
-                    compact: a small heart (the one delicate graphic touch)
-                    above a short line, then straight back to products. */}
+                {/* Design-refinement pass: this was a centered, full-bleed
+                    band (py-6, text-lg, icon above text) reading as its own
+                    mini-screen. Pulled down to a compact single-line-ish
+                    note: small heart beside the text, left-aligned, meant
+                    to be read in ~2 seconds, not a pause. */}
                 {DIA_DIFICIL_ASIDES[i] && (
-                  <div className="col-span-full -mx-gutter px-gutter py-6" style={{ backgroundColor: `${COLORS.caramelLight}1A` }}>
-                    <Heart size={16} className="mx-auto mb-1.5" fill={COLORS.caramelDark} stroke={COLORS.caramelDark} />
-                    <p className="font-display text-lg leading-snug text-brand-ink text-center max-w-xs mx-auto">{DIA_DIFICIL_ASIDES[i]}</p>
+                  <div className="col-span-full -mx-gutter px-gutter py-5 flex items-center gap-2.5" style={{ backgroundColor: `${COLORS.caramelLight}1A` }}>
+                    <Heart size={14} className="shrink-0" fill={COLORS.caramelDark} stroke={COLORS.caramelDark} />
+                    <p className="font-display text-base leading-snug text-brand-ink">{DIA_DIFICIL_ASIDES[i]}</p>
                   </div>
                 )}
                 {chunk.map((p) => (
@@ -149,18 +168,27 @@ export default function MomentScreen({
       {/* Dias de luta, lg+ only: the editorial 2-up/3-up rhythm grid, with
           at most a couple of short editorial asides breaking up the scroll.
           Same `matched` array/order/ProductCard/cardProps as the grid
-          above — just a different row structure. */}
+          above — just a different row structure.
+          Design-refinement pass: a 2-up row used to stretch both cards to
+          fill the full container width (~580px cards) — exactly the "mobile
+          card blown up" look that was flagged. A 2-item chunk now caps its
+          own row width and centers it, leaving deliberate negative space on
+          both sides instead of stretching to fill the container. */}
       {isDiaDificil && (
         <div className="hidden lg:block">
           {chunkEditorialRhythm(matched).map((chunk, i) => (
             <div key={i}>
               {DIA_DIFICIL_ASIDES[i] && (
-                <div className="-mx-8 xl:-mx-12 px-8 xl:px-12 py-8 my-6 rounded-3xl flex items-center justify-center gap-3" style={{ backgroundColor: `${COLORS.caramelLight}1A` }}>
-                  <Heart size={20} className="shrink-0" fill={COLORS.caramelDark} stroke={COLORS.caramelDark} />
-                  <p className="font-display text-xl leading-snug text-brand-ink max-w-lg">{DIA_DIFICIL_ASIDES[i]}</p>
+                <div className="px-8 py-5 my-5 rounded-2xl flex items-center justify-center gap-3" style={{ backgroundColor: `${COLORS.caramelLight}1A` }}>
+                  <Heart size={16} className="shrink-0" fill={COLORS.caramelDark} stroke={COLORS.caramelDark} />
+                  <p className="font-display text-lg leading-snug text-brand-ink max-w-lg">{DIA_DIFICIL_ASIDES[i]}</p>
                 </div>
               )}
-              <div className={`grid gap-5 ${chunk.length === 2 ? "grid-cols-2" : "grid-cols-3"} ${i > 0 && !DIA_DIFICIL_ASIDES[i] ? "mt-5" : ""}`}>
+              <div
+                className={`grid gap-5 ${
+                  chunk.length === 2 ? "grid-cols-2 max-w-[720px] mx-auto" : "grid-cols-3"
+                } ${i > 0 && !DIA_DIFICIL_ASIDES[i] ? "mt-5" : ""}`}
+              >
                 {chunk.map((p) => (
                   <ProductCard key={p.id} p={p} momentId={momentId} {...cardProps} />
                 ))}
