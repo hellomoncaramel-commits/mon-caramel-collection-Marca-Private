@@ -20,6 +20,16 @@ import FlavorConfigurator from "./FlavorConfigurator";
 // every card now uses the same compact composition, matching the approved
 // reference density. Hierarchy in Dias de luta now comes from the editorial
 // asides and intro, not from inflating individual cards.
+//
+// Photo/composition-balance pass: the photo alone was still reading as
+// nearly the whole card, with the name/price/CTA underneath feeling like
+// loose metadata rather than part of one designed piece. For Dias de luta,
+// the photo is now inset inside a warm beige card (p-2, COLORS.subtle)
+// instead of bleeding to the card's own edges — "a photograph mounted on a
+// card," not "a photo that is the card" — and the text block below got a
+// real type-scale bump (name/price/CTA) so it carries enough visual weight
+// to balance the photo instead of trailing off as small print. Festa is
+// untouched: still bg-white, border, photo flush to the card's top edge.
 export default function ProductCard({
   p,
   momentId,
@@ -64,7 +74,7 @@ export default function ProductCard({
 
   return (
     <div
-      className={`rounded-3xl bg-white overflow-hidden transition-all duration-200 h-full flex flex-col lg:hover:-translate-y-0.5 ${
+      className={`rounded-3xl overflow-hidden transition-all duration-200 h-full flex flex-col lg:hover:-translate-y-0.5 ${
         // Dias de luta: no resting border/shadow — the photo and the
         // gap between cards (see MomentScreen.jsx) do the work of
         // separating one card from the next, not a box around each one.
@@ -74,18 +84,19 @@ export default function ProductCard({
         // pieces shown edge to edge in a tight 3-column grid, and the frame
         // reads as "mounted photograph," not decoration-for-decoration's-
         // sake; explicitly NOT converging on Dias de luta's borderless look.
-        isDiaDificil ? "" : isFesta ? "border lg:hover:shadow-md" : "border lg:hover:shadow-lg"
+        isDiaDificil ? "p-2" : isFesta ? "bg-white border lg:hover:shadow-md" : "bg-white border lg:hover:shadow-lg"
       }`}
       style={
         isDiaDificil
-          ? existing
-            ? { outline: `2px solid ${COLORS.caramelDark}`, outlineOffset: "-2px" }
-            : undefined
+          ? {
+              backgroundColor: COLORS.subtle,
+              ...(existing ? { outline: `2px solid ${COLORS.caramelDark}`, outlineOffset: "-2px" } : {}),
+            }
           : { borderColor: existing ? COLORS.caramelDark : COLORS.border, borderWidth: existing ? "2px" : "1px" }
       }
     >
       <div
-        className={`relative ${onOpenDetail ? "cursor-pointer" : ""}`}
+        className={`relative ${isDiaDificil ? "rounded-2xl overflow-hidden" : ""} ${onOpenDetail ? "cursor-pointer" : ""}`}
         onClick={onOpenDetail ? () => onOpenDetail(p) : undefined}
       >
         {photos && photos.length > 0 ? (
@@ -107,13 +118,13 @@ export default function ProductCard({
           </button>
         )}
       </div>
-      <div className={`flex flex-col flex-1 ${isDiaDificil ? "p-3.5 lg:p-4" : "p-4 lg:p-5"}`}>
+      <div className={`flex flex-col flex-1 ${isDiaDificil ? "pt-3 px-0.5 pb-1" : "p-4 lg:p-5"}`}>
         {onOpenDetail ? (
           <button onClick={() => onOpenDetail(p)} className="text-left">
-            <h3 className="text-lg font-display text-brand-ink leading-tight">{p.name}</h3>
+            <h3 className={`font-display text-brand-ink leading-tight ${isDiaDificil ? "text-xl" : "text-lg"}`}>{p.name}</h3>
           </button>
         ) : (
-          <h3 className="text-lg font-display text-brand-ink leading-tight">{p.name}</h3>
+          <h3 className={`font-display text-brand-ink leading-tight ${isDiaDificil ? "text-xl" : "text-lg"}`}>{p.name}</h3>
         )}
         {!isFesta && <p className="text-xs mt-0.5 text-brand-muted">{p.unit}</p>}
 
@@ -168,7 +179,7 @@ export default function ProductCard({
                 CTA and the approved reference, not a plain word in the
                 corner. */}
             <div className="flex items-center justify-between mt-2.5 gap-2">
-              <span className="text-sm font-medium text-brand-caramelDark">{p.price}</span>
+              <span className={`font-medium text-brand-caramelDark ${isDiaDificil ? "text-base" : "text-sm"}`}>{p.price}</span>
               <button
                 onClick={() =>
                   isCustomizable
@@ -177,7 +188,7 @@ export default function ProductCard({
                     ? removeFromSelection(existing)
                     : confirmAdd({ qty: defaultQty, flavorBreakdown: [] })
                 }
-                className="text-xs font-medium rounded-full px-3.5 min-h-11 inline-flex items-center gap-1.5"
+                className={`font-medium rounded-full px-3.5 min-h-11 inline-flex items-center gap-1.5 ${isDiaDificil ? "text-sm" : "text-xs"}`}
                 style={{
                   backgroundColor: COLORS.caramelDark,
                   color: "white",
