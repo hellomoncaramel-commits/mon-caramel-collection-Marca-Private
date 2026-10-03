@@ -22,7 +22,7 @@ const CONTACTS = [
     id: "whatsapp",
     Icon: MessageCircle,
     label: "WhatsApp",
-    value: "Falar com a Naiá",
+    value: "Fale conosco",
     href: `https://wa.me/${WHATSAPP_DIGITS}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`,
     external: true,
   },
