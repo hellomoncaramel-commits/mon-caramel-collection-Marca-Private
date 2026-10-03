@@ -18,6 +18,7 @@ import SelectionScreen from "./components/Selection/SelectionScreen";
 import SendModal from "./components/shared/SendModal";
 import BottomNav from "./components/shared/BottomNav";
 import DesktopNav from "./components/shared/DesktopNav";
+import Footer from "./components/shared/Footer";
 import Toast from "./components/shared/Toast";
 
 // "cafe" and "freezer" were standalone moments, both since folded into
@@ -167,6 +168,16 @@ export default function App() {
             onOpenSelection={onGoSelection}
           />
         )}
+
+        {/* One global footer, rendered once here — not per-screen, not
+            inside ProductDetailSheet/SendModal (those are separate `fixed`
+            overlays below, outside this wrapper entirely, so the footer
+            never shows through or duplicates behind them). Sits inside
+            this same pb-24 md:pb-0 wrapper every screen's own content
+            already uses, so it inherits the exact clearance that already
+            keeps content clear of the fixed mobile BottomNav — no separate
+            padding hack needed. */}
+        <Footer />
       </div>
 
       <BottomNav
