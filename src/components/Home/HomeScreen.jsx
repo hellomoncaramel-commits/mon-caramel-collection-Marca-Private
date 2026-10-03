@@ -186,14 +186,27 @@ export default function HomeScreen({ onSelect, onOpenProduct, favorites, toggleF
               product), brigadeiroDiaDificil (production-tray texture),
               chocobomb/alfajorClassico (mosaics of repeated pieces). Still a
               placeholder per the brief — may be swapped again later.
-              brownlitoRecheio joins as a second frame (same product, cut
-              open — "a dessert being opened") so the hero isn't a dead
-              photo; HeroMedia crossfades slowly between the two, no video
-              asset exists yet to plug in instead (see HeroMedia.jsx). */}
+              Rotation widened from 2 to 5 real frames for variety across
+              product families, not just this one dessert: brownlitoRecheio
+              (same product, cut open), presenteRosas (wrapped gift box —
+              totally different composition, no plate/stick), pirulitoAlfajor
+              (lollipop-shaped alfajores, overhead flat lay), and
+              boloDePoteCamadas (borrowed from the desktop hero below, a
+              third distinct product family). Interleaved deliberately so
+              the two Brownlito frames never land back to back in the loop.
+              Each needs its own crop since they're unrelated photos — see
+              the per-frame `style` overrides. HeroMedia crossfades slowly
+              between them; still no real video asset to plug in instead
+              (see HeroMedia.jsx). */}
           <HeroMedia
-            frames={[REAL_PHOTOS.brownlitoInteiro, REAL_PHOTOS.brownlitoRecheio]}
+            frames={[
+              { src: REAL_PHOTOS.brownlitoInteiro, style: { objectPosition: "50% 38%" } },
+              { src: REAL_PHOTOS.presenteRosas, style: { objectPosition: "50% 38%" } },
+              { src: REAL_PHOTOS.brownlitoRecheio, style: { objectPosition: "50% 38%" } },
+              { src: REAL_PHOTOS.pirulitoAlfajor, style: { objectPosition: "50% 42%" } },
+              { src: REAL_PHOTOS.boloDePoteCamadas, style: { objectPosition: "48% 58%" } },
+            ]}
             className="absolute inset-0 w-full h-full object-cover"
-            imgStyle={{ objectPosition: "50% 38%" }}
           />
           <div className="absolute inset-0 pointer-events-none" style={{ background: MOBILE_HERO_GRADIENT }} />
 
@@ -285,14 +298,25 @@ export default function HomeScreen({ onSelect, onOpenProduct, favorites, toggleF
             with the jars' rich chocolate/strawberry layers reading as a
             real protagonist on the right. No scale()/distortion — only
             object-position picks which vertical band of the (portrait)
-            source shows. boloDePoteMorango (same bolo-de-pote family, a
-            different jar) joins as a second HeroMedia frame for slow
-            crossfade movement — no real video exists yet to plug in via
-            HeroMedia's `videoSrc` prop instead. */}
+            source shows. Rotation widened from 2 to 5 real frames —
+            boloDePoteMorango (same family, different jar), presenteRosas
+            (gift box) and pirulitoAlfajor (lollipop alfajores) for real
+            product variety, plus brownlitoInteiro borrowed from the mobile
+            hero above. Interleaved so the two bolo-de-pote frames don't
+            land back to back. Wide 2.07:1 crop favors landscape sources
+            here (less vertical loss than the portrait ones), so
+            presenteRosas/pirulitoAlfajor — both 4:3 — actually fit this
+            container better than the desktop's own original pair. No real
+            video exists yet to plug in via HeroMedia's `videoSrc` prop. */}
         <HeroMedia
-          frames={[REAL_PHOTOS.boloDePoteCamadas, REAL_PHOTOS.boloDePoteMorango]}
+          frames={[
+            { src: REAL_PHOTOS.boloDePoteCamadas, style: { objectPosition: "48% 58%" } },
+            { src: REAL_PHOTOS.presenteRosas, style: { objectPosition: "55% 42%" } },
+            { src: REAL_PHOTOS.boloDePoteMorango, style: { objectPosition: "48% 58%" } },
+            { src: REAL_PHOTOS.pirulitoAlfajor, style: { objectPosition: "50% 40%" } },
+            { src: REAL_PHOTOS.brownlitoInteiro, style: { objectPosition: "50% 38%" } },
+          ]}
           className="absolute inset-0 w-full h-full object-cover"
-          imgStyle={{ objectPosition: "48% 58%" }}
         />
         <div className="absolute inset-0 pointer-events-none" style={{ background: HERO_GRADIENT }} />
 
