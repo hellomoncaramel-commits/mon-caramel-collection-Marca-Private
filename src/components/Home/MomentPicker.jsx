@@ -58,9 +58,21 @@ const MOMENT_PHOTO_STYLE = {
 // actually tops out, not ~97%. The photo now stays faintly visible even at
 // the very bottom edge (a shadow, not a block), while the ramp itself
 // stays short and fast so the darkening still reads as deliberate, not
-// gradual mush. Text below is white/cream (see MomentCard's h3/p).
-const TEXT_PANEL_GRADIENT_DESKTOP = `linear-gradient(to bottom, ${COLORS.ink}00 0%, ${COLORS.ink}00 54%, ${COLORS.ink}5C 72%, ${COLORS.ink}A8 85%, ${COLORS.ink}CC 100%)`;
-const TEXT_PANEL_GRADIENT_MOBILE = `linear-gradient(to bottom, ${COLORS.ink}00 0%, ${COLORS.ink}00 58%, ${COLORS.ink}5C 76%, ${COLORS.ink}A8 88%, ${COLORS.ink}CC 100%)`;
+// gradual mush.
+//
+// Fourth correction pass: side-by-side against the reference mockup's own
+// "Dias de luta" card showed the 80% ceiling wasn't dark enough for every
+// photo — this card's real photo has light-colored cookies right behind
+// the text, and at 80% they still fight the white title for attention
+// (the reference's own photo happens to be dark there, so its 80%-ish
+// scrim reads fine; the ceiling itself needed to go a bit higher to work
+// across different real photos, not just the one in the mockup). Bumped to
+// an ~88% ceiling and nudged the ramp to start a touch earlier — still a
+// shadow with a hint of photo showing through, not a block, just dark
+// enough to hold up against a bright background too. Text below is
+// white/cream (see MomentCard's h3/p).
+const TEXT_PANEL_GRADIENT_DESKTOP = `linear-gradient(to bottom, ${COLORS.ink}00 0%, ${COLORS.ink}00 50%, ${COLORS.ink}66 68%, ${COLORS.ink}BD 82%, ${COLORS.ink}E0 100%)`;
+const TEXT_PANEL_GRADIENT_MOBILE = `linear-gradient(to bottom, ${COLORS.ink}00 0%, ${COLORS.ink}00 54%, ${COLORS.ink}66 72%, ${COLORS.ink}BD 85%, ${COLORS.ink}E0 100%)`;
 
 function MomentCard({ moment, photoSrc, eager, featured, onSelect }) {
   const lines = moment.titleLines ?? [moment.label];
@@ -80,12 +92,14 @@ function MomentCard({ moment, photoSrc, eager, featured, onSelect }) {
       <div className="absolute inset-0 hidden md:block" style={{ background: TEXT_PANEL_GRADIENT_DESKTOP }} />
 
       <div className="absolute left-6 right-6 bottom-[22px] md:left-5 md:right-5 md:bottom-5 flex flex-col items-start">
-        {/* Text-treatment pass: weight pulled back from semibold to medium
-            — the reference's title reads as an elegant serif, not a bold
-            headline; semibold looked heavier/blunter than that by
-            comparison. */}
+        {/* Text-treatment pass (correction): an earlier round pulled this
+            back from semibold to medium, reading the reference as more
+            delicate than it is. Side-by-side with the reference's own card
+            at matching scale showed the opposite — its title strokes are
+            visibly thicker than this at medium weight. Restored
+            semibold. */}
         <h3
-          className={`font-display font-medium text-white max-w-[230px] md:max-w-none text-[clamp(26px,7vw,31px)] md:text-[25px] leading-[0.98] md:leading-[1.08] tracking-[-0.02em] md:tracking-normal ${
+          className={`font-display font-semibold text-white max-w-[230px] md:max-w-none text-[clamp(26px,7vw,31px)] md:text-[25px] leading-[0.98] md:leading-[1.08] tracking-[-0.02em] md:tracking-normal ${
             // Dias de luta gets a discreet lg+ size bump over the other two
             // journeys — same card, same clarity, just a touch more weight
             // since it's the site's primary, highest-traffic path. Equal
