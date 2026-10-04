@@ -8,14 +8,12 @@ import { useModalLock } from "../../hooks/useModalLock";
 // "Minha Festa" (briefing section 5) — no pricing shown anywhere here.
 export default function PartyModal({ product, sharedTheme, sharedNotes, existingQty, onCancel, onConfirm }) {
   useModalLock(onCancel);
-  // Only an EXPLICIT "mín." in the unit text is trusted as a real floor
-  // (e.g. "mín. 12 un") — used to both default and clamp the quantity,
-  // instead of the generic 1 every product used to start/floor at
-  // regardless of its own stated minimum. A plain quantity/pack/weight
-  // number with no "mín." is never treated as a floor (see
-  // initialQuantity) — none of Festa's other products have one today,
-  // but this stays correct if one later does.
-  const minQty = initialQuantity(product.unit);
+  // Only the product's own explicit commercial minimum is trusted as a
+  // real floor — used to both default and clamp the quantity, instead of
+  // the generic 1 every product used to start/floor at regardless of its
+  // own stated minimum. A plain quantity/pack/weight number is never
+  // treated as a floor on its own (see initialQuantity/minimumQuantityOf).
+  const minQty = initialQuantity(product);
   const [qty, setQty] = useState(existingQty ? String(existingQty) : String(minQty));
   const [theme, setTheme] = useState(sharedTheme);
   const [notes, setNotes] = useState(sharedNotes);

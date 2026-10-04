@@ -93,8 +93,9 @@ export default function ProductCard({
 
   const photos = photosForMoment(p, momentId);
   // Non-customizable products have no quantity picker — they add at 1,
-  // unless the unit text states an explicit minimum (e.g. "mín. 12 un").
-  const defaultQty = initialQuantity(p.unit);
+  // unless the product declares an explicit commercial minimum (see
+  // minimumQuantityOf in utils/products.js).
+  const defaultQty = initialQuantity(p);
 
   return (
     <div

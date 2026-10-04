@@ -17,6 +17,12 @@ export const BADGES = {
   freezer: { emoji: "❄️", label: "Pode congelar" },
   lunchbox: { emoji: "🎒", label: "Vai bem na lancheira" },
   glutenFree: { emoji: "🌾", label: "Gluten Free" },
+  // Distinct from glutenFree above: that one means the product itself is
+  // gluten-free. This means a gluten-free VERSION is available as an
+  // option, at the same price — only true for products that explicitly
+  // carry it (today: Cone Trufado). Never merge the two or apply this to
+  // a product without a confirmed commercial rule.
+  glutenFreeOption: { emoji: "🌾", label: "Opção sem glúten (mesmo preço)" },
   vegan: { emoji: "🌱", label: "Vegan" },
   deserve: { emoji: "💛", label: "Hoje eu mereço" },
   // A deliberate one-off personality moment on Brownlito specifically — see

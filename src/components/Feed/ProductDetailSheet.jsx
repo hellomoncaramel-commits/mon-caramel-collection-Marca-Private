@@ -42,10 +42,11 @@ export default function ProductDetailSheet({
   const showExperience = momentId === "dia-dificil";
 
   // Both the starting quantity and the stepper's floor come from the same
-  // place: an EXPLICIT "mín." in the unit text, or 1 otherwise — never a
-  // plain pack/weight number ("12 unidades", "250g") the data doesn't
-  // actually declare as a minimum (see initialQuantity/parseMinQuantity).
-  const minQty = initialQuantity(p.unit);
+  // place: the product's own explicit minimumQuantity (or the legacy
+  // "mín." text marker for products not yet migrated), never a plain
+  // pack/weight number ("12 unidades", "250g") the data doesn't actually
+  // declare as a minimum (see initialQuantity/minimumQuantityOf).
+  const minQty = initialQuantity(p);
   const [qty, setQty] = useState(existing?.qty ?? minQty);
 
   const related = (p.relatedProducts ?? []).map((id) => PRODUCTS.find((x) => x.id === id)).filter(Boolean).slice(0, 3);

@@ -74,34 +74,46 @@ export function parseQuantityOptions(unit) {
   return [...new Set(nums.map((n) => parseInt(n, 10)))];
 }
 
-// A real commercial minimum ONLY when the unit text says so explicitly
-// ("mín. 5", "mín. 12 un") — deliberately NOT inferred from the first
-// number parseQuantityOptions would find. That number can just as easily
-// be a pack size ("3 unidades") or a weight ("250g", "~60g ... por
+// Legacy fallback: a real commercial minimum when the unit text says so
+// explicitly ("mín. 5", "mín. 12 un") — deliberately NOT inferred from the
+// first number parseQuantityOptions would find. That number can just as
+// easily be a pack size ("3 unidades") or a weight ("250g", "~60g ... por
 // unidade"), neither of which means "can't order fewer than that many
 // units" — conflating them would silently floor Sequilhos/Bala de Coco at
 // 250/150 "units". Returns null (no artificial floor) whenever "mín."
-// isn't present, rather than guessing.
+// isn't present, rather than guessing. Still used by the handful of
+// products that encode their minimum this way (Alfajor, Briganinhos/
+// Brigadeiros Personalizados) — see minimumQuantityOf below for the
+// preferred, non-text-parsing path.
 export function parseMinQuantity(unit) {
   const match = (unit || "").match(/mín\.?\s*(\d+)/i);
   return match ? parseInt(match[1], 10) : null;
 }
 
+// The real source of truth for a commercial minimum: the product's own
+// `minimumQuantity` field, set explicitly in products.js only when there's
+// a confirmed commercial rule for that exact product (e.g. Pão de Mel/
+// Chocobomb → 4, Cone Trufado → 2). Never derived by parsing `unit` or any
+// other display string — price, sale unit, weight/content and minimum are
+// kept as separate fields on purpose, so a weight ("250g") or pack size
+// ("3 unidades") can never be silently read as a minimum. Products not yet
+// migrated to this field fall back to the legacy "mín." text marker above,
+// so their existing behavior is unchanged.
+export function minimumQuantityOf(product) {
+  return product.minimumQuantity ?? parseMinQuantity(product.unit);
+}
+
 // The quantity to start a product at — quick-add (ProductCard/FeedCard/
-// SearchScreen) and the detail sheet's own stepper. `unit` is display
-// copy, not a quantity source: only an explicit "mín." (parseMinQuantity)
-// is trusted. Everything else about `unit` — "3 unidades" (a pack size,
-// not a stated minimum), "250g"/"150g"/"~60g ... por unidade" (a weight,
-// not a count at all) — starts at the ordinary 1, same as any product
-// with no number in its unit at all.
+// SearchScreen/PartyModal) and the detail sheet's own stepper, both its
+// default value and its floor.
 //
 // Only ever called for non-customizable products: the one customizable
 // product today (Brigadeiro, "6, 12 ou 24 unidades") is always routed to
 // FlavorConfigurator instead, whose own qtyOptions stepper (built on
 // parseQuantityOptions) already handles that discrete-options case
 // correctly and isn't touched by this.
-export function initialQuantity(unit) {
-  return parseMinQuantity(unit) ?? 1;
+export function initialQuantity(product) {
+  return minimumQuantityOf(product) ?? 1;
 }
 
 // Splits a total quantity evenly across N selected flavors, handing the

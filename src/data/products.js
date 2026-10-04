@@ -157,13 +157,29 @@ export const PRODUCTS = [
   {
     id: "cone-trufado",
     name: "Cones Trufados",
-    unit: "unidade",
-    price: "Sob consulta 💬",
-    sensory: "Cone crocante coberto de trufa cremosa, decorado à mão no tema da sua festa.",
+    // Commercial review confirmed: $8 cada (unit price, not a bundle),
+    // pedido mínimo 2 unidades. `unit` carries the minimum as display copy
+    // (same convention as Alfajor's "unidade (mín. 5)"); `minimumQuantity`
+    // is the actual explicit, structured source the quantity logic reads
+    // (see utils/products.js minimumQuantityOf) — never parsed from this
+    // string. No recheios/coberturas options exist in the data today (no
+    // `flavors`/`customizable` were ever set for this product) — nothing
+    // to preserve or migrate; flagged in the PR for Naia to confirm if any
+    // such options exist.
+    unit: "unidade (mín. 2)",
+    minimumQuantity: 2,
+    price: "$8/un",
+    // Gluten-free version confirmed available at the same price (no
+    // surcharge) — called out here (shown everywhere sensory is shown,
+    // including Search/Feed/Festa) and via the glutenFreeOption badge
+    // below (shown on the dia-dificil card + detail). This product is NOT
+    // tagged with the plain `glutenFree` badge — that one means the
+    // product itself is always gluten-free, which isn't the case here.
+    sensory: "Cone crocante coberto de trufa cremosa, decorado à mão no tema da sua festa. Existe opção sem glúten, pelo mesmo preço.",
     kind: "cake",
     tint: COLORS.caramelDark,
     moments: ["festa", "dia-dificil"],
-    badges: ["deserve"],
+    badges: ["deserve", "glutenFreeOption"],
     experience: {
       teaser: "Tem vontade de doce. E tem vontade de DOCE. Esse é pro segundo caso.",
       noteLabel: "Eu não julgo:",
@@ -250,8 +266,15 @@ export const PRODUCTS = [
   {
     id: "pao-de-mel",
     name: "Pão de Mel",
-    unit: "3 unidades",
-    price: "Sob consulta 💬",
+    // Commercial review confirmed: $5 cada (unit price), pedido mínimo 4
+    // unidades — the old "3 unidades" read as a fixed pack size, which is
+    // wrong on both counts (not the real minimum, and not how this product
+    // is sold). `unit` carries the minimum as display copy only;
+    // `minimumQuantity` is the explicit, structured field the quantity
+    // logic actually reads (see utils/products.js minimumQuantityOf).
+    unit: "unidade (mín. 4)",
+    minimumQuantity: 4,
+    price: "$5/un",
     sensory: "Bolinho macio de mel e especiarias, recheado com doce de leite, coberto de chocolate.",
     kind: "cake",
     tint: COLORS.caramelDark,
@@ -382,8 +405,14 @@ export const PRODUCTS = [
   {
     id: "chocobomb",
     name: "Chocobomb",
-    unit: "unidade",
-    price: "Sob consulta 💬",
+    // Commercial review confirmed: $4 cada — the price of ONE Chocobomb,
+    // not a box of 4 — pedido mínimo 4 unidades. `unit` carries the
+    // minimum as display copy only; `minimumQuantity` is the explicit,
+    // structured field the quantity logic actually reads (see
+    // utils/products.js minimumQuantityOf).
+    unit: "unidade (mín. 4)",
+    minimumQuantity: 4,
+    price: "$4/un",
     sensory: "Oreo mergulhado em fudge cremoso — pra quando bate aquela vontade impossível de ignorar.",
     kind: "dipped",
     tint: COLORS.caramelLight,
