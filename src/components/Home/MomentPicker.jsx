@@ -45,14 +45,22 @@ const MOMENT_PHOTO_STYLE = {
 //
 // Second correction pass: the first ink-based attempt was still too gentle
 // — it topped out under 90% opacity over a long, gradual ramp, which read
-// as barely different from the old peach wash at a glance. This version is
-// deliberately more assertive: the photo stays completely untouched
-// through just over half the card, then a short, fast ramp (about 20
-// points of the card's height) takes it to a genuinely dark, near-opaque
-// base — the kind of contrast PresenteEntryScreen's own scrim has, not a
-// faint tint. Text below is white/cream (see MomentCard's h3/p).
-const TEXT_PANEL_GRADIENT_DESKTOP = `linear-gradient(to bottom, ${COLORS.ink}00 0%, ${COLORS.ink}00 54%, ${COLORS.ink}A6 74%, ${COLORS.ink}EB 90%, ${COLORS.ink}F7 100%)`;
-const TEXT_PANEL_GRADIENT_MOBILE = `linear-gradient(to bottom, ${COLORS.ink}00 0%, ${COLORS.ink}00 58%, ${COLORS.ink}A6 78%, ${COLORS.ink}EB 92%, ${COLORS.ink}F7 100%)`;
+// as barely different from the old peach wash at a glance. Pushed it to a
+// short, fast ramp reaching ~97% opacity — but that overshot: at ~97% the
+// bottom of the card goes nearly solid black, the photo stops reading as a
+// photo there at all. Too heavy, not "a shadow," which is exactly the
+// "não filtro, não cobrir metade da foto" the brief asked to avoid in the
+// first place, just in the opposite direction.
+//
+// Third correction pass: capped the max opacity at the same ~80% ceiling
+// PresenteEntryScreen's own approved scrim uses (`${COLORS.ink}CC` there)
+// — this was always the reference being matched, and 80% is where it
+// actually tops out, not ~97%. The photo now stays faintly visible even at
+// the very bottom edge (a shadow, not a block), while the ramp itself
+// stays short and fast so the darkening still reads as deliberate, not
+// gradual mush. Text below is white/cream (see MomentCard's h3/p).
+const TEXT_PANEL_GRADIENT_DESKTOP = `linear-gradient(to bottom, ${COLORS.ink}00 0%, ${COLORS.ink}00 54%, ${COLORS.ink}5C 72%, ${COLORS.ink}A8 85%, ${COLORS.ink}CC 100%)`;
+const TEXT_PANEL_GRADIENT_MOBILE = `linear-gradient(to bottom, ${COLORS.ink}00 0%, ${COLORS.ink}00 58%, ${COLORS.ink}5C 76%, ${COLORS.ink}A8 88%, ${COLORS.ink}CC 100%)`;
 
 function MomentCard({ moment, photoSrc, eager, featured, onSelect }) {
   const lines = moment.titleLines ?? [moment.label];
