@@ -118,13 +118,17 @@ function MomentCard({ moment, photoSrc, eager, featured, onSelect }) {
         {/* Visual-correction pass: a touch more compact (was h-11/px-[18px])
             now that it sits on a tighter, darker scrim — reads as refined,
             not a default-sized button dropped onto the card.
-            Text-treatment pass: dropped `self-end` — the reference keeps
-            the button on the same left edge as the title/tagline above it,
-            not floated to the opposite corner, so the whole text block
-            reads as one aligned column. */}
+            Text-treatment pass (correction): an earlier round dropped
+            `self-end` here, assuming the reference left-aligned the button
+            under the text. Measured the reference mockup directly (pixel
+            analysis, not eyeballing): the title starts ~7% in from the
+            card's left edge, but the button spans ~52%-89% of the card's
+            width — clearly right-aligned, not flush with the text above
+            it. Restored `self-end`, which is what this already was before
+            that round. */}
         <button
           onClick={onSelect}
-          className="mt-4 md:mt-3 shrink-0 font-semibold md:font-medium h-10 md:h-10 px-4 text-[13.5px]"
+          className="mt-4 md:mt-3 self-end shrink-0 font-semibold md:font-medium h-10 md:h-10 px-4 text-[13.5px]"
           style={{ backgroundColor: COLORS.caramelDarker, color: COLORS.beige, borderRadius: 999 }}
         >
           Quero isso →
