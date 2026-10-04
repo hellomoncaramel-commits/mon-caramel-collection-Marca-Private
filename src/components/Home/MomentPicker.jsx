@@ -107,9 +107,42 @@ const MOMENT_PHOTO_STYLE = {
 const TEXT_PANEL_GRADIENT_DESKTOP = `linear-gradient(to bottom, ${COLORS.ink}00 0%, ${COLORS.ink}00 56%, ${COLORS.ink}26 70%, ${COLORS.ink}99 85%, ${COLORS.ink}CC 100%)`;
 const TEXT_PANEL_GRADIENT_MOBILE = `linear-gradient(to bottom, ${COLORS.ink}00 0%, ${COLORS.ink}00 58%, ${COLORS.ink}26 72%, ${COLORS.ink}99 86%, ${COLORS.ink}CC 100%)`;
 
+// Eighth correction pass: the seventh pass's photo treatment itself was
+// approved ("a direção da FOTO agora está muito melhor") but legibility
+// suffered — the tagline especially ("Café, TPM, lanche ou só vontade de
+// um docinho.") got hard to read over light-colored cookies. The brief was
+// explicit: don't darken the whole card again, add a second, localized
+// scrim that only strengthens the band where title/tagline/button actually
+// sit, stacked on top of the existing full-card gradient above (which
+// keeps the top of every photo untouched). Alpha compositing of the two
+// semi-transparent ink layers means the extra darkening only shows up
+// where both overlap — near the bottom — not higher up where the first
+// gradient is still close to 0.
+// Peak opacity is keyed by moment.id so each photo's own brightness can
+// get a different amount of help without changing the shared curve shape
+// — same visual language (one soft ink layer, transparent until ~58-62%,
+// ramping to its own peak at the very bottom), different intensity. All
+// three start at the same default peak this round, per Naia's request to
+// close the shared system first before any single-photo special case.
+const CONTENT_SCRIM_PEAK = {
+  // moment.id: hex alpha suffix (two digits) for the peak stop at 100%.
+  // Override here, e.g. festa: "80", if one photo still needs more once
+  // the shared default is reviewed.
+};
+const DEFAULT_CONTENT_SCRIM_PEAK = "6B"; // ≈ 42%
+
+function contentScrimGradient(momentId, startStop) {
+  const peak = CONTENT_SCRIM_PEAK[momentId] ?? DEFAULT_CONTENT_SCRIM_PEAK;
+  return `linear-gradient(to bottom, ${COLORS.ink}00 0%, ${COLORS.ink}00 ${startStop}, ${COLORS.ink}${peak} 100%)`;
+}
+
 function MomentCard({ moment, photoSrc, eager, featured, onSelect }) {
   const lines = moment.titleLines ?? [moment.label];
   const photoStyle = MOMENT_PHOTO_STYLE[moment.id];
+  // Subtle text-shadow — support only, not the main fix (the brief was
+  // explicit: no glow/outline, the localized scrim above does the real
+  // work). Soft, small, ink-colored rather than pure black.
+  const textShadow = `0 1px 2px ${COLORS.ink}59`; // ≈ 35%
   return (
     // rounded-3xl: same "primary photo card" radius as ProductCard, FeedCard
     // and the Presente inspiration frames — was a one-off inline 20px before.
@@ -123,6 +156,8 @@ function MomentCard({ moment, photoSrc, eager, featured, onSelect }) {
       />
       <div className="absolute inset-0 md:hidden" style={{ background: TEXT_PANEL_GRADIENT_MOBILE }} />
       <div className="absolute inset-0 hidden md:block" style={{ background: TEXT_PANEL_GRADIENT_DESKTOP }} />
+      <div className="absolute inset-0 md:hidden" style={{ background: contentScrimGradient(moment.id, "62%") }} />
+      <div className="absolute inset-0 hidden md:block" style={{ background: contentScrimGradient(moment.id, "58%") }} />
 
       <div className="absolute left-6 right-6 bottom-[22px] md:left-5 md:right-5 md:bottom-5 flex flex-col items-start">
         {/* Text-treatment pass (correction): an earlier round pulled this
@@ -139,6 +174,7 @@ function MomentCard({ moment, photoSrc, eager, featured, onSelect }) {
             // everywhere below lg (no mobile/tablet change).
             featured ? "lg:text-[29px]" : "lg:text-[25px]"
           }`}
+          style={{ textShadow }}
           aria-label={moment.label}
         >
           {/* Mobile: editorial, explicitly-broken lines, no emoji in the
@@ -159,7 +195,10 @@ function MomentCard({ moment, photoSrc, eager, featured, onSelect }) {
             {moment.label}
           </span>
         </h3>
-        <p className="text-white/85 mt-3.5 md:mt-1.5 max-w-[210px] md:max-w-none text-[15px] md:text-[13px] leading-[1.3] md:leading-[1.35]">
+        <p
+          className="text-white/85 mt-3.5 md:mt-1.5 max-w-[210px] md:max-w-none text-[15px] md:text-[13px] leading-[1.3] md:leading-[1.35]"
+          style={{ textShadow }}
+        >
           {MOMENT_TAGLINE[moment.id]}
         </p>
         {/* Visual-correction pass: a touch more compact (was h-11/px-[18px])
