@@ -104,8 +104,19 @@ const MOMENT_PHOTO_STYLE = {
 // photo's own real darkness (chocolate/cookie tones already dark where the
 // text sits) does most of the contrast work — the scrim only needs to tip
 // the balance, not carry it alone.
-const TEXT_PANEL_GRADIENT_DESKTOP = `linear-gradient(to bottom, ${COLORS.ink}00 0%, ${COLORS.ink}00 56%, ${COLORS.ink}26 70%, ${COLORS.ink}99 85%, ${COLORS.ink}CC 100%)`;
-const TEXT_PANEL_GRADIENT_MOBILE = `linear-gradient(to bottom, ${COLORS.ink}00 0%, ${COLORS.ink}00 58%, ${COLORS.ink}26 72%, ${COLORS.ink}99 86%, ${COLORS.ink}CC 100%)`;
+// Eleventh correction pass (micro-adjustment): structure/contrast/legibility
+// all approved ("Presentes e Festa estão aprovados em estrutura, contraste e
+// direção visual"). The one remaining note — the final ~15-20% of the card
+// still reads a touch more brown/dark than the reference target — is scoped
+// to only the LAST stop (100%) of both this gradient and the content scrim
+// below, left untouched everywhere else: start point (56-58%) and every
+// intermediate stop (70/72%, 85/86%) that the approved legibility actually
+// depends on stay exactly as they were. Eased ~12% (CC → B3), which only
+// moves the tail end of the 85→100% interpolation — the subtitle, which
+// sits above the 85/86% stop, is unaffected (confirmed: <1pp difference at
+// its lower edge).
+const TEXT_PANEL_GRADIENT_DESKTOP = `linear-gradient(to bottom, ${COLORS.ink}00 0%, ${COLORS.ink}00 56%, ${COLORS.ink}26 70%, ${COLORS.ink}99 85%, ${COLORS.ink}B3 100%)`;
+const TEXT_PANEL_GRADIENT_MOBILE = `linear-gradient(to bottom, ${COLORS.ink}00 0%, ${COLORS.ink}00 58%, ${COLORS.ink}26 72%, ${COLORS.ink}99 86%, ${COLORS.ink}B3 100%)`;
 
 // Eighth correction pass: the seventh pass's photo treatment itself was
 // approved ("a direção da FOTO agora está muito melhor") but legibility
@@ -138,8 +149,13 @@ const TEXT_PANEL_GRADIENT_MOBILE = `linear-gradient(to bottom, ${COLORS.ink}00 0
 // same curve, not just the shared default, to hold the title/tagline —
 // dia-dificil and presente share one curve, festa gets its own (same
 // shape, stronger stops).
+// Eleventh correction pass (micro-adjustment): only the `tail` (100% stop)
+// of each entry eased ~12%, same reasoning as the base gradient above —
+// the mid/peak stops that hold title+tagline contrast are untouched, so
+// legibility right up to the subtitle's own lower edge (~83%, well above
+// the 100% point this affects) stays effectively identical.
 const CONTENT_SCRIM_STOPS = {
-  default: { mid: "4D", peak: "8C", tail: "40" }, // ≈30% / 55% / 25%
+  default: { mid: "4D", peak: "8C", tail: "38" }, // ≈30% / 55% / 22% (tail was 25%)
   // Tenth correction pass: legibility on festa was approved as-is, but
   // Naia flagged the scrim itself as too visible — "uma mancha marrom/
   // escura subindo pelo centro inferior da fotografia," reading as an
@@ -148,7 +164,7 @@ const CONTENT_SCRIM_STOPS = {
   // same stop positions (not touched) — only the three alpha values eased
   // down a notch (~12-15% relative) to soften how visible the scrim itself
   // is while staying dark enough to hold the same title/tagline contrast.
-  festa: { mid: "59", peak: "8F", tail: "47" }, // ≈35% / 56% / 28% (was 40/64/32)
+  festa: { mid: "59", peak: "8F", tail: "3E" }, // ≈35% / 56% / 24% (tail was 28%)
 };
 
 function contentScrimGradient(momentId, startStop) {
