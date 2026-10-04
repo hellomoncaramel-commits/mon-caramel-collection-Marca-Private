@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { X, Copy, Instagram, MessageCircle, CheckCircle2 } from "lucide-react";
 import { COLORS } from "../../styles/colors";
+import { useModalLock } from "../../hooks/useModalLock";
 
 // Same number Footer.jsx already links to (+1 647-376-8064) — kept as its
 // own local constant here rather than a shared one, matching how Footer
@@ -10,6 +11,7 @@ import { COLORS } from "../../styles/colors";
 const WHATSAPP_DIGITS = "16473768064";
 
 export default function SendModal({ message, onClose }) {
+  useModalLock(onClose);
   const [copied, setCopied] = useState(false);
 
   const copy = async () => {

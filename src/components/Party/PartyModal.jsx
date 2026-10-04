@@ -2,10 +2,12 @@ import { useState } from "react";
 import { COLORS } from "../../styles/colors";
 import { photosForMoment } from "../../utils/products";
 import Photo from "../shared/Photo";
+import { useModalLock } from "../../hooks/useModalLock";
 
 // Quantity + optional theme/notes, shared across every product added to
 // "Minha Festa" (briefing section 5) — no pricing shown anywhere here.
 export default function PartyModal({ product, sharedTheme, sharedNotes, existingQty, onCancel, onConfirm }) {
+  useModalLock(onCancel);
   const [qty, setQty] = useState(existingQty ? String(existingQty) : "1");
   const [theme, setTheme] = useState(sharedTheme);
   const [notes, setNotes] = useState(sharedNotes);
@@ -34,8 +36,9 @@ export default function PartyModal({ product, sharedTheme, sharedNotes, existing
           <p className="text-lg font-display text-brand-ink leading-tight">🎉 {product.name}</p>
         </div>
 
-        <label className="text-xs font-medium block mb-1 text-brand-muted">Quantidade desejada</label>
+        <label htmlFor="party-qty" className="text-xs font-medium block mb-1 text-brand-muted">Quantidade desejada</label>
         <input
+          id="party-qty"
           type="number"
           min="1"
           value={qty}
@@ -43,8 +46,9 @@ export default function PartyModal({ product, sharedTheme, sharedNotes, existing
           className="w-full rounded-xl border border-brand-border px-3 py-2 mb-4 text-sm bg-white"
         />
 
-        <label className="text-xs font-medium block mb-1 text-brand-muted">Tema da festa (opcional)</label>
+        <label htmlFor="party-theme" className="text-xs font-medium block mb-1 text-brand-muted">Tema da festa (opcional)</label>
         <input
+          id="party-theme"
           type="text"
           value={theme}
           onChange={(e) => setTheme(e.target.value)}
@@ -52,8 +56,9 @@ export default function PartyModal({ product, sharedTheme, sharedNotes, existing
           className="w-full rounded-xl border border-brand-border px-3 py-2 mb-4 text-sm bg-white"
         />
 
-        <label className="text-xs font-medium block mb-1 text-brand-muted">Observações (opcional)</label>
+        <label htmlFor="party-notes" className="text-xs font-medium block mb-1 text-brand-muted">Observações (opcional)</label>
         <textarea
+          id="party-notes"
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           placeholder="Alguma preferência de cor, sabor ou detalhe especial?"

@@ -11,6 +11,7 @@ import ProductBadges from "../shared/ProductBadges";
 import MonCaramelNote from "../shared/MonCaramelNote";
 import NextTemptation from "../shared/NextTemptation";
 import FlavorConfigurator from "../Moment/FlavorConfigurator";
+import { useModalLock } from "../../hooks/useModalLock";
 
 // Seduction happens in the feed; this is where information and the actual
 // "quero esse" decision live (progressive disclosure). Opens as a mobile
@@ -34,6 +35,8 @@ export default function ProductDetailSheet({
   momentId,
   onOpenProduct,
 }) {
+  useModalLock(onClose);
+
   const isCustomizable = p.customizable === true;
   const existing = selection.find((it) => it.kind === "product" && it.productId === p.id);
   const isFav = favorites.includes(p.id);
