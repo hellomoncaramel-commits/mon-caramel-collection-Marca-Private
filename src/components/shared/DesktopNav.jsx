@@ -1,11 +1,11 @@
-import { Heart, Search, ShoppingBag } from "lucide-react";
+import { Search, ShoppingBag } from "lucide-react";
 import { COLORS } from "../../styles/colors";
 import Logo from "./Logo";
 
 // Primary site nav — real destinations only (no "Quem Somos"/"Mais", those
 // don't exist in this app). "Nossos doces" and "Presentes" aren't in
-// App.jsx's activeNav computation (that only tracks home/salvos/busca/
-// selecao — see App.jsx), so only "Início" gets the underline; the other
+// App.jsx's activeNav computation (that only tracks home/busca/selecao —
+// see App.jsx), so only "Início" gets the underline; the other
 // two are real, working links, just without an active indicator yet.
 const PRIMARY_ITEMS = [
   { id: "home", label: "Início" },
@@ -15,13 +15,12 @@ const PRIMARY_ITEMS = [
 
 // Desktop-only top navigation (lg+) — BottomNav's own mobile/tablet
 // behavior (hidden from md up) is untouched. This is the ONE brand header
-// on desktop: logo, primary nav, a search entry point, and the two
-// personal-state destinations (Salvos/Seleção) — every screen's own
-// SiteHeader hides its centered logo at lg+ (see SiteHeader.jsx) so the
-// brand mark only appears once per page. No "Entrar"/"Sacola"/checkout —
-// this app doesn't have accounts or a cart, just Salvos (favorites) and
-// Seleção (the pre-WhatsApp list), both real, existing destinations.
-export default function DesktopNav({ active, onNavigate, selectionCount, favoritesCount }) {
+// on desktop: logo, primary nav, a search entry point, and Seleção — every
+// screen's own SiteHeader hides its centered logo at lg+ (see
+// SiteHeader.jsx) so the brand mark only appears once per page. No
+// "Entrar"/"Sacola"/checkout, and no wishlist — V1 doesn't have a separate
+// Salvos/favorites concept, just Seleção (the pre-WhatsApp list).
+export default function DesktopNav({ active, onNavigate, selectionCount }) {
   return (
     <div className="hidden lg:block border-b border-brand-border">
       <div className="w-full px-8 flex items-center gap-8 xl:gap-12" style={{ height: 84 }}>
@@ -59,23 +58,6 @@ export default function DesktopNav({ active, onNavigate, selectionCount, favorit
         >
           <Search size={17} className="text-brand-muted shrink-0" />
           <span className="text-sm text-brand-muted truncate">Buscar doces, sabores...</span>
-        </button>
-
-        <button onClick={() => onNavigate("salvos")} className="flex flex-col items-center gap-0.5 shrink-0" aria-current={active === "salvos" ? "page" : undefined}>
-          <span className="relative">
-            <Heart size={20} strokeWidth={active === "salvos" ? 2.5 : 2} style={{ color: active === "salvos" ? COLORS.caramelDark : COLORS.ink }} />
-            {favoritesCount > 0 && (
-              <span
-                className="absolute -top-1.5 -right-2 min-w-4 h-4 px-1 rounded-full text-white text-3xs font-medium flex items-center justify-center"
-                style={{ backgroundColor: COLORS.caramelDark }}
-              >
-                {favoritesCount}
-              </span>
-            )}
-          </span>
-          <span className="text-xs font-medium" style={{ color: active === "salvos" ? COLORS.caramelDark : COLORS.ink }}>
-            Salvos
-          </span>
         </button>
 
         <button onClick={() => onNavigate("selecao")} className="flex flex-col items-center gap-0.5 shrink-0" aria-current={active === "selecao" ? "page" : undefined}>

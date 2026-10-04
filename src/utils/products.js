@@ -40,7 +40,7 @@ export function photosForMoment(product, momentId) {
 }
 
 // Whether a product belongs in general, price-showing browsing (the feed,
-// search, favorites). Excludes: presente-exclusive items (pure inspiration,
+// search, catalog). Excludes: presente-exclusive items (pure inspiration,
 // not an individual SKU with its own day-to-day moment — they live only in
 // PresenteScreen) and festa-exclusive items, since the Festa flow
 // deliberately never shows a price or mixes with Minha Seleção. A product
@@ -56,7 +56,7 @@ export function isBrowsable(product) {
 }
 
 // Same idea as photosForMoment, but for contexts with no moment in play
-// (the feed, search results, favorites) — first whatever general photos
+// (the feed, search results, catalog) — first whatever general photos
 // the product has, otherwise the first moment-specific set available.
 export function defaultPhotos(product) {
   if (product.photos) return product.photos;
@@ -72,6 +72,36 @@ export function parseQuantityOptions(unit) {
   const nums = (unit || "").match(/\d+/g);
   if (!nums || nums.length === 0) return [1];
   return [...new Set(nums.map((n) => parseInt(n, 10)))];
+}
+
+// A real commercial minimum ONLY when the unit text says so explicitly
+// ("mín. 5", "mín. 12 un") — deliberately NOT inferred from the first
+// number parseQuantityOptions would find. That number can just as easily
+// be a pack size ("3 unidades") or a weight ("250g", "~60g ... por
+// unidade"), neither of which means "can't order fewer than that many
+// units" — conflating them would silently floor Sequilhos/Bala de Coco at
+// 250/150 "units". Returns null (no artificial floor) whenever "mín."
+// isn't present, rather than guessing.
+export function parseMinQuantity(unit) {
+  const match = (unit || "").match(/mín\.?\s*(\d+)/i);
+  return match ? parseInt(match[1], 10) : null;
+}
+
+// The quantity to start a product at — quick-add (ProductCard/FeedCard/
+// SearchScreen) and the detail sheet's own stepper. `unit` is display
+// copy, not a quantity source: only an explicit "mín." (parseMinQuantity)
+// is trusted. Everything else about `unit` — "3 unidades" (a pack size,
+// not a stated minimum), "250g"/"150g"/"~60g ... por unidade" (a weight,
+// not a count at all) — starts at the ordinary 1, same as any product
+// with no number in its unit at all.
+//
+// Only ever called for non-customizable products: the one customizable
+// product today (Brigadeiro, "6, 12 ou 24 unidades") is always routed to
+// FlavorConfigurator instead, whose own qtyOptions stepper (built on
+// parseQuantityOptions) already handles that discrete-options case
+// correctly and isn't touched by this.
+export function initialQuantity(unit) {
+  return parseMinQuantity(unit) ?? 1;
 }
 
 // Splits a total quantity evenly across N selected flavors, handing the

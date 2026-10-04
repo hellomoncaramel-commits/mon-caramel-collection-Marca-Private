@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 
 const STORAGE_KEY = "mon-caramel:party";
 
-// Same lazy-load-once + try/catch pattern as useFavorites.js/useSelection.js
-// — items, theme and notes are all real planning work a customer can spend
-// several minutes on, so all three are persisted together.
+// Same lazy-load-once + try/catch pattern as useSelection.js — items,
+// theme and notes are all real planning work a customer can spend several
+// minutes on, so all three are persisted together.
 function loadInitialParty() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -67,5 +67,10 @@ export function useParty() {
     setModalProduct(null);
   };
 
-  return { items, theme, notes, modalProduct, toast, openModal, closeModal, confirmAdd };
+  // Removes only this one item — theme/notes are shared across the whole
+  // party plan, not per-item, so they're left untouched here (same
+  // reasoning as removeFromSelection never touching unrelated entries).
+  const removeItem = (id) => setItems((cur) => cur.filter((it) => it.id !== id));
+
+  return { items, theme, notes, modalProduct, toast, openModal, closeModal, confirmAdd, removeItem };
 }

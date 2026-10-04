@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { ChevronRight, Heart, Search, ShoppingBag } from "lucide-react";
+import { ChevronRight, Search, ShoppingBag } from "lucide-react";
 import { REAL_PHOTOS } from "../../data/photos";
 import { PRODUCTS } from "../../data/products";
 import { defaultPhotos } from "../../utils/products";
@@ -70,31 +70,12 @@ function HeroActionCard({ a, onSelect, height, radius, iconSize, emojiSize, titl
   );
 }
 
-function FavoriteProductCard({ p, isFav, onToggleFavorite, onOpen, className, style }) {
+function FavoriteProductCard({ p, onOpen, className, style }) {
   const photo = defaultPhotos(p)?.[0];
   return (
     <button onClick={() => onOpen?.(p)} className={`text-left transition-transform duration-200 lg:hover:scale-[1.03] active:scale-[0.98] ${className}`} style={style}>
       <div className="relative rounded-2xl overflow-hidden aspect-square">
         <Photo src={photo} alt="" className="w-full h-full object-cover" loading="lazy" />
-        <span
-          onClick={(e) => {
-            e.stopPropagation();
-            onToggleFavorite?.(p.id);
-          }}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              e.stopPropagation();
-              onToggleFavorite?.(p.id);
-            }
-          }}
-          aria-label={isFav ? `Remover ${p.name} dos salvos` : `Salvar ${p.name}`}
-          className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/90 flex items-center justify-center"
-        >
-          <Heart size={12} fill={isFav ? COLORS.caramelDark : "none"} stroke={COLORS.caramelDark} />
-        </span>
       </div>
       <p className="mt-2 text-xs font-display text-brand-ink leading-tight truncate">{p.name}</p>
       <p className="text-3xs font-medium mt-0.5" style={{ color: COLORS.caramelDark }}>
@@ -110,9 +91,8 @@ function FavoriteProductCard({ p, isFav, onToggleFavorite, onOpen, className, st
 // photo + stacked cards + horizontal scroll strip; desktop: contained,
 // capped hero + a 4-column grid — see the `lg:hidden`/`hidden lg:block`
 // blocks below). No more two-button mobile overlay + separate headline.
-export default function HomeScreen({ onSelect, onOpenProduct, favorites, toggleFavorite, selection }) {
+export default function HomeScreen({ onSelect, onOpenProduct, selection }) {
   const favoriteProducts = FAVORITE_PRODUCT_IDS.map((id) => PRODUCTS.find((p) => p.id === id)).filter(Boolean);
-  const favoritesCount = favorites?.length ?? 0;
   const selectionCount = selection?.length ?? 0;
   const dragScroll = useDragScroll();
 
@@ -138,23 +118,12 @@ export default function HomeScreen({ onSelect, onOpenProduct, favorites, toggleF
         {/* Home-specific brand header — not the generic SiteHeader (no back
             button here; Home is the root screen). Logo gets real size/
             presence (same "home" preset used by every other screen's
-            SiteHeader), Salvos/Seleção on the right are the two real,
-            existing destinations — no invented hamburger/menu/account. */}
+            SiteHeader), Seleção on the right is the one real, existing
+            personal-state destination — no invented hamburger/menu/account. */}
         <div className="flex items-center justify-between" style={{ height: 76 }}>
           <div className="w-11" />
           <Logo size="home" />
           <div className="flex items-center">
-            <button onClick={() => onSelect("salvos")} aria-label="Ver salvos" className="relative w-11 h-11 flex items-center justify-center transition-transform active:scale-90">
-              <Heart size={20} className="text-brand-caramelDark" />
-              {favoritesCount > 0 && (
-                <span
-                  className="absolute top-1 right-1 min-w-4 h-4 px-1 rounded-full text-white text-3xs font-medium flex items-center justify-center"
-                  style={{ backgroundColor: COLORS.caramelDark }}
-                >
-                  {favoritesCount}
-                </span>
-              )}
-            </button>
             <button onClick={() => onSelect("selecao")} aria-label="Ver seleção" className="relative w-11 h-11 flex items-center justify-center transition-transform active:scale-90">
               <ShoppingBag size={20} className="text-brand-caramelDark" />
               {selectionCount > 0 && (
@@ -246,8 +215,8 @@ export default function HomeScreen({ onSelect, onOpenProduct, favorites, toggleF
         </div>
 
         {/* "Nossos doces favoritos" — horizontal scroll strip, real
-            products/photos/prices, favorite toggle, ProductDetail on tap
-            (same openProductDetail App.jsx already uses everywhere else). */}
+            products/photos/prices, ProductDetail on tap (same
+            openProductDetail App.jsx already uses everywhere else). */}
         <div className="mt-7">
           <div className="flex items-center justify-between mb-3.5 gap-2">
             <h2 className="font-display font-medium text-brand-ink whitespace-nowrap" style={{ fontSize: 26 }}>
@@ -270,8 +239,6 @@ export default function HomeScreen({ onSelect, onOpenProduct, favorites, toggleF
               <FavoriteProductCard
                 key={p.id}
                 p={p}
-                isFav={favorites?.includes(p.id)}
-                onToggleFavorite={toggleFavorite}
                 onOpen={onOpenProduct}
                 className="shrink-0 snap-start"
                 style={{ width: 140 }}

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { COLORS } from "../../styles/colors";
-import { photosForMoment } from "../../utils/products";
+import { photosForMoment, initialQuantity } from "../../utils/products";
 import Photo from "../shared/Photo";
 import { useModalLock } from "../../hooks/useModalLock";
 
@@ -8,13 +8,21 @@ import { useModalLock } from "../../hooks/useModalLock";
 // "Minha Festa" (briefing section 5) — no pricing shown anywhere here.
 export default function PartyModal({ product, sharedTheme, sharedNotes, existingQty, onCancel, onConfirm }) {
   useModalLock(onCancel);
-  const [qty, setQty] = useState(existingQty ? String(existingQty) : "1");
+  // Only an EXPLICIT "mín." in the unit text is trusted as a real floor
+  // (e.g. "mín. 12 un") — used to both default and clamp the quantity,
+  // instead of the generic 1 every product used to start/floor at
+  // regardless of its own stated minimum. A plain quantity/pack/weight
+  // number with no "mín." is never treated as a floor (see
+  // initialQuantity) — none of Festa's other products have one today,
+  // but this stays correct if one later does.
+  const minQty = initialQuantity(product.unit);
+  const [qty, setQty] = useState(existingQty ? String(existingQty) : String(minQty));
   const [theme, setTheme] = useState(sharedTheme);
   const [notes, setNotes] = useState(sharedNotes);
   const photo = photosForMoment(product, "festa")?.[0];
 
   const confirm = () => {
-    onConfirm({ qty: Math.max(1, parseInt(qty, 10) || 1), theme, notes });
+    onConfirm({ qty: Math.max(minQty, parseInt(qty, 10) || minQty), theme, notes });
   };
 
   return (
@@ -40,7 +48,7 @@ export default function PartyModal({ product, sharedTheme, sharedNotes, existing
         <input
           id="party-qty"
           type="number"
-          min="1"
+          min={minQty}
           value={qty}
           onChange={(e) => setQty(e.target.value)}
           className="w-full rounded-xl border border-brand-border px-3 py-2 mb-4 text-sm bg-white"

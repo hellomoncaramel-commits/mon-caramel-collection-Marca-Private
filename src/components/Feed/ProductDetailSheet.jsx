@@ -2,7 +2,7 @@ import { useState } from "react";
 import { X, Heart, Snowflake, Sparkles, Share2 } from "lucide-react";
 import { COLORS } from "../../styles/colors";
 import { PRODUCTS } from "../../data/products";
-import { defaultPhotos, parseQuantityOptions } from "../../utils/products";
+import { defaultPhotos, initialQuantity } from "../../utils/products";
 import PhotoCarousel from "../shared/PhotoCarousel";
 import ProductArt from "../shared/ProductArt";
 import Photo from "../shared/Photo";
@@ -17,9 +17,9 @@ import { useModalLock } from "../../hooks/useModalLock";
 // "quero esse" decision live (progressive disclosure). Opens as a mobile
 // bottom sheet — same product, more room, no page navigation needed.
 //
-// `momentId` is which journey this sheet was opened from — Feed/Search/
-// Salvos never pass one, so `showExperience` stays false there and the
-// sheet renders exactly as it always has. Only Dias de luta passes
+// `momentId` is which journey this sheet was opened from — Feed/Search
+// never pass one, so `showExperience` stays false there and the sheet
+// renders exactly as it always has. Only Dias de luta passes
 // momentId="dia-dificil" (see MomentScreen.jsx), which turns on the Mon
 // Caramel Experience layer: badges, the editorial note, and the manual
 // "próxima tentação" cross-sell, replacing the older generic bits they'd
@@ -30,8 +30,6 @@ export default function ProductDetailSheet({
   selection,
   addToSelection,
   removeFromSelection,
-  favorites,
-  toggleFavorite,
   momentId,
   onOpenProduct,
 }) {
@@ -39,12 +37,16 @@ export default function ProductDetailSheet({
 
   const isCustomizable = p.customizable === true;
   const existing = selection.find((it) => it.kind === "product" && it.productId === p.id);
-  const isFav = favorites.includes(p.id);
   const canFreeze = p.moments.includes("freezer");
   const photos = defaultPhotos(p);
   const showExperience = momentId === "dia-dificil";
 
-  const [qty, setQty] = useState(existing?.qty ?? parseQuantityOptions(p.unit)[0]);
+  // Both the starting quantity and the stepper's floor come from the same
+  // place: an EXPLICIT "mín." in the unit text, or 1 otherwise — never a
+  // plain pack/weight number ("12 unidades", "250g") the data doesn't
+  // actually declare as a minimum (see initialQuantity/parseMinQuantity).
+  const minQty = initialQuantity(p.unit);
+  const [qty, setQty] = useState(existing?.qty ?? minQty);
 
   const related = (p.relatedProducts ?? []).map((id) => PRODUCTS.find((x) => x.id === id)).filter(Boolean).slice(0, 3);
 
@@ -86,14 +88,6 @@ export default function ProductDetailSheet({
           <X size={18} className="text-brand-ink" />
         </button>
         <div className="absolute top-3 right-3 z-10 flex gap-2">
-          <button
-            onClick={() => toggleFavorite(p.id)}
-            aria-label={isFav ? `Remover ${p.name} dos salvos` : `Salvar ${p.name}`}
-            aria-pressed={isFav}
-            className="w-11 h-11 rounded-full bg-white/90 flex items-center justify-center transition-transform active:scale-90"
-          >
-            <Heart size={18} fill={isFav ? COLORS.caramelDark : "none"} stroke={COLORS.caramelDark} />
-          </button>
           <button
             onClick={share}
             aria-label="Compartilhar"
@@ -196,7 +190,7 @@ export default function ProductDetailSheet({
             </div>
           ) : (
             <div className="flex items-center justify-between mt-4 gap-3">
-              <QuantityStepper value={qty} onChange={setQty} />
+              <QuantityStepper value={qty} onChange={setQty} min={minQty} />
               <button
                 onClick={() => (existing ? removeFromSelection(existing) : add())}
                 className="flex-1 text-sm font-medium rounded-full py-3 min-h-11 flex items-center justify-center gap-2 transition-transform active:scale-95"

@@ -3,7 +3,7 @@ import { entryKey } from "../utils/selectionKey";
 
 const STORAGE_KEY = "mon-caramel:selection";
 
-// Same lazy-load-once + try/catch pattern as useFavorites.js — read once at
+// Lazy-load-once + try/catch pattern (same as useParty.js) — read once at
 // module-load-time (the one useSelection instance App.jsx holds), never
 // crash on private browsing/disabled/corrupted storage, just start empty.
 function loadInitialSelection() {
