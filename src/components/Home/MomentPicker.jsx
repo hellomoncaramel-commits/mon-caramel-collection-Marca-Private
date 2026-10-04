@@ -140,7 +140,15 @@ const TEXT_PANEL_GRADIENT_MOBILE = `linear-gradient(to bottom, ${COLORS.ink}00 0
 // shape, stronger stops).
 const CONTENT_SCRIM_STOPS = {
   default: { mid: "4D", peak: "8C", tail: "40" }, // ≈30% / 55% / 25%
-  festa: { mid: "66", peak: "A3", tail: "52" }, // ≈40% / 64% / 32%
+  // Tenth correction pass: legibility on festa was approved as-is, but
+  // Naia flagged the scrim itself as too visible — "uma mancha marrom/
+  // escura subindo pelo centro inferior da fotografia," reading as an
+  // applied wash rather than a shadow, against this photo's busier,
+  // more colorful content (pastel cupcakes, grass, flowers). Same shape,
+  // same stop positions (not touched) — only the three alpha values eased
+  // down a notch (~12-15% relative) to soften how visible the scrim itself
+  // is while staying dark enough to hold the same title/tagline contrast.
+  festa: { mid: "59", peak: "8F", tail: "47" }, // ≈35% / 56% / 28% (was 40/64/32)
 };
 
 function contentScrimGradient(momentId, startStop) {
