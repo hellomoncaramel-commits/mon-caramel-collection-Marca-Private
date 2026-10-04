@@ -87,6 +87,23 @@ export function parseMinQuantity(unit) {
   return match ? parseInt(match[1], 10) : null;
 }
 
+// The quantity to start a product at — quick-add (ProductCard/FeedCard/
+// SearchScreen) and the detail sheet's own stepper. `unit` is display
+// copy, not a quantity source: only an explicit "mín." (parseMinQuantity)
+// is trusted. Everything else about `unit` — "3 unidades" (a pack size,
+// not a stated minimum), "250g"/"150g"/"~60g ... por unidade" (a weight,
+// not a count at all) — starts at the ordinary 1, same as any product
+// with no number in its unit at all.
+//
+// Only ever called for non-customizable products: the one customizable
+// product today (Brigadeiro, "6, 12 ou 24 unidades") is always routed to
+// FlavorConfigurator instead, whose own qtyOptions stepper (built on
+// parseQuantityOptions) already handles that discrete-options case
+// correctly and isn't touched by this.
+export function initialQuantity(unit) {
+  return parseMinQuantity(unit) ?? 1;
+}
+
 // Splits a total quantity evenly across N selected flavors, handing the
 // remainder to the first flavors so the numbers always add up exactly.
 export function splitEvenly(total, count) {

@@ -1,6 +1,6 @@
 import { Plus, Check } from "lucide-react";
 import { COLORS } from "../../styles/colors";
-import { defaultPhotos, parseQuantityOptions } from "../../utils/products";
+import { defaultPhotos, initialQuantity } from "../../utils/products";
 import PhotoCarousel from "../shared/PhotoCarousel";
 import ProductArt from "../shared/ProductArt";
 
@@ -20,7 +20,7 @@ export default function FeedCard({ product, isAdded, onQuickAdd, onOpen }) {
       onOpen(product);
       return;
     }
-    onQuickAdd(product, parseQuantityOptions(product.unit)[0]);
+    onQuickAdd(product, initialQuantity(product.unit));
   };
 
   return (

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { X, Heart, Snowflake, Sparkles, Share2 } from "lucide-react";
 import { COLORS } from "../../styles/colors";
 import { PRODUCTS } from "../../data/products";
-import { defaultPhotos, parseQuantityOptions, parseMinQuantity } from "../../utils/products";
+import { defaultPhotos, initialQuantity } from "../../utils/products";
 import PhotoCarousel from "../shared/PhotoCarousel";
 import ProductArt from "../shared/ProductArt";
 import Photo from "../shared/Photo";
@@ -41,14 +41,12 @@ export default function ProductDetailSheet({
   const photos = defaultPhotos(p);
   const showExperience = momentId === "dia-dificil";
 
-  // Only an EXPLICIT "mín." in the unit text is trusted as a real floor
-  // (e.g. "unidade (mín. 5)") — QuantityStepper used to hardcode min={1}
-  // regardless, letting the stepper go below a stated minimum. A plain
-  // quantity/pack number with no "mín." ("12 unidades", "250g") is NOT
-  // treated as a floor: the data doesn't say whether that's a strict
-  // minimum or just what one pack/weight contains (see parseMinQuantity).
-  const minQty = parseMinQuantity(p.unit) ?? 1;
-  const [qty, setQty] = useState(existing?.qty ?? parseQuantityOptions(p.unit)[0]);
+  // Both the starting quantity and the stepper's floor come from the same
+  // place: an EXPLICIT "mín." in the unit text, or 1 otherwise — never a
+  // plain pack/weight number ("12 unidades", "250g") the data doesn't
+  // actually declare as a minimum (see initialQuantity/parseMinQuantity).
+  const minQty = initialQuantity(p.unit);
+  const [qty, setQty] = useState(existing?.qty ?? minQty);
 
   const related = (p.relatedProducts ?? []).map((id) => PRODUCTS.find((x) => x.id === id)).filter(Boolean).slice(0, 3);
 

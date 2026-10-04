@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { Search, Plus, Check, MessageCircle } from "lucide-react";
 import { PRODUCTS } from "../../data/products";
-import { isBrowsable, defaultPhotos, parseQuantityOptions } from "../../utils/products";
+import { isBrowsable, defaultPhotos, initialQuantity } from "../../utils/products";
 import { COLORS } from "../../styles/colors";
 import SiteHeader from "../shared/SiteHeader";
 import ProductArt from "../shared/ProductArt";
@@ -52,7 +52,7 @@ function ResultRow({ p, isAdded, onQuickAdd, onOpen }) {
         onClick={(e) => {
           e.stopPropagation();
           if (isCustomizable) onOpen(p);
-          else onQuickAdd(p, parseQuantityOptions(p.unit)[0]);
+          else onQuickAdd(p, initialQuantity(p.unit));
         }}
         aria-label={isAdded ? `${p.name} já está na seleção` : `Adicionar ${p.name} à seleção`}
         className="shrink-0 w-11 h-11 rounded-full flex items-center justify-center transition-transform active:scale-90"
