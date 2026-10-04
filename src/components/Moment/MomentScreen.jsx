@@ -149,8 +149,6 @@ export default function MomentScreen({
   onBack,
   onSend,
   onOpenProduct,
-  favorites,
-  toggleFavorite,
   onGoCatalog,
   selection,
   addToSelection,
@@ -167,8 +165,6 @@ export default function MomentScreen({
 
   const cardProps = {
     isFesta,
-    favorites,
-    toggleFavorite,
     selection,
     addToSelection,
     removeFromSelection,

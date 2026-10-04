@@ -6,7 +6,7 @@ import ProductArt from "../shared/ProductArt";
 
 // Discreet alternate path for customers who already know what they want —
 // no mood quiz, just the full list grouped by name (briefing section 4).
-export default function CatalogScreen({ onBack, favorites, toggleFavorite, selection, addToSelection, onOpenSelection }) {
+export default function CatalogScreen({ onBack, selection, addToSelection, onOpenSelection }) {
   const inSelection = (id) => selection.some((it) => it.productId === id);
 
   return (
@@ -18,7 +18,6 @@ export default function CatalogScreen({ onBack, favorites, toggleFavorite, selec
       <div className="space-y-3">
         {PRODUCTS.map((p) => {
           const added = inSelection(p.id);
-          const isFav = favorites.includes(p.id);
           return (
             <div
               key={p.id}
@@ -30,17 +29,7 @@ export default function CatalogScreen({ onBack, favorites, toggleFavorite, selec
               </div>
               <div className="p-3 flex-1 flex items-center justify-between gap-2">
                 <div>
-                  <div className="flex items-center gap-1.5">
-                    <h3 className="font-display text-base text-brand-ink">{p.name}</h3>
-                    <button
-                      onClick={() => toggleFavorite(p.id)}
-                      aria-label={isFav ? `Remover ${p.name} dos salvos` : `Salvar ${p.name}`}
-                      aria-pressed={isFav}
-                      className="w-11 h-11 -my-4 flex items-center justify-center"
-                    >
-                      <Heart size={14} fill={isFav ? COLORS.caramelDark : "none"} stroke={COLORS.caramelDark} />
-                    </button>
-                  </div>
+                  <h3 className="font-display text-base text-brand-ink">{p.name}</h3>
                   <p className="text-xs text-brand-muted">
                     {p.unit} · {p.price}
                   </p>

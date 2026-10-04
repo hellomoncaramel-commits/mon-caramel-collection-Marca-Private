@@ -1,9 +1,8 @@
-import { Home, Heart, Search, ShoppingBag } from "lucide-react";
+import { Home, Search, ShoppingBag } from "lucide-react";
 import { COLORS } from "../../styles/colors";
 
 const ITEMS = [
   { id: "home", Icon: Home, label: "Início" },
-  { id: "salvos", Icon: Heart, label: "Salvos" },
   { id: "busca", Icon: Search, label: "Buscar" },
   { id: "selecao", Icon: ShoppingBag, label: "Seleção" },
 ];
@@ -11,15 +10,15 @@ const ITEMS = [
 // Fixed, thumb-reachable bottom navigation — mobile only (desktop drops it,
 // see App.jsx). Labels sit under every icon so nothing here needs an
 // aria-label hack, and every tap target is a full 44px+ column.
-export default function BottomNav({ active, onNavigate, selectionCount, favoritesCount }) {
-  const badge = { salvos: favoritesCount, selecao: selectionCount };
+export default function BottomNav({ active, onNavigate, selectionCount }) {
+  const badge = { selecao: selectionCount };
 
   return (
     <nav
       className="fixed bottom-0 inset-x-0 z-30 bg-white/95 backdrop-blur border-t border-brand-border pb-safe md:hidden"
       aria-label="Navegação principal"
     >
-      <div className="max-w-xl mx-auto grid grid-cols-4">
+      <div className="max-w-xl mx-auto grid grid-cols-3">
         {ITEMS.map(({ id, Icon, label }) => {
           const isActive = active === id;
           const count = badge[id];

@@ -40,7 +40,7 @@ export function photosForMoment(product, momentId) {
 }
 
 // Whether a product belongs in general, price-showing browsing (the feed,
-// search, favorites). Excludes: presente-exclusive items (pure inspiration,
+// search, catalog). Excludes: presente-exclusive items (pure inspiration,
 // not an individual SKU with its own day-to-day moment — they live only in
 // PresenteScreen) and festa-exclusive items, since the Festa flow
 // deliberately never shows a price or mixes with Minha Seleção. A product
@@ -56,7 +56,7 @@ export function isBrowsable(product) {
 }
 
 // Same idea as photosForMoment, but for contexts with no moment in play
-// (the feed, search results, favorites) — first whatever general photos
+// (the feed, search results, catalog) — first whatever general photos
 // the product has, otherwise the first moment-specific set available.
 export function defaultPhotos(product) {
   if (product.photos) return product.photos;

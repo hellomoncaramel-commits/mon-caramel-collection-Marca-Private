@@ -61,8 +61,6 @@ export default function ProductCard({
   p,
   momentId,
   isFesta,
-  favorites,
-  toggleFavorite,
   selection,
   addToSelection,
   removeFromSelection,
@@ -70,7 +68,6 @@ export default function ProductCard({
   onOpenPartyModal,
   onOpenDetail,
 }) {
-  const isFav = favorites.includes(p.id);
   const isCustomizable = p.customizable === true;
   const existing = selection.find((it) => it.kind === "product" && it.productId === p.id);
   const [open, setOpen] = useState(false);
@@ -131,21 +128,6 @@ export default function ProductCard({
           />
         ) : (
           <ProductArt kind={p.kind} tint={p.tint} contextIcon={MOMENT_ICON[momentId]} />
-        )}
-        {!isFesta && (
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              toggleFavorite(p.id);
-            }}
-            className={`absolute top-1.5 right-1.5 flex items-center justify-center ${isDiaDificil ? "w-9 h-9" : "w-11 h-11"}`}
-            aria-label={isFav ? `Remover ${p.name} dos salvos` : `Salvar ${p.name}`}
-            aria-pressed={isFav}
-          >
-            <span className={`rounded-full bg-white/90 flex items-center justify-center ${isDiaDificil ? "w-7 h-7" : "w-full h-full"}`}>
-              <Heart size={isDiaDificil ? 13 : 16} fill={isFav ? COLORS.caramelDark : "none"} stroke={COLORS.caramelDark} />
-            </span>
-          </button>
         )}
       </div>
       <div className={`flex flex-col flex-1 ${isDiaDificil ? "pt-2.5 pb-1.5" : "p-4 lg:p-5"}`}>

@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 
 const STORAGE_KEY = "mon-caramel:party";
 
-// Same lazy-load-once + try/catch pattern as useFavorites.js/useSelection.js
-// — items, theme and notes are all real planning work a customer can spend
-// several minutes on, so all three are persisted together.
+// Same lazy-load-once + try/catch pattern as useSelection.js — items,
+// theme and notes are all real planning work a customer can spend several
+// minutes on, so all three are persisted together.
 function loadInitialParty() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);

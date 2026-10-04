@@ -4,7 +4,6 @@ import { COLORS } from "../../styles/colors";
 import { isBrowsable } from "../../utils/products";
 import SiteHeader from "../shared/SiteHeader";
 import FeedCard from "./FeedCard";
-import FavoritesNudge from "./FavoritesNudge";
 
 // Real, data-backed filters only — no invented categories. Once more
 // products carry structured tags (chocolate, low sugar, etc.) this list
@@ -18,7 +17,7 @@ const FILTERS = [
 // "Só quero olhar e passar vontade" — an editorial, Instagram/Pinterest-
 // style feed. Presente items sit this one out: they're inspiration, not
 // individually browsable products, and already have their own experience.
-export default function FeedScreen({ onBack, favorites, toggleFavorite, selection, addToSelection, onOpenProduct, onGoSaved }) {
+export default function FeedScreen({ onBack, selection, addToSelection, onOpenProduct }) {
   const [filter, setFilter] = useState("tudo");
 
   const items = useMemo(() => {
@@ -57,8 +56,6 @@ export default function FeedScreen({ onBack, favorites, toggleFavorite, selectio
           <FeedCard
             key={p.id}
             product={p}
-            isFavorite={favorites.includes(p.id)}
-            onToggleFavorite={toggleFavorite}
             isAdded={selection.some((it) => it.kind === "product" && it.productId === p.id)}
             onQuickAdd={(product, qty) =>
               addToSelection({ kind: "product", productId: product.id, name: product.name, unit: product.unit, qty, flavors: null })
@@ -69,8 +66,6 @@ export default function FeedScreen({ onBack, favorites, toggleFavorite, selectio
       </div>
 
       {items.length === 0 && <p className="text-sm text-center text-brand-muted mt-10">Nada por aqui com esse filtro ainda.</p>}
-
-      <FavoritesNudge count={favorites.length} onGoSaved={onGoSaved} />
 
       <div className="text-center mt-10 pt-6 border-t border-dashed border-brand-border">
         <p className="text-lg font-display text-brand-ink mb-3">Ainda com fome?</p>

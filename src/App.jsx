@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Heart } from "lucide-react";
 import { useSelection } from "./hooks/useSelection";
-import { useFavorites } from "./hooks/useFavorites";
 import HomeScreen from "./components/Home/HomeScreen";
 import MomentPicker from "./components/Home/MomentPicker";
 import CatalogScreen from "./components/Catalog/CatalogScreen";
@@ -11,7 +10,6 @@ import CaixasScreen from "./components/Presente/CaixasScreen";
 import BandejasScreen from "./components/Presente/BandejasScreen";
 import MimosScreen from "./components/Presente/MimosScreen";
 import FeedScreen from "./components/Feed/FeedScreen";
-import SavedScreen from "./components/Feed/SavedScreen";
 import ProductDetailSheet from "./components/Feed/ProductDetailSheet";
 import SearchScreen from "./components/Search/SearchScreen";
 import SelectionScreen from "./components/Selection/SelectionScreen";
@@ -19,7 +17,6 @@ import SendModal from "./components/shared/SendModal";
 import BottomNav from "./components/shared/BottomNav";
 import DesktopNav from "./components/shared/DesktopNav";
 import Footer from "./components/shared/Footer";
-import Toast from "./components/shared/Toast";
 
 // "cafe" and "freezer" were standalone moments, both since folded into
 // "dia-dificil" (see src/data/moments.js). Kept here so any stale
@@ -27,11 +24,10 @@ import Toast from "./components/shared/Toast";
 // consolidated moment instead of an empty page.
 const LEGACY_MOMENT_REDIRECTS = { cafe: "dia-dificil", freezer: "dia-dificil" };
 
-const BOTTOM_NAV_SCREENS = ["salvos", "busca", "selecao"];
+const BOTTOM_NAV_SCREENS = ["busca", "selecao"];
 const NON_MOMENT_SCREENS = [
   "momentos",
   "feed",
-  "salvos",
   "busca",
   "catalogo",
   "selecao",
@@ -48,10 +44,9 @@ export default function App() {
   // Which journey opened the product detail sheet — only Dias de luta ever
   // sets this (to "dia-dificil"), which is what turns on the Mon Caramel
   // Experience layer inside ProductDetailSheet (badges/note/cross-sell).
-  // Feed/Search/Salvos never pass a context, so the sheet renders exactly
-  // as it always has for them.
+  // Feed/Search never pass a context, so the sheet renders exactly as it
+  // always has for them.
   const [openProductContext, setOpenProductContext] = useState(null);
-  const { favorites, toggleFavorite, toast: favToast } = useFavorites();
   const { selection, addToSelection, removeFromSelection } = useSelection();
 
   const onGoSelection = () => setScreen("selecao");
@@ -68,15 +63,13 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-brand-beige font-body">
-      <DesktopNav active={activeNav} onNavigate={onNavigate} selectionCount={selection.length} favoritesCount={favorites.length} />
+      <DesktopNav active={activeNav} onNavigate={onNavigate} selectionCount={selection.length} />
 
       <div className="pb-24 md:pb-0">
         {!screen && (
           <HomeScreen
             onSelect={setScreen}
             onOpenProduct={openProductDetail}
-            favorites={favorites}
-            toggleFavorite={toggleFavorite}
             selection={selection}
           />
         )}
@@ -86,24 +79,9 @@ export default function App() {
         {screen === "feed" && (
           <FeedScreen
             onBack={() => setScreen(null)}
-            favorites={favorites}
-            toggleFavorite={toggleFavorite}
             selection={selection}
             addToSelection={addToSelection}
             onOpenProduct={openProductDetail}
-            onGoSaved={() => setScreen("salvos")}
-          />
-        )}
-
-        {screen === "salvos" && (
-          <SavedScreen
-            onBack={() => setScreen(null)}
-            favorites={favorites}
-            toggleFavorite={toggleFavorite}
-            selection={selection}
-            addToSelection={addToSelection}
-            onOpenProduct={openProductDetail}
-            onGoFeed={() => setScreen("feed")}
           />
         )}
 
@@ -121,8 +99,6 @@ export default function App() {
         {screen === "catalogo" && (
           <CatalogScreen
             onBack={() => setScreen(null)}
-            favorites={favorites}
-            toggleFavorite={toggleFavorite}
             selection={selection}
             addToSelection={addToSelection}
             onOpenSelection={onGoSelection}
@@ -165,8 +141,6 @@ export default function App() {
             onGoCatalog={() => setScreen("catalogo")}
             onSend={setPendingMessage}
             onOpenProduct={openProductDetail}
-            favorites={favorites}
-            toggleFavorite={toggleFavorite}
             selection={selection}
             addToSelection={addToSelection}
             removeFromSelection={removeFromSelection}
@@ -189,7 +163,6 @@ export default function App() {
         active={activeNav}
         onNavigate={onNavigate}
         selectionCount={selection.length}
-        favoritesCount={favorites.length}
       />
 
       {/* Tablet-only fallback: BottomNav is hidden at md+, and DesktopNav
@@ -221,14 +194,10 @@ export default function App() {
           selection={selection}
           addToSelection={addToSelection}
           removeFromSelection={removeFromSelection}
-          favorites={favorites}
-          toggleFavorite={toggleFavorite}
         />
       )}
 
       {pendingMessage && <SendModal message={pendingMessage} onClose={() => setPendingMessage(null)} />}
-
-      <Toast message={favToast} />
     </div>
   );
 }
