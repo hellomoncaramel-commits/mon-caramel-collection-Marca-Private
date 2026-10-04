@@ -77,10 +77,20 @@ const MOMENT_PHOTO_STYLE = {
 // brown, but it's dark enough that at ~85-90% opacity it reads as plain
 // black, not warm chocolate. Swapped the base token to
 // COLORS.caramelDarker (#7A4524 — the same rich caramel already used on
-// the "Quero isso" button), which holds the same contrast for the white
-// text but visibly reads as warm brown rather than crushing to black.
-const TEXT_PANEL_GRADIENT_DESKTOP = `linear-gradient(to bottom, ${COLORS.caramelDarker}00 0%, ${COLORS.caramelDarker}00 50%, ${COLORS.caramelDarker}66 68%, ${COLORS.caramelDarker}BD 82%, ${COLORS.caramelDarker}E0 100%)`;
-const TEXT_PANEL_GRADIENT_MOBILE = `linear-gradient(to bottom, ${COLORS.caramelDarker}00 0%, ${COLORS.caramelDarker}00 54%, ${COLORS.caramelDarker}66 72%, ${COLORS.caramelDarker}BD 85%, ${COLORS.caramelDarker}E0 100%)`;
+// the "Quero isso" button), which visibly reads as warm brown rather than
+// crushing to black.
+//
+// Sixth correction pass: that swap under-corrected — caramelDarker's RGB
+// (122, 69, 36) is noticeably lighter/more luminant than ink's (61, 36,
+// 24), so holding the same opacity stops as before made the whole scrim
+// visibly weaker, not just warmer. The photo went back to fighting the
+// white text (the exact problem the fourth pass had already fixed, just
+// with the wrong base color). Pushed the opacity stops higher (~52% /
+// ~85% / ~95%, up from ~40% / ~74% / ~88%) so caramelDarker reaches
+// comparable darkness at the bottom edge to what ink had — warm brown
+// identity, same holding power for the text on top.
+const TEXT_PANEL_GRADIENT_DESKTOP = `linear-gradient(to bottom, ${COLORS.caramelDarker}00 0%, ${COLORS.caramelDarker}00 50%, ${COLORS.caramelDarker}85 68%, ${COLORS.caramelDarker}DA 82%, ${COLORS.caramelDarker}F2 100%)`;
+const TEXT_PANEL_GRADIENT_MOBILE = `linear-gradient(to bottom, ${COLORS.caramelDarker}00 0%, ${COLORS.caramelDarker}00 54%, ${COLORS.caramelDarker}85 72%, ${COLORS.caramelDarker}DA 85%, ${COLORS.caramelDarker}F2 100%)`;
 
 function MomentCard({ moment, photoSrc, eager, featured, onSelect }) {
   const lines = moment.titleLines ?? [moment.label];
