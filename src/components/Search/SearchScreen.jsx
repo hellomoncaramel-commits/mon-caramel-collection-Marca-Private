@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Search, Plus, Check, MessageCircle } from "lucide-react";
+import { Search, Plus, Check, MessageCircle, X } from "lucide-react";
 import { PRODUCTS } from "../../data/products";
 import { isBrowsable, defaultPhotos, initialQuantity } from "../../utils/products";
 import { COLORS } from "../../styles/colors";
@@ -106,16 +106,35 @@ function ResultRow({ p, isAdded, onQuickAdd, onOpen }) {
 
 export default function SearchScreen({ onBack, selection, addToSelection, onOpenProduct, onSend }) {
   const [query, setQuery] = useState("");
+  const [selectedTags, setSelectedTags] = useState([]);
 
+  const addTag = (term) => setSelectedTags((cur) => (cur.includes(term) ? cur : [...cur, term]));
+  const removeTag = (term) => setSelectedTags((cur) => cur.filter((t) => t !== term));
+  const availableTags = QUICK_TERMS.filter((t) => !selectedTags.includes(t));
+
+  const hasQuery = wordsOf(query).length > 0;
+  const hasTags = selectedTags.length > 0;
+  const hasActiveFilter = hasQuery || hasTags;
+
+  // Tags are filters, not a substitute for the text field: a tag and the
+  // typed query are each their own independent match, joined with OR (same
+  // "discovery, not a strict AND" spirit as combining multiple tags below)
+  // — so clearing the text keeps whatever tags are selected, and adding a
+  // tag never erases what's typed.
   const results = useMemo(() => {
+    if (!hasActiveFilter) return [];
     const queryWords = wordsOf(query);
-    if (queryWords.length === 0) return [];
-    return PRODUCTS.filter(isBrowsable).filter((p) => matchesQuery(p, queryWords));
-  }, [query]);
+    const tagWordSets = selectedTags.map(wordsOf);
+    return PRODUCTS.filter(isBrowsable).filter(
+      (p) => (hasQuery && matchesQuery(p, queryWords)) || tagWordSets.some((tw) => matchesQuery(p, tw))
+    );
+  }, [query, selectedTags, hasQuery, hasActiveFilter]);
 
   const isAdded = (p) => selection.some((it) => it.kind === "product" && it.productId === p.id);
   const quickAdd = (p, qty) =>
     addToSelection({ kind: "product", productId: p.id, name: p.name, unit: p.unit, qty, flavors: null });
+
+  const activeLabels = [...(hasQuery ? [`"${query.trim()}"`] : []), ...selectedTags];
 
   return (
     <div className="max-w-xl lg:max-w-[880px] mx-auto px-gutter lg:px-8 pt-2 pb-10 fade-up">
@@ -132,32 +151,50 @@ export default function SearchScreen({ onBack, selection, addToSelection, onOpen
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Buscar brigadeiro, pão de mel..."
+          placeholder="O que você procura?"
           className="w-full rounded-full border border-brand-border pl-11 lg:pl-14 pr-4 py-3 lg:py-4 text-sm lg:text-base bg-white min-h-11"
         />
       </div>
 
-      {!query && (
-        <>
-          <div className="flex flex-wrap gap-2 lg:gap-2.5 mb-6 lg:mb-8">
-            {QUICK_TERMS.map((term) => (
-              <button
-                key={term}
-                onClick={() => setQuery(term)}
-                className="text-sm lg:text-base rounded-full px-4 lg:px-5 py-2 lg:py-2.5 border border-brand-border bg-white text-brand-ink min-h-11 transition-transform active:scale-95 lg:hover:border-brand-caramelDark"
-              >
-                {term}
-              </button>
-            ))}
-          </div>
-          <DiscreteWhatsAppHelp onSend={onSend} />
-        </>
+      {hasTags && (
+        <div className="flex flex-wrap gap-2 lg:gap-2.5 mb-3">
+          {selectedTags.map((term) => (
+            <button
+              key={term}
+              onClick={() => removeTag(term)}
+              aria-label={`Remover filtro ${term}`}
+              className="inline-flex items-center gap-1.5 text-sm lg:text-base rounded-full pl-4 lg:pl-5 pr-3 lg:pr-4 py-2 lg:py-2.5 min-h-11 text-white transition-transform active:scale-95"
+              style={{ backgroundColor: COLORS.caramelDark }}
+            >
+              {term}
+              <X size={14} aria-hidden="true" />
+            </button>
+          ))}
+        </div>
       )}
 
-      {query && (
+      {availableTags.length > 0 && (
+        <div className="flex flex-wrap gap-2 lg:gap-2.5 mb-6 lg:mb-8">
+          {availableTags.map((term) => (
+            <button
+              key={term}
+              onClick={() => addTag(term)}
+              className="text-sm lg:text-base rounded-full px-4 lg:px-5 py-2 lg:py-2.5 border border-brand-border bg-white text-brand-ink min-h-11 transition-transform active:scale-95 lg:hover:border-brand-caramelDark"
+            >
+              {term}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {!hasActiveFilter && <DiscreteWhatsAppHelp onSend={onSend} />}
+
+      {hasActiveFilter && (
         <>
           <p className="text-xs mb-2 text-brand-muted">
-            {results.length === 0 ? "Nada encontrado" : `Resultados para "${query}" · ${results.length} ${results.length === 1 ? "produto" : "produtos"}`}
+            {results.length === 0
+              ? "Nada encontrado"
+              : `Resultados para ${activeLabels.join(" + ")} · ${results.length} ${results.length === 1 ? "produto" : "produtos"}`}
           </p>
           <div className="divide-y divide-brand-border">
             {results.map((p) => (
