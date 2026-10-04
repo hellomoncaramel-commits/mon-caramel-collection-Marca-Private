@@ -1,8 +1,10 @@
 import { Heart } from "lucide-react";
 import { PRODUCTS } from "../../data/products";
 import { COLORS } from "../../styles/colors";
+import { defaultPhotos } from "../../utils/products";
 import SiteHeader from "../shared/SiteHeader";
 import ProductArt from "../shared/ProductArt";
+import Photo from "../shared/Photo";
 
 // Discreet alternate path for customers who already know what they want —
 // no mood quiz, just the full list grouped by name (briefing section 4).
@@ -18,6 +20,7 @@ export default function CatalogScreen({ onBack, selection, addToSelection, onOpe
       <div className="space-y-3">
         {PRODUCTS.map((p) => {
           const added = inSelection(p.id);
+          const photo = defaultPhotos(p)?.[0];
           return (
             <div
               key={p.id}
@@ -25,7 +28,11 @@ export default function CatalogScreen({ onBack, selection, addToSelection, onOpe
               style={{ borderColor: added ? COLORS.caramelDark : COLORS.border, borderWidth: added ? "2px" : "1px" }}
             >
               <div className="w-24 shrink-0">
-                <ProductArt kind={p.kind} tint={p.tint} h="h-24" />
+                {photo ? (
+                  <Photo src={photo} alt={p.name} pictureClassName="block w-24 h-24" className="w-full h-full object-cover rounded-2xl" loading="lazy" />
+                ) : (
+                  <ProductArt kind={p.kind} tint={p.tint} h="h-24" />
+                )}
               </div>
               <div className="p-3 flex-1 flex items-center justify-between gap-2">
                 <div>
