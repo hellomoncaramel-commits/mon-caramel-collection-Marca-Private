@@ -47,89 +47,88 @@ function chunkEditorialRhythm(items) {
 // in for a vibe). No AI, no stock — both are existing files already used
 // elsewhere in the catalog (see data/photos.js / data/products.js).
 //
-// Final visual audit pass: both asides read as weak/forgettable in the real
-// mobile render — a wash of beige with a small, cropped-in photo losing
-// badly to the product cards around it ("o card de produto imediatamente
-// acima chama muito mais atenção... a intervenção interrompe o catálogo sem
-// recompensar essa interrupção"). Split `text` into `eyebrow` (the existing
-// emoji + the short hook, e.g. "💛 Hoje eu mereço") + `headline` (the rest,
-// Fraunces, bigger) — same words already in the old copy, just given real
-// hierarchy instead of running together as one flat sentence. No new copy
-// invented, nothing commercial (price/product/name) touched.
+// Third visual-audit pass (the split-card concept rejected outright):
+// two earlier rounds kept trying to fix the aside by inflating one half of
+// a text-panel + photo-panel split (bigger photo, bigger photo again,
+// bigger/bolder text) — Naia's call: "o problema não foi resolvido... o
+// EditorialAside continua parecendo um bloco/template... a direção visual
+// do split card está descartada." Replaced entirely with a single
+// full-bleed photo card (MomentPicker's own proven language — photo fills
+// the box, a localized scrim behind the text only, nothing else) instead
+// of a beige panel beside a photo panel. `photo` swapped for the crop that
+// actually reads well full-bleed (tested both biscoitoAmanteigadoCafe and
+// biscoitoVariedade for the café aside — amanteigado-cafe's round plate
+// leaves bare counter/plate at the frame edges at this card's short+wide
+// ratio, biscoitoVariedade is a dense edge-to-edge tray with no dead space
+// anywhere it gets cropped; chocobomb was specified directly for the
+// second aside). Copy trimmed too — "Tá procurando alguma coisa pro café?"
+// added words without adding desire, per Naia's note; cut down to the
+// eyebrow + one direct line each.
 const DIA_DIFICIL_ASIDES = {
   // Biscoito Amanteigado ("butter-cookies" in products.js) carries the
   // "coffee" badge — the one dia-dificil product most directly about café.
   1: {
     eyebrow: "☕ Pro café",
-    headline: "Tá procurando alguma coisa? Continua descendo — tem coisa boa vindo.",
+    headline: "Continua descendo. Tem coisa boa vindo.",
     photo: REAL_PHOTOS.biscoitoVariedade,
     photoAlt: "Biscoitos amanteigados variados",
   },
-  // Bolo de Pote ("bolo-de-pote" in products.js) carries the "deserve"
-  // badge — "hoje eu mereço" is literally that product's own tag.
+  // Chocobomb — specified directly (not the "deserve"-badged Bolo de Pote
+  // this aside used before): a richer, more textured full-bleed crop for
+  // this card's short, wide format.
   4: {
     eyebrow: "💛 Hoje eu mereço",
-    headline: "Chegamos oficialmente nessa parte.",
-    photo: REAL_PHOTOS.boloDePoteMorango,
-    photoAlt: "Bolo de pote de morango",
+    headline: "Agora a gente entrou nessa parte.",
+    photo: REAL_PHOTOS.chocobomb,
+    photoAlt: "Chocobomb decorado com corações",
+    // The source photo's own strongest cluster of hearts/drizzle sits
+    // slightly right-of-center — nudging the crop right keeps that in
+    // frame on the clear (right) side of the scrim instead of pushing it
+    // further off-frame, while the left side (under the text) still shows
+    // plenty of chocolate texture.
+    objectPosition: "62% 45%",
   },
 };
 
-// A small editorial "chapter break" — real photo + a line of copy, same
-// cream/peach family and radius as the rest of Dias de luta, but built
-// differently from ProductCard on purpose (no price, no CTA, no badges) so
-// it never reads as just another product. `layout="row"` (mobile full-width
-// band, desktop standalone band before a 3-item row) puts text on the left
-// and a real photo on the right, bled edge-to-edge to the card's own top/
-// right/bottom border — not a small decorative thumbnail. `layout="column"`
-// (folded into a 2-item row's spare third grid track, see below) stacks
-// photo over text to fit that narrower, taller slot. Same component, same
-// visual family, shape adapted to where it sits.
+// A small full-bleed editorial "chapter break" — a real photo filling the
+// whole card, a scrim localized just behind the text (not the whole
+// photo), no CTA, no separate beige panel. Same language MomentPicker's
+// own approved moment cards already use (photo → localized scrim → text),
+// just in this card's own short/wide (row) or taller (column) shape,
+// built differently from ProductCard on purpose (no price, no badges) so
+// it never reads as just another product.
 //
-// Final visual audit pass: min-h-32 (128px) read as a thin strip next to a
-// full ProductCard photo — bumped to min-h-44 (176px), and the photo's own
-// share of the row widened from 38% to 44% (within the 40-45% the brief
-// asked for), so the photo actually has presence instead of feeling like a
-// bolted-on thumbnail. Background tint deepened slightly (1A → 33) so it
-// reads as a warm pause, not a wash of plain beige. Text gets a small caps
-// eyebrow + a bigger Fraunces headline instead of one flat sentence.
-// Second visual-audit pass: Naia reviewed the first redesign (min-h-44,
-// 44% photo, eyebrow+headline) and said both halves still needed more
-// presence — "os dois deveriam ser mais chamativos." Pushed further on
-// both at once rather than trading one for the other: bigger photo (44% →
-// 50% of the row's width; column layout's own photo unchanged — it
-// already fills the card's full width at aspect-[3/2]), and bigger/bolder
-// text (headline text-lg → text-xl + font-semibold, eyebrow text-2xs →
-// text-xs with wider tracking) so the copy itself reads as a real
-// statement, not a caption. Row layout's min-height bumped again
-// (44 → 56) to give the now-larger text room without cramping.
+// `layout="row"` (mobile full-width band, desktop standalone band before a
+// 3-item row): short and wide (h-36, ~144px) — text sits top-left-ish in a
+// clear zone, scrim fades left-to-right so the photo reads clearly on the
+// right. `layout="column"` (folded into a 2-item row's spare third grid
+// track on desktop): taller, portrait-leaning (aspect-[4/5]) to sit
+// comfortably beside a ProductCard — scrim fades bottom-to-top instead,
+// same "MomentPicker card" logic turned 90°, text anchored at the bottom.
+const EDITORIAL_SCRIM_ROW = `linear-gradient(to right, ${COLORS.ink}DE 0%, ${COLORS.ink}B3 28%, ${COLORS.ink}4D 52%, ${COLORS.ink}00 74%)`;
+const EDITORIAL_SCRIM_COLUMN = `linear-gradient(to top, ${COLORS.ink}E0 0%, ${COLORS.ink}B3 30%, ${COLORS.ink}40 58%, ${COLORS.ink}00 78%)`;
+
 function EditorialAside({ aside, layout = "row" }) {
   const isColumn = layout === "column";
   return (
-    <div
-      className={`rounded-2xl overflow-hidden flex border ${isColumn ? "flex-col h-full" : "min-h-56 flex-row"}`}
-      style={{ backgroundColor: `${COLORS.caramelLight}33`, borderColor: `${COLORS.border}99` }}
-    >
-      {isColumn && (
-        <div className="w-full aspect-[3/2] shrink-0">
-          <Photo src={aside.photo} alt={aside.photoAlt} className="w-full h-full object-cover" loading="lazy" />
-        </div>
-      )}
-      <div className={`flex flex-col justify-center ${isColumn ? "flex-1 p-4" : "flex-1 pl-5 pr-3 py-4"}`}>
-        <span className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: COLORS.caramelDark }}>
-          {aside.eyebrow}
-        </span>
-        <p className="font-display font-semibold text-xl leading-snug text-brand-ink">{aside.headline}</p>
+    <div className={`relative overflow-hidden rounded-2xl ${isColumn ? "h-full" : "h-36"}`}>
+      <Photo
+        src={aside.photo}
+        alt={aside.photoAlt}
+        className="absolute inset-0 w-full h-full object-cover"
+        style={aside.objectPosition ? { objectPosition: aside.objectPosition } : undefined}
+        loading="lazy"
+      />
+      <div className="absolute inset-0" style={{ background: isColumn ? EDITORIAL_SCRIM_COLUMN : EDITORIAL_SCRIM_ROW }} />
+      <div
+        className={`absolute flex flex-col ${isColumn ? "inset-x-0 bottom-0 justify-end p-4" : "inset-y-0 left-0 justify-center pl-5 pr-3"}`}
+        style={{ maxWidth: isColumn ? undefined : "64%" }}
+      >
+        <span className="text-3xs font-semibold uppercase tracking-wider mb-1.5 text-white/85">{aside.eyebrow}</span>
+        <p className="font-display leading-snug text-white" style={{ fontSize: 21 }}>
+          {aside.headline}
+        </p>
       </div>
-      {/* Row layout: text first (left), photo second (right) — bled to the
-          card's own top/right/bottom edge via the parent's overflow-hidden,
-          ~50% of the card's width so it reads as a real photograph, not a
-          decorative thumbnail. */}
-      {!isColumn && (
-        <div className="w-1/2 shrink-0 self-stretch">
-          <Photo src={aside.photo} alt={aside.photoAlt} className="w-full h-full object-cover" loading="lazy" />
-        </div>
-      )}
     </div>
   );
 }
