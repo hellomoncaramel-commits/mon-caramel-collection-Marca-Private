@@ -80,8 +80,12 @@ function MomentCard({ moment, photoSrc, eager, featured, onSelect }) {
       <div className="absolute inset-0 hidden md:block" style={{ background: TEXT_PANEL_GRADIENT_DESKTOP }} />
 
       <div className="absolute left-6 right-6 bottom-[22px] md:left-5 md:right-5 md:bottom-5 flex flex-col items-start">
+        {/* Text-treatment pass: weight pulled back from semibold to medium
+            — the reference's title reads as an elegant serif, not a bold
+            headline; semibold looked heavier/blunter than that by
+            comparison. */}
         <h3
-          className={`font-display font-semibold text-white max-w-[230px] md:max-w-none text-[clamp(26px,7vw,31px)] md:text-[25px] leading-[0.98] md:leading-[1.08] tracking-[-0.02em] md:tracking-normal ${
+          className={`font-display font-medium text-white max-w-[230px] md:max-w-none text-[clamp(26px,7vw,31px)] md:text-[25px] leading-[0.98] md:leading-[1.08] tracking-[-0.02em] md:tracking-normal ${
             // Dias de luta gets a discreet lg+ size bump over the other two
             // journeys — same card, same clarity, just a touch more weight
             // since it's the site's primary, highest-traffic path. Equal
@@ -113,10 +117,14 @@ function MomentCard({ moment, photoSrc, eager, featured, onSelect }) {
         </p>
         {/* Visual-correction pass: a touch more compact (was h-11/px-[18px])
             now that it sits on a tighter, darker scrim — reads as refined,
-            not a default-sized button dropped onto the card. */}
+            not a default-sized button dropped onto the card.
+            Text-treatment pass: dropped `self-end` — the reference keeps
+            the button on the same left edge as the title/tagline above it,
+            not floated to the opposite corner, so the whole text block
+            reads as one aligned column. */}
         <button
           onClick={onSelect}
-          className="mt-4 md:mt-3 self-end shrink-0 font-semibold md:font-medium h-10 md:h-10 px-4 text-[13.5px]"
+          className="mt-4 md:mt-3 shrink-0 font-semibold md:font-medium h-10 md:h-10 px-4 text-[13.5px]"
           style={{ backgroundColor: COLORS.caramelDarker, color: COLORS.beige, borderRadius: 999 }}
         >
           Quero isso →
