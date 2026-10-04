@@ -93,11 +93,21 @@ const DIA_DIFICIL_ASIDES = {
 // bolted-on thumbnail. Background tint deepened slightly (1A → 33) so it
 // reads as a warm pause, not a wash of plain beige. Text gets a small caps
 // eyebrow + a bigger Fraunces headline instead of one flat sentence.
+// Second visual-audit pass: Naia reviewed the first redesign (min-h-44,
+// 44% photo, eyebrow+headline) and said both halves still needed more
+// presence — "os dois deveriam ser mais chamativos." Pushed further on
+// both at once rather than trading one for the other: bigger photo (44% →
+// 50% of the row's width; column layout's own photo unchanged — it
+// already fills the card's full width at aspect-[3/2]), and bigger/bolder
+// text (headline text-lg → text-xl + font-semibold, eyebrow text-2xs →
+// text-xs with wider tracking) so the copy itself reads as a real
+// statement, not a caption. Row layout's min-height bumped again
+// (44 → 56) to give the now-larger text room without cramping.
 function EditorialAside({ aside, layout = "row" }) {
   const isColumn = layout === "column";
   return (
     <div
-      className={`rounded-2xl overflow-hidden flex border ${isColumn ? "flex-col h-full" : "min-h-44 flex-row"}`}
+      className={`rounded-2xl overflow-hidden flex border ${isColumn ? "flex-col h-full" : "min-h-56 flex-row"}`}
       style={{ backgroundColor: `${COLORS.caramelLight}33`, borderColor: `${COLORS.border}99` }}
     >
       {isColumn && (
@@ -106,17 +116,17 @@ function EditorialAside({ aside, layout = "row" }) {
         </div>
       )}
       <div className={`flex flex-col justify-center ${isColumn ? "flex-1 p-4" : "flex-1 pl-5 pr-3 py-4"}`}>
-        <span className="text-2xs font-semibold uppercase tracking-wide mb-1.5" style={{ color: COLORS.caramelDark }}>
+        <span className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: COLORS.caramelDark }}>
           {aside.eyebrow}
         </span>
-        <p className="font-display text-lg leading-snug text-brand-ink">{aside.headline}</p>
+        <p className="font-display font-semibold text-xl leading-snug text-brand-ink">{aside.headline}</p>
       </div>
       {/* Row layout: text first (left), photo second (right) — bled to the
           card's own top/right/bottom edge via the parent's overflow-hidden,
-          ~44% of the card's width so it reads as a real photograph, not a
+          ~50% of the card's width so it reads as a real photograph, not a
           decorative thumbnail. */}
       {!isColumn && (
-        <div className="w-[44%] shrink-0 self-stretch">
+        <div className="w-1/2 shrink-0 self-stretch">
           <Photo src={aside.photo} alt={aside.photoAlt} className="w-full h-full object-cover" loading="lazy" />
         </div>
       )}
