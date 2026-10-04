@@ -2,10 +2,12 @@ import { useState } from "react";
 import { COLORS } from "../../styles/colors";
 import { photosForMoment } from "../../utils/products";
 import Photo from "../shared/Photo";
+import { useModalLock } from "../../hooks/useModalLock";
 
 // Quantity + optional theme/notes, shared across every product added to
 // "Minha Festa" (briefing section 5) — no pricing shown anywhere here.
 export default function PartyModal({ product, sharedTheme, sharedNotes, existingQty, onCancel, onConfirm }) {
+  useModalLock(onCancel);
   const [qty, setQty] = useState(existingQty ? String(existingQty) : "1");
   const [theme, setTheme] = useState(sharedTheme);
   const [notes, setNotes] = useState(sharedNotes);
