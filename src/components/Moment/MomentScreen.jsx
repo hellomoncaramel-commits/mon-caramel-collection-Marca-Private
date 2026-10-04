@@ -53,7 +53,6 @@ const DIA_DIFICIL_ASIDES = {
     text: "Tá procurando alguma coisa pro café? ☕ Continua descendo. Tem coisa boa vindo.",
     photo: REAL_PHOTOS.biscoitoVariedade,
     photoAlt: "Biscoitos amanteigados variados",
-    photoSide: "left",
   },
   // Bolo de Pote ("bolo-de-pote" in products.js) carries the "deserve"
   // badge — "hoje eu mereço" is literally that product's own tag.
@@ -61,7 +60,6 @@ const DIA_DIFICIL_ASIDES = {
     text: "Chegamos oficialmente na parte \"hoje eu mereço\". 💛",
     photo: REAL_PHOTOS.boloDePoteMorango,
     photoAlt: "Bolo de pote de morango",
-    photoSide: "right",
   },
 };
 
@@ -69,25 +67,36 @@ const DIA_DIFICIL_ASIDES = {
 // cream/peach family and radius as the rest of Dias de luta, but built
 // differently from ProductCard on purpose (no price, no CTA, no badges) so
 // it never reads as just another product. `layout="row"` (mobile full-width
-// band, desktop standalone band before a 3-item row) puts the photo beside
-// the text; `layout="column"` (folded into a 2-item row's spare third grid
-// track, see below) stacks photo over text to fit that narrower, taller
-// slot. Same component, same visual family, shape adapted to where it sits.
+// band, desktop standalone band before a 3-item row) puts text on the left
+// and a real photo on the right, bled edge-to-edge to the card's own top/
+// right/bottom border — not a small decorative thumbnail. `layout="column"`
+// (folded into a 2-item row's spare third grid track, see below) stacks
+// photo over text to fit that narrower, taller slot. Same component, same
+// visual family, shape adapted to where it sits.
 function EditorialAside({ aside, layout = "row" }) {
   const isColumn = layout === "column";
   return (
     <div
-      className={`rounded-2xl overflow-hidden flex ${
-        isColumn ? "flex-col h-full" : `min-h-28 ${aside.photoSide === "right" ? "flex-row-reverse" : "flex-row"}`
-      }`}
-      style={{ backgroundColor: `${COLORS.caramelLight}1A` }}
+      className={`rounded-2xl overflow-hidden flex border ${isColumn ? "flex-col h-full" : "min-h-32 flex-row"}`}
+      style={{ backgroundColor: `${COLORS.caramelLight}1A`, borderColor: `${COLORS.border}99` }}
     >
-      <div className={isColumn ? "w-full aspect-[3/2] shrink-0" : "w-28 sm:w-32 shrink-0 self-stretch"}>
-        <Photo src={aside.photo} alt={aside.photoAlt} className="w-full h-full object-cover" loading="lazy" />
-      </div>
-      <div className={`flex items-center ${isColumn ? "flex-1 p-4" : "flex-1 px-4 py-3.5"}`}>
+      {isColumn && (
+        <div className="w-full aspect-[3/2] shrink-0">
+          <Photo src={aside.photo} alt={aside.photoAlt} className="w-full h-full object-cover" loading="lazy" />
+        </div>
+      )}
+      <div className={`flex items-center ${isColumn ? "flex-1 p-4" : "flex-1 pl-4 pr-3 py-3.5"}`}>
         <p className="font-display text-base leading-snug text-brand-ink">{aside.text}</p>
       </div>
+      {/* Row layout: text first (left), photo second (right) — bled to the
+          card's own top/right/bottom edge via the parent's overflow-hidden,
+          ~38% of the card's width so it reads as a real photograph, not a
+          decorative thumbnail. */}
+      {!isColumn && (
+        <div className="w-[38%] shrink-0 self-stretch">
+          <Photo src={aside.photo} alt={aside.photoAlt} className="w-full h-full object-cover" loading="lazy" />
+        </div>
+      )}
     </div>
   );
 }
@@ -151,12 +160,15 @@ export default function MomentScreen({
           not the big centered Home lockup — the branding stays present but
           stops eating the first viewport. Festa keeps the default
           (unchanged).
-          Visual-correction pass: the logo itself (logoSize) was too small
-          at "sm" — bumped to "heroLogo", the same bigger, tighter-cropped
-          size MomentPicker now uses (see Logo.jsx), with rowHeight nudged
-          up a little to give it room. Still clearly more compact than the
-          76px/"home" default every other screen's header uses. */}
-      <SiteHeader onBack={onBack} logoSize={isDiaDificil ? "heroLogo" : "home"} rowHeight={isDiaDificil ? 68 : 76} />
+          Visual-correction pass: logoSize bumped from the original "sm" to
+          "diaDificilLogo" (Logo.jsx) — the same cropped+zoomed rendering
+          MomentPicker's "heroLogo" uses, just a smaller box, so Dias de
+          luta's branding reads as "intermediate" — clearly bigger than
+          before, but deliberately less prominent than MomentPicker's own
+          (the more brand-forward of the two screens). rowHeight nudged up
+          to give it room; still clearly more compact than the 76px/"home"
+          default every other screen's header uses. */}
+      <SiteHeader onBack={onBack} logoSize={isDiaDificil ? "diaDificilLogo" : "home"} rowHeight={isDiaDificil ? 78 : 76} />
 
       {/* Design-refinement pass: Dias de luta now gets an actual title —
           reusing the shared mc-page-title/mc-page-subtitle pair every other

@@ -41,13 +41,18 @@ const MOMENT_PHOTO_STYLE = {
 // its own one-off color, covering roughly the bottom half of the card — it
 // read as a colored wash over the photo rather than a shadow. Replaced with
 // an ink-based scrim (same COLORS.ink token and "to bottom, transparent to
-// dark" logic PresenteEntryScreen.jsx already uses for photo-overlay text),
-// concentrated in only the band the text actually needs — the photo stays
-// untouched through roughly two-thirds of the card now, not half. Text
-// below switched from ink to white/cream to stay legible against the
-// darker scrim (see MomentCard's h3/p below).
-const TEXT_PANEL_GRADIENT_DESKTOP = `linear-gradient(to bottom, ${COLORS.ink}00 0%, ${COLORS.ink}00 58%, ${COLORS.ink}1F 70%, ${COLORS.ink}78 84%, ${COLORS.ink}C7 95%, ${COLORS.ink}E0 100%)`;
-const TEXT_PANEL_GRADIENT_MOBILE = `linear-gradient(to bottom, ${COLORS.ink}00 0%, ${COLORS.ink}00 64%, ${COLORS.ink}1F 75%, ${COLORS.ink}78 87%, ${COLORS.ink}C7 96%, ${COLORS.ink}E0 100%)`;
+// dark" logic PresenteEntryScreen.jsx already uses for photo-overlay text).
+//
+// Second correction pass: the first ink-based attempt was still too gentle
+// — it topped out under 90% opacity over a long, gradual ramp, which read
+// as barely different from the old peach wash at a glance. This version is
+// deliberately more assertive: the photo stays completely untouched
+// through just over half the card, then a short, fast ramp (about 20
+// points of the card's height) takes it to a genuinely dark, near-opaque
+// base — the kind of contrast PresenteEntryScreen's own scrim has, not a
+// faint tint. Text below is white/cream (see MomentCard's h3/p).
+const TEXT_PANEL_GRADIENT_DESKTOP = `linear-gradient(to bottom, ${COLORS.ink}00 0%, ${COLORS.ink}00 54%, ${COLORS.ink}A6 74%, ${COLORS.ink}EB 90%, ${COLORS.ink}F7 100%)`;
+const TEXT_PANEL_GRADIENT_MOBILE = `linear-gradient(to bottom, ${COLORS.ink}00 0%, ${COLORS.ink}00 58%, ${COLORS.ink}A6 78%, ${COLORS.ink}EB 92%, ${COLORS.ink}F7 100%)`;
 
 function MomentCard({ moment, photoSrc, eager, featured, onSelect }) {
   const lines = moment.titleLines ?? [moment.label];
@@ -188,7 +193,7 @@ export default function MomentPicker({ onBack, onSelectMoment }) {
           other SiteHeader caller relying on the default "home" size is
           unaffected. rowHeight bumped to give the taller logo room, same
           overflow-the-row allowance "home" already uses at its own size. */}
-      <SiteHeader onBack={onBack} logoSize="heroLogo" rowHeight={92} />
+      <SiteHeader onBack={onBack} logoSize="heroLogo" rowHeight={108} />
 
       {/* Intro — Fraunces roman medium, matching the Home headline's own
           treatment (italic is an accent now, not the default headline
