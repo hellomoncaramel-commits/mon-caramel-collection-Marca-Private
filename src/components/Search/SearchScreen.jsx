@@ -138,17 +138,20 @@ export default function SearchScreen({ onBack, selection, addToSelection, onOpen
       </div>
 
       {!query && (
-        <div className="flex flex-wrap gap-2 lg:gap-2.5 mb-6 lg:mb-8">
-          {QUICK_TERMS.map((term) => (
-            <button
-              key={term}
-              onClick={() => setQuery(term)}
-              className="text-sm lg:text-base rounded-full px-4 lg:px-5 py-2 lg:py-2.5 border border-brand-border bg-white text-brand-ink min-h-11 transition-transform active:scale-95 lg:hover:border-brand-caramelDark"
-            >
-              {term}
-            </button>
-          ))}
-        </div>
+        <>
+          <div className="flex flex-wrap gap-2 lg:gap-2.5 mb-6 lg:mb-8">
+            {QUICK_TERMS.map((term) => (
+              <button
+                key={term}
+                onClick={() => setQuery(term)}
+                className="text-sm lg:text-base rounded-full px-4 lg:px-5 py-2 lg:py-2.5 border border-brand-border bg-white text-brand-ink min-h-11 transition-transform active:scale-95 lg:hover:border-brand-caramelDark"
+              >
+                {term}
+              </button>
+            ))}
+          </div>
+          <DiscreteWhatsAppHelp onSend={onSend} />
+        </>
       )}
 
       {query && (
@@ -162,21 +165,44 @@ export default function SearchScreen({ onBack, selection, addToSelection, onOpen
             ))}
           </div>
 
-          <div className="mt-8 pt-6 border-t border-dashed border-brand-border text-center">
-            <p className="text-sm mb-3 text-brand-inkSoft">
-              {results.length === 0 ? "Não encontrou o que procura?" : "Não era bem isso?"} Fala com a gente no WhatsApp 💛
-            </p>
-            <button
-              onClick={() => onSend("Oi! Estava procurando um produto no site da Mon Caramel e não encontrei. Pode me ajudar? 💛")}
-              className="inline-flex items-center gap-2 text-sm font-medium text-white rounded-full px-5 py-3 min-h-11"
-              style={{ backgroundColor: COLORS.caramelDark }}
-            >
-              <MessageCircle size={15} />
-              Conversar agora
-            </button>
-          </div>
+          {results.length === 0 ? (
+            <div className="mt-8 pt-6 border-t border-dashed border-brand-border text-center">
+              <p className="text-sm mb-3 text-brand-inkSoft">Não encontrou o que procura? Fala com a gente no WhatsApp 💛</p>
+              <button
+                onClick={() => onSend("Oi! Estava procurando um produto no site da Mon Caramel e não encontrei. Pode me ajudar? 💛")}
+                className="inline-flex items-center gap-2 text-sm font-medium text-white rounded-full px-5 py-3 min-h-11"
+                style={{ backgroundColor: COLORS.caramelDark }}
+              >
+                <MessageCircle size={15} />
+                Conversar agora
+              </button>
+            </div>
+          ) : (
+            <DiscreteWhatsAppHelp onSend={onSend} />
+          )}
         </>
       )}
+    </div>
+  );
+}
+
+// Quiet help line — available whenever there's something on screen to look
+// at (the quick-terms strip, or an actual results list), so it never reads
+// as the main call to action. The zero-results state keeps its own,
+// already-prominent WhatsApp block above instead (never both at once).
+function DiscreteWhatsAppHelp({ onSend }) {
+  return (
+    <div className="mt-6 pt-5 border-t border-dashed border-brand-border text-center">
+      <p className="text-xs mb-2.5 text-brand-muted">
+        Ficou com alguma dúvida ou não encontrou o que procura? Fala comigo no WhatsApp 💛
+      </p>
+      <button
+        onClick={() => onSend("Oi! Estava procurando um produto no site da Mon Caramel e não encontrei. Pode me ajudar? 💛")}
+        className="inline-flex items-center gap-2 text-xs font-medium rounded-full px-4 py-2 min-h-11 border border-brand-caramelDark text-brand-caramelDark transition-transform active:scale-95"
+      >
+        <MessageCircle size={13} />
+        Conversar agora
+      </button>
     </div>
   );
 }
