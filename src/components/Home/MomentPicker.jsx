@@ -117,23 +117,35 @@ const TEXT_PANEL_GRADIENT_MOBILE = `linear-gradient(to bottom, ${COLORS.ink}00 0
 // keeps the top of every photo untouched). Alpha compositing of the two
 // semi-transparent ink layers means the extra darkening only shows up
 // where both overlap — near the bottom — not higher up where the first
-// gradient is still close to 0.
-// Peak opacity is keyed by moment.id so each photo's own brightness can
-// get a different amount of help without changing the shared curve shape
-// — same visual language (one soft ink layer, transparent until ~58-62%,
-// ramping to its own peak at the very bottom), different intensity. All
-// three start at the same default peak this round, per Naia's request to
-// close the shared system first before any single-photo special case.
-const CONTENT_SCRIM_PEAK = {
-  // moment.id: hex alpha suffix (two digits) for the peak stop at 100%.
-  // Override here, e.g. festa: "80", if one photo still needs more once
-  // the shared default is reviewed.
+// gradient is still close to 0. A flat two-stop ramp (0 straight to a
+// single peak at 100%) put most of its own strength right at the card's
+// bottom edge — exactly where the button's own solid pill already has
+// contrast — while the tagline, which sits noticeably higher than the
+// very bottom, was still barely helped. Confirmed too weak: the tagline
+// was "ainda se perde claramente sobre a fotografia."
+//
+// Ninth correction pass: traced the actual content layout (title ~58-71%
+// of card height, tagline ~74-83%, button ~86-95%, from the mobile card's
+// own flex spacing) and re-shaped the local scrim to put its own strongest
+// rise across the tagline's band specifically, easing back slightly toward
+// 100% so the very bottom (combined with the base gradient, which is
+// already at its own ~80% there) never climbs into "solid" territory —
+// capped so base+content together stay at/under ~85-88% at the bottom
+// edge, the same ceiling already proven to still look translucent rather
+// than blocked. Also, per explicit instruction, no single blind opacity
+// for all three: festa's photo is brighter/more colorful overall (pastel
+// cupcakes, grass, flowers) and needed a visibly stronger version of the
+// same curve, not just the shared default, to hold the title/tagline —
+// dia-dificil and presente share one curve, festa gets its own (same
+// shape, stronger stops).
+const CONTENT_SCRIM_STOPS = {
+  default: { mid: "4D", peak: "8C", tail: "40" }, // ≈30% / 55% / 25%
+  festa: { mid: "66", peak: "A3", tail: "52" }, // ≈40% / 64% / 32%
 };
-const DEFAULT_CONTENT_SCRIM_PEAK = "6B"; // ≈ 42%
 
 function contentScrimGradient(momentId, startStop) {
-  const peak = CONTENT_SCRIM_PEAK[momentId] ?? DEFAULT_CONTENT_SCRIM_PEAK;
-  return `linear-gradient(to bottom, ${COLORS.ink}00 0%, ${COLORS.ink}00 ${startStop}, ${COLORS.ink}${peak} 100%)`;
+  const { mid, peak, tail } = CONTENT_SCRIM_STOPS[momentId] ?? CONTENT_SCRIM_STOPS.default;
+  return `linear-gradient(to bottom, ${COLORS.ink}00 0%, ${COLORS.ink}00 ${startStop}, ${COLORS.ink}${mid} 66%, ${COLORS.ink}${peak} 80%, ${COLORS.ink}${tail} 100%)`;
 }
 
 function MomentCard({ moment, photoSrc, eager, featured, onSelect }) {
@@ -156,8 +168,8 @@ function MomentCard({ moment, photoSrc, eager, featured, onSelect }) {
       />
       <div className="absolute inset-0 md:hidden" style={{ background: TEXT_PANEL_GRADIENT_MOBILE }} />
       <div className="absolute inset-0 hidden md:block" style={{ background: TEXT_PANEL_GRADIENT_DESKTOP }} />
-      <div className="absolute inset-0 md:hidden" style={{ background: contentScrimGradient(moment.id, "62%") }} />
-      <div className="absolute inset-0 hidden md:block" style={{ background: contentScrimGradient(moment.id, "58%") }} />
+      <div className="absolute inset-0 md:hidden" style={{ background: contentScrimGradient(moment.id, "50%") }} />
+      <div className="absolute inset-0 hidden md:block" style={{ background: contentScrimGradient(moment.id, "48%") }} />
 
       <div className="absolute left-6 right-6 bottom-[22px] md:left-5 md:right-5 md:bottom-5 flex flex-col items-start">
         {/* Text-treatment pass (correction): an earlier round pulled this
