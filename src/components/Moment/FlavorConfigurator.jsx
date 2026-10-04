@@ -61,7 +61,21 @@ export default function FlavorConfigurator({ product, existing, onConfirm }) {
       )}
 
       {product.flavors.length === 0 ? (
-        <p className="text-xs text-brand-muted">Sabores em breve — fala com a gente pra combinar.</p>
+        <>
+          <p className="text-xs text-brand-muted mb-3">Sabores em breve — fala com a gente pra combinar.</p>
+          {/* No flavor list yet (data pending — see products.js), but that's
+              never a reason the product can't be selected: same "add now,
+              combine details over WhatsApp" pattern the rest of the catalog
+              already uses for pending info. */}
+          <button
+            onClick={() => onConfirm({ qty, flavorBreakdown: [] })}
+            className="w-full text-xs font-medium rounded-full py-2.5 flex items-center justify-center gap-1.5"
+            style={{ backgroundColor: COLORS.caramelDark, color: "white" }}
+          >
+            <Heart size={12} fill="white" />
+            Adicionar à minha seleção
+          </button>
+        </>
       ) : (
         <>
           {/* Functional label — DM Sans, same treatment as "Quantidade" above. */}
