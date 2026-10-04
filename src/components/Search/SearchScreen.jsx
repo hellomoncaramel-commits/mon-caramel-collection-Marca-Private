@@ -12,6 +12,46 @@ import Photo from "../shared/Photo";
 // no mood quiz in the way.
 const QUICK_TERMS = ["Brigadeiros", "Pão de Mel", "Biscoito Amanteigado", "Alfajor", "Bolo de Cenoura", "Mini Donuts"];
 
+// Strips accents so "pao de mel" still finds "Pão de Mel" — no library,
+// just the standard Unicode decomposition trick.
+function foldAccents(s) {
+  return s.normalize("NFD").replace(/[̀-ͯ]/g, "");
+}
+
+function normalize(s) {
+  return foldAccents(s.toLowerCase());
+}
+
+function wordsOf(s) {
+  return normalize(s).split(/[^a-z0-9]+/).filter(Boolean);
+}
+
+// Word-by-word, not one big substring: a plain p.name.includes(query) only
+// matches a query that appears verbatim and contiguous in the name, which
+// is why the "Mini Donuts" quick term used to return nothing against the
+// real product name "Mini Cake Donuts" — "Donuts" is there, just not
+// directly after "Mini". Splitting both sides into words and requiring
+// every query word to be found (in full, or as a prefix of a product word,
+// or the reverse — covers "cone"/"cones", "alfajor"/"alfajores" without a
+// stemming library) fixes that, and the same pass handles basic case/
+// accent differences via normalize() above. Still a simple, explicit
+// comparison — not a fuzzy/typo-tolerant search.
+//
+// The reverse direction (qw.startsWith(tw), a product word being the
+// start of a longer query word) only counts for product words of 3+
+// letters — short, common words like "a" (from "à mão", "a vó") or "de"
+// are a prefix of almost anything, so without this guard searching
+// "Alfajor" matched Brigadeiros, Cones Trufados etc. just because their
+// sensory text happens to contain a lone "a"/"de". A short product word
+// can still match forward (tw.startsWith(qw)) — that's just the ordinary
+// "typing a prefix" case, not the source of the false positives.
+function matchesQuery(product, queryWords) {
+  const targetWords = [...wordsOf(product.name), ...wordsOf(product.sensory)];
+  return queryWords.every((qw) =>
+    targetWords.some((tw) => tw.startsWith(qw) || (tw.length >= 3 && qw.startsWith(tw)))
+  );
+}
+
 // Compact row (thumbnail + name + short description + price + quick add) —
 // search results favor speed and scannability over the feed's big-photo
 // seduction, since whoever's here already knows what they want.
@@ -68,11 +108,9 @@ export default function SearchScreen({ onBack, selection, addToSelection, onOpen
   const [query, setQuery] = useState("");
 
   const results = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return [];
-    return PRODUCTS.filter(isBrowsable).filter(
-      (p) => p.name.toLowerCase().includes(q) || p.sensory.toLowerCase().includes(q)
-    );
+    const queryWords = wordsOf(query);
+    if (queryWords.length === 0) return [];
+    return PRODUCTS.filter(isBrowsable).filter((p) => matchesQuery(p, queryWords));
   }, [query]);
 
   const isAdded = (p) => selection.some((it) => it.kind === "product" && it.productId === p.id);
