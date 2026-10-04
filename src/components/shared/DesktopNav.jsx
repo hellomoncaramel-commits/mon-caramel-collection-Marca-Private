@@ -24,7 +24,7 @@ const PRIMARY_ITEMS = [
 export default function DesktopNav({ active, onNavigate, selectionCount, favoritesCount }) {
   return (
     <div className="hidden lg:block border-b border-brand-border">
-      <div className="w-full px-8 flex items-center gap-12" style={{ height: 84 }}>
+      <div className="w-full px-8 flex items-center gap-8 xl:gap-12" style={{ height: 84 }}>
         <button onClick={() => onNavigate("home")} aria-label="Ir para o início" className="shrink-0">
           <Logo size="header" />
         </button>
