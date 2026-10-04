@@ -1,5 +1,13 @@
 import { useState } from "react";
-import { X, Copy, Instagram, CheckCircle2 } from "lucide-react";
+import { X, Copy, Instagram, MessageCircle, CheckCircle2 } from "lucide-react";
+import { COLORS } from "../../styles/colors";
+
+// Same number Footer.jsx already links to (+1 647-376-8064) — kept as its
+// own local constant here rather than a shared one, matching how Footer
+// defines its own copy of this instead of importing a shared module; low
+// enough duplication (one string, one place each) not to be worth a shared
+// constants file for launch.
+const WHATSAPP_DIGITS = "16473768064";
 
 export default function SendModal({ message, onClose }) {
   const [copied, setCopied] = useState(false);
@@ -14,6 +22,8 @@ export default function SendModal({ message, onClose }) {
       // convenience, the text is already visible for the customer to select.
     }
   };
+
+  const whatsappHref = `https://wa.me/${WHATSAPP_DIGITS}?text=${encodeURIComponent(message)}`;
 
   return (
     <div className="fixed inset-0 z-modal flex items-center justify-center p-4">
@@ -32,28 +42,42 @@ export default function SendModal({ message, onClose }) {
           </button>
         </div>
         <p className="text-sm mb-4 leading-relaxed text-brand-inkSoft">
-          Copie a mensagem e nos mande pelo Instagram ou WhatsApp — a gente cuida do resto a partir daqui.
+          Toque em "Abrir WhatsApp" pra mandar essa mensagem pronta pra gente — a gente cuida do resto a partir daqui.
         </p>
         <div className="border border-brand-border rounded-2xl p-4 text-sm whitespace-pre-wrap overflow-y-auto flex-1 leading-relaxed bg-brand-subtle text-brand-ink">
           {message}
         </div>
-        <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-          <button
-            onClick={copy}
-            className="text-sm font-medium text-white bg-brand-ink rounded-full py-2.5 transition-transform active:scale-95 flex items-center justify-center gap-2"
-          >
-            <Copy size={14} />
-            {copied ? "Copiado ✓" : "Copiar mensagem"}
-          </button>
+        <div className="mt-5 flex flex-col gap-2.5">
+          {/* Primary, obvious action — opens WhatsApp with this exact
+              message already filled in, no copy/paste needed. */}
           <a
-            href="https://instagram.com/by_moncaramel"
+            href={whatsappHref}
             target="_blank"
             rel="noreferrer"
-            className="text-sm font-medium text-center border border-brand-border text-brand-ink rounded-full py-2.5 flex items-center justify-center gap-2 hover:border-brand-caramelDark"
+            className="text-sm font-medium text-center text-white rounded-full py-3 flex items-center justify-center gap-2 transition-transform active:scale-95"
+            style={{ backgroundColor: COLORS.caramelDark }}
           >
-            <Instagram size={16} />
-            Abrir Instagram
+            <MessageCircle size={16} />
+            Abrir WhatsApp
           </a>
+          <div className="grid grid-cols-2 gap-2.5">
+            <button
+              onClick={copy}
+              className="text-sm font-medium text-brand-ink border border-brand-border rounded-full py-2.5 transition-transform active:scale-95 flex items-center justify-center gap-2 hover:border-brand-caramelDark"
+            >
+              <Copy size={14} />
+              {copied ? "Copiado ✓" : "Copiar mensagem"}
+            </button>
+            <a
+              href="https://instagram.com/by_moncaramel"
+              target="_blank"
+              rel="noreferrer"
+              className="text-sm font-medium text-center border border-brand-border text-brand-ink rounded-full py-2.5 flex items-center justify-center gap-2 hover:border-brand-caramelDark"
+            >
+              <Instagram size={16} />
+              Instagram
+            </a>
+          </div>
         </div>
       </div>
     </div>
