@@ -74,6 +74,19 @@ export function parseQuantityOptions(unit) {
   return [...new Set(nums.map((n) => parseInt(n, 10)))];
 }
 
+// A real commercial minimum ONLY when the unit text says so explicitly
+// ("mín. 5", "mín. 12 un") — deliberately NOT inferred from the first
+// number parseQuantityOptions would find. That number can just as easily
+// be a pack size ("3 unidades") or a weight ("250g", "~60g ... por
+// unidade"), neither of which means "can't order fewer than that many
+// units" — conflating them would silently floor Sequilhos/Bala de Coco at
+// 250/150 "units". Returns null (no artificial floor) whenever "mín."
+// isn't present, rather than guessing.
+export function parseMinQuantity(unit) {
+  const match = (unit || "").match(/mín\.?\s*(\d+)/i);
+  return match ? parseInt(match[1], 10) : null;
+}
+
 // Splits a total quantity evenly across N selected flavors, handing the
 // remainder to the first flavors so the numbers always add up exactly.
 export function splitEvenly(total, count) {

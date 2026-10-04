@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { COLORS } from "../../styles/colors";
-import { photosForMoment, parseQuantityOptions } from "../../utils/products";
+import { photosForMoment, parseMinQuantity } from "../../utils/products";
 import Photo from "../shared/Photo";
 import { useModalLock } from "../../hooks/useModalLock";
 
@@ -8,11 +8,14 @@ import { useModalLock } from "../../hooks/useModalLock";
 // "Minha Festa" (briefing section 5) — no pricing shown anywhere here.
 export default function PartyModal({ product, sharedTheme, sharedNotes, existingQty, onCancel, onConfirm }) {
   useModalLock(onCancel);
-  // The unit text's own lowest number is the real floor (e.g.
-  // "mín. 12 un") — used to both default and clamp the quantity, instead
-  // of the generic 1 every product used to start/floor at regardless of
-  // its own stated minimum.
-  const minQty = Math.min(...parseQuantityOptions(product.unit));
+  // Only an EXPLICIT "mín." in the unit text is trusted as a real floor
+  // (e.g. "mín. 12 un") — used to both default and clamp the quantity,
+  // instead of the generic 1 every product used to start/floor at
+  // regardless of its own stated minimum. A plain quantity/pack number
+  // with no "mín." is never treated as a floor (see parseMinQuantity) —
+  // none of Festa's other products have one today, but this stays correct
+  // if one later does.
+  const minQty = parseMinQuantity(product.unit) ?? 1;
   const [qty, setQty] = useState(existingQty ? String(existingQty) : String(minQty));
   const [theme, setTheme] = useState(sharedTheme);
   const [notes, setNotes] = useState(sharedNotes);
