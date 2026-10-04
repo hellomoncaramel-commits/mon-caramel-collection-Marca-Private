@@ -60,10 +60,20 @@ function chunkEditorialRhythm(items) {
 // biscoitoVariedade for the café aside — amanteigado-cafe's round plate
 // leaves bare counter/plate at the frame edges at this card's short+wide
 // ratio, biscoitoVariedade is a dense edge-to-edge tray with no dead space
-// anywhere it gets cropped; chocobomb was specified directly for the
-// second aside). Copy trimmed too — "Tá procurando alguma coisa pro café?"
-// added words without adding desire, per Naia's note; cut down to the
-// eyebrow + one direct line each.
+// anywhere it gets cropped). Copy trimmed too — "Tá procurando alguma
+// coisa pro café?" added words without adding desire, per Naia's note;
+// cut down to the eyebrow + one direct line each.
+//
+// Fourth visual-audit pass: the second aside used REAL_PHOTOS.chocobomb
+// at first, but that's the exact same photo Chocobomb's own ProductCard
+// shows a few rows down — Naia's call: it made the aside read as a
+// preview/repeat of that product card instead of a separate editorial
+// moment. Swapped to REAL_PHOTOS.brownlitoRecheio (the cross-section shot
+// — dark chocolate shell, visible cream filling, strawberry slices) purely
+// as indulgent editorial photography, not a claim that Brownlito itself
+// carries a "hoje eu mereço" badge (it doesn't — see its own "hardTimes"
+// badge below). Not used by any nearby ProductCard's default photo, so no
+// repeat-preview problem here.
 const DIA_DIFICIL_ASIDES = {
   // Biscoito Amanteigado ("butter-cookies" in products.js) carries the
   // "coffee" badge — the one dia-dificil product most directly about café.
@@ -73,20 +83,18 @@ const DIA_DIFICIL_ASIDES = {
     photo: REAL_PHOTOS.biscoitoVariedade,
     photoAlt: "Biscoitos amanteigados variados",
   },
-  // Chocobomb — specified directly (not the "deserve"-badged Bolo de Pote
-  // this aside used before): a richer, more textured full-bleed crop for
-  // this card's short, wide format.
   4: {
     eyebrow: "💛 Hoje eu mereço",
     headline: "Agora a gente entrou nessa parte.",
-    photo: REAL_PHOTOS.chocobomb,
-    photoAlt: "Chocobomb decorado com corações",
-    // The source photo's own strongest cluster of hearts/drizzle sits
-    // slightly right-of-center — nudging the crop right keeps that in
-    // frame on the clear (right) side of the scrim instead of pushing it
-    // further off-frame, while the left side (under the text) still shows
-    // plenty of chocolate texture.
-    objectPosition: "62% 45%",
+    photo: REAL_PHOTOS.brownlitoRecheio,
+    photoAlt: "Brownlito recheado, cortado ao meio, com morango",
+    // Source photo is a tall portrait crop (whole strawberries + plate up
+    // top, the actual cut cross-section — chocolate shell, cream, morango
+    // — lower in frame). This card's row layout is short and very wide, so
+    // object-cover only ever shows a thin horizontal slice of the source;
+    // biased down to ~63% to land that slice on the cross-section itself,
+    // not the bare plate above it or the whole uncut strawberries.
+    objectPosition: "center 63%",
   },
 };
 
