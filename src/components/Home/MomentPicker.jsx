@@ -71,8 +71,16 @@ const MOMENT_PHOTO_STYLE = {
 // shadow with a hint of photo showing through, not a block, just dark
 // enough to hold up against a bright background too. Text below is
 // white/cream (see MomentCard's h3/p).
-const TEXT_PANEL_GRADIENT_DESKTOP = `linear-gradient(to bottom, ${COLORS.ink}00 0%, ${COLORS.ink}00 50%, ${COLORS.ink}66 68%, ${COLORS.ink}BD 82%, ${COLORS.ink}E0 100%)`;
-const TEXT_PANEL_GRADIENT_MOBILE = `linear-gradient(to bottom, ${COLORS.ink}00 0%, ${COLORS.ink}00 54%, ${COLORS.ink}66 72%, ${COLORS.ink}BD 85%, ${COLORS.ink}E0 100%)`;
+//
+// Fifth correction pass: the mockup's own caption calls for a "scrim
+// marrom sutil" (subtle brown scrim) — COLORS.ink (#3D2418) is technically
+// brown, but it's dark enough that at ~85-90% opacity it reads as plain
+// black, not warm chocolate. Swapped the base token to
+// COLORS.caramelDarker (#7A4524 — the same rich caramel already used on
+// the "Quero isso" button), which holds the same contrast for the white
+// text but visibly reads as warm brown rather than crushing to black.
+const TEXT_PANEL_GRADIENT_DESKTOP = `linear-gradient(to bottom, ${COLORS.caramelDarker}00 0%, ${COLORS.caramelDarker}00 50%, ${COLORS.caramelDarker}66 68%, ${COLORS.caramelDarker}BD 82%, ${COLORS.caramelDarker}E0 100%)`;
+const TEXT_PANEL_GRADIENT_MOBILE = `linear-gradient(to bottom, ${COLORS.caramelDarker}00 0%, ${COLORS.caramelDarker}00 54%, ${COLORS.caramelDarker}66 72%, ${COLORS.caramelDarker}BD 85%, ${COLORS.caramelDarker}E0 100%)`;
 
 function MomentCard({ moment, photoSrc, eager, featured, onSelect }) {
   const lines = moment.titleLines ?? [moment.label];
