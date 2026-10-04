@@ -88,9 +88,24 @@ const MOMENT_PHOTO_STYLE = {
 // with the wrong base color). Pushed the opacity stops higher (~52% /
 // ~85% / ~95%, up from ~40% / ~74% / ~88%) so caramelDarker reaches
 // comparable darkness at the bottom edge to what ink had — warm brown
-// identity, same holding power for the text on top.
-const TEXT_PANEL_GRADIENT_DESKTOP = `linear-gradient(to bottom, ${COLORS.caramelDarker}00 0%, ${COLORS.caramelDarker}00 50%, ${COLORS.caramelDarker}85 68%, ${COLORS.caramelDarker}DA 82%, ${COLORS.caramelDarker}F2 100%)`;
-const TEXT_PANEL_GRADIENT_MOBILE = `linear-gradient(to bottom, ${COLORS.caramelDarker}00 0%, ${COLORS.caramelDarker}00 54%, ${COLORS.caramelDarker}85 72%, ${COLORS.caramelDarker}DA 85%, ${COLORS.caramelDarker}F2 100%)`;
+// identity, same holding power for the text on top. Result (Naia's
+// words): "parece um borrão" — a solid muddy patch, not a photo treatment.
+//
+// Seventh correction pass: reset based on a precise reference target (a
+// mockup crop annotated with an explicit opacity curve by %-of-card-height:
+// ~0% through 55-60% (photo untouched), 60-70% (almost imperceptible
+// transition begins), 70-85% (progressive darkening to hold the text),
+// 85-100% (more contrast but still translucent — never a solid block).
+// Two changes from the sixth pass: back to COLORS.ink as the base (neutral
+// "shadow" warmth, not a flat brown wash — caramelDarker is what made the
+// previous pass read as a smudge), and a much longer, gentler ramp that
+// starts later and never exceeds the same ~80% ceiling the third pass
+// already established as PresenteEntryScreen's own approved max. The
+// photo's own real darkness (chocolate/cookie tones already dark where the
+// text sits) does most of the contrast work — the scrim only needs to tip
+// the balance, not carry it alone.
+const TEXT_PANEL_GRADIENT_DESKTOP = `linear-gradient(to bottom, ${COLORS.ink}00 0%, ${COLORS.ink}00 56%, ${COLORS.ink}26 70%, ${COLORS.ink}99 85%, ${COLORS.ink}CC 100%)`;
+const TEXT_PANEL_GRADIENT_MOBILE = `linear-gradient(to bottom, ${COLORS.ink}00 0%, ${COLORS.ink}00 58%, ${COLORS.ink}26 72%, ${COLORS.ink}99 86%, ${COLORS.ink}CC 100%)`;
 
 function MomentCard({ moment, photoSrc, eager, featured, onSelect }) {
   const lines = moment.titleLines ?? [moment.label];
