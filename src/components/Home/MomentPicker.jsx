@@ -45,14 +45,34 @@ const MOMENT_PHOTO_STYLE = {
 //
 // Second correction pass: the first ink-based attempt was still too gentle
 // — it topped out under 90% opacity over a long, gradual ramp, which read
-// as barely different from the old peach wash at a glance. This version is
-// deliberately more assertive: the photo stays completely untouched
-// through just over half the card, then a short, fast ramp (about 20
-// points of the card's height) takes it to a genuinely dark, near-opaque
-// base — the kind of contrast PresenteEntryScreen's own scrim has, not a
-// faint tint. Text below is white/cream (see MomentCard's h3/p).
-const TEXT_PANEL_GRADIENT_DESKTOP = `linear-gradient(to bottom, ${COLORS.ink}00 0%, ${COLORS.ink}00 54%, ${COLORS.ink}A6 74%, ${COLORS.ink}EB 90%, ${COLORS.ink}F7 100%)`;
-const TEXT_PANEL_GRADIENT_MOBILE = `linear-gradient(to bottom, ${COLORS.ink}00 0%, ${COLORS.ink}00 58%, ${COLORS.ink}A6 78%, ${COLORS.ink}EB 92%, ${COLORS.ink}F7 100%)`;
+// as barely different from the old peach wash at a glance. Pushed it to a
+// short, fast ramp reaching ~97% opacity — but that overshot: at ~97% the
+// bottom of the card goes nearly solid black, the photo stops reading as a
+// photo there at all. Too heavy, not "a shadow," which is exactly the
+// "não filtro, não cobrir metade da foto" the brief asked to avoid in the
+// first place, just in the opposite direction.
+//
+// Third correction pass: capped the max opacity at the same ~80% ceiling
+// PresenteEntryScreen's own approved scrim uses (`${COLORS.ink}CC` there)
+// — this was always the reference being matched, and 80% is where it
+// actually tops out, not ~97%. The photo now stays faintly visible even at
+// the very bottom edge (a shadow, not a block), while the ramp itself
+// stays short and fast so the darkening still reads as deliberate, not
+// gradual mush.
+//
+// Fourth correction pass: side-by-side against the reference mockup's own
+// "Dias de luta" card showed the 80% ceiling wasn't dark enough for every
+// photo — this card's real photo has light-colored cookies right behind
+// the text, and at 80% they still fight the white title for attention
+// (the reference's own photo happens to be dark there, so its 80%-ish
+// scrim reads fine; the ceiling itself needed to go a bit higher to work
+// across different real photos, not just the one in the mockup). Bumped to
+// an ~88% ceiling and nudged the ramp to start a touch earlier — still a
+// shadow with a hint of photo showing through, not a block, just dark
+// enough to hold up against a bright background too. Text below is
+// white/cream (see MomentCard's h3/p).
+const TEXT_PANEL_GRADIENT_DESKTOP = `linear-gradient(to bottom, ${COLORS.ink}00 0%, ${COLORS.ink}00 50%, ${COLORS.ink}66 68%, ${COLORS.ink}BD 82%, ${COLORS.ink}E0 100%)`;
+const TEXT_PANEL_GRADIENT_MOBILE = `linear-gradient(to bottom, ${COLORS.ink}00 0%, ${COLORS.ink}00 54%, ${COLORS.ink}66 72%, ${COLORS.ink}BD 85%, ${COLORS.ink}E0 100%)`;
 
 function MomentCard({ moment, photoSrc, eager, featured, onSelect }) {
   const lines = moment.titleLines ?? [moment.label];
@@ -72,6 +92,12 @@ function MomentCard({ moment, photoSrc, eager, featured, onSelect }) {
       <div className="absolute inset-0 hidden md:block" style={{ background: TEXT_PANEL_GRADIENT_DESKTOP }} />
 
       <div className="absolute left-6 right-6 bottom-[22px] md:left-5 md:right-5 md:bottom-5 flex flex-col items-start">
+        {/* Text-treatment pass (correction): an earlier round pulled this
+            back from semibold to medium, reading the reference as more
+            delicate than it is. Side-by-side with the reference's own card
+            at matching scale showed the opposite — its title strokes are
+            visibly thicker than this at medium weight. Restored
+            semibold. */}
         <h3
           className={`font-display font-semibold text-white max-w-[230px] md:max-w-none text-[clamp(26px,7vw,31px)] md:text-[25px] leading-[0.98] md:leading-[1.08] tracking-[-0.02em] md:tracking-normal ${
             // Dias de luta gets a discreet lg+ size bump over the other two
@@ -105,7 +131,15 @@ function MomentCard({ moment, photoSrc, eager, featured, onSelect }) {
         </p>
         {/* Visual-correction pass: a touch more compact (was h-11/px-[18px])
             now that it sits on a tighter, darker scrim — reads as refined,
-            not a default-sized button dropped onto the card. */}
+            not a default-sized button dropped onto the card.
+            Text-treatment pass (correction): an earlier round dropped
+            `self-end` here, assuming the reference left-aligned the button
+            under the text. Measured the reference mockup directly (pixel
+            analysis, not eyeballing): the title starts ~7% in from the
+            card's left edge, but the button spans ~52%-89% of the card's
+            width — clearly right-aligned, not flush with the text above
+            it. Restored `self-end`, which is what this already was before
+            that round. */}
         <button
           onClick={onSelect}
           className="mt-4 md:mt-3 self-end shrink-0 font-semibold md:font-medium h-10 md:h-10 px-4 text-[13.5px]"
