@@ -67,5 +67,10 @@ export function useParty() {
     setModalProduct(null);
   };
 
-  return { items, theme, notes, modalProduct, toast, openModal, closeModal, confirmAdd };
+  // Removes only this one item — theme/notes are shared across the whole
+  // party plan, not per-item, so they're left untouched here (same
+  // reasoning as removeFromSelection never touching unrelated entries).
+  const removeItem = (id) => setItems((cur) => cur.filter((it) => it.id !== id));
+
+  return { items, theme, notes, modalProduct, toast, openModal, closeModal, confirmAdd, removeItem };
 }

@@ -1,10 +1,10 @@
 import { forwardRef } from "react";
-import { MessageCircle } from "lucide-react";
+import { MessageCircle, X } from "lucide-react";
 import { COLORS } from "../../styles/colors";
 
 // Gradient planner panel, shown inline within the Festa moment screen. Copy
 // changes between empty and filled state (briefing section 5).
-const PartyPanel = forwardRef(function PartyPanel({ items, theme, notes, onSubmit }, ref) {
+const PartyPanel = forwardRef(function PartyPanel({ items, theme, notes, onSubmit, onRemoveItem }, ref) {
   return (
     <div
       ref={ref}
@@ -26,7 +26,16 @@ const PartyPanel = forwardRef(function PartyPanel({ items, theme, notes, onSubmi
           </p>
           <ul className="text-sm space-y-1.5 mb-4 text-brand-ink">
             {items.map((it) => (
-              <li key={it.id}>✓ {it.name}</li>
+              <li key={it.id} className="flex items-center justify-between gap-2">
+                <span>✓ {it.name}</span>
+                <button
+                  onClick={() => onRemoveItem?.(it.id)}
+                  aria-label={`Remover ${it.name} da Minha Festa`}
+                  className="w-7 h-7 shrink-0 rounded-full flex items-center justify-center text-brand-muted transition-transform active:scale-90 lg:hover:text-brand-caramelDark"
+                >
+                  <X size={12} />
+                </button>
+              </li>
             ))}
           </ul>
           {theme.trim() && (

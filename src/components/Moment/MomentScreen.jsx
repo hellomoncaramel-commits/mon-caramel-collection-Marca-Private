@@ -326,7 +326,7 @@ export default function MomentScreen({
 
       {isFesta ? (
         // Capped at lg+ so the planner panel doesn't stretch across the
-        // whole 7xl product grid — PartyPanel itself is untouched.
+        // whole 7xl product grid.
         <div className="lg:max-w-2xl lg:mx-auto">
           <PartyPanel
             ref={partyPanelRef}
@@ -334,6 +334,7 @@ export default function MomentScreen({
             theme={party.theme}
             notes={party.notes}
             onSubmit={() => onSend(buildPartyMessage({ items: party.items, theme: party.theme, notes: party.notes }))}
+            onRemoveItem={party.removeItem}
           />
         </div>
       ) : (
