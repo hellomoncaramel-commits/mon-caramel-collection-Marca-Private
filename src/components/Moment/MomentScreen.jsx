@@ -46,18 +46,30 @@ function chunkEditorialRhythm(items) {
 // carries the badge the aside is about (never an unrelated photo standing
 // in for a vibe). No AI, no stock — both are existing files already used
 // elsewhere in the catalog (see data/photos.js / data/products.js).
+//
+// Final visual audit pass: both asides read as weak/forgettable in the real
+// mobile render — a wash of beige with a small, cropped-in photo losing
+// badly to the product cards around it ("o card de produto imediatamente
+// acima chama muito mais atenção... a intervenção interrompe o catálogo sem
+// recompensar essa interrupção"). Split `text` into `eyebrow` (the existing
+// emoji + the short hook, e.g. "💛 Hoje eu mereço") + `headline` (the rest,
+// Fraunces, bigger) — same words already in the old copy, just given real
+// hierarchy instead of running together as one flat sentence. No new copy
+// invented, nothing commercial (price/product/name) touched.
 const DIA_DIFICIL_ASIDES = {
   // Biscoito Amanteigado ("butter-cookies" in products.js) carries the
   // "coffee" badge — the one dia-dificil product most directly about café.
   1: {
-    text: "Tá procurando alguma coisa pro café? ☕ Continua descendo. Tem coisa boa vindo.",
+    eyebrow: "☕ Pro café",
+    headline: "Tá procurando alguma coisa? Continua descendo — tem coisa boa vindo.",
     photo: REAL_PHOTOS.biscoitoVariedade,
     photoAlt: "Biscoitos amanteigados variados",
   },
   // Bolo de Pote ("bolo-de-pote" in products.js) carries the "deserve"
   // badge — "hoje eu mereço" is literally that product's own tag.
   4: {
-    text: "Chegamos oficialmente na parte \"hoje eu mereço\". 💛",
+    eyebrow: "💛 Hoje eu mereço",
+    headline: "Chegamos oficialmente nessa parte.",
     photo: REAL_PHOTOS.boloDePoteMorango,
     photoAlt: "Bolo de pote de morango",
   },
@@ -73,27 +85,38 @@ const DIA_DIFICIL_ASIDES = {
 // (folded into a 2-item row's spare third grid track, see below) stacks
 // photo over text to fit that narrower, taller slot. Same component, same
 // visual family, shape adapted to where it sits.
+//
+// Final visual audit pass: min-h-32 (128px) read as a thin strip next to a
+// full ProductCard photo — bumped to min-h-44 (176px), and the photo's own
+// share of the row widened from 38% to 44% (within the 40-45% the brief
+// asked for), so the photo actually has presence instead of feeling like a
+// bolted-on thumbnail. Background tint deepened slightly (1A → 33) so it
+// reads as a warm pause, not a wash of plain beige. Text gets a small caps
+// eyebrow + a bigger Fraunces headline instead of one flat sentence.
 function EditorialAside({ aside, layout = "row" }) {
   const isColumn = layout === "column";
   return (
     <div
-      className={`rounded-2xl overflow-hidden flex border ${isColumn ? "flex-col h-full" : "min-h-32 flex-row"}`}
-      style={{ backgroundColor: `${COLORS.caramelLight}1A`, borderColor: `${COLORS.border}99` }}
+      className={`rounded-2xl overflow-hidden flex border ${isColumn ? "flex-col h-full" : "min-h-44 flex-row"}`}
+      style={{ backgroundColor: `${COLORS.caramelLight}33`, borderColor: `${COLORS.border}99` }}
     >
       {isColumn && (
         <div className="w-full aspect-[3/2] shrink-0">
           <Photo src={aside.photo} alt={aside.photoAlt} className="w-full h-full object-cover" loading="lazy" />
         </div>
       )}
-      <div className={`flex items-center ${isColumn ? "flex-1 p-4" : "flex-1 pl-4 pr-3 py-3.5"}`}>
-        <p className="font-display text-base leading-snug text-brand-ink">{aside.text}</p>
+      <div className={`flex flex-col justify-center ${isColumn ? "flex-1 p-4" : "flex-1 pl-5 pr-3 py-4"}`}>
+        <span className="text-2xs font-semibold uppercase tracking-wide mb-1.5" style={{ color: COLORS.caramelDark }}>
+          {aside.eyebrow}
+        </span>
+        <p className="font-display text-lg leading-snug text-brand-ink">{aside.headline}</p>
       </div>
       {/* Row layout: text first (left), photo second (right) — bled to the
           card's own top/right/bottom edge via the parent's overflow-hidden,
-          ~38% of the card's width so it reads as a real photograph, not a
+          ~44% of the card's width so it reads as a real photograph, not a
           decorative thumbnail. */}
       {!isColumn && (
-        <div className="w-[38%] shrink-0 self-stretch">
+        <div className="w-[44%] shrink-0 self-stretch">
           <Photo src={aside.photo} alt={aside.photoAlt} className="w-full h-full object-cover" loading="lazy" />
         </div>
       )}
