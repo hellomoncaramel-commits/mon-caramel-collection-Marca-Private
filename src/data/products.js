@@ -450,10 +450,16 @@ export const PRODUCTS = [
       { key: "cobertura", label: "Cobertura", choices: ["Chocolate meio amargo", "Chocolate branco"] },
       { key: "versao", label: "Versão", choices: ["Tradicional", "Sem glúten"] },
     ],
+    // noteLabel/note deliberately absent: the old editorial aside here
+    // ("Sem julgamentos: Oreo mergulhado em fudge...") described a fixed
+    // fudge flavor that no longer matches the real, configurable product
+    // (recheio/cobertura à escolha) — removed rather than replaced with
+    // invented copy. MonCaramelNote (ProductDetailSheet) already renders
+    // nothing when `note` is unset, so this needs no component change.
+    // teaser/nextTemptation unaffected — still used by the card and by
+    // "Próxima tentação" respectively.
     experience: {
       teaser: "Quando 'vou comer só um chocolatinho' não vai resolver.",
-      noteLabel: "Sem julgamentos:",
-      note: "Oreo mergulhado em fudge. Eu não vou nem tentar fingir que esse é moderado. 😂",
       nextTemptation: { id: "brownlito", line: "Se chegou nesse nível de vontade de chocolate, eu preciso te mostrar o Brownlito." },
     },
     // General/day-to-day photo unchanged. Festa gets its own gallery — real

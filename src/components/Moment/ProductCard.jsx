@@ -1,6 +1,6 @@
 import { COLORS } from "../../styles/colors";
 import { MOMENT_ICON } from "../../data/moments";
-import { photosForMoment } from "../../utils/products";
+import { photosForMoment, initialQuantity, displayPriceCada } from "../../utils/products";
 import PhotoCarousel from "../shared/PhotoCarousel";
 import ProductArt from "../shared/ProductArt";
 import ProductBadges from "../shared/ProductBadges";
@@ -66,6 +66,11 @@ export default function ProductCard({
   const isCustomizable = p.customizable === true;
   const existing = selection.find((it) => it.kind === "product" && it.productId === p.id);
   const partyEntry = partyItems?.find((it) => it.id === p.id);
+  // Display-only: an explicit commercial minimum (never inferred — see
+  // minimumQuantityOf) reads as "mín. N" next to a humanized "$X cada,"
+  // instead of the more technical "$X/un · unidade (mín. N)." Products
+  // without one keep showing price + unit exactly as before.
+  const minQty = initialQuantity(p);
   // Only Dias de luta gets this round's lighter, photo-forward treatment —
   // Festa (and anything else reusing this card) keeps the exact border/
   // shadow it already had. Never infer this from `!isFesta`: that would
@@ -168,9 +173,9 @@ export default function ProductCard({
           <div className={`flex flex-col ${isDiaDificil ? "mt-2" : "mt-2.5"}`}>
             <p className={`text-brand-muted ${isDiaDificil ? "text-3xs" : "text-xs"}`}>
               <span className="font-medium" style={{ color: COLORS.caramelDark }}>
-                {p.price}
+                {minQty > 1 ? displayPriceCada(p.price) : p.price}
               </span>{" "}
-              · {p.unit}
+              · {minQty > 1 ? `mín. ${minQty}` : p.unit}
             </p>
             <button
               onClick={() => onOpenDetail?.(p)}

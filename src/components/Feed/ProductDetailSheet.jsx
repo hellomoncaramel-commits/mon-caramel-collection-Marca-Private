@@ -2,7 +2,6 @@ import { useState } from "react";
 import { X, Heart, Snowflake, Share2 } from "lucide-react";
 import { COLORS } from "../../styles/colors";
 import { PRODUCTS } from "../../data/products";
-import { BADGES } from "../../data/badges";
 import { defaultPhotos, initialQuantity } from "../../utils/products";
 import PhotoCarousel from "../shared/PhotoCarousel";
 import ProductArt from "../shared/ProductArt";
@@ -133,51 +132,54 @@ export default function ProductDetailSheet({
               different (fuller) string, never the teaser repeated. */}
           <p className="text-sm mt-2 leading-snug text-brand-inkSoft">{p.sensory}</p>
 
-          {/* Price, then (only) whichever of the two actually applies:
-              an explicit commercial minimum (never inferred from unit
-              text — see minimumQuantityOf) spelled out in full, or the
-              plain sale unit for every other product (weight, pack, "por
-              fatia", etc.) — never both, since for every product that has
-              a real minQty today, `unit` is just that same minimum
-              restated ("unidade (mín. N)"), which would otherwise show the
-              same fact twice in two different phrasings right next to
-              each other. */}
-          <p className="text-xl font-medium mt-3 text-brand-caramelDark">{p.price}</p>
-          {minQty > 1 ? (
-            <p className="text-sm mt-0.5 text-brand-muted">Pedido mínimo: {minQty}</p>
-          ) : (
-            p.unit && <p className="text-sm mt-0.5 text-brand-muted">{p.unit}</p>
-          )}
+          {/* One soft, warm-tinted block for every commercial fact — price,
+              minimum, "pode congelar," the gluten-free option — instead of
+              a stack of separate lines on the plain page background. Same
+              caramel-tint-card device MonCaramelNote already uses just
+              below (one repeated signature, not a new look).
+              Price, then (only) whichever of the two actually applies: an
+              explicit commercial minimum (never inferred from unit text —
+              see minimumQuantityOf) spelled out in full, or the plain sale
+              unit for every other product (weight, pack, "por fatia",
+              etc.) — never both, since for every product that has a real
+              minQty today, `unit` is just that same minimum restated
+              ("unidade (mín. N)"), which would otherwise show the same
+              fact twice in two different phrasings right next to each
+              other.
+              Gluten-free option and "pode congelar" each show in exactly
+              ONE form depending on context — the curated badge pill row
+              (Dias de luta, already includes both "freezer" and
+              "glutenFreeOption" when a product carries them) OR this
+              block's own plain-language line (everywhere else) — never
+              both at once, which is what caused the "Opção sem glúten"
+              line to double up with its own badge pill in the Preview. */}
+          <div className="mt-3 rounded-2xl p-4" style={{ backgroundColor: `${COLORS.caramelLight}1F` }}>
+            <p className="text-xl font-medium text-brand-caramelDark">{p.price}</p>
+            {minQty > 1 ? (
+              <p className="text-sm mt-0.5 text-brand-muted">Pedido mínimo: {minQty}</p>
+            ) : (
+              p.unit && <p className="text-sm mt-0.5 text-brand-muted">{p.unit}</p>
+            )}
 
-          {/* Gluten-free version callout — reuses the exact approved
-              glutenFreeOption badge data (data/badges.js), never new copy.
-              Shown regardless of entry context (Search/Feed/dia-dificil
-              alike): this is the kind of fact that should never depend on
-              which journey led here. */}
-          {p.badges?.includes("glutenFreeOption") && (
-            <p className="flex items-center gap-1.5 mt-3 text-sm text-brand-ink">
-              <span aria-hidden="true">🌾</span> {BADGES.glutenFreeOption.label}
-            </p>
-          )}
-
-          {/* Dias de luta only — the curated badge matrix. Suppresses the
-              `canFreeze` list item just below when it's showing (that
-              one's less precise: it fires off `moments.includes
-              ("freezer")` for every context, which doesn't always match
-              the hand-curated badge list — e.g. products whose name
-              already says "congelado" deliberately skip the badge). */}
-          {showExperience && <ProductBadges badges={p.badges} />}
-
-          {canFreeze && !showExperience && (
-            <ul className="flex flex-col gap-1.5 mt-2.5">
-              <li className="flex items-center gap-2 text-sm text-brand-inkSoft">
-                <span className="w-7 h-7 shrink-0 rounded-full flex items-center justify-center bg-brand-subtle">
-                  <Snowflake size={13} className="text-brand-caramelDark" />
-                </span>
-                Pode congelar
-              </li>
-            </ul>
-          )}
+            {showExperience ? (
+              <ProductBadges badges={p.badges} onSubtle />
+            ) : (
+              (canFreeze || p.badges?.includes("glutenFreeOption")) && (
+                <div className="flex flex-wrap gap-1.5 mt-2.5">
+                  {canFreeze && (
+                    <span className="inline-flex items-center gap-1 text-3xs font-medium rounded-full px-2 py-0.5 text-brand-inkSoft bg-white/60">
+                      <Snowflake size={11} className="text-brand-caramelDark" /> Pode congelar
+                    </span>
+                  )}
+                  {p.badges?.includes("glutenFreeOption") && (
+                    <span className="inline-flex items-center gap-1 text-3xs font-medium rounded-full px-2 py-0.5 text-brand-inkSoft bg-white/60">
+                      <span aria-hidden="true">🌾</span> Opção sem glúten
+                    </span>
+                  )}
+                </div>
+              )
+            )}
+          </div>
 
           {/* Mon Caramel's own voice — a short editorial aside, Dias de
               luta only, right before the purchase decision. */}
