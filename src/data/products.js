@@ -106,11 +106,14 @@ export const PRODUCTS = [
     optionGroups: [{ key: "sabor", label: "Sabor", choices: ["Baunilha", "Chocolate", "Pão de Mel"] }],
     experience: {
       teaser: "Poucos ingredientes, pouca adição de açúcar e tamanho perfeito para os pequenos.",
-      // Short, discreet freezer tip — not a big editorial block. Replaces
-      // (not duplicates) the old "Seu eu do futuro agradece:" aside that
-      // used to live here with different wording.
-      noteLabel: "Dica:",
-      note: "Faz alguns a mais e congela. Seu eu do futuro agradece. 😉",
+      // Short, discreet freezer tip — plain secondary-weight text right
+      // under the description (see ProductDetailSheet.jsx), deliberately
+      // NOT routed through MonCaramelNote: that component's box/quote/
+      // label treatment read as a full editorial block again, the exact
+      // weight this round's other Product Details moved away from.
+      // Replaces (not duplicates) the old "Seu eu do futuro agradece:"
+      // aside that used to live here with different wording.
+      detailAside: "Faz alguns a mais e congela. Seu eu do futuro agradece. 😉",
       nextTemptation: {
         id: "butter-cookies-congelado",
         line: "Se você gosta dessa praticidade, olha o biscoito congelado pra assar.",
