@@ -177,14 +177,15 @@ export default function ProductDetailSheet({
               spaced, so it reads as the next step, not a separate card). */}
           {isCustomizable ? (
             <div className="mt-4 pt-3 border-t border-dashed border-brand-border">
-              <FlavorConfigurator product={p} existing={existing} onConfirm={({ qty: q, flavorBreakdown }) => {
+              <FlavorConfigurator product={p} existing={existing} onConfirm={({ qty: q, flavorBreakdown, options }) => {
                 addToSelection({
                   kind: "product",
                   productId: p.id,
                   name: p.name,
                   unit: p.unit,
                   qty: q,
-                  flavors: flavorBreakdown.length > 0 ? flavorBreakdown : null,
+                  flavors: flavorBreakdown?.length > 0 ? flavorBreakdown : null,
+                  options: options ?? null,
                 });
                 onClose();
               }} />

@@ -79,14 +79,15 @@ export default function ProductCard({
   // silently change its look too.
   const isDiaDificil = momentId === "dia-dificil";
 
-  const confirmAdd = ({ qty, flavorBreakdown }) => {
+  const confirmAdd = ({ qty, flavorBreakdown, options }) => {
     addToSelection({
       kind: "product",
       productId: p.id,
       name: p.name,
       unit: p.unit,
       qty,
-      flavors: isCustomizable && flavorBreakdown.length > 0 ? flavorBreakdown : null,
+      flavors: isCustomizable && flavorBreakdown?.length > 0 ? flavorBreakdown : null,
+      options: options ?? null,
     });
     setOpen(false);
   };

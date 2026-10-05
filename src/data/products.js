@@ -175,11 +175,29 @@ export const PRODUCTS = [
     // below (shown on the dia-dificil card + detail). This product is NOT
     // tagged with the plain `glutenFree` badge — that one means the
     // product itself is always gluten-free, which isn't the case here.
+    // Also now the explicit "Sem glúten" choice inside `versao` below —
+    // the badge/sensory line are a heads-up before opening the
+    // configurator, `optionGroups` is the actual mechanism that captures
+    // the customer's real choice through to the selection/WhatsApp.
     sensory: "Cone crocante coberto de trufa cremosa, decorado à mão no tema da sua festa. Existe opção sem glúten, pelo mesmo preço.",
     kind: "cake",
     tint: COLORS.caramelDark,
     moments: ["festa", "dia-dificil"],
     badges: ["deserve", "glutenFreeOption"],
+    // Recheio/cobertura/versão confirmed by Naia — 3 independent choices,
+    // not a flavor list to multi-select-and-split like Brigadeiro (that
+    // product's own `flavors` field/pattern is untouched and unused here).
+    // `customizable: true` routes "Quero esse" to this configurator
+    // everywhere the rest of the catalog already makes that distinction
+    // (ProductCard/ProductDetail/Search/Feed) — same existing mechanism,
+    // not a new one. No price changes by choice — the "Sem glúten" versão
+    // never adds a surcharge (see FlavorConfigurator.jsx).
+    customizable: true,
+    optionGroups: [
+      { key: "recheio", label: "Recheio", choices: ["Brigadeiro", "Morango", "Beijinho", "Maracujá", "Ninho com Nutella", "Limão"] },
+      { key: "cobertura", label: "Cobertura", choices: ["Chocolate meio amargo", "Chocolate branco"] },
+      { key: "versao", label: "Versão", choices: ["Tradicional", "Sem glúten"] },
+    ],
     experience: {
       teaser: "Tem vontade de doce. E tem vontade de DOCE. Esse é pro segundo caso.",
       noteLabel: "Eu não julgo:",
@@ -413,13 +431,25 @@ export const PRODUCTS = [
     unit: "unidade (mín. 4)",
     minimumQuantity: 4,
     price: "$4/un",
-    sensory: "Oreo mergulhado em fudge cremoso — pra quando bate aquela vontade impossível de ignorar.",
+    // Gluten-free version confirmed available at the same price — same
+    // treatment as Cone Trufado: a heads-up badge + sensory line (for
+    // whoever sees the card before opening the configurator), and the
+    // real "Sem glúten" choice lives in `versao` below. No surcharge.
+    sensory: "Oreo mergulhado em fudge cremoso — pra quando bate aquela vontade impossível de ignorar. Existe opção sem glúten, pelo mesmo preço.",
     kind: "dipped",
     tint: COLORS.caramelLight,
     moments: ["dia-dificil", "festa"],
     // Badges are Dias de luta-only (ProductCard gates on momentId — see
     // that component) — Festa's own card never reads this field.
-    badges: ["deserve", "freezer"],
+    badges: ["deserve", "freezer", "glutenFreeOption"],
+    // Same 3 independent choices as Cone Trufado, confirmed by Naia —
+    // see that product's own comment for the full rationale.
+    customizable: true,
+    optionGroups: [
+      { key: "recheio", label: "Recheio", choices: ["Brigadeiro", "Morango", "Beijinho", "Maracujá", "Ninho com Nutella", "Limão"] },
+      { key: "cobertura", label: "Cobertura", choices: ["Chocolate meio amargo", "Chocolate branco"] },
+      { key: "versao", label: "Versão", choices: ["Tradicional", "Sem glúten"] },
+    ],
     experience: {
       teaser: "Quando 'vou comer só um pedacinho de chocolate' já não vai resolver.",
       noteLabel: "Sem julgamentos:",

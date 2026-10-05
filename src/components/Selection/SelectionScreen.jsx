@@ -45,12 +45,21 @@ function EntryCard({ it, product, onRemove }) {
             <p className="font-display text-base text-brand-ink">
               {it.qty} {it.name}
             </p>
-            {!it.flavors && <p className="text-xs mt-0.5 text-brand-muted">{it.unit}</p>}
+            {!it.flavors && !it.options && <p className="text-xs mt-0.5 text-brand-muted">{it.unit}</p>}
             {it.flavors && (
               <ul className="text-xs mt-1.5 space-y-0.5 text-brand-inkSoft">
                 {it.flavors.map((f) => (
                   <li key={f.name}>
                     • {f.qty} {f.name}
+                  </li>
+                ))}
+              </ul>
+            )}
+            {it.options && (
+              <ul className="text-xs mt-1.5 space-y-0.5 text-brand-inkSoft">
+                {it.options.map((o) => (
+                  <li key={o.key}>
+                    • {o.label}: {o.value}
                   </li>
                 ))}
               </ul>
