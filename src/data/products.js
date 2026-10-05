@@ -183,7 +183,10 @@ export const PRODUCTS = [
     kind: "cake",
     tint: COLORS.caramelDark,
     moments: ["festa", "dia-dificil"],
-    badges: ["deserve", "glutenFreeOption"],
+    // "freezer" is card-only, same as every other product's badges (see
+    // ProductBadges/ProductDetailSheet — Detail's commercial block never
+    // renders the `badges` array). Same badge set shape as Chocobomb.
+    badges: ["deserve", "freezer", "glutenFreeOption"],
     // Recheio/cobertura/versão confirmed by Naia — 3 independent choices,
     // not a flavor list to multi-select-and-split like Brigadeiro (that
     // product's own `flavors` field/pattern is untouched and unused here).
@@ -301,7 +304,9 @@ export const PRODUCTS = [
     kind: "cake",
     tint: COLORS.caramelDark,
     moments: ["dia-dificil"],
-    badges: ["freezer", "deserve"],
+    // "coffeePairing" is a deliberate one-off (see badges.js) — card-only,
+    // same as every other badge here.
+    badges: ["freezer", "deserve", "coffeePairing"],
     // noteLabel/note deliberately absent: the old aside here ("E uma
     // dica: compra alguns e congela...") just restated the "freezer"
     // badge already shown on the card — removed rather than invented a

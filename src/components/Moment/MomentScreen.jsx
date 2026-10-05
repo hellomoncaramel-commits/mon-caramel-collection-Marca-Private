@@ -1,14 +1,11 @@
-import { Fragment, useMemo, useRef } from "react";
+import { useMemo, useRef } from "react";
 import { Heart, Sparkles } from "lucide-react";
-import { COLORS } from "../../styles/colors";
 import { MOMENT_INTRO } from "../../data/moments";
-import { REAL_PHOTOS } from "../../data/photos";
 import { pickForMoment, pickCrossSell } from "../../utils/products";
 import { buildPartyMessage } from "../../utils/messages";
 import { useParty } from "../../hooks/useParty";
 import SiteHeader from "../shared/SiteHeader";
 import Toast from "../shared/Toast";
-import Photo from "../shared/Photo";
 import ProductCard from "./ProductCard";
 import PartyPanel from "../Party/PartyPanel";
 import PartyModal from "../Party/PartyModal";
@@ -33,112 +30,6 @@ function chunkEditorialRhythm(items) {
     p += 1;
   }
   return chunks;
-}
-
-// Short editorial asides dropped between a couple of the rhythm's rows —
-// not filters, not categories, not product cards, just Mon Caramel's own
-// voice breaking up the scroll. Keyed by chunk index (which row they sit
-// before). Used sparingly on purpose (2 of this task's 3 approved lines) —
-// shown on mobile AND desktop now (see EditorialAside below).
-//
-// Real-photos pass: each aside now carries a real product photo instead of
-// reading as plain text — the product was picked because it actually
-// carries the badge the aside is about (never an unrelated photo standing
-// in for a vibe). No AI, no stock — both are existing files already used
-// elsewhere in the catalog (see data/photos.js / data/products.js).
-//
-// Third visual-audit pass (the split-card concept rejected outright):
-// two earlier rounds kept trying to fix the aside by inflating one half of
-// a text-panel + photo-panel split (bigger photo, bigger photo again,
-// bigger/bolder text) — Naia's call: "o problema não foi resolvido... o
-// EditorialAside continua parecendo um bloco/template... a direção visual
-// do split card está descartada." Replaced entirely with a single
-// full-bleed photo card (MomentPicker's own proven language — photo fills
-// the box, a localized scrim behind the text only, nothing else) instead
-// of a beige panel beside a photo panel. `photo` swapped for the crop that
-// actually reads well full-bleed (tested both biscoitoAmanteigadoCafe and
-// biscoitoVariedade for the café aside — amanteigado-cafe's round plate
-// leaves bare counter/plate at the frame edges at this card's short+wide
-// ratio, biscoitoVariedade is a dense edge-to-edge tray with no dead space
-// anywhere it gets cropped). Copy trimmed too — "Tá procurando alguma
-// coisa pro café?" added words without adding desire, per Naia's note;
-// cut down to the eyebrow + one direct line each.
-//
-// Fourth visual-audit pass: the second aside used REAL_PHOTOS.chocobomb
-// at first, but that's the exact same photo Chocobomb's own ProductCard
-// shows a few rows down — Naia's call: it made the aside read as a
-// preview/repeat of that product card instead of a separate editorial
-// moment. Swapped to REAL_PHOTOS.brownlitoRecheio (the cross-section shot
-// — dark chocolate shell, visible cream filling, strawberry slices) purely
-// as indulgent editorial photography, not a claim that Brownlito itself
-// carries a "hoje eu mereço" badge (it doesn't — see its own "hardTimes"
-// badge below). Not used by any nearby ProductCard's default photo, so no
-// repeat-preview problem here.
-const DIA_DIFICIL_ASIDES = {
-  // Biscoito Amanteigado ("butter-cookies" in products.js) carries the
-  // "coffee" badge — the one dia-dificil product most directly about café.
-  1: {
-    eyebrow: "☕ Pro café",
-    headline: "Continua descendo que tem mais coisa boa vindo.",
-    photo: REAL_PHOTOS.biscoitoVariedade,
-    photoAlt: "Biscoitos amanteigados variados",
-  },
-  4: {
-    eyebrow: "💛 Hoje eu mereço",
-    headline: "Agora a gente entrou nessa parte.",
-    photo: REAL_PHOTOS.brownlitoRecheio,
-    photoAlt: "Brownlito recheado, cortado ao meio, com morango",
-    // Source photo is a tall portrait crop (whole strawberries + plate up
-    // top, the actual cut cross-section — chocolate shell, cream, morango
-    // — lower in frame). This card's row layout is short and very wide, so
-    // object-cover only ever shows a thin horizontal slice of the source;
-    // biased down to ~63% to land that slice on the cross-section itself,
-    // not the bare plate above it or the whole uncut strawberries.
-    objectPosition: "center 63%",
-  },
-};
-
-// A small full-bleed editorial "chapter break" — a real photo filling the
-// whole card, a scrim localized just behind the text (not the whole
-// photo), no CTA, no separate beige panel. Same language MomentPicker's
-// own approved moment cards already use (photo → localized scrim → text),
-// just in this card's own short/wide (row) or taller (column) shape,
-// built differently from ProductCard on purpose (no price, no badges) so
-// it never reads as just another product.
-//
-// `layout="row"` (mobile full-width band, desktop standalone band before a
-// 3-item row): short and wide (h-36, ~144px) — text sits top-left-ish in a
-// clear zone, scrim fades left-to-right so the photo reads clearly on the
-// right. `layout="column"` (folded into a 2-item row's spare third grid
-// track on desktop): taller, portrait-leaning (aspect-[4/5]) to sit
-// comfortably beside a ProductCard — scrim fades bottom-to-top instead,
-// same "MomentPicker card" logic turned 90°, text anchored at the bottom.
-const EDITORIAL_SCRIM_ROW = `linear-gradient(to right, ${COLORS.ink}DE 0%, ${COLORS.ink}B3 28%, ${COLORS.ink}4D 52%, ${COLORS.ink}00 74%)`;
-const EDITORIAL_SCRIM_COLUMN = `linear-gradient(to top, ${COLORS.ink}E0 0%, ${COLORS.ink}B3 30%, ${COLORS.ink}40 58%, ${COLORS.ink}00 78%)`;
-
-function EditorialAside({ aside, layout = "row" }) {
-  const isColumn = layout === "column";
-  return (
-    <div className={`relative overflow-hidden rounded-2xl ${isColumn ? "h-full" : "h-36"}`}>
-      <Photo
-        src={aside.photo}
-        alt={aside.photoAlt}
-        className="absolute inset-0 w-full h-full object-cover"
-        style={aside.objectPosition ? { objectPosition: aside.objectPosition } : undefined}
-        loading="lazy"
-      />
-      <div className="absolute inset-0" style={{ background: isColumn ? EDITORIAL_SCRIM_COLUMN : EDITORIAL_SCRIM_ROW }} />
-      <div
-        className={`absolute flex flex-col ${isColumn ? "inset-x-0 bottom-0 justify-end p-4" : "inset-y-0 left-0 justify-center pl-5 pr-3"}`}
-        style={{ maxWidth: isColumn ? undefined : "64%" }}
-      >
-        <span className="text-3xs font-semibold uppercase tracking-wider mb-1.5 text-white/85">{aside.eyebrow}</span>
-        <p className="font-display leading-snug text-white" style={{ fontSize: 21 }}>
-          {aside.headline}
-        </p>
-      </div>
-    </div>
-  );
 }
 
 // Matched products for the chosen moment (dia-dificil or festa —
@@ -225,80 +116,49 @@ export default function MomentScreen({
           uniform 3-column grid at desktop too — see section 11 of the
           brief: Festa is a portfolio, not the "controlled editorial grid"
           below). Below lg this is the only grid rendered.
-          Dias de luta only: 15 visually-identical cards in a row read as
-          monotonous, so the same two editorial asides already used to
-          break up the lg+ rhythm (DIA_DIFICIL_ASIDES below) now also land
-          here, at the same product-count boundaries — reusing existing
-          copy, not inventing new text. `col-span-full` breaks each aside
-          across both the 1-col and sm:2-col widths so it never sits beside
-          a product card. Festa (and anything else) keeps the plain flat
-          map it always had. */}
+          Simplification pass: the two editorial "chapter break" cards that
+          used to interrupt this flow (DIA_DIFICIL_ASIDES) were removed —
+          products now scroll continuously, same order, no inserted cards
+          and no filler left in their place. Dias de luta no longer needs
+          its own chunked/Fragment rendering here (that existed only to
+          place those asides) — a plain flat map, same as every other
+          moment. */}
       <div
         className={`grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-5 ${
           isDiaDificil ? "mt-3 lg:hidden" : "lg:grid-cols-3"
         }`}
       >
-        {isDiaDificil
-          ? chunkEditorialRhythm(matched).map((chunk, i) => (
-              <Fragment key={i}>
-                {/* Real-photos pass: this was plain text in a tinted band
-                    (no photo) — now a real-photo mini-card (EditorialAside,
-                    "row" layout), so it reads as a small chapter of the
-                    catalog rather than a banner cutting across the grid. */}
-                {DIA_DIFICIL_ASIDES[i] && (
-                  <div className="col-span-full">
-                    <EditorialAside aside={DIA_DIFICIL_ASIDES[i]} layout="row" />
-                  </div>
-                )}
-                {chunk.map((p) => (
-                  <ProductCard key={p.id} p={p} momentId={momentId} {...cardProps} />
-                ))}
-              </Fragment>
-            ))
-          : matched.map((p) => <ProductCard key={p.id} p={p} momentId={momentId} {...cardProps} />)}
+        {matched.map((p) => (
+          <ProductCard key={p.id} p={p} momentId={momentId} {...cardProps} />
+        ))}
       </div>
 
-      {/* Dias de luta, lg+ only: the editorial 2-up/3-up rhythm grid, with
-          at most a couple of short editorial asides breaking up the scroll.
-          Same `matched` array/order/ProductCard/cardProps as the grid
-          above — just a different row structure.
+      {/* Dias de luta, lg+ only: the editorial 2-up/3-up rhythm grid — an
+          alternating row size (not a uniform grid), kept as-is. Same
+          `matched` array/order/ProductCard/cardProps as the grid above —
+          just a different row structure.
+          Simplification pass: the editorial aside cards that used to
+          optionally fill a 2-item row's spare third track were removed
+          (see note above) — every 2-item row's third track is now always
+          true empty grid space, same negative space every other column
+          already belongs to, never a custom-sized leftover or a filler
+          message.
           Final-correction pass: a 2-item row used to be its own
           narrower grid (grid-cols-2, capped width), which made its cards a
           different width than every 3-up row's cards and left a block of
           plain negative space beside it that read as a missing third card,
           not a deliberate composition. Every row — 2-item or 3-item — now
           shares the exact same grid-cols-3 track, so card width never
-          changes between rows. A 2-item row's third track either carries
-          the next DIA_DIFICIL_ASIDES line (existing copy, no filler
-          invented) when one lines up with that row, or is left as true
-          empty grid space — negative space that belongs to the same system
-          as every other column, not a custom-sized leftover. */}
+          changes between rows. */}
       {isDiaDificil && (
         <div className="hidden lg:block lg:mt-4">
-          {chunkEditorialRhythm(matched).map((chunk, i) => {
-            const aside = DIA_DIFICIL_ASIDES[i];
-            // Only fold the aside into the row when it actually has a
-            // spare third track to sit in — a 3-item row already fills all
-            // three, so its aside (if any) stays as its own compact band
-            // above the row, just width-capped instead of stretched edge
-            // to edge.
-            const asideInRow = Boolean(aside) && chunk.length === 2;
-            return (
-              <div key={i}>
-                {aside && !asideInRow && (
-                  <div className="max-w-xl my-5">
-                    <EditorialAside aside={aside} layout="row" />
-                  </div>
-                )}
-                <div className={`grid grid-cols-3 gap-5 ${i > 0 && (!aside || asideInRow) ? "mt-5" : ""}`}>
-                  {chunk.map((p) => (
-                    <ProductCard key={p.id} p={p} momentId={momentId} {...cardProps} />
-                  ))}
-                  {asideInRow && <EditorialAside aside={aside} layout="column" />}
-                </div>
-              </div>
-            );
-          })}
+          {chunkEditorialRhythm(matched).map((chunk, i) => (
+            <div key={i} className={`grid grid-cols-3 gap-5 ${i > 0 ? "mt-5" : ""}`}>
+              {chunk.map((p) => (
+                <ProductCard key={p.id} p={p} momentId={momentId} {...cardProps} />
+              ))}
+            </div>
+          ))}
         </div>
       )}
 

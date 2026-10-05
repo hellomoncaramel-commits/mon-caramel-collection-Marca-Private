@@ -32,4 +32,9 @@ export const BADGES = {
   // that product's `badges` entry in products.js. Never apply this to
   // another product automatically.
   hardTimes: { emoji: "🫶", label: "Amigo das horas difíceis" },
+  // Another deliberate one-off — Pão de Mel specifically (see that
+  // product's `badges` entry). Distinct from the plain `coffee` badge
+  // above ("Bom com café"): this exact line was requested verbatim. Never
+  // apply this to another product automatically.
+  coffeePairing: { emoji: "☕", label: "Isso aqui com um café... hmmm" },
 };
