@@ -1,13 +1,13 @@
 import { useState } from "react";
-import { X, Heart, Snowflake, Sparkles, Share2 } from "lucide-react";
+import { X, Heart, Snowflake, Share2 } from "lucide-react";
 import { COLORS } from "../../styles/colors";
 import { PRODUCTS } from "../../data/products";
-import { defaultPhotos, initialQuantity } from "../../utils/products";
+import { BADGES } from "../../data/badges";
+import { defaultPhotos, initialQuantity, displayPriceCada } from "../../utils/products";
 import PhotoCarousel from "../shared/PhotoCarousel";
 import ProductArt from "../shared/ProductArt";
 import Photo from "../shared/Photo";
 import QuantityStepper from "../shared/QuantityStepper";
-import ProductBadges from "../shared/ProductBadges";
 import MonCaramelNote from "../shared/MonCaramelNote";
 import NextTemptation from "../shared/NextTemptation";
 import FlavorConfigurator from "../Moment/FlavorConfigurator";
@@ -125,47 +125,85 @@ export default function ProductDetailSheet({
           <h2 id="product-detail-title" className="text-2xl lg:text-2xl font-display text-brand-ink leading-tight">
             {p.name}
           </h2>
-          <p className="text-sm mt-0.5 text-brand-muted">{p.unit}</p>
-          {/* Price right under the name — reads as the first two facts
-              about the product together, the way the approved reference
-              shows it, not pushed down to sit beside the CTA. Bumped from
-              text-lg: with the photo no longer a dominant square, this is
-              now one of two things carrying real visual weight on first
-              screen, alongside the name. */}
-          <p className="text-xl font-medium mt-1 text-brand-caramelDark">{p.price}</p>
+          {/* Description right after the name — this is the one place the
+              customer actually reads what the product IS before any
+              commercial fact. The card's own teaser already did its job
+              getting them here; this is deliberately `sensory`, a
+              different (fuller) string, never the teaser repeated. */}
           <p className="text-sm mt-2 leading-snug text-brand-inkSoft">{p.sensory}</p>
 
-          {/* Dias de luta only — the curated badge matrix. Suppresses the
-              older `canFreeze` list item just below when it's showing
-              (that one's less precise: it fires off `moments.includes
-              ("freezer")` for every context, which doesn't always match
-              the hand-curated badge list — e.g. products whose name
-              already says "congelado" deliberately skip the badge). */}
-          {showExperience && <ProductBadges badges={p.badges} />}
+          {/* One soft, warm-tinted block for every OBJECTIVE commercial
+              fact — price, minimum, "pode congelar," the gluten-free
+              option — instead of a stack of separate lines on the plain
+              page background. Same caramel-tint-card device MonCaramelNote
+              already uses just below (one repeated signature, not a new
+              look). Price shown as "$X cada" (displayPriceCada — pure
+              presentation, the underlying `price` string is untouched),
+              same humanized form the card already uses.
+              Then (only) whichever of the two actually applies: an
+              explicit commercial minimum (never inferred from unit text —
+              see minimumQuantityOf) spelled out in full, or the plain sale
+              unit for every other product (weight, pack, "por fatia",
+              etc.) — never both, since for every product that has a real
+              minQty today, `unit` is just that same minimum restated
+              ("unidade (mín. N)"), which would otherwise show the same
+              fact twice in two different phrasings right next to each
+              other.
+              Badges here are deliberately curated, same rule regardless of
+              entry context (no more showExperience branch for this part):
+              "pode congelar" (from either signal that ever meant it —
+              `canFreeze`/moments or the "freezer" badge, so nothing a
+              product used to show stops showing) and "glutenFreeOption"
+              (as a plain "Opção sem glúten," no "(mesmo preço)" — that
+              detail now lives once, discreetly, next to the `versao` step
+              inside FlavorConfigurator, where it's actually useful) are
+              always shown when they apply; "deserve"/"hardTimes" (mood/
+              journey copy like "Hoje eu mereço") are excluded from this
+              block — that kind of badge still has its place on the card,
+              just not mixed into an objective commercial summary. Any
+              other badge a product carries (coffee, lunchbox, vegan, the
+              plain glutenFree) still renders here via its normal approved
+              label — only the two cases above get special handling. */}
+          <div className="mt-3 rounded-2xl p-4" style={{ backgroundColor: `${COLORS.caramelLight}1F` }}>
+            <p className="text-xl font-medium text-brand-caramelDark">{displayPriceCada(p.price)}</p>
+            {minQty > 1 ? (
+              <p className="text-sm mt-0.5 text-brand-muted">Pedido mínimo: {minQty}</p>
+            ) : (
+              p.unit && <p className="text-sm mt-0.5 text-brand-muted">{p.unit}</p>
+            )}
 
-          {((canFreeze && !showExperience) || isCustomizable) && (
-            <ul className="flex flex-col gap-1.5 mt-2.5">
-              {canFreeze && !showExperience && (
-                <li className="flex items-center gap-2 text-sm text-brand-inkSoft">
-                  <span className="w-7 h-7 shrink-0 rounded-full flex items-center justify-center bg-brand-subtle">
-                    <Snowflake size={13} className="text-brand-caramelDark" />
-                  </span>
-                  Pode congelar
-                </li>
-              )}
-              {isCustomizable && (
-                <li className="flex items-center gap-2 text-sm text-brand-inkSoft">
-                  <span
-                    className="w-7 h-7 shrink-0 rounded-full flex items-center justify-center"
-                    style={{ backgroundColor: `${COLORS.caramelLight}30` }}
-                  >
-                    <Sparkles size={13} className="text-brand-caramelDark" />
-                  </span>
-                  Escolha seus sabores
-                </li>
-              )}
-            </ul>
-          )}
+            {(() => {
+              const showFreezer = canFreeze || p.badges?.includes("freezer");
+              const hasGlutenFreeOption = p.badges?.includes("glutenFreeOption");
+              const otherBadgeKeys = (p.badges ?? []).filter(
+                (key) => key !== "freezer" && key !== "deserve" && key !== "hardTimes" && key !== "glutenFreeOption"
+              );
+              if (!showFreezer && !hasGlutenFreeOption && otherBadgeKeys.length === 0) return null;
+              return (
+                <div className="flex flex-wrap gap-1.5 mt-2.5">
+                  {showFreezer && (
+                    <span className="inline-flex items-center gap-1 text-3xs font-medium rounded-full px-2 py-0.5 text-brand-inkSoft bg-white/60">
+                      <Snowflake size={11} className="text-brand-caramelDark" /> Pode congelar
+                    </span>
+                  )}
+                  {otherBadgeKeys.map((key) => {
+                    const badge = BADGES[key];
+                    if (!badge) return null;
+                    return (
+                      <span key={key} className="inline-flex items-center gap-1 text-3xs font-medium rounded-full px-2 py-0.5 text-brand-inkSoft bg-white/60">
+                        <span aria-hidden="true">{badge.emoji}</span> {badge.label}
+                      </span>
+                    );
+                  })}
+                  {hasGlutenFreeOption && (
+                    <span className="inline-flex items-center gap-1 text-3xs font-medium rounded-full px-2 py-0.5 text-brand-inkSoft bg-white/60">
+                      <span aria-hidden="true">🌾</span> Opção sem glúten
+                    </span>
+                  )}
+                </div>
+              );
+            })()}
+          </div>
 
           {/* Mon Caramel's own voice — a short editorial aside, Dias de
               luta only, right before the purchase decision. */}
@@ -191,16 +229,19 @@ export default function ProductDetailSheet({
               }} />
             </div>
           ) : (
-            <div className="flex items-center justify-between mt-4 gap-3">
-              <QuantityStepper value={qty} onChange={setQty} min={minQty} />
-              <button
-                onClick={() => (existing ? removeFromSelection(existing) : add())}
-                className="flex-1 text-sm font-medium rounded-full py-3 min-h-11 flex items-center justify-center gap-2 transition-transform active:scale-95"
-                style={{ backgroundColor: COLORS.caramelDark, color: "white" }}
-              >
-                <Heart size={14} fill="white" />
-                {existing ? "Adicionado ✓ — remover" : "Quero esse"}
-              </button>
+            <div className="mt-4">
+              <p className="text-sm font-medium text-brand-ink mb-2">Quantos?</p>
+              <div className="flex items-center justify-between gap-3">
+                <QuantityStepper value={qty} onChange={setQty} min={minQty} />
+                <button
+                  onClick={() => (existing ? removeFromSelection(existing) : add())}
+                  className="flex-1 text-sm font-medium rounded-full py-3 min-h-11 flex items-center justify-center gap-2 transition-transform active:scale-95"
+                  style={{ backgroundColor: COLORS.caramelDark, color: "white" }}
+                >
+                  <Heart size={14} fill="white" />
+                  {existing ? "Adicionado ✓ — remover" : "Quero esse"}
+                </button>
+              </div>
             </div>
           )}
 

@@ -116,6 +116,16 @@ export function initialQuantity(product) {
   return minimumQuantityOf(product) ?? 1;
 }
 
+// Pure display formatting — never touches the underlying data. The
+// approved price string is always "$X/un" (unit price, see products.js);
+// this turns it into the warmer "$X cada" the card now shows. Anything
+// that doesn't match that exact shape (e.g. "Sob consulta 💬", "A partir
+// de $14") is returned unchanged — never guessed at.
+export function displayPriceCada(price) {
+  const match = /^\$(\d+(?:\.\d{1,2})?)\/un$/i.exec(price || "");
+  return match ? `$${match[1]} cada` : price;
+}
+
 // Splits a total quantity evenly across N selected flavors, handing the
 // remainder to the first flavors so the numbers always add up exactly.
 export function splitEvenly(total, count) {

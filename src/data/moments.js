@@ -28,7 +28,7 @@ export const MOMENTS = [
 
 export const MOMENT_INTRO = {
   "dia-dificil":
-    "Seja TPM, segunda-feira, uma pausa pro café ou só aquela vontade de um doce. Nem todo problema tem solução, mas um docinho sempre ajuda.",
+    "Se o dia está difícil, você precisa de uma pausa ou quer receber alguém com carinho, um docinho artesanal sempre ajuda a deixar tudo um pouquinho melhor.",
   presente:
     "Pra gente, é muito mais que isso. Cada caixa é única, pensada e personalizada para que quem a receba se sinta realmente especial.",
   festa: "A gente conhece essa história... foi assim que muita festa começou.",

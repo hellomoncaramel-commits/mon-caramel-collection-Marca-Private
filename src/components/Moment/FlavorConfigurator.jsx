@@ -65,14 +65,30 @@ function OptionGroupsConfigurator({ product, existing, onConfirm }) {
 
   return (
     <div className="fade-up">
-      <p className="text-sm font-medium text-brand-ink mb-2">Quantidade</p>
-      <div className="mb-4">
-        <QuantityStepper value={qty} onChange={setQty} min={minQty} />
-      </div>
+      {/* "Monte o seu" + numbered steps make the sequence unmissable: this
+          is the explicit fix for a product owner testing her own site not
+          realizing Chocobomb could be configured at all. Steps count
+          recheio/cobertura/versão (whatever `optionGroups` actually holds,
+          in its own order) then quantity last — never a hardcoded "4",
+          so this still numbers correctly if a product's own group count
+          ever changes. Finishing pass: more room between groups (mb-5,
+          was mb-4) and a touch more presence on the "Monte o seu" heading
+          itself (text-lg font-display) so the whole thing reads as a
+          small, delicate sequence rather than a form. */}
+      <p className="text-lg font-display text-brand-ink mb-4">Monte o seu</p>
 
-      {product.optionGroups.map((g) => (
-        <div key={g.key} className="mb-4">
-          <p className="text-sm font-medium text-brand-ink mb-2">{g.label}</p>
+      {product.optionGroups.map((g, i) => (
+        <div key={g.key} className="mb-5">
+          <p className="text-sm font-medium text-brand-ink mb-2.5">
+            {i + 1}. {STEP_INTRO[g.key] ?? `Escolha: ${g.label}`}
+          </p>
+          {/* "Sem glúten" lives in the versão group itself — the real
+              record of the choice — so the price note only needs to sit
+              here once, quietly, never as its own badge (see the single
+              gluten-free callout in ProductDetailSheet). */}
+          {g.key === "versao" && product.badges?.includes("glutenFreeOption") && (
+            <p className="text-3xs text-brand-muted mb-2 -mt-1">Sem glúten, pelo mesmo preço.</p>
+          )}
           <div className="flex flex-wrap gap-1.5">
             {g.choices.map((c) => {
               const on = choices[g.key] === c;
@@ -80,11 +96,11 @@ function OptionGroupsConfigurator({ product, existing, onConfirm }) {
                 <button
                   key={c}
                   onClick={() => setChoices((cur) => ({ ...cur, [g.key]: c }))}
-                  className="text-xs rounded-full px-3 py-1.5 border"
+                  className="text-xs rounded-full px-3.5 py-2 transition-colors"
                   style={{
-                    backgroundColor: on ? COLORS.caramelDark : "transparent",
+                    backgroundColor: on ? COLORS.caramelDark : "white",
                     color: on ? "white" : COLORS.ink,
-                    borderColor: on ? COLORS.caramelDark : COLORS.border,
+                    border: on ? `1.5px solid ${COLORS.caramelDark}` : `1px solid ${COLORS.border}`,
                   }}
                 >
                   {c}
@@ -95,21 +111,41 @@ function OptionGroupsConfigurator({ product, existing, onConfirm }) {
         </div>
       ))}
 
+      <p className="text-sm font-medium text-brand-ink mb-2.5">{product.optionGroups.length + 1}. Quantos?</p>
+      <div className="mb-5">
+        <QuantityStepper value={qty} onChange={setQty} min={minQty} />
+      </div>
+
+      {/* Disabled = clearly inert but intentional (muted fill, visible
+          border, no icon fill) — never just a paler version of the same
+          button, which reads as broken rather than "not yet." Enabled =
+          the one real brand CTA, same solid caramelDark the simple-
+          product "Quero esse" button already uses. */}
       <button
         onClick={confirm}
         disabled={!allChosen}
-        className="w-full text-xs font-medium rounded-full py-2.5 flex items-center justify-center gap-1.5"
+        className="w-full text-sm font-medium rounded-full py-3 min-h-11 flex items-center justify-center gap-2 transition-colors active:scale-95"
         style={{
-          backgroundColor: allChosen ? COLORS.caramelDark : COLORS.border,
+          backgroundColor: allChosen ? COLORS.caramelDark : "transparent",
           color: allChosen ? "white" : COLORS.muted,
+          border: allChosen ? "none" : `1.5px solid ${COLORS.border}`,
         }}
       >
-        <Heart size={12} fill={allChosen ? "white" : "none"} />
-        Adicionar à minha seleção
+        <Heart size={14} fill={allChosen ? "white" : "none"} />
+        Quero esse
       </button>
     </div>
   );
 }
+
+// Exact phrasing from Naia's approved reference for the 3 groups in use
+// today — a generic fallback below covers any future group key rather
+// than guessing at Portuguese grammatical gender ("o"/"a") from the key.
+const STEP_INTRO = {
+  recheio: "Escolha o recheio",
+  cobertura: "Escolha a cobertura",
+  versao: "Escolha a versão",
+};
 
 // Inline "escolha seus sabores" configurator shown inside a customizable
 // product's card: quantity first ("quantos você quer?"), then flavor chips
