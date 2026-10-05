@@ -27,10 +27,7 @@ import { REAL_PHOTOS } from "./photos";
 //
 // The Dias de luta card (ProductCard.jsx) no longer reads this tag: it now
 // renders the `badges` field below (data/badges.js) instead — a manually
-// curated list per product, deliberately not always the same as
-// `moments.includes("freezer")` (e.g. "Mini Cake Donuts — assados e
-// congelados" already says "congelados" in its own name, so it doesn't
-// repeat that as a badge). `badges` is Dias de luta-only for now, by
+// curated list per product. `badges` is Dias de luta-only for now, by
 // Naia's brief — not read anywhere else yet.
 //
 // Separately: a "sold frozen" commercial variant of a regular product is a
@@ -38,10 +35,11 @@ import { REAL_PHOTOS } from "./photos";
 // characteristic of the regular product, the other is its own purchasable
 // option, modeled as its own product entry (never a badge on the regular
 // one). Two exist today:
-//   - "mini-donut-simples" ("Mini Cake Donuts — assados e congelados"),
-//     right after its regular counterpart "mini-donut-decorado" ("Mini
-//     Cake Donuts") — this was real pre-existing data/photo, previously
-//     named just "Mini Donuts" and not positioned next to the regular one.
+//   - "mini-donut-simples" ("Mini Cake Donuts"), right after its
+//     chocolate-covered counterpart "mini-donut-decorado" ("Mini Cake
+//     Donuts Cobertos com Chocolate") — this was real pre-existing
+//     data/photo, previously named "Mini Cake Donuts — assados e
+//     congelados" and not positioned next to the regular one.
 //   - "butter-cookies-congelado" ("Biscoito Amanteigado — congelado para
 //     assar"), right after "butter-cookies" — newly added as its own
 //     entry once a real, previously-misfiled photo (raw dough disks in a
@@ -82,19 +80,37 @@ export const PRODUCTS = [
   },
   {
     id: "mini-donut-simples",
-    name: "Mini Cake Donuts — assados e congelados",
-    unit: "unidade",
-    price: "Sob consulta 💬",
+    name: "Mini Cake Donuts",
+    // Commercial review confirmed: $1.50 cada (unit price), pedido mínimo
+    // 12 unidades — same convention as every other migrated product.
+    unit: "unidade (mín. 12)",
+    minimumQuantity: 12,
+    price: "$1.50/un",
     sensory:
-      "Mini cake donut simples, sem recheio, nos sabores baunilha e chocolate — prático pra ter sempre no freezer.",
+      "Assados, fofinhos e macios, com poucos ingredientes e pouca adição de açúcar. Uma opção prática para a lancheira ou para aquele snack das crianças ao longo do dia.",
     kind: "cake",
     tint: COLORS.caramelLight,
     moments: ["dia-dificil", "freezer"],
-    badges: ["coffee", "lunchbox"],
+    // No "coffee"/coffeePairing badge on this one by design — its
+    // positioning is lancheira/snack infantil, not café (that's the
+    // chocolate-covered donut's own thing — see "mini-donut-decorado").
+    badges: ["lunchbox", "freezer"],
+    // Single-group configurator — just the flavor choice, no
+    // cobertura/versão (this product doesn't have either). Reuses the
+    // exact same OptionGroupsConfigurator mechanism as Chocobomb/Cone/the
+    // chocolate-covered donut above, just with one group: step 1 is
+    // "Escolha o sabor" (STEP_INTRO in FlavorConfigurator.jsx), step 2 is
+    // the ordinary quantity stepper that component already renders after
+    // every group.
+    customizable: true,
+    optionGroups: [{ key: "sabor", label: "Sabor", choices: ["Baunilha", "Chocolate", "Pão de Mel"] }],
     experience: {
-      teaser: "Para os dias em que até pensar no lanche dá preguiça.",
-      noteLabel: "Seu eu do futuro agradece:",
-      note: "Esse é muito prático. Já fica pronto no freezer pra quando você precisar.",
+      teaser: "Poucos ingredientes, pouca adição de açúcar e tamanho perfeito para os pequenos.",
+      // Short, discreet freezer tip — not a big editorial block. Replaces
+      // (not duplicates) the old "Seu eu do futuro agradece:" aside that
+      // used to live here with different wording.
+      noteLabel: "Dica:",
+      note: "Faz alguns a mais e congela. Seu eu do futuro agradece. 😉",
       nextTemptation: {
         id: "butter-cookies-congelado",
         line: "Se você gosta dessa praticidade, olha o biscoito congelado pra assar.",
@@ -129,20 +145,49 @@ export const PRODUCTS = [
   },
   {
     id: "mini-donut-decorado",
-    name: "Mini Cake Donuts",
-    unit: "unidade",
-    price: "Sob consulta 💬",
-    sensory: "Mini cake donut coberto de chocolate, decorado à mão no tema da sua festa — de flores ao fundo do mar.",
+    name: "Mini Cake Donuts Cobertos com Chocolate",
+    // Commercial review confirmed: $2.50 cada (unit price), pedido mínimo
+    // 12 unidades — same explicit-field convention as every other migrated
+    // product (see minimumQuantity below / utils/products.js
+    // minimumQuantityOf). `unit` carries the minimum as display copy only.
+    unit: "unidade (mín. 12)",
+    minimumQuantity: 12,
+    price: "$2.50/un",
+    // NOTE: this `sensory` string also feeds Festa's own flat-grid card
+    // (ProductCard.jsx's isFesta branch reads p.sensory directly, since
+    // this product is cross-tagged to both moments) — there is no
+    // Festa-specific description field today, so Festa's card now shows
+    // this same approved Detail copy instead of its old, festa-flavored
+    // line ("...decorado à mão no tema da sua festa — de flores ao fundo
+    // do mar."). Flagged for Naia: this round's brief covered Dias de
+    // luta's card/Detail only, not Festa's.
+    sensory: "Assados, super fofinhos e macios, cobertos com chocolate e perfeitos para acompanhar um café ou matar aquela vontade de um docinho depois do almoço.",
     kind: "cake",
     tint: COLORS.ink,
     moments: ["festa", "dia-dificil"],
     // Badges are Dias de luta-only (ProductCard gates on momentId — see
-    // that component) — Festa's own card never reads this field.
-    badges: ["freezer", "lunchbox"],
+    // that component) — Festa's own card never reads this field. No
+    // "lunchbox" here (that's the plain/simples donut's positioning, not
+    // this one's) — see data/products.js "mini-donut-simples" below.
+    badges: ["freezer", "coffeePairing", "glutenFreeOption"],
+    // Recheio/cobertura/versão-style configurator, same mechanism as
+    // Chocobomb/Cone Trufado — "sabor" here instead of "recheio" since
+    // there's no filling, just a flavor choice for the donut itself. No
+    // surcharge for "Sem glúten" (see FlavorConfigurator.jsx's STEP_INTRO
+    // and its "mesmo preço" caption, both already generic / keyed off
+    // `g.key === "versao"`, not this specific product).
+    customizable: true,
+    optionGroups: [
+      { key: "sabor", label: "Sabor", choices: ["Baunilha", "Chocolate", "Pão de Mel"] },
+      { key: "cobertura", label: "Cobertura", choices: ["Chocolate meio amargo", "Chocolate branco"] },
+      { key: "versao", label: "Versão", choices: ["Tradicional", "Sem glúten"] },
+    ],
+    // noteLabel/note deliberately absent: the old aside here ("Entre a
+    // gente: Esse é daqueles que resolve um monte de coisa...") is
+    // removed, not replaced — same treatment as Pão de Mel/Cone Trufado.
+    // MonCaramelNote already renders nothing when `note` is unset.
     experience: {
-      teaser: "Pequeno o suficiente pra parecer inocente. 👀",
-      noteLabel: "Entre a gente:",
-      note: "Esse é daqueles que resolve um monte de coisa: café, lancheira, vontade de doce…",
+      teaser: "Seu cafezinho da tarde não será mais o mesmo. ☕",
       nextTemptation: { id: "butter-cookies", line: "Já provou os biscoitos amanteigados? Também são ótimos pra ter em casa." },
     },
     // General/day-to-day photo unchanged. Festa gets its own gallery of real
