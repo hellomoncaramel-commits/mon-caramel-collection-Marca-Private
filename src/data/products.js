@@ -170,16 +170,16 @@ export const PRODUCTS = [
     minimumQuantity: 2,
     price: "$8/un",
     // Gluten-free version confirmed available at the same price (no
-    // surcharge) — called out here (shown everywhere sensory is shown,
-    // including Search/Feed/Festa) and via the glutenFreeOption badge
-    // below (shown on the dia-dificil card + detail). This product is NOT
-    // tagged with the plain `glutenFree` badge — that one means the
-    // product itself is always gluten-free, which isn't the case here.
-    // Also now the explicit "Sem glúten" choice inside `versao` below —
-    // the badge/sensory line are a heads-up before opening the
-    // configurator, `optionGroups` is the actual mechanism that captures
-    // the customer's real choice through to the selection/WhatsApp.
-    sensory: "Cone crocante recheado com o sabor à sua escolha e coberto com chocolate meio amargo ou branco. Disponível também com cone sem glúten.",
+    // surcharge). Not restated in `sensory` (kept to describing the
+    // product itself) — communicated instead via the glutenFreeOption
+    // badge (ProductCard/ProductDetailSheet commercial block) and the
+    // discreet "mesmo preço" note next to the `versao` step inside
+    // FlavorConfigurator, which is the actual mechanism that captures the
+    // customer's real choice through to the selection/WhatsApp. This
+    // product is NOT tagged with the plain `glutenFree` badge — that one
+    // means the product itself is always gluten-free, which isn't the
+    // case here.
+    sensory: "Cone crocante recheado com o sabor à sua escolha e coberto com chocolate meio amargo ou branco.",
     kind: "cake",
     tint: COLORS.caramelDark,
     moments: ["festa", "dia-dificil"],
@@ -432,10 +432,10 @@ export const PRODUCTS = [
     minimumQuantity: 4,
     price: "$4/un",
     // Gluten-free version confirmed available at the same price — same
-    // treatment as Cone Trufado: a heads-up badge + sensory line (for
-    // whoever sees the card before opening the configurator), and the
-    // real "Sem glúten" choice lives in `versao` below. No surcharge.
-    sensory: "Oreo recheado com o brigadeiro da sua escolha e coberto com chocolate meio amargo ou branco. Existe também versão com Oreo sem glúten, pelo mesmo preço.",
+    // treatment as Cone Trufado: not restated in `sensory`, communicated
+    // via the glutenFreeOption badge + the discreet "mesmo preço" note
+    // next to the `versao` step. No surcharge.
+    sensory: "Oreo recheado com o brigadeiro da sua escolha e coberto com chocolate meio amargo ou branco.",
     kind: "dipped",
     tint: COLORS.caramelLight,
     moments: ["dia-dificil", "festa"],
