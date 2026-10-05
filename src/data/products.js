@@ -179,7 +179,7 @@ export const PRODUCTS = [
     // the badge/sensory line are a heads-up before opening the
     // configurator, `optionGroups` is the actual mechanism that captures
     // the customer's real choice through to the selection/WhatsApp.
-    sensory: "Cone crocante coberto de trufa cremosa, decorado à mão no tema da sua festa. Existe opção sem glúten, pelo mesmo preço.",
+    sensory: "Cone crocante recheado com o sabor à sua escolha e coberto com chocolate meio amargo ou branco. Disponível também com cone sem glúten.",
     kind: "cake",
     tint: COLORS.caramelDark,
     moments: ["festa", "dia-dificil"],
@@ -293,13 +293,13 @@ export const PRODUCTS = [
     unit: "unidade (mín. 4)",
     minimumQuantity: 4,
     price: "$5/un",
-    sensory: "Bolinho macio de mel e especiarias, recheado com doce de leite, coberto de chocolate.",
+    sensory: "Pão de mel macio, recheado com doce de leite feito com leite condensado cozido e coberto com chocolate meio amargo.",
     kind: "cake",
     tint: COLORS.caramelDark,
     moments: ["dia-dificil"],
     badges: ["freezer", "deserve"],
     experience: {
-      teaser: "Tem dia que um café sozinho simplesmente não dá conta.",
+      teaser: "Sabor de infância e aconchego em forma de doce.",
       noteLabel: "Eu adoro esse:",
       note: "E uma dica: compra alguns e congela. Seu eu do futuro vai agradecer.",
       nextTemptation: { id: "brownlito", line: "Mas você já provou o Brownlito? 👀" },
@@ -435,7 +435,7 @@ export const PRODUCTS = [
     // treatment as Cone Trufado: a heads-up badge + sensory line (for
     // whoever sees the card before opening the configurator), and the
     // real "Sem glúten" choice lives in `versao` below. No surcharge.
-    sensory: "Oreo mergulhado em fudge cremoso — pra quando bate aquela vontade impossível de ignorar. Existe opção sem glúten, pelo mesmo preço.",
+    sensory: "Oreo recheado com o brigadeiro da sua escolha e coberto com chocolate meio amargo ou branco. Existe também versão com Oreo sem glúten, pelo mesmo preço.",
     kind: "dipped",
     tint: COLORS.caramelLight,
     moments: ["dia-dificil", "festa"],
@@ -451,7 +451,7 @@ export const PRODUCTS = [
       { key: "versao", label: "Versão", choices: ["Tradicional", "Sem glúten"] },
     ],
     experience: {
-      teaser: "Quando 'vou comer só um pedacinho de chocolate' já não vai resolver.",
+      teaser: "Quando 'vou comer só um chocolatinho' não vai resolver.",
       noteLabel: "Sem julgamentos:",
       note: "Oreo mergulhado em fudge. Eu não vou nem tentar fingir que esse é moderado. 😂",
       nextTemptation: { id: "brownlito", line: "Se chegou nesse nível de vontade de chocolate, eu preciso te mostrar o Brownlito." },
