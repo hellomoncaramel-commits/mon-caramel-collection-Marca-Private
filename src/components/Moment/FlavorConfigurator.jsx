@@ -120,7 +120,7 @@ function OptionGroupsConfigurator({ product, existing, onConfirm }) {
           border, no icon fill) — never just a paler version of the same
           button, which reads as broken rather than "not yet." Enabled =
           the one real brand CTA, same solid caramelDark the simple-
-          product "Quero esse" button already uses. */}
+          product "Eu quero" button already uses. */}
       <button
         onClick={confirm}
         disabled={!allChosen}
@@ -132,7 +132,7 @@ function OptionGroupsConfigurator({ product, existing, onConfirm }) {
         }}
       >
         <Heart size={14} fill={allChosen ? "white" : "none"} />
-        Quero esse
+        Eu quero
       </button>
     </div>
   );
