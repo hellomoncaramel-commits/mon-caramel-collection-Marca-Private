@@ -298,10 +298,16 @@ export const PRODUCTS = [
     tint: COLORS.caramelDark,
     moments: ["dia-dificil"],
     badges: ["freezer", "deserve"],
+    // noteLabel/note deliberately absent: the old aside here ("E uma
+    // dica: compra alguns e congela...") just restated the "freezer"
+    // badge already shown on the card — removed rather than invented a
+    // replacement. MonCaramelNote (ProductDetailSheet) already renders
+    // nothing when `note` is unset. teaser/nextTemptation unaffected.
     experience: {
-      teaser: "Sabor de infância e aconchego em forma de doce.",
-      noteLabel: "Eu adoro esse:",
-      note: "E uma dica: compra alguns e congela. Seu eu do futuro vai agradecer.",
+      // Previous teaser ("Sabor de infância e aconchego em forma de
+      // doce.") actually describes Bala de Coco, not this product —
+      // corrected, not reused elsewhere.
+      teaser: "Um dos favoritos por aqui — e não é por acaso.",
       nextTemptation: { id: "brownlito", line: "Mas você já provou o Brownlito? 👀" },
     },
     photos: [REAL_PHOTOS.visita, REAL_PHOTOS.paodemel2],
