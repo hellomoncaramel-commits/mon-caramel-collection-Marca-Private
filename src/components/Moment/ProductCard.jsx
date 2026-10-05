@@ -179,8 +179,8 @@ export default function ProductCard({
             </p>
             <button
               onClick={() => onOpenDetail?.(p)}
-              className={`mt-1 font-medium self-start inline-flex items-center gap-1 min-h-11 ${isDiaDificil ? "text-xs" : "text-sm"}`}
-              style={{ color: COLORS.caramelDark }}
+              className={`mt-1.5 font-medium self-start inline-flex items-center gap-1 min-h-11 rounded-full border px-3 ${isDiaDificil ? "text-xs" : "text-sm"}`}
+              style={{ color: COLORS.caramelDark, borderColor: COLORS.caramelDark, backgroundColor: `${COLORS.caramelLight}1F` }}
             >
               {isCustomizable ? "Ver sabores e opções" : "Ver detalhes"}
               <span aria-hidden="true">→</span>

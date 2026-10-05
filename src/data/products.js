@@ -198,10 +198,12 @@ export const PRODUCTS = [
       { key: "cobertura", label: "Cobertura", choices: ["Chocolate meio amargo", "Chocolate branco"] },
       { key: "versao", label: "Versão", choices: ["Tradicional", "Sem glúten"] },
     ],
+    // noteLabel/note deliberately absent: the old aside here ("Eu não
+    // julgo: Esse não é o docinho comportado...") is removed, not replaced
+    // — same treatment as Pão de Mel. MonCaramelNote already renders
+    // nothing when `note` is unset. teaser/nextTemptation unaffected.
     experience: {
       teaser: "Tem vontade de doce. E tem vontade de DOCE. Esse é pro segundo caso.",
-      noteLabel: "Eu não julgo:",
-      note: "Esse não é o docinho comportado. 😂 É pra quando você quer alguma coisa bem gostosa mesmo.",
       nextTemptation: { id: "brownlito", line: "E se hoje você estiver nesse nível, olha o Brownlito também." },
     },
     // `photos` is the general photo, still shown everywhere outside Festa
@@ -298,10 +300,16 @@ export const PRODUCTS = [
     tint: COLORS.caramelDark,
     moments: ["dia-dificil"],
     badges: ["freezer", "deserve"],
+    // noteLabel/note deliberately absent: the old aside here ("E uma
+    // dica: compra alguns e congela...") just restated the "freezer"
+    // badge already shown on the card — removed rather than invented a
+    // replacement. MonCaramelNote (ProductDetailSheet) already renders
+    // nothing when `note` is unset. teaser/nextTemptation unaffected.
     experience: {
-      teaser: "Sabor de infância e aconchego em forma de doce.",
-      noteLabel: "Eu adoro esse:",
-      note: "E uma dica: compra alguns e congela. Seu eu do futuro vai agradecer.",
+      // Previous teaser ("Sabor de infância e aconchego em forma de
+      // doce.") actually describes Bala de Coco, not this product —
+      // corrected, not reused elsewhere.
+      teaser: "Um dos favoritos por aqui — e não é por acaso.",
       nextTemptation: { id: "brownlito", line: "Mas você já provou o Brownlito? 👀" },
     },
     photos: [REAL_PHOTOS.visita, REAL_PHOTOS.paodemel2],
