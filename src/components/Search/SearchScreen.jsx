@@ -92,7 +92,7 @@ function ResultRow({ p, isAdded, onQuickAdd, onOpen }) {
         onClick={(e) => {
           e.stopPropagation();
           if (isCustomizable) onOpen(p);
-          else onQuickAdd(p, initialQuantity(p.unit));
+          else onQuickAdd(p, initialQuantity(p));
         }}
         aria-label={isAdded ? `${p.name} já está na seleção` : `Adicionar ${p.name} à seleção`}
         className="shrink-0 w-11 h-11 rounded-full flex items-center justify-center transition-transform active:scale-90"

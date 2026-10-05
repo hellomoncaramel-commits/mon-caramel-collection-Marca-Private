@@ -42,10 +42,11 @@ export default function ProductDetailSheet({
   const showExperience = momentId === "dia-dificil";
 
   // Both the starting quantity and the stepper's floor come from the same
-  // place: an EXPLICIT "mín." in the unit text, or 1 otherwise — never a
-  // plain pack/weight number ("12 unidades", "250g") the data doesn't
-  // actually declare as a minimum (see initialQuantity/parseMinQuantity).
-  const minQty = initialQuantity(p.unit);
+  // place: the product's own explicit minimumQuantity (or the legacy
+  // "mín." text marker for products not yet migrated), never a plain
+  // pack/weight number ("12 unidades", "250g") the data doesn't actually
+  // declare as a minimum (see initialQuantity/minimumQuantityOf).
+  const minQty = initialQuantity(p);
   const [qty, setQty] = useState(existing?.qty ?? minQty);
 
   const related = (p.relatedProducts ?? []).map((id) => PRODUCTS.find((x) => x.id === id)).filter(Boolean).slice(0, 3);
@@ -176,14 +177,15 @@ export default function ProductDetailSheet({
               spaced, so it reads as the next step, not a separate card). */}
           {isCustomizable ? (
             <div className="mt-4 pt-3 border-t border-dashed border-brand-border">
-              <FlavorConfigurator product={p} existing={existing} onConfirm={({ qty: q, flavorBreakdown }) => {
+              <FlavorConfigurator product={p} existing={existing} onConfirm={({ qty: q, flavorBreakdown, options }) => {
                 addToSelection({
                   kind: "product",
                   productId: p.id,
                   name: p.name,
                   unit: p.unit,
                   qty: q,
-                  flavors: flavorBreakdown.length > 0 ? flavorBreakdown : null,
+                  flavors: flavorBreakdown?.length > 0 ? flavorBreakdown : null,
+                  options: options ?? null,
                 });
                 onClose();
               }} />

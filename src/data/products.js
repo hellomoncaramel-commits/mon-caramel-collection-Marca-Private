@@ -157,13 +157,47 @@ export const PRODUCTS = [
   {
     id: "cone-trufado",
     name: "Cones Trufados",
-    unit: "unidade",
-    price: "Sob consulta 💬",
-    sensory: "Cone crocante coberto de trufa cremosa, decorado à mão no tema da sua festa.",
+    // Commercial review confirmed: $8 cada (unit price, not a bundle),
+    // pedido mínimo 2 unidades. `unit` carries the minimum as display copy
+    // (same convention as Alfajor's "unidade (mín. 5)"); `minimumQuantity`
+    // is the actual explicit, structured source the quantity logic reads
+    // (see utils/products.js minimumQuantityOf) — never parsed from this
+    // string. No recheios/coberturas options exist in the data today (no
+    // `flavors`/`customizable` were ever set for this product) — nothing
+    // to preserve or migrate; flagged in the PR for Naia to confirm if any
+    // such options exist.
+    unit: "unidade (mín. 2)",
+    minimumQuantity: 2,
+    price: "$8/un",
+    // Gluten-free version confirmed available at the same price (no
+    // surcharge) — called out here (shown everywhere sensory is shown,
+    // including Search/Feed/Festa) and via the glutenFreeOption badge
+    // below (shown on the dia-dificil card + detail). This product is NOT
+    // tagged with the plain `glutenFree` badge — that one means the
+    // product itself is always gluten-free, which isn't the case here.
+    // Also now the explicit "Sem glúten" choice inside `versao` below —
+    // the badge/sensory line are a heads-up before opening the
+    // configurator, `optionGroups` is the actual mechanism that captures
+    // the customer's real choice through to the selection/WhatsApp.
+    sensory: "Cone crocante recheado com o sabor à sua escolha e coberto com chocolate meio amargo ou branco. Disponível também com cone sem glúten.",
     kind: "cake",
     tint: COLORS.caramelDark,
     moments: ["festa", "dia-dificil"],
-    badges: ["deserve"],
+    badges: ["deserve", "glutenFreeOption"],
+    // Recheio/cobertura/versão confirmed by Naia — 3 independent choices,
+    // not a flavor list to multi-select-and-split like Brigadeiro (that
+    // product's own `flavors` field/pattern is untouched and unused here).
+    // `customizable: true` routes "Quero esse" to this configurator
+    // everywhere the rest of the catalog already makes that distinction
+    // (ProductCard/ProductDetail/Search/Feed) — same existing mechanism,
+    // not a new one. No price changes by choice — the "Sem glúten" versão
+    // never adds a surcharge (see FlavorConfigurator.jsx).
+    customizable: true,
+    optionGroups: [
+      { key: "recheio", label: "Recheio", choices: ["Brigadeiro", "Morango", "Beijinho", "Maracujá", "Ninho com Nutella", "Limão"] },
+      { key: "cobertura", label: "Cobertura", choices: ["Chocolate meio amargo", "Chocolate branco"] },
+      { key: "versao", label: "Versão", choices: ["Tradicional", "Sem glúten"] },
+    ],
     experience: {
       teaser: "Tem vontade de doce. E tem vontade de DOCE. Esse é pro segundo caso.",
       noteLabel: "Eu não julgo:",
@@ -250,15 +284,22 @@ export const PRODUCTS = [
   {
     id: "pao-de-mel",
     name: "Pão de Mel",
-    unit: "3 unidades",
-    price: "Sob consulta 💬",
-    sensory: "Bolinho macio de mel e especiarias, recheado com doce de leite, coberto de chocolate.",
+    // Commercial review confirmed: $5 cada (unit price), pedido mínimo 4
+    // unidades — the old "3 unidades" read as a fixed pack size, which is
+    // wrong on both counts (not the real minimum, and not how this product
+    // is sold). `unit` carries the minimum as display copy only;
+    // `minimumQuantity` is the explicit, structured field the quantity
+    // logic actually reads (see utils/products.js minimumQuantityOf).
+    unit: "unidade (mín. 4)",
+    minimumQuantity: 4,
+    price: "$5/un",
+    sensory: "Pão de mel macio, recheado com doce de leite feito com leite condensado cozido e coberto com chocolate meio amargo.",
     kind: "cake",
     tint: COLORS.caramelDark,
     moments: ["dia-dificil"],
     badges: ["freezer", "deserve"],
     experience: {
-      teaser: "Tem dia que um café sozinho simplesmente não dá conta.",
+      teaser: "Sabor de infância e aconchego em forma de doce.",
       noteLabel: "Eu adoro esse:",
       note: "E uma dica: compra alguns e congela. Seu eu do futuro vai agradecer.",
       nextTemptation: { id: "brownlito", line: "Mas você já provou o Brownlito? 👀" },
@@ -382,17 +423,35 @@ export const PRODUCTS = [
   {
     id: "chocobomb",
     name: "Chocobomb",
-    unit: "unidade",
-    price: "Sob consulta 💬",
-    sensory: "Oreo mergulhado em fudge cremoso — pra quando bate aquela vontade impossível de ignorar.",
+    // Commercial review confirmed: $4 cada — the price of ONE Chocobomb,
+    // not a box of 4 — pedido mínimo 4 unidades. `unit` carries the
+    // minimum as display copy only; `minimumQuantity` is the explicit,
+    // structured field the quantity logic actually reads (see
+    // utils/products.js minimumQuantityOf).
+    unit: "unidade (mín. 4)",
+    minimumQuantity: 4,
+    price: "$4/un",
+    // Gluten-free version confirmed available at the same price — same
+    // treatment as Cone Trufado: a heads-up badge + sensory line (for
+    // whoever sees the card before opening the configurator), and the
+    // real "Sem glúten" choice lives in `versao` below. No surcharge.
+    sensory: "Oreo recheado com o brigadeiro da sua escolha e coberto com chocolate meio amargo ou branco. Existe também versão com Oreo sem glúten, pelo mesmo preço.",
     kind: "dipped",
     tint: COLORS.caramelLight,
     moments: ["dia-dificil", "festa"],
     // Badges are Dias de luta-only (ProductCard gates on momentId — see
     // that component) — Festa's own card never reads this field.
-    badges: ["deserve", "freezer"],
+    badges: ["deserve", "freezer", "glutenFreeOption"],
+    // Same 3 independent choices as Cone Trufado, confirmed by Naia —
+    // see that product's own comment for the full rationale.
+    customizable: true,
+    optionGroups: [
+      { key: "recheio", label: "Recheio", choices: ["Brigadeiro", "Morango", "Beijinho", "Maracujá", "Ninho com Nutella", "Limão"] },
+      { key: "cobertura", label: "Cobertura", choices: ["Chocolate meio amargo", "Chocolate branco"] },
+      { key: "versao", label: "Versão", choices: ["Tradicional", "Sem glúten"] },
+    ],
     experience: {
-      teaser: "Quando 'vou comer só um pedacinho de chocolate' já não vai resolver.",
+      teaser: "Quando 'vou comer só um chocolatinho' não vai resolver.",
       noteLabel: "Sem julgamentos:",
       note: "Oreo mergulhado em fudge. Eu não vou nem tentar fingir que esse é moderado. 😂",
       nextTemptation: { id: "brownlito", line: "Se chegou nesse nível de vontade de chocolate, eu preciso te mostrar o Brownlito." },

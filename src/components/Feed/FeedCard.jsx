@@ -20,7 +20,7 @@ export default function FeedCard({ product, isAdded, onQuickAdd, onOpen }) {
       onOpen(product);
       return;
     }
-    onQuickAdd(product, initialQuantity(product.unit));
+    onQuickAdd(product, initialQuantity(product));
   };
 
   return (

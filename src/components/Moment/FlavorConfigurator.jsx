@@ -1,14 +1,122 @@
 import { useState, useMemo } from "react";
 import { Heart, Minus, Plus } from "lucide-react";
 import { COLORS } from "../../styles/colors";
-import { parseQuantityOptions, splitEvenly } from "../../utils/products";
+import { parseQuantityOptions, splitEvenly, initialQuantity } from "../../utils/products";
+import QuantityStepper from "../shared/QuantityStepper";
+
+// Two different kinds of "customizable" exist in the catalog, each with its
+// own interaction shape — this file just routes to whichever one a product
+// actually needs:
+//
+// - `product.optionGroups` (Chocobomb, Cone Trufado): several INDEPENDENT
+//   choices — recheio, cobertura, versão — each a single pick, not a list
+//   to multi-select. See OptionGroupsConfigurator below.
+// - `product.flavors` (Brigadeiro, today the only one): ONE flavor list,
+//   multi-select, with the order quantity auto-split evenly across
+//   whichever flavors get picked. See FlavorSplitConfigurator below —
+//   unchanged from before this file had two modes.
+export default function FlavorConfigurator({ product, existing, onConfirm }) {
+  if (product.optionGroups && product.optionGroups.length > 0) {
+    return <OptionGroupsConfigurator product={product} existing={existing} onConfirm={onConfirm} />;
+  }
+  return <FlavorSplitConfigurator product={product} existing={existing} onConfirm={onConfirm} />;
+}
+
+// Recheio / cobertura / versão — each its own group of single-select pill
+// chips (same pill visual language as FlavorSplitConfigurator's flavor
+// chips below, just one choice per group instead of multiple), plus an
+// ordinary ±1 quantity stepper floored at the product's own
+// minimumQuantity (reusing the same shared QuantityStepper the detail
+// sheet uses — not the discrete-options stepper below, which only makes
+// sense for a short list of exact cataloged quantities like Brigadeiro's
+// 6/12/24).
+//
+// Every group starts unselected and must be explicitly chosen — no
+// default/"most common" pick is pre-filled for any of them, recheio or
+// cobertura or versão (even "Tradicional"), since nothing in the data
+// says one choice is the default and inventing one would mean guessing at
+// a customer's order on their behalf.
+function OptionGroupsConfigurator({ product, existing, onConfirm }) {
+  const minQty = initialQuantity(product);
+  const [qty, setQty] = useState(existing?.qty ?? minQty);
+
+  const existingByKey = useMemo(() => {
+    const map = {};
+    (existing?.options ?? []).forEach((o) => {
+      map[o.key] = o.value;
+    });
+    return map;
+  }, [existing]);
+
+  const [choices, setChoices] = useState(() => {
+    const init = {};
+    product.optionGroups.forEach((g) => {
+      init[g.key] = existingByKey[g.key] ?? null;
+    });
+    return init;
+  });
+
+  const allChosen = product.optionGroups.every((g) => choices[g.key]);
+
+  const confirm = () => {
+    const options = product.optionGroups.map((g) => ({ key: g.key, label: g.label, value: choices[g.key] }));
+    onConfirm({ qty, options });
+  };
+
+  return (
+    <div className="fade-up">
+      <p className="text-sm font-medium text-brand-ink mb-2">Quantidade</p>
+      <div className="mb-4">
+        <QuantityStepper value={qty} onChange={setQty} min={minQty} />
+      </div>
+
+      {product.optionGroups.map((g) => (
+        <div key={g.key} className="mb-4">
+          <p className="text-sm font-medium text-brand-ink mb-2">{g.label}</p>
+          <div className="flex flex-wrap gap-1.5">
+            {g.choices.map((c) => {
+              const on = choices[g.key] === c;
+              return (
+                <button
+                  key={c}
+                  onClick={() => setChoices((cur) => ({ ...cur, [g.key]: c }))}
+                  className="text-xs rounded-full px-3 py-1.5 border"
+                  style={{
+                    backgroundColor: on ? COLORS.caramelDark : "transparent",
+                    color: on ? "white" : COLORS.ink,
+                    borderColor: on ? COLORS.caramelDark : COLORS.border,
+                  }}
+                >
+                  {c}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      ))}
+
+      <button
+        onClick={confirm}
+        disabled={!allChosen}
+        className="w-full text-xs font-medium rounded-full py-2.5 flex items-center justify-center gap-1.5"
+        style={{
+          backgroundColor: allChosen ? COLORS.caramelDark : COLORS.border,
+          color: allChosen ? "white" : COLORS.muted,
+        }}
+      >
+        <Heart size={12} fill={allChosen ? "white" : "none"} />
+        Adicionar à minha seleção
+      </button>
+    </div>
+  );
+}
 
 // Inline "escolha seus sabores" configurator shown inside a customizable
 // product's card: quantity first ("quantos você quer?"), then flavor chips
 // (multi-select), with a live, auto-split breakdown of quantity per flavor.
 // Kept as an elegant inline expansion rather than a separate modal/drawer —
 // the product stays visible the whole time.
-export default function FlavorConfigurator({ product, existing, onConfirm }) {
+function FlavorSplitConfigurator({ product, existing, onConfirm }) {
   const qtyOptions = useMemo(() => parseQuantityOptions(product.unit), [product.unit]);
   const [qty, setQty] = useState(existing?.qty ?? qtyOptions[0]);
   const [selectedFlavors, setSelectedFlavors] = useState(existing?.flavors ? existing.flavors.map((f) => f.name) : []);

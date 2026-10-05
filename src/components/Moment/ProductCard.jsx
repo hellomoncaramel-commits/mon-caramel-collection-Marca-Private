@@ -79,22 +79,24 @@ export default function ProductCard({
   // silently change its look too.
   const isDiaDificil = momentId === "dia-dificil";
 
-  const confirmAdd = ({ qty, flavorBreakdown }) => {
+  const confirmAdd = ({ qty, flavorBreakdown, options }) => {
     addToSelection({
       kind: "product",
       productId: p.id,
       name: p.name,
       unit: p.unit,
       qty,
-      flavors: isCustomizable && flavorBreakdown.length > 0 ? flavorBreakdown : null,
+      flavors: isCustomizable && flavorBreakdown?.length > 0 ? flavorBreakdown : null,
+      options: options ?? null,
     });
     setOpen(false);
   };
 
   const photos = photosForMoment(p, momentId);
   // Non-customizable products have no quantity picker — they add at 1,
-  // unless the unit text states an explicit minimum (e.g. "mín. 12 un").
-  const defaultQty = initialQuantity(p.unit);
+  // unless the product declares an explicit commercial minimum (see
+  // minimumQuantityOf in utils/products.js).
+  const defaultQty = initialQuantity(p);
 
   return (
     <div

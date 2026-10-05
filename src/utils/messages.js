@@ -7,6 +7,10 @@ function describeEntry(it) {
       const sub = it.flavors.map((f) => `   • ${f.qty} ${f.name}`).join("\n");
       return `${head}\n${sub}`;
     }
+    if (it.options && it.options.length > 0) {
+      const sub = it.options.map((o) => `   • ${o.label}: ${o.value}`).join("\n");
+      return `${head}\n${sub}`;
+    }
     return head;
   }
   if (it.kind === "inspiration") {

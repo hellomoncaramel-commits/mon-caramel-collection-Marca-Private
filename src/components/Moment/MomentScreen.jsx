@@ -79,7 +79,7 @@ const DIA_DIFICIL_ASIDES = {
   // "coffee" badge — the one dia-dificil product most directly about café.
   1: {
     eyebrow: "☕ Pro café",
-    headline: "Continua descendo. Tem coisa boa vindo.",
+    headline: "Continua descendo que tem mais coisa boa vindo.",
     photo: REAL_PHOTOS.biscoitoVariedade,
     photoAlt: "Biscoitos amanteigados variados",
   },
