@@ -8,7 +8,7 @@ import Photo from "../shared/Photo";
 
 // Discreet alternate path for customers who already know what they want —
 // no mood quiz, just the full list grouped by name (briefing section 4).
-export default function CatalogScreen({ onBack, selection, addToSelection, onOpenSelection }) {
+export default function CatalogScreen({ onBack, selection, addToSelection, onOpenProduct, onOpenSelection }) {
   const inSelection = (id) => selection.some((it) => it.productId === id);
 
   return (
@@ -42,8 +42,18 @@ export default function CatalogScreen({ onBack, selection, addToSelection, onOpe
                   </p>
                 </div>
                 <button
-                  onClick={() => addToSelection({ kind: "product", productId: p.id, name: p.name, unit: p.unit, qty: 1, flavors: null })}
-                  aria-label={added ? `${p.name} já está na seleção` : `Adicionar ${p.name} à seleção`}
+                  onClick={() =>
+                    p.customizable
+                      ? onOpenProduct?.(p)
+                      : addToSelection({ kind: "product", productId: p.id, name: p.name, unit: p.unit, qty: 1, flavors: null })
+                  }
+                  aria-label={
+                    p.customizable
+                      ? `Ver sabores e opções de ${p.name}`
+                      : added
+                      ? `${p.name} já está na seleção`
+                      : `Adicionar ${p.name} à seleção`
+                  }
                   className="text-sm font-medium rounded-full w-11 h-11 shrink-0 border border-brand-caramelDark flex items-center justify-center"
                   style={{ backgroundColor: added ? COLORS.caramelDark : "transparent", color: added ? "white" : COLORS.caramelDark }}
                 >

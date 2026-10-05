@@ -1,12 +1,9 @@
-import { useState } from "react";
-import { Heart, Sparkles } from "lucide-react";
 import { COLORS } from "../../styles/colors";
 import { MOMENT_ICON } from "../../data/moments";
-import { photosForMoment, initialQuantity } from "../../utils/products";
+import { photosForMoment } from "../../utils/products";
 import PhotoCarousel from "../shared/PhotoCarousel";
 import ProductArt from "../shared/ProductArt";
 import ProductBadges from "../shared/ProductBadges";
-import FlavorConfigurator from "./FlavorConfigurator";
 
 // A single product card — photo first, everything else light. Doubles as
 // the "Minha Seleção" flavor configurator entry point outside Festa, and as
@@ -62,15 +59,12 @@ export default function ProductCard({
   momentId,
   isFesta,
   selection,
-  addToSelection,
-  removeFromSelection,
   partyItems,
   onOpenPartyModal,
   onOpenDetail,
 }) {
   const isCustomizable = p.customizable === true;
   const existing = selection.find((it) => it.kind === "product" && it.productId === p.id);
-  const [open, setOpen] = useState(false);
   const partyEntry = partyItems?.find((it) => it.id === p.id);
   // Only Dias de luta gets this round's lighter, photo-forward treatment —
   // Festa (and anything else reusing this card) keeps the exact border/
@@ -79,24 +73,7 @@ export default function ProductCard({
   // silently change its look too.
   const isDiaDificil = momentId === "dia-dificil";
 
-  const confirmAdd = ({ qty, flavorBreakdown, options }) => {
-    addToSelection({
-      kind: "product",
-      productId: p.id,
-      name: p.name,
-      unit: p.unit,
-      qty,
-      flavors: isCustomizable && flavorBreakdown?.length > 0 ? flavorBreakdown : null,
-      options: options ?? null,
-    });
-    setOpen(false);
-  };
-
   const photos = photosForMoment(p, momentId);
-  // Non-customizable products have no quantity picker — they add at 1,
-  // unless the product declares an explicit commercial minimum (see
-  // minimumQuantityOf in utils/products.js).
-  const defaultQty = initialQuantity(p);
 
   return (
     <div
@@ -140,8 +117,6 @@ export default function ProductCard({
         ) : (
           <h3 className={`font-display text-brand-ink leading-tight ${isDiaDificil ? "text-xl" : "text-lg"}`}>{p.name}</h3>
         )}
-        {!isFesta && <p className={`mt-0.5 text-brand-muted ${isDiaDificil ? "text-3xs" : "text-xs"}`}>{p.unit}</p>}
-
         {/* Dias de luta: the short "teaser" carries the vitrine — the full
             sensory description now lives in the detail sheet only (see
             progressive-disclosure split in the brief). Fraunces roman, not
@@ -164,17 +139,6 @@ export default function ProductCard({
             are cross-tagged to both moments). */}
         {!isFesta && <ProductBadges badges={p.badges} onSubtle={isDiaDificil} />}
 
-        {!isFesta && isCustomizable && (
-          <div className="flex flex-wrap gap-1.5 mt-1.5">
-            <span
-              className="inline-flex items-center gap-1 text-3xs font-medium rounded-full px-2 py-1"
-              style={{ backgroundColor: `${COLORS.caramelLight}30`, color: COLORS.caramelDark }}
-            >
-              <Sparkles size={10} /> Escolha seus sabores ✨
-            </span>
-          </div>
-        )}
-
         {isFesta ? (
           <button
             onClick={() => onOpenPartyModal(p)}
@@ -187,48 +151,36 @@ export default function ProductCard({
             🎉 {partyEntry ? `Na minha festa (${partyEntry.qty})` : "Adicionar à Minha Festa"}
           </button>
         ) : (
-          <>
-            {/* CTA restored to real presence — a prior round made this a
-                quiet text link for Dias de luta, which went too discreet:
-                "Quero esse" is the one important action on the card and
-                reads better as a small filled pill, same as Festa's own
-                CTA and the approved reference, not a plain word in the
-                corner. */}
-            <div className={`flex items-center justify-between gap-2 ${isDiaDificil ? "mt-2" : "mt-2.5"}`}>
-              <span className={`font-medium text-brand-caramelDark ${isDiaDificil ? "text-base" : "text-sm"}`}>{p.price}</span>
-              <button
-                onClick={() =>
-                  isCustomizable
-                    ? setOpen((o) => !o)
-                    : existing
-                    ? removeFromSelection(existing)
-                    : confirmAdd({ qty: defaultQty, flavorBreakdown: [] })
-                }
-                className={`font-medium rounded-full inline-flex items-center gap-1.5 ${
-                  isDiaDificil ? "text-xs px-3.5 h-10" : "text-xs px-3.5 min-h-11"
-                }`}
-                style={{
-                  backgroundColor: COLORS.caramelDark,
-                  color: "white",
-                }}
-              >
-                <Heart size={isDiaDificil ? 10 : 12} fill="white" />
-                {existing
-                  ? isCustomizable
-                    ? `Na seleção (${existing.qty})`
-                    : "Adicionado ✓"
-                  : isCustomizable
-                  ? "Escolher sabores"
-                  : "Quero esse"}
-              </button>
-            </div>
-
-            {isCustomizable && open && (
-              <div className="mt-3 pt-3 border-t border-dashed border-brand-border">
-                <FlavorConfigurator product={p} existing={existing} onConfirm={confirmAdd} />
-              </div>
-            )}
-          </>
+          // Discovery affordance, not a purchase decision. A real test
+          // surfaced this exact gap: Naia herself didn't realize tapping
+          // the Chocobomb card revealed recheio/cobertura/versão — nothing
+          // on the card said there was more underneath. The card itself
+          // was already fully clickable (see the photo/name onClick above,
+          // unchanged); what was missing was a legible, textual hint that
+          // it is. This replaces the old "Quero esse"/"Escolher sabores"
+          // button — which let the card add (or open an inline
+          // configurator) directly, making a purchase/configuration
+          // decision the card's own first move — with a quiet "Ver
+          // detalhes →" / "Ver sabores e opções →" link to the one real
+          // decision point, Product Detail. Price and the commercial
+          // minimum are grouped on one line right above it (previously
+          // split: unit under the name, price down by the old button).
+          <div className={`flex flex-col ${isDiaDificil ? "mt-2" : "mt-2.5"}`}>
+            <p className={`text-brand-muted ${isDiaDificil ? "text-3xs" : "text-xs"}`}>
+              <span className="font-medium" style={{ color: COLORS.caramelDark }}>
+                {p.price}
+              </span>{" "}
+              · {p.unit}
+            </p>
+            <button
+              onClick={() => onOpenDetail?.(p)}
+              className={`mt-1 font-medium self-start inline-flex items-center gap-1 min-h-11 ${isDiaDificil ? "text-xs" : "text-sm"}`}
+              style={{ color: COLORS.caramelDark }}
+            >
+              {isCustomizable ? "Ver sabores e opções" : "Ver detalhes"}
+              <span aria-hidden="true">→</span>
+            </button>
+          </div>
         )}
       </div>
     </div>

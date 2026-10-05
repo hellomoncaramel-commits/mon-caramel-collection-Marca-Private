@@ -65,14 +65,20 @@ function OptionGroupsConfigurator({ product, existing, onConfirm }) {
 
   return (
     <div className="fade-up">
-      <p className="text-sm font-medium text-brand-ink mb-2">Quantidade</p>
-      <div className="mb-4">
-        <QuantityStepper value={qty} onChange={setQty} min={minQty} />
-      </div>
+      {/* "Monte o seu" + numbered steps make the sequence unmissable: this
+          is the explicit fix for a product owner testing her own site not
+          realizing Chocobomb could be configured at all. Steps count
+          recheio/cobertura/versão (whatever `optionGroups` actually holds,
+          in its own order) then quantity last — never a hardcoded "4",
+          so this still numbers correctly if a product's own group count
+          ever changes. */}
+      <p className="text-base font-display text-brand-ink mb-3">Monte o seu</p>
 
-      {product.optionGroups.map((g) => (
+      {product.optionGroups.map((g, i) => (
         <div key={g.key} className="mb-4">
-          <p className="text-sm font-medium text-brand-ink mb-2">{g.label}</p>
+          <p className="text-sm font-medium text-brand-ink mb-2">
+            {i + 1}. {STEP_INTRO[g.key] ?? `Escolha: ${g.label}`}
+          </p>
           <div className="flex flex-wrap gap-1.5">
             {g.choices.map((c) => {
               const on = choices[g.key] === c;
@@ -95,21 +101,35 @@ function OptionGroupsConfigurator({ product, existing, onConfirm }) {
         </div>
       ))}
 
+      <p className="text-sm font-medium text-brand-ink mb-2">{product.optionGroups.length + 1}. Quantos?</p>
+      <div className="mb-4">
+        <QuantityStepper value={qty} onChange={setQty} min={minQty} />
+      </div>
+
       <button
         onClick={confirm}
         disabled={!allChosen}
-        className="w-full text-xs font-medium rounded-full py-2.5 flex items-center justify-center gap-1.5"
+        className="w-full text-sm font-medium rounded-full py-3 min-h-11 flex items-center justify-center gap-2"
         style={{
           backgroundColor: allChosen ? COLORS.caramelDark : COLORS.border,
           color: allChosen ? "white" : COLORS.muted,
         }}
       >
-        <Heart size={12} fill={allChosen ? "white" : "none"} />
-        Adicionar à minha seleção
+        <Heart size={14} fill={allChosen ? "white" : "none"} />
+        Quero esse
       </button>
     </div>
   );
 }
+
+// Exact phrasing from Naia's approved reference for the 3 groups in use
+// today — a generic fallback below covers any future group key rather
+// than guessing at Portuguese grammatical gender ("o"/"a") from the key.
+const STEP_INTRO = {
+  recheio: "Escolha o recheio",
+  cobertura: "Escolha a cobertura",
+  versao: "Escolha a versão",
+};
 
 // Inline "escolha seus sabores" configurator shown inside a customizable
 // product's card: quantity first ("quantos você quer?"), then flavor chips

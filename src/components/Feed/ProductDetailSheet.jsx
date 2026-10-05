@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { X, Heart, Snowflake, Sparkles, Share2 } from "lucide-react";
+import { X, Heart, Snowflake, Share2 } from "lucide-react";
 import { COLORS } from "../../styles/colors";
 import { PRODUCTS } from "../../data/products";
+import { BADGES } from "../../data/badges";
 import { defaultPhotos, initialQuantity } from "../../utils/products";
 import PhotoCarousel from "../shared/PhotoCarousel";
 import ProductArt from "../shared/ProductArt";
@@ -125,45 +126,56 @@ export default function ProductDetailSheet({
           <h2 id="product-detail-title" className="text-2xl lg:text-2xl font-display text-brand-ink leading-tight">
             {p.name}
           </h2>
-          <p className="text-sm mt-0.5 text-brand-muted">{p.unit}</p>
-          {/* Price right under the name — reads as the first two facts
-              about the product together, the way the approved reference
-              shows it, not pushed down to sit beside the CTA. Bumped from
-              text-lg: with the photo no longer a dominant square, this is
-              now one of two things carrying real visual weight on first
-              screen, alongside the name. */}
-          <p className="text-xl font-medium mt-1 text-brand-caramelDark">{p.price}</p>
+          {/* Description right after the name — this is the one place the
+              customer actually reads what the product IS before any
+              commercial fact. The card's own teaser already did its job
+              getting them here; this is deliberately `sensory`, a
+              different (fuller) string, never the teaser repeated. */}
           <p className="text-sm mt-2 leading-snug text-brand-inkSoft">{p.sensory}</p>
 
+          {/* Price, then (only) whichever of the two actually applies:
+              an explicit commercial minimum (never inferred from unit
+              text — see minimumQuantityOf) spelled out in full, or the
+              plain sale unit for every other product (weight, pack, "por
+              fatia", etc.) — never both, since for every product that has
+              a real minQty today, `unit` is just that same minimum
+              restated ("unidade (mín. N)"), which would otherwise show the
+              same fact twice in two different phrasings right next to
+              each other. */}
+          <p className="text-xl font-medium mt-3 text-brand-caramelDark">{p.price}</p>
+          {minQty > 1 ? (
+            <p className="text-sm mt-0.5 text-brand-muted">Pedido mínimo: {minQty}</p>
+          ) : (
+            p.unit && <p className="text-sm mt-0.5 text-brand-muted">{p.unit}</p>
+          )}
+
+          {/* Gluten-free version callout — reuses the exact approved
+              glutenFreeOption badge data (data/badges.js), never new copy.
+              Shown regardless of entry context (Search/Feed/dia-dificil
+              alike): this is the kind of fact that should never depend on
+              which journey led here. */}
+          {p.badges?.includes("glutenFreeOption") && (
+            <p className="flex items-center gap-1.5 mt-3 text-sm text-brand-ink">
+              <span aria-hidden="true">🌾</span> {BADGES.glutenFreeOption.label}
+            </p>
+          )}
+
           {/* Dias de luta only — the curated badge matrix. Suppresses the
-              older `canFreeze` list item just below when it's showing
-              (that one's less precise: it fires off `moments.includes
+              `canFreeze` list item just below when it's showing (that
+              one's less precise: it fires off `moments.includes
               ("freezer")` for every context, which doesn't always match
               the hand-curated badge list — e.g. products whose name
               already says "congelado" deliberately skip the badge). */}
           {showExperience && <ProductBadges badges={p.badges} />}
 
-          {((canFreeze && !showExperience) || isCustomizable) && (
+          {canFreeze && !showExperience && (
             <ul className="flex flex-col gap-1.5 mt-2.5">
-              {canFreeze && !showExperience && (
-                <li className="flex items-center gap-2 text-sm text-brand-inkSoft">
-                  <span className="w-7 h-7 shrink-0 rounded-full flex items-center justify-center bg-brand-subtle">
-                    <Snowflake size={13} className="text-brand-caramelDark" />
-                  </span>
-                  Pode congelar
-                </li>
-              )}
-              {isCustomizable && (
-                <li className="flex items-center gap-2 text-sm text-brand-inkSoft">
-                  <span
-                    className="w-7 h-7 shrink-0 rounded-full flex items-center justify-center"
-                    style={{ backgroundColor: `${COLORS.caramelLight}30` }}
-                  >
-                    <Sparkles size={13} className="text-brand-caramelDark" />
-                  </span>
-                  Escolha seus sabores
-                </li>
-              )}
+              <li className="flex items-center gap-2 text-sm text-brand-inkSoft">
+                <span className="w-7 h-7 shrink-0 rounded-full flex items-center justify-center bg-brand-subtle">
+                  <Snowflake size={13} className="text-brand-caramelDark" />
+                </span>
+                Pode congelar
+              </li>
             </ul>
           )}
 
@@ -191,16 +203,19 @@ export default function ProductDetailSheet({
               }} />
             </div>
           ) : (
-            <div className="flex items-center justify-between mt-4 gap-3">
-              <QuantityStepper value={qty} onChange={setQty} min={minQty} />
-              <button
-                onClick={() => (existing ? removeFromSelection(existing) : add())}
-                className="flex-1 text-sm font-medium rounded-full py-3 min-h-11 flex items-center justify-center gap-2 transition-transform active:scale-95"
-                style={{ backgroundColor: COLORS.caramelDark, color: "white" }}
-              >
-                <Heart size={14} fill="white" />
-                {existing ? "Adicionado ✓ — remover" : "Quero esse"}
-              </button>
+            <div className="mt-4">
+              <p className="text-sm font-medium text-brand-ink mb-2">Quantos?</p>
+              <div className="flex items-center justify-between gap-3">
+                <QuantityStepper value={qty} onChange={setQty} min={minQty} />
+                <button
+                  onClick={() => (existing ? removeFromSelection(existing) : add())}
+                  className="flex-1 text-sm font-medium rounded-full py-3 min-h-11 flex items-center justify-center gap-2 transition-transform active:scale-95"
+                  style={{ backgroundColor: COLORS.caramelDark, color: "white" }}
+                >
+                  <Heart size={14} fill="white" />
+                  {existing ? "Adicionado ✓ — remover" : "Quero esse"}
+                </button>
+              </div>
             </div>
           )}
 
