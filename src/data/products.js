@@ -295,7 +295,9 @@ export const PRODUCTS = [
     unit: "unidade (mín. 4)",
     minimumQuantity: 4,
     price: "$5/un",
-    sensory: "Pão de mel macio, recheado com doce de leite feito com leite condensado cozido e coberto com chocolate meio amargo.",
+    // Trimmed "Pão de mel" off the front — the name right above it already
+    // says that; starting with "Macio..." avoids restating it immediately.
+    sensory: "Macio, recheado com doce de leite feito com leite condensado cozido e coberto com chocolate meio amargo.",
     kind: "cake",
     tint: COLORS.caramelDark,
     moments: ["dia-dificil"],
@@ -495,17 +497,25 @@ export const PRODUCTS = [
     name: "Bala de Coco",
     unit: "150g",
     price: "$10",
-    sensory: "Docinho de coco que derrete na boca — sem glúten, sem lactose, gostoso de qualquer jeito.",
+    // Detail's main description — replaces the old "Docinho de coco que
+    // derrete na boca — sem glúten, sem lactose..." (redundant with the
+    // teaser below and with the glutenFree badge now on the card).
+    sensory: "Perigosamente macia e perfeita para beliscar quando a vontade de doce chega.",
     kind: "candy",
     tint: COLORS.creamYellow,
     moments: ["dia-dificil", "freezer"],
-    badges: ["vegan", "freezer"],
+    badges: ["vegan", "freezer", "glutenFree"],
+    // noteLabel/note deliberately absent: the old aside here ("Depois não
+    // diz que eu não avisei...") repeated the same idea as the teaser and
+    // the new sensory line — removed, not replaced. MonCaramelNote already
+    // renders nothing when `note` is unset.
     experience: {
-      teaser: "Parece comportadinha. Aí você come uma.",
-      noteLabel: "Depois não diz que eu não avisei:",
-      note: "Ela derrete na boca e é perigosamente fácil de ficar beliscando.",
+      teaser: "Sabor de infância em formato de doce.",
       nextTemptation: { id: "brigadeiro", line: "Quer outra coisa boa pra deixar guardada? Dá uma olhada nos brigadeiros." },
     },
+    // No minimumQuantity — Bala de Coco is sold by the 150g unit, not a
+    // commercial minimum (never invent one; see utils/products.js
+    // minimumQuantityOf, which only trusts an explicit field).
     photos: [REAL_PHOTOS.balaDeCoco],
   },
   // Unit and sensory are still pending real data from Naia — left blank

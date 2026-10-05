@@ -131,14 +131,12 @@ export default function ProductDetailSheet({
           <p className="text-sm mt-2 leading-snug text-brand-inkSoft">{p.sensory}</p>
 
           {/* One soft, warm-tinted block for the OBJECTIVE commercial
-              facts needed to decide/configure — price and minimum, plus
-              (customizable products only) a badge for whichever choice
-              actually has a real option tied to it. Same caramel-tint-card
-              device MonCaramelNote already uses just below (one repeated
-              signature, not a new look). Price shown as "$X cada"
-              (displayPriceCada — pure presentation, the underlying `price`
-              string is untouched), same humanized form the card already
-              uses.
+              facts needed to decide — price and minimum only. Same
+              caramel-tint-card device MonCaramelNote already uses just
+              below (one repeated signature, not a new look). Price shown
+              as "$X cada" (displayPriceCada — pure presentation, the
+              underlying `price` string is untouched), same humanized form
+              the card already uses.
               Then (only) whichever of the two actually applies: an
               explicit commercial minimum (never inferred from unit text —
               see minimumQuantityOf) spelled out in full, or the plain sale
@@ -148,32 +146,20 @@ export default function ProductDetailSheet({
               ("unidade (mín. N)"), which would otherwise show the same
               fact twice in two different phrasings right next to each
               other.
-              Discovery/editorial badges — "pode congelar," "hoje eu
-              mereço," and every other plain insight badge — are the
-              card's job (ProductBadges there, untouched) and deliberately
-              NOT repeated here, even in Dias de luta context: by the time
-              a customer is reading Product Detail, the card already did
-              that work. The one exception is "glutenFreeOption," kept
-              here (as a plain "Opção sem glúten," no "(mesmo preço)" —
-              that detail lives once, discreetly, next to the `versao`
-              step inside FlavorConfigurator) because, unlike the others,
-              it corresponds to a real choice the customer still has to
-              make in the configurator below, not just a fact about the
-              product. */}
+              No badges here at all, including "glutenFreeOption" — that
+              choice is already represented exactly once, right where the
+              customer makes it: the `versao` step inside the configurator
+              below (see FlavorConfigurator's "Sem glúten, pelo mesmo
+              preço." caption). Repeating it here as a pill on top of that
+              was the exact redundancy this round removes. Discovery/
+              editorial badges ("pode congelar," "hoje eu mereço," etc.)
+              stay card-only, as before. */}
           <div className="mt-3 rounded-2xl p-4" style={{ backgroundColor: `${COLORS.caramelLight}1F` }}>
             <p className="text-xl font-medium text-brand-caramelDark">{displayPriceCada(p.price)}</p>
             {minQty > 1 ? (
               <p className="text-sm mt-0.5 text-brand-muted">Pedido mínimo: {minQty}</p>
             ) : (
               p.unit && <p className="text-sm mt-0.5 text-brand-muted">{p.unit}</p>
-            )}
-
-            {p.badges?.includes("glutenFreeOption") && (
-              <div className="flex flex-wrap gap-1.5 mt-2.5">
-                <span className="inline-flex items-center gap-1 text-3xs font-medium rounded-full px-2 py-0.5 text-brand-inkSoft bg-white/60">
-                  <span aria-hidden="true">🌾</span> Opção sem glúten
-                </span>
-              </div>
             )}
           </div>
 
@@ -211,7 +197,7 @@ export default function ProductDetailSheet({
                   style={{ backgroundColor: COLORS.caramelDark, color: "white" }}
                 >
                   <Heart size={14} fill="white" />
-                  {existing ? "Adicionado ✓ — remover" : "Quero esse"}
+                  {existing ? "Adicionado ✓ — remover" : "Eu quero"}
                 </button>
               </div>
             </div>

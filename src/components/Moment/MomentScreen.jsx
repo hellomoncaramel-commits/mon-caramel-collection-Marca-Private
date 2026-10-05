@@ -1,7 +1,7 @@
 import { Fragment, useMemo, useRef } from "react";
 import { Heart, Sparkles } from "lucide-react";
 import { COLORS } from "../../styles/colors";
-import { MOMENT_INTRO, MOMENT_SHORT } from "../../data/moments";
+import { MOMENT_INTRO } from "../../data/moments";
 import { REAL_PHOTOS } from "../../data/photos";
 import { pickForMoment, pickCrossSell } from "../../utils/products";
 import { buildPartyMessage } from "../../utils/messages";
@@ -206,26 +206,19 @@ export default function MomentScreen({
           default every other screen's header uses. */}
       <SiteHeader onBack={onBack} logoSize={isDiaDificil ? "diaDificilLogo" : "home"} rowHeight={isDiaDificil ? 78 : 76} />
 
-      {/* Design-refinement pass: Dias de luta now gets an actual title —
-          reusing the shared mc-page-title/mc-page-subtitle pair every other
-          screen (Busca, Minha Seleção, Presentes, Caixas/Bandejas/Mimos)
-          already uses, instead of letting the long intro paragraph alone
-          carry headline weight. MOMENT_SHORT is existing copy (already the
-          moment's own short name, used elsewhere for nav/shortcuts) — no
-          new text invented. Festa is untouched: same single intro
-          paragraph at the same size it always had. */}
-      {isDiaDificil ? (
-        <>
-          <h1 className="mc-page-title">{MOMENT_SHORT[momentId]}</h1>
-          <p className="mc-page-subtitle max-w-xs sm:max-w-md lg:max-w-xl">{MOMENT_INTRO[momentId]}</p>
-        </>
-      ) : (
+      {/* Simplification pass: Dias de luta no longer shows its own
+          title/intro block here — products now enter the experience
+          directly, right under the compact header above. MOMENT_SHORT/
+          MOMENT_INTRO still exist and are used elsewhere (MomentPicker,
+          nav shortcuts) — this is purely a "don't render it on this
+          screen" change, not a data removal. Festa is untouched: same
+          single intro paragraph at the same size it always had. */}
+      {!isDiaDificil &&
         MOMENT_INTRO[momentId] && (
           <p className="text-lg sm:text-xl lg:text-2xl leading-snug mb-4 lg:mb-6 font-display text-brand-ink max-w-xs sm:max-w-md lg:max-w-xl">
             {MOMENT_INTRO[momentId]}
           </p>
-        )
-      )}
+        )}
 
       {/* Mobile/tablet (all moments) and the lg+ grid for every moment
           OTHER than dia-dificil (Festa explicitly keeps this same simple,
@@ -242,7 +235,7 @@ export default function MomentScreen({
           map it always had. */}
       <div
         className={`grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-5 ${
-          isDiaDificil ? "lg:hidden" : "lg:grid-cols-3"
+          isDiaDificil ? "mt-3 lg:hidden" : "lg:grid-cols-3"
         }`}
       >
         {isDiaDificil
@@ -281,7 +274,7 @@ export default function MomentScreen({
           empty grid space — negative space that belongs to the same system
           as every other column, not a custom-sized leftover. */}
       {isDiaDificil && (
-        <div className="hidden lg:block">
+        <div className="hidden lg:block lg:mt-4">
           {chunkEditorialRhythm(matched).map((chunk, i) => {
             const aside = DIA_DIFICIL_ASIDES[i];
             // Only fold the aside into the row when it actually has a
