@@ -26,6 +26,11 @@ export const BADGES = {
   // Label kept short ("Opção sem glúten") — the "mesmo preço" detail lives
   // once, discreetly, next to the `versao` step inside FlavorConfigurator,
   // not repeated here too.
+  // Also used by Biscoito Amanteigado (butter-cookies), which has no
+  // configurator at all (it's the "Sob consulta" / WhatsApp-inquiry
+  // product) — there the option is communicated and confirmed over
+  // WhatsApp rather than through a `versao` step, so this is the one
+  // product where the badge doesn't correspond to an in-app choice.
   glutenFreeOption: { emoji: "🌾", label: "Opção sem glúten" },
   vegan: { emoji: "🌱", label: "Vegan" },
   deserve: { emoji: "💛", label: "Hoje eu mereço" },
@@ -39,4 +44,12 @@ export const BADGES = {
   // `badges` entry). Never apply to a product that wasn't explicitly
   // given this exact text.
   coffeePairing: { emoji: "☕", label: "Isso aqui com um café... hmmm" },
+  // Deliberately distinct from `freezer` ("Pode congelar") above — that one
+  // means a baked/ready product CAN be frozen afterward. This one means the
+  // product is SOLD frozen, raw, for the customer to bake at home — a
+  // different commercial fact, so reusing "Pode congelar" would read as the
+  // same claim when it isn't. One-off: today only Biscoito Amanteigado
+  // congelado (butter-cookies-congelado). Never apply to another product
+  // without the same "sold frozen, bake at home" rule being true for it.
+  freezerToOven: { emoji: "❄️", label: "Do freezer pro forno" },
 };
