@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X, Heart, Share2 } from "lucide-react";
+import { X, Heart, Share2, MessageCircle } from "lucide-react";
 import { COLORS } from "../../styles/colors";
 import { PRODUCTS } from "../../data/products";
 import { defaultPhotos, initialQuantity, displayPriceCada } from "../../utils/products";
@@ -11,6 +11,12 @@ import MonCaramelNote from "../shared/MonCaramelNote";
 import NextTemptation from "../shared/NextTemptation";
 import FlavorConfigurator from "../Moment/FlavorConfigurator";
 import { useModalLock } from "../../hooks/useModalLock";
+
+// Same number Footer.jsx and SendModal.jsx already link to (+1
+// 647-376-8064) — kept as its own local constant here too, matching how
+// each of those files already defines its own copy instead of importing
+// a shared module (see SendModal.jsx's own comment on this convention).
+const WHATSAPP_DIGITS = "16473768064";
 
 // Seduction happens in the feed; this is where information and the actual
 // "quero esse" decision live (progressive disclosure). Opens as a mobile
@@ -130,6 +136,14 @@ export default function ProductDetailSheet({
               different (fuller) string, never the teaser repeated. */}
           <p className="text-sm mt-2 leading-snug text-brand-inkSoft">{p.sensory}</p>
 
+          {/* A short, practical explainer — NOT gated by showExperience
+              like the aside right below: this one has to read the same
+              from every entry point (Search/Feed included), since it's
+              tied to `whatsappInquiryMessage` further down replacing this
+              product's entire purchase flow, not to the Dias de luta
+              Experience layer. Today only Biscoito Amanteigado sets it. */}
+          {p.inquiryNote && <p className="text-xs mt-1.5 text-brand-muted">{p.inquiryNote}</p>}
+
           {/* A plain, secondary-weight aside — deliberately NOT
               MonCaramelNote (no box, no decorative quote, no label):
               that treatment reads as a full editorial block, the exact
@@ -198,6 +212,23 @@ export default function ProductDetailSheet({
                 onClose();
               }} />
             </div>
+          ) : p.whatsappInquiryMessage ? (
+            // Products with too many real combinations to represent as a
+            // configurator (today: Biscoito Amanteigado) skip Minha
+            // Seleção entirely — see → understand the possibilities →
+            // talk to Naia directly, same wa.me pattern Footer.jsx and
+            // SendModal.jsx already use, just pre-filled with a message
+            // about this specific product instead of a generic greeting.
+            <a
+              href={`https://wa.me/${WHATSAPP_DIGITS}?text=${encodeURIComponent(p.whatsappInquiryMessage)}`}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-4 w-full text-sm font-medium rounded-full py-3 min-h-11 flex items-center justify-center gap-2 transition-transform active:scale-95"
+              style={{ backgroundColor: COLORS.caramelDark, color: "white" }}
+            >
+              <MessageCircle size={14} />
+              Quero ver as opções
+            </a>
           ) : (
             <div className="mt-4">
               <p className="text-sm font-medium text-brand-ink mb-2">Quantos?</p>

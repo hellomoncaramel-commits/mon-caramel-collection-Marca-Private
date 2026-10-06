@@ -44,10 +44,9 @@ import { REAL_PHOTOS } from "./photos";
 //     assar"), right after "butter-cookies" — newly added as its own
 //     entry once a real, previously-misfiled photo (raw dough disks in a
 //     freezer bag, formerly bundled into the regular product's own
-//     gallery) was found for it. unit/price/sensory are left blank/"Sob
-//     consulta" (the same established placeholder convention as
-//     bolo-de-pote and brownlito below) since no real values exist yet —
-//     never invented.
+//     gallery) was found for it. Now has confirmed commercial data: $1
+//     por biscoito, sold only in the fixed batches its own
+//     `quantityOptions` lists (never a free stepper).
 // Both pairs are kept adjacent via MOMENT_ORDER["dia-dificil"]
 // (data/moments.js), not by array position — see that file's comment.
 // ===========================================================================
@@ -104,6 +103,14 @@ export const PRODUCTS = [
     // every group.
     customizable: true,
     optionGroups: [{ key: "sabor", label: "Sabor", choices: ["Baunilha", "Chocolate", "Pão de Mel"] }],
+    // Commercially sold only in these exact batch sizes — never a free
+    // ±1 stepper (see FlavorConfigurator.jsx's OptionGroupsConfigurator,
+    // which renders this as one more single-select chip step, same visual
+    // language as the sabor step above). `minimumQuantity` above still
+    // stands as the accurate "Pedido mínimo" fact for Product Detail's own
+    // commercial block (its lowest value, 12, already matches); it's just
+    // no longer what drives the quantity control itself.
+    quantityOptions: [12, 18, 24, 36, 50, 75, 100],
     experience: {
       teaser: "Poucos ingredientes, pouca adição de açúcar e tamanho perfeito para os pequenos.",
       // Short, discreet freezer tip — plain secondary-weight text right
@@ -185,6 +192,9 @@ export const PRODUCTS = [
       { key: "cobertura", label: "Cobertura", choices: ["Chocolate meio amargo", "Chocolate branco"] },
       { key: "versao", label: "Versão", choices: ["Tradicional", "Sem glúten"] },
     ],
+    // Same fixed-batch convention as mini-donut-simples above — see its
+    // own `quantityOptions` comment for the full rationale.
+    quantityOptions: [12, 18, 24, 36, 50, 75, 100],
     // noteLabel/note deliberately absent: the old aside here ("Entre a
     // gente: Esse é daqueles que resolve um monte de coisa...") is
     // removed, not replaced — same treatment as Pão de Mel/Cone Trufado.
@@ -390,17 +400,46 @@ export const PRODUCTS = [
   {
     id: "butter-cookies",
     name: "Biscoito Amanteigado",
-    unit: "12 unidades",
+    // Genuinely open-ended — many flavor/filling/shape combinations exist,
+    // not a fixed catalog pack, so `unit` stays blank rather than
+    // restating a stale "12 unidades" that would contradict "Sob
+    // consulta" below. No minimumQuantity/quantityOptions either: this
+    // product never reaches a quantity step at all (see
+    // `whatsappInquiryMessage` below — it routes straight to WhatsApp
+    // instead of the normal qty/"Eu quero" flow).
+    unit: "",
     price: "Sob consulta 💬",
-    sensory: "Biscoitinho amanteigado que derrete na boca — o queridinho pra acompanhar um café.",
+    sensory: "Crocante, doce na medida certa. Escolha seu favorito e seja feliz.",
+    // Short, practical explainer — not an editorial aside (unlike
+    // experience.detailAside elsewhere), so it's rendered unconditionally
+    // by ProductDetailSheet.jsx whenever `whatsappInquiryMessage` is set,
+    // regardless of entry context (Search/Feed included, not just Dias de
+    // luta) — this product's WhatsApp-only flow has to work the same way
+    // everywhere it can be opened from.
+    inquiryNote: "Sabores, recheios e formatos variam — me conta o que você está imaginando e eu te mostro as opções.",
+    // Routes the Detail's bottom CTA straight to WhatsApp (reusing the
+    // same number/URL pattern Footer.jsx and SendModal.jsx already use —
+    // see ProductDetailSheet.jsx) instead of the normal qty stepper +
+    // "Eu quero" flow. This product never gets added to Minha Seleção;
+    // the whole point is see → understand the possibilities → talk to
+    // Naia directly.
+    whatsappInquiryMessage: "Oi! Quero ver as opções de Biscoito Amanteigado 🍪",
     kind: "sandwich",
     tint: COLORS.creamYellow,
     moments: ["dia-dificil", "freezer"],
-    badges: ["coffee", "lunchbox"],
+    // "lunchbox" removed — this product's open-ended, many-combinations
+    // nature doesn't map to a single fixed claim like "vai bem na
+    // lancheira" the way Biscoito Amanteigado congelado's fixed recipe
+    // does. "glutenFreeOption" added: a gluten-free version is available,
+    // confirmed and chosen over WhatsApp rather than an in-app `versao`
+    // step (see badges.js's own comment on this one exception).
+    badges: ["coffee", "glutenFreeOption"],
     experience: {
-      teaser: "Cinco minutinhos de paz também contam como autocuidado.",
-      noteLabel: "Eu te conto:",
-      note: "Esse é um dos que eu gosto de ter em casa. Pega o café e pronto.",
+      teaser: "O tipo de snack que desaparece do potinho sem você perceber.",
+      // noteLabel/note deliberately absent: the old aside here ("Eu te
+      // conto: Esse é um dos que eu gosto de ter em casa...") assumed the
+      // old fixed-pack/add-to-selection flow this product no longer has
+      // — removed, not replaced.
       nextTemptation: {
         id: "butter-cookies-congelado",
         line: "E já viu que também temos ele congelado pra você assar em casa?",
@@ -425,19 +464,36 @@ export const PRODUCTS = [
   {
     id: "butter-cookies-congelado",
     name: "Biscoito Amanteigado — congelado para assar",
-    // unit/price/sensory: no real data yet — Naia to confirm weight/count,
-    // price and a proper description. Left blank/"Sob consulta" (same
-    // established convention as bolo-de-pote and brownlito below), not
-    // invented.
-    unit: "", // TODO: Naia to confirm real quantity/weight
-    price: "Sob consulta 💬",
-    sensory: "", // TODO: Naia to confirm real description
+    // Commercial review confirmed: $1 por biscoito, vendido somente nos
+    // lotes abaixo (quantityOptions) — same "explicit field, never
+    // inferred" convention as every other migrated product.
+    unit: "unidade (mín. 24)",
+    minimumQuantity: 24,
+    price: "$1/un",
+    sensory:
+      "Feitos com apenas 3 ingredientes e 2g de açúcar. Uma opção prática para ter no freezer e assar quando quiser — perfeita para o snack ou a lancheira das crianças.",
     kind: "sandwich",
     tint: COLORS.creamYellow,
     moments: ["dia-dificil", "freezer"],
-    badges: ["coffee", "lunchbox"],
+    // Full replacement, not additive: this product's positioning is
+    // lancheira/snack infantil + "vendido congelado", not café — same
+    // differentiation already applied between the two Mini Cake Donuts.
+    // "freezerToOven" (not the plain "freezer"/"Pode congelar" badge) —
+    // this product is SOLD frozen for the customer to bake, a different
+    // claim than "a baked product can be frozen afterward" (see that
+    // badge's own comment in badges.js).
+    badges: ["lunchbox", "freezerToOven"],
+    customizable: true,
+    optionGroups: [{ key: "sabor", label: "Sabor", choices: ["Baunilha", "Chocolate"] }],
+    // Fixed batches, same mechanism as the two Mini Cake Donuts —
+    // FlavorConfigurator.jsx renders this as a chip step, never a free
+    // stepper. `quantityUnitWord` is the one opt-in difference: each chip
+    // spells out its own total ("24 biscoitos · $24"), computed from this
+    // product's own `price` via entryPrice() — never a hand-typed number.
+    quantityOptions: [24, 50, 75, 100],
+    quantityUnitWord: "biscoitos",
     experience: {
-      teaser: "Casa cheirando a biscoito sem precisar fazer a massa? Sim.",
+      teaser: "3 ingredientes, 2g de açúcar e um freezer feliz.",
       noteLabel: "Esse é esperto:",
       note: "Você deixa no freezer e assa quando quiser. Parece que você passou a tarde fazendo biscoito. Eu não conto. 😂",
       nextTemptation: { id: "mini-donut-simples", line: "Quer outra coisa prática pro freezer? Olha os mini donuts." },

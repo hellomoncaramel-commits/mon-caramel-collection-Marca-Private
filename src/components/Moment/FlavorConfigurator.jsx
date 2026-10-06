@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { Heart, Minus, Plus } from "lucide-react";
 import { COLORS } from "../../styles/colors";
 import { parseQuantityOptions, splitEvenly, initialQuantity } from "../../utils/products";
+import { entryPrice } from "../../utils/pricing";
 import QuantityStepper from "../shared/QuantityStepper";
 
 // Two different kinds of "customizable" exist in the catalog, each with its
@@ -24,21 +25,29 @@ export default function FlavorConfigurator({ product, existing, onConfirm }) {
 
 // Recheio / cobertura / versão — each its own group of single-select pill
 // chips (same pill visual language as FlavorSplitConfigurator's flavor
-// chips below, just one choice per group instead of multiple), plus an
-// ordinary ±1 quantity stepper floored at the product's own
-// minimumQuantity (reusing the same shared QuantityStepper the detail
-// sheet uses — not the discrete-options stepper below, which only makes
-// sense for a short list of exact cataloged quantities like Brigadeiro's
-// 6/12/24).
+// chips below, just one choice per group instead of multiple), plus a
+// quantity step at the end — either an ordinary ±1 stepper floored at the
+// product's own minimumQuantity, or (when `product.quantityOptions` is
+// set) the exact same single-select chip pattern as every other group
+// above, limited to that explicit list. Never both: a product commercially
+// sold only in fixed batches (today: the two Mini Cake Donuts, Biscoito
+// Amanteigado congelado) sets `quantityOptions` instead of relying on
+// `minimumQuantity` + a free stepper, which would let a customer land on
+// an unsupported quantity like 13 or 20.
 //
 // Every group starts unselected and must be explicitly chosen — no
 // default/"most common" pick is pre-filled for any of them, recheio or
 // cobertura or versão (even "Tradicional"), since nothing in the data
 // says one choice is the default and inventing one would mean guessing at
-// a customer's order on their behalf.
+// a customer's order on their behalf. The discrete quantity step follows
+// the same rule: no quantity is pre-selected either.
 function OptionGroupsConfigurator({ product, existing, onConfirm }) {
+  const hasDiscreteQty = Array.isArray(product.quantityOptions) && product.quantityOptions.length > 0;
   const minQty = initialQuantity(product);
-  const [qty, setQty] = useState(existing?.qty ?? minQty);
+  const [qty, setQty] = useState(() => {
+    if (hasDiscreteQty) return existing?.qty ?? null;
+    return existing?.qty ?? minQty;
+  });
 
   const existingByKey = useMemo(() => {
     const map = {};
@@ -56,7 +65,7 @@ function OptionGroupsConfigurator({ product, existing, onConfirm }) {
     return init;
   });
 
-  const allChosen = product.optionGroups.every((g) => choices[g.key]);
+  const allChosen = product.optionGroups.every((g) => choices[g.key]) && (!hasDiscreteQty || qty != null);
 
   const confirm = () => {
     const options = product.optionGroups.map((g) => ({ key: g.key, label: g.label, value: choices[g.key] }));
@@ -111,10 +120,50 @@ function OptionGroupsConfigurator({ product, existing, onConfirm }) {
         </div>
       ))}
 
-      <p className="text-sm font-medium text-brand-ink mb-2.5">{product.optionGroups.length + 1}. Quantos?</p>
-      <div className="mb-5">
-        <QuantityStepper value={qty} onChange={setQty} min={minQty} />
-      </div>
+      {hasDiscreteQty ? (
+        <div className="mb-5">
+          <p className="text-sm font-medium text-brand-ink mb-2.5">{product.optionGroups.length + 1}. Escolha a quantidade</p>
+          <div className="flex flex-wrap gap-1.5">
+            {product.quantityOptions.map((q) => {
+              const on = qty === q;
+              // `quantityUnitWord` is opt-in, per product (today only
+              // Biscoito Amanteigado congelado) — when set, each chip
+              // spells out its own total ("24 biscoitos · $24") using the
+              // same entryPrice() math Minha Seleção already uses for its
+              // subtotal, not a hand-typed number. Every other product
+              // with discrete quantities (the two Mini Cake Donuts) omits
+              // it on purpose, per Naia's brief: "a interface deve
+              // continuar leve" — just the plain number there.
+              const total = product.quantityUnitWord ? entryPrice(product, q) : null;
+              const label =
+                total != null
+                  ? `${q} ${product.quantityUnitWord} · $${Number.isInteger(total) ? total : total.toFixed(2)}`
+                  : String(q);
+              return (
+                <button
+                  key={q}
+                  onClick={() => setQty(q)}
+                  className="text-xs rounded-full px-3.5 py-2 transition-colors"
+                  style={{
+                    backgroundColor: on ? COLORS.caramelDark : "white",
+                    color: on ? "white" : COLORS.ink,
+                    border: on ? `1.5px solid ${COLORS.caramelDark}` : `1px solid ${COLORS.border}`,
+                  }}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      ) : (
+        <>
+          <p className="text-sm font-medium text-brand-ink mb-2.5">{product.optionGroups.length + 1}. Quantos?</p>
+          <div className="mb-5">
+            <QuantityStepper value={qty} onChange={setQty} min={minQty} />
+          </div>
+        </>
+      )}
 
       {/* Disabled = clearly inert but intentional (muted fill, visible
           border, no icon fill) — never just a paler version of the same
