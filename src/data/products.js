@@ -467,8 +467,13 @@ export const PRODUCTS = [
     // Commercial review confirmed: $1 por biscoito, vendido somente nos
     // lotes abaixo (quantityOptions) — same "explicit field, never
     // inferred" convention as every other migrated product.
-    unit: "unidade (mín. 24)",
-    minimumQuantity: 24,
+    // No minimumQuantity/unit "mín." text here on purpose: this product
+    // doesn't work conceptually as "free quantity with a floor" at all —
+    // the four quantityOptions below already make 24 read as the lowest
+    // available choice on their own, so Product Detail's commercial block
+    // shows only the price ("$1 cada"), never a redundant "Pedido
+    // mínimo" line restating what the chips already say.
+    unit: "",
     price: "$1/un",
     sensory:
       "Feitos com apenas 3 ingredientes e 2g de açúcar. Uma opção prática para ter no freezer e assar quando quiser — perfeita para o snack ou a lancheira das crianças.",
@@ -494,8 +499,12 @@ export const PRODUCTS = [
     quantityUnitWord: "biscoitos",
     experience: {
       teaser: "3 ingredientes, 2g de açúcar e um freezer feliz.",
-      noteLabel: "Esse é esperto:",
-      note: "Você deixa no freezer e assa quando quiser. Parece que você passou a tarde fazendo biscoito. Eu não conto. 😂",
+      // noteLabel/note deliberately absent: the old aside here ("Esse é
+      // esperto: Você deixa no freezer e assa quando quiser...") is
+      // removed, not replaced — the main description already covers the
+      // freezer practicality, and the editorial box between price and
+      // configurator added weight this round moved away from (same
+      // treatment as Pão de Mel/Cone Trufado/Chocobomb earlier).
       nextTemptation: { id: "mini-donut-simples", line: "Quer outra coisa prática pro freezer? Olha os mini donuts." },
     },
     // The real photo previously bundled into the regular Biscoito
