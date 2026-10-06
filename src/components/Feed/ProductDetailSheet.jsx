@@ -130,6 +130,18 @@ export default function ProductDetailSheet({
               different (fuller) string, never the teaser repeated. */}
           <p className="text-sm mt-2 leading-snug text-brand-inkSoft">{p.sensory}</p>
 
+          {/* A plain, secondary-weight aside — deliberately NOT
+              MonCaramelNote (no box, no decorative quote, no label):
+              that treatment reads as a full editorial block, the exact
+              weight this round's Product Details moved away from. Just a
+              small observation sitting between the description and the
+              commercial facts, Dias de luta only (same gate as the rest
+              of the Experience layer below). Today only
+              mini-donut-simples sets this. */}
+          {showExperience && p.experience?.detailAside && (
+            <p className="text-xs mt-1.5 italic text-brand-muted">{p.experience.detailAside}</p>
+          )}
+
           {/* One soft, warm-tinted block for the OBJECTIVE commercial
               facts needed to decide — price and minimum only. Same
               caramel-tint-card device MonCaramelNote already uses just

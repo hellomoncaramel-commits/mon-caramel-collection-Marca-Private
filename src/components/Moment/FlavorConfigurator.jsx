@@ -138,13 +138,14 @@ function OptionGroupsConfigurator({ product, existing, onConfirm }) {
   );
 }
 
-// Exact phrasing from Naia's approved reference for the 3 groups in use
+// Exact phrasing from Naia's approved reference for the groups in use
 // today — a generic fallback below covers any future group key rather
 // than guessing at Portuguese grammatical gender ("o"/"a") from the key.
 const STEP_INTRO = {
   recheio: "Escolha o recheio",
   cobertura: "Escolha a cobertura",
   versao: "Escolha a versão",
+  sabor: "Escolha o sabor",
 };
 
 // Inline "escolha seus sabores" configurator shown inside a customizable
