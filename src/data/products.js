@@ -54,17 +54,47 @@ export const PRODUCTS = [
   {
     id: "brigadeiro",
     name: "Brigadeiros",
+    // unit/price are superseded by `packageOptions` below for commercial
+    // display (ProductDetailSheet suppresses its own price block for any
+    // product with packageOptions) — left as legacy/historical values,
+    // never read once packageOptions is present. Real commercial data:
+    // these packages have their OWN price each, never a per-unit price
+    // multiplied by quantity (6 ≠ 12 × half, etc.) — see packageOptions.
     unit: "6, 12 ou 24 unidades",
     price: "A partir de $14",
-    sensory: "Docinho de chocolate cremoso, do jeito que a vó fazia — pode congelar por até 90 dias.",
+    sensory: "Um clássico que vai bem, literalmente, a qualquer hora.",
     kind: "bites",
     tint: COLORS.ink,
     moments: ["dia-dificil", "freezer"],
     badges: ["coffee", "freezer", "glutenFree"],
+    customizable: true,
+    // Each package has its own confirmed price — never computed by
+    // multiplying a per-unit price (see FlavorConfigurator.jsx's
+    // PackageConfigurator and ProductDetailSheet/SelectionScreen's use of
+    // `packagePrice`, captured at the moment of choosing, not derived
+    // later from `price` × qty).
+    packageOptions: [
+      { label: "6 brigadeiros", qty: 6, price: 10 },
+      { label: "12 brigadeiros", qty: 12, price: 18 },
+      { label: "24 brigadeiros", qty: 24, price: 36 },
+      { label: "50 brigadeiros", qty: 50, price: 75 },
+      { label: "100 brigadeiros", qty: 100, price: 130 },
+    ],
+    // flavors: [] (sabores) deliberately NOT modeled this round — the
+    // real flavor list is still pending a separate review (Naia's brief).
+    // This round only adds the commercial quantity/price structure; no
+    // flavor step exists in the configurator yet (see
+    // FlavorConfigurator.jsx — `packageOptions` routes to its own
+    // single-step configurator, bypassing the old empty-flavors path
+    // entirely, so nothing here invents or shows a flavor list).
     experience: {
-      teaser: "Dia difícil + brigadeiro. Não tenho estudos científicos, mas confio.",
-      noteLabel: "Eu te conto:",
-      note: "Você sabia que dá pra congelar? Eu deixaria alguns guardados para emergências. 😂",
+      teaser: "Dia difícil + brigadeiro = não tenho dados científicos, mas confio no resultado.",
+      // noteLabel/note deliberately absent: the old boxed aside here
+      // ("Eu te conto: Você sabia que dá pra congelar?...") is replaced
+      // by `detailAside` below — same discreet, box-free treatment
+      // already approved for Mini Cake Donuts simples, not the
+      // MonCaramelNote box/quote/label device.
+      detailAside: "É sempre bom pedir alguns a mais e ter brigadeiro congelado para emergências. 😉",
       nextTemptation: { id: "chocobomb", line: "Agora… se você gosta de chocolate, deixa eu te apresentar o Chocobomb." },
     },
     // "dia-dificil" now carries its own real photo plus the ones
@@ -74,8 +104,6 @@ export const PRODUCTS = [
     photosByMoment: {
       "dia-dificil": [REAL_PHOTOS.brigadeiroDiaDificil, REAL_PHOTOS.cafe, REAL_PHOTOS.freezer],
     },
-    customizable: true,
-    flavors: [], // TODO: Naia to confirm real flavors (ex. "Tradicional", "Ninho", "Pistache")
   },
   {
     id: "mini-donut-simples",
@@ -316,18 +344,27 @@ export const PRODUCTS = [
   {
     id: "alfajor",
     name: "Alfajor",
-    unit: "unidade (mín. 5)",
+    // Commercial review confirmed: $3 cada (unit price), pedido mínimo 3
+    // unidades — same explicit-field convention as every other migrated
+    // product. `unit` carries the minimum as display copy only.
+    unit: "unidade (mín. 3)",
+    minimumQuantity: 3,
     price: "$3/un",
     sensory:
       "Receita macia original, com toque de mel e limão, recheado com doce de leite condensado cozido. Pode ser coberto ou não por chocolate.",
     kind: "sandwich",
     tint: COLORS.caramelDark,
     moments: ["dia-dificil"],
-    badges: ["coffee"],
+    badges: ["coffee", "deserve"],
+    // Same price either way — no surcharge for the chocolate-covered
+    // version (see sensory above, which already describes both).
+    customizable: true,
+    optionGroups: [{ key: "versao", label: "Versão", choices: ["Sem cobertura", "Com cobertura de chocolate"] }],
     experience: {
-      teaser: "Café passado. Alfajor do lado. Agora ninguém me chama por cinco minutos.",
-      noteLabel: "Eu adoro esse:",
-      note: "É macio, tem doce de leite… com café fica muito bom.",
+      teaser: "Não sei o que dizer. Só apreciar.",
+      // noteLabel/note deliberately absent: the old aside here ("Eu
+      // adoro esse: É macio, tem doce de leite…") is removed, not
+      // replaced — same treatment as Pão de Mel/Cone Trufado earlier.
       nextTemptation: { id: "pao-de-mel", line: "Se você gosta de doce de leite, já provou nosso Pão de Mel?" },
     },
     photos: [REAL_PHOTOS.alfajorCoco],
@@ -382,17 +419,35 @@ export const PRODUCTS = [
   {
     id: "bolo-cenoura",
     name: "Bolo de Cenoura",
-    unit: "fatia",
-    price: "Sob consulta 💬",
-    sensory: "Bolo de cenoura fofinho, coberto com chocolate cremoso e granulado — clássico que nunca falha.",
+    // Commercial review confirmed: ONE whole cake form (not sold by the
+    // slice), $30 flat — same price whatever cobertura is chosen. `unit`
+    // repurposed from the old "fatia" (no longer accurate — see
+    // `singleItem` below, which drops the quantity step entirely) to the
+    // approved size, shown as the commercial block's second line exactly
+    // like every other migrated product's unit text.
+    unit: "forma aprox. 27 × 23 cm",
+    price: "$30",
+    sensory: "Bolo de cenoura caseiro, fofinho e feito para dividir — ou não. 😉",
     kind: "cake",
     tint: COLORS.caramelLight,
     moments: ["dia-dificil"],
     badges: ["coffee", "freezer"],
+    // Single whole-cake product — one cobertura choice, no quantity step
+    // at all (see FlavorConfigurator.jsx's OptionGroupsConfigurator,
+    // which skips its own quantity section entirely when `singleItem` is
+    // set, instead of either a stepper or discrete quantity chips).
+    customizable: true,
+    singleItem: true,
+    optionGroups: [
+      { key: "cobertura", label: "Cobertura", choices: ["Tradicional crocante", "Brigadeiro", "Ganache de chocolate meio amargo"] },
+    ],
     experience: {
-      teaser: "Tem dias que pedem café. Tem dias que pedem café e bolo.",
-      noteLabel: "Dica de amiga:",
-      note: "Dá pra congelar. Então eu já faria o favor de guardar umas fatias pro seu eu do futuro.",
+      teaser: "Tem coisa melhor que cheiro de bolo fresquinho pela casa? Hmmm.",
+      // noteLabel/note deliberately absent: the old aside here ("Dica de
+      // amiga: ...guardar umas fatias pro seu eu do futuro") assumed the
+      // old per-slice sale this product no longer has (now sold as one
+      // whole, undivided form) — removed as factually outdated, not
+      // replaced.
       nextTemptation: { id: "butter-cookies", line: "Pra acompanhar o próximo café, olha os amanteigados também." },
     },
     photos: [REAL_PHOTOS.boloCenouraTray, REAL_PHOTOS.boloCenouraFatias],
@@ -515,17 +570,31 @@ export const PRODUCTS = [
   {
     id: "casadinho",
     name: "Casadinhos Goiabada",
+    // unit/price superseded by `packageOptions` below — see Brigadeiro's
+    // own comment on this same convention (never read once packageOptions
+    // is present; each package has its own confirmed price, never a
+    // per-unit price × qty).
     unit: "6 unidades",
     price: "Sob consulta 💬",
-    sensory: "Biscoito amanteigado recheado de goiabada — outros sabores? É só chamar a gente.",
+    // Trimmed the "— outros sabores? É só chamar a gente" clause: this
+    // product is goiabada only, no other flavor/filling exists to offer
+    // (see explicit scope below) — not inventing a new sentence, just
+    // removing the part that no longer applies.
+    sensory: "Biscoito amanteigado recheado de goiabada.",
     kind: "sandwich",
     tint: COLORS.caramelLight,
     moments: ["dia-dificil"],
-    badges: ["coffee"],
+    badges: ["coffee", "deserve"],
+    customizable: true,
+    packageOptions: [
+      { label: "12 casadinhos", qty: 12, price: 18 },
+      { label: "24 casadinhos", qty: 24, price: 35 },
+    ],
     experience: {
-      teaser: "Um café, um casadinho e de repente a tarde ficou bem melhor.",
-      noteLabel: "Entre a gente:",
-      note: "Amanteigado com goiabada. Não precisava inventar muito porque essa combinação já funciona.",
+      teaser: "Difícil resistir. Ainda bem que a gente não precisa.",
+      // noteLabel/note deliberately absent: the old aside here ("Entre a
+      // gente: Amanteigado com goiabada...") is removed, not replaced —
+      // same treatment as Pão de Mel/Cone Trufado earlier.
       nextTemptation: { id: "butter-cookies", line: "Se você gosta de biscoitinho com café, olha o amanteigado também." },
     },
     photos: [REAL_PHOTOS.casadinhoGoiabada],
@@ -533,15 +602,28 @@ export const PRODUCTS = [
   {
     id: "melties",
     name: "Sequilhos",
+    // unit/price superseded by `packageOptions` below — see Brigadeiro's
+    // own comment on this same convention.
     unit: "250g",
     price: "Sob consulta 💬",
-    sensory: "Derrete na boca, crocante por fora — sem glúten, o queridinho de sempre.",
+    sensory: "Leve, delicado e daquele tipo que desmancha na boca.",
     kind: "bites",
     tint: COLORS.creamYellow,
     moments: ["dia-dificil"],
     badges: ["coffee", "glutenFree"],
+    customizable: true,
+    // Weight-based packages, not unit counts — `qty` stays 1 for both
+    // (one bag bought), the real distinguishing fact is `label`/price.
+    // Step heading overridden below to "Escolha o tamanho" (not
+    // "Escolha a quantidade" — 300g/500g are never meant to read as a
+    // quantity of individual biscoits, see FlavorConfigurator.jsx).
+    packageOptions: [
+      { label: "300g", qty: 1, price: 10 },
+      { label: "500g", qty: 1, price: 15 },
+    ],
+    packageStepLabel: "Escolha o tamanho",
     experience: {
-      teaser: "Você pega um. Depois outro. Depois a gente para de contar.",
+      teaser: "Come um. Depois a gente conversa sobre parar.",
       noteLabel: "Eu avisei:",
       note: "Eles derretem na boca e desaparecem do pote numa velocidade suspeita.",
       nextTemptation: { id: "alfajor", line: "Agora, se quiser continuar no território do café… já viu o Alfajor?" },

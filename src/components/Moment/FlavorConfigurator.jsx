@@ -5,22 +5,91 @@ import { parseQuantityOptions, splitEvenly, initialQuantity } from "../../utils/
 import { entryPrice } from "../../utils/pricing";
 import QuantityStepper from "../shared/QuantityStepper";
 
-// Two different kinds of "customizable" exist in the catalog, each with its
-// own interaction shape — this file just routes to whichever one a product
-// actually needs:
+// Three different kinds of "customizable" exist in the catalog, each with
+// its own interaction shape — this file just routes to whichever one a
+// product actually needs:
 //
-// - `product.optionGroups` (Chocobomb, Cone Trufado): several INDEPENDENT
-//   choices — recheio, cobertura, versão — each a single pick, not a list
-//   to multi-select. See OptionGroupsConfigurator below.
-// - `product.flavors` (Brigadeiro, today the only one): ONE flavor list,
-//   multi-select, with the order quantity auto-split evenly across
-//   whichever flavors get picked. See FlavorSplitConfigurator below —
-//   unchanged from before this file had two modes.
+// - `product.packageOptions` (Brigadeiro, Casadinho, Sequilho): ONE choice
+//   among a short list of fixed commercial packages, each with its OWN
+//   price — never a per-unit price × qty (6 brigadeiros isn't half the
+//   price of 12). See PackageConfigurator below. Checked first since a
+//   product with packageOptions never also has optionGroups/flavors this
+//   round.
+// - `product.optionGroups` (Chocobomb, Cone Trufado, Alfajor, Bolo de
+//   Cenoura): several INDEPENDENT choices — recheio, cobertura, versão —
+//   each a single pick, not a list to multi-select. See
+//   OptionGroupsConfigurator below.
+// - `product.flavors`: ONE flavor list, multi-select, with the order
+//   quantity auto-split evenly across whichever flavors get picked. See
+//   FlavorSplitConfigurator below.
 export default function FlavorConfigurator({ product, existing, onConfirm }) {
+  if (Array.isArray(product.packageOptions) && product.packageOptions.length > 0) {
+    return <PackageConfigurator product={product} existing={existing} onConfirm={onConfirm} />;
+  }
   if (product.optionGroups && product.optionGroups.length > 0) {
     return <OptionGroupsConfigurator product={product} existing={existing} onConfirm={onConfirm} />;
   }
   return <FlavorSplitConfigurator product={product} existing={existing} onConfirm={onConfirm} />;
+}
+
+// A single step: pick one fixed commercial package (e.g. "24 brigadeiros ·
+// $36"), same pill-chip visual language as every other configurator step
+// in this file. No quantity stepper, no per-unit math — the chosen
+// package's own `price` is captured right here and passed straight
+// through to `onConfirm` (see ProductDetailSheet.jsx/SelectionScreen.jsx's
+// use of `packageLabel`/`packagePrice`), never recomputed later from a
+// per-unit `product.price`. Starts unselected, same "no default pick"
+// rule as every other configurator step.
+function PackageConfigurator({ product, existing, onConfirm }) {
+  const [chosen, setChosen] = useState(() =>
+    existing?.packageLabel ? product.packageOptions.find((opt) => opt.label === existing.packageLabel) ?? null : null
+  );
+
+  const confirm = () => {
+    onConfirm({ qty: chosen.qty, packageLabel: chosen.label, packagePrice: chosen.price });
+  };
+
+  return (
+    <div className="fade-up">
+      <p className="text-lg font-display text-brand-ink mb-4">Monte o seu</p>
+      <div className="mb-5">
+        <p className="text-sm font-medium text-brand-ink mb-2.5">1. {product.packageStepLabel ?? "Escolha a quantidade"}</p>
+        <div className="flex flex-wrap gap-1.5">
+          {product.packageOptions.map((opt) => {
+            const on = chosen?.label === opt.label;
+            return (
+              <button
+                key={opt.label}
+                onClick={() => setChosen(opt)}
+                className="text-xs rounded-full px-3.5 py-2 transition-colors"
+                style={{
+                  backgroundColor: on ? COLORS.caramelDark : "white",
+                  color: on ? "white" : COLORS.ink,
+                  border: on ? `1.5px solid ${COLORS.caramelDark}` : `1px solid ${COLORS.border}`,
+                }}
+              >
+                {opt.label} · ${opt.price}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <button
+        onClick={confirm}
+        disabled={!chosen}
+        className="w-full text-sm font-medium rounded-full py-3 min-h-11 flex items-center justify-center gap-2 transition-colors active:scale-95"
+        style={{
+          backgroundColor: chosen ? COLORS.caramelDark : "transparent",
+          color: chosen ? "white" : COLORS.muted,
+          border: chosen ? "none" : `1.5px solid ${COLORS.border}`,
+        }}
+      >
+        <Heart size={14} fill={chosen ? "white" : "none"} />
+        Eu quero
+      </button>
+    </div>
+  );
 }
 
 // Recheio / cobertura / versão — each its own group of single-select pill
@@ -41,10 +110,18 @@ export default function FlavorConfigurator({ product, existing, onConfirm }) {
 // says one choice is the default and inventing one would mean guessing at
 // a customer's order on their behalf. The discrete quantity step follows
 // the same rule: no quantity is pre-selected either.
+//
+// A third quantity mode exists alongside the stepper and the discrete-chip
+// list above: `product.singleItem` (Bolo de Cenoura) skips the quantity
+// section entirely — the commercial product IS one whole item (one cake
+// form), never a count to choose, so qty is fixed at 1 and no "Quantos?"
+// step renders at all.
 function OptionGroupsConfigurator({ product, existing, onConfirm }) {
   const hasDiscreteQty = Array.isArray(product.quantityOptions) && product.quantityOptions.length > 0;
+  const noQtyStep = product.singleItem === true;
   const minQty = initialQuantity(product);
   const [qty, setQty] = useState(() => {
+    if (noQtyStep) return 1;
     if (hasDiscreteQty) return existing?.qty ?? null;
     return existing?.qty ?? minQty;
   });
@@ -69,7 +146,12 @@ function OptionGroupsConfigurator({ product, existing, onConfirm }) {
 
   const confirm = () => {
     const options = product.optionGroups.map((g) => ({ key: g.key, label: g.label, value: choices[g.key] }));
-    onConfirm({ qty, options });
+    // `singleItem` passed through so Minha Seleção/the WhatsApp message
+    // can tell "qty is always 1 because it's one whole item" apart from
+    // an ordinary product that just happens to have qty 1 — same
+    // treatment as `packageLabel` below, carried on the stored entry
+    // rather than re-derived later from a product lookup.
+    onConfirm({ qty, options, singleItem: noQtyStep || undefined });
   };
 
   return (
@@ -120,7 +202,7 @@ function OptionGroupsConfigurator({ product, existing, onConfirm }) {
         </div>
       ))}
 
-      {hasDiscreteQty ? (
+      {noQtyStep ? null : hasDiscreteQty ? (
         <div className="mb-5">
           <p className="text-sm font-medium text-brand-ink mb-2.5">{product.optionGroups.length + 1}. Escolha a quantidade</p>
           <div className="flex flex-wrap gap-1.5">
