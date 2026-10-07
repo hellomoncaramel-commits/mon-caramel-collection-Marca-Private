@@ -624,8 +624,8 @@ export const PRODUCTS = [
     packageStepLabel: "Escolha o tamanho",
     experience: {
       teaser: "Come um. Depois a gente conversa sobre parar.",
-      noteLabel: "Eu avisei:",
-      note: "Eles derretem na boca e desaparecem do pote numa velocidade suspeita.",
+      // noteLabel/note deliberately removed per round-12 micro-adjustment —
+      // the main sensory description already covers it, no replacement.
       nextTemptation: { id: "alfajor", line: "Agora, se quiser continuar no território do café… já viu o Alfajor?" },
     },
     photos: [REAL_PHOTOS.sequilhoNatural, REAL_PHOTOS.sequilhoRosa],
