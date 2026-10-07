@@ -179,15 +179,24 @@ export default function ProductDetailSheet({
               preço." caption). Repeating it here as a pill on top of that
               was the exact redundancy this round removes. Discovery/
               editorial badges ("pode congelar," "hoje eu mereço," etc.)
-              stay card-only, as before. */}
-          <div className="mt-3 rounded-2xl p-4" style={{ backgroundColor: `${COLORS.caramelLight}1F` }}>
-            <p className="text-xl font-medium text-brand-caramelDark">{displayPriceCada(p.price)}</p>
-            {minQty > 1 ? (
-              <p className="text-sm mt-0.5 text-brand-muted">Pedido mínimo: {minQty}</p>
-            ) : (
-              p.unit && <p className="text-sm mt-0.5 text-brand-muted">{p.unit}</p>
-            )}
-          </div>
+              stay card-only, as before.
+              Skipped entirely for `packageOptions` products (Brigadeiro,
+              Casadinho, Sequilho): there's no single "$X cada" to show —
+              each package has its own price, already spelled out on its
+              own chip inside the configurator below (e.g. "24
+              brigadeiros · $36"). Showing a price here too would both be
+              wrong (no real per-unit price exists) and redundant with
+              what the chips already say. */}
+          {!p.packageOptions && (
+            <div className="mt-3 rounded-2xl p-4" style={{ backgroundColor: `${COLORS.caramelLight}1F` }}>
+              <p className="text-xl font-medium text-brand-caramelDark">{displayPriceCada(p.price)}</p>
+              {minQty > 1 ? (
+                <p className="text-sm mt-0.5 text-brand-muted">Pedido mínimo: {minQty}</p>
+              ) : (
+                p.unit && <p className="text-sm mt-0.5 text-brand-muted">{p.unit}</p>
+              )}
+            </div>
+          )}
 
           {/* Mon Caramel's own voice — a short editorial aside, Dias de
               luta only, right before the purchase decision. */}
@@ -199,7 +208,7 @@ export default function ProductDetailSheet({
               spaced, so it reads as the next step, not a separate card). */}
           {isCustomizable ? (
             <div className="mt-4 pt-3 border-t border-dashed border-brand-border">
-              <FlavorConfigurator product={p} existing={existing} onConfirm={({ qty: q, flavorBreakdown, options }) => {
+              <FlavorConfigurator product={p} existing={existing} onConfirm={({ qty: q, flavorBreakdown, options, packageLabel, packagePrice, singleItem }) => {
                 addToSelection({
                   kind: "product",
                   productId: p.id,
@@ -208,6 +217,21 @@ export default function ProductDetailSheet({
                   qty: q,
                   flavors: flavorBreakdown?.length > 0 ? flavorBreakdown : null,
                   options: options ?? null,
+                  // Set only for packageOptions products (Brigadeiro,
+                  // Casadinho, Sequilho) — the chosen package's own
+                  // label/price, captured once here rather than
+                  // recomputed later from a per-unit price that doesn't
+                  // exist for these (see SelectionScreen.jsx/
+                  // utils/messages.js, which both prefer these over the
+                  // generic qty/unit fields when present).
+                  packageLabel: packageLabel ?? null,
+                  packagePrice: packagePrice ?? null,
+                  // Set only for `singleItem` products (Bolo de Cenoura) —
+                  // qty is always 1 because it's one whole item, not an
+                  // ordinary quantity of 1 (see SelectionScreen.jsx/
+                  // utils/messages.js, which both skip the "{qty} " prefix
+                  // when this is set).
+                  singleItem: singleItem ?? null,
                 });
                 onClose();
               }} />

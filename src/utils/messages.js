@@ -2,7 +2,18 @@
 // shape depends on entry.kind (see utils/selectionKey.js).
 function describeEntry(it) {
   if (!it.kind || it.kind === "product") {
-    const head = `${it.qty ? it.qty + " " : ""}${it.name}${it.unit ? ` (${it.unit})` : ""}`;
+    // Package-priced products (Brigadeiro, Casadinho, Sequilho) describe
+    // themselves by their chosen package label ("24 brigadeiros", "500g")
+    // instead of the generic qty/unit pattern — qty is 1 for weight-based
+    // packages, and `unit` is stale legacy text once packageOptions is
+    // set (see products.js), so neither reads correctly here. A
+    // `singleItem` product (Bolo de Cenoura) similarly skips the "{qty} "
+    // prefix — qty is always 1 because it's one whole item, not a count.
+    const head = it.packageLabel
+      ? `${it.name} — ${it.packageLabel}`
+      : it.singleItem
+      ? `${it.name}${it.unit ? ` (${it.unit})` : ""}`
+      : `${it.qty ? it.qty + " " : ""}${it.name}${it.unit ? ` (${it.unit})` : ""}`;
     if (it.flavors && it.flavors.length > 0) {
       const sub = it.flavors.map((f) => `   • ${f.qty} ${f.name}`).join("\n");
       return `${head}\n${sub}`;

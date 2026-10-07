@@ -24,7 +24,11 @@ function Thumb({ photo, fallbackIcon }) {
 function EntryCard({ it, product, onRemove }) {
   const isProduct = !it.kind || it.kind === "product";
   const photo = isProduct ? defaultPhotos(product)?.[0] : it.kind === "inspiration" ? it.photo : null;
-  const price = isProduct ? entryPrice(product, it.qty) : null;
+  // Package-priced products (Brigadeiro, Casadinho, Sequilho) carry their
+  // own resolved price from the moment they were chosen — never
+  // recomputed from a per-unit price that doesn't exist for them. Every
+  // other product falls back to the normal qty × unit-price calculation.
+  const price = isProduct ? it.packagePrice ?? entryPrice(product, it.qty) : null;
 
   return (
     <div className="flex items-start gap-3 lg:gap-4 py-4">
@@ -42,10 +46,19 @@ function EntryCard({ it, product, onRemove }) {
       <div className="min-w-0 flex-1">
         {isProduct && (
           <>
+            {/* Package entries show the product name alone (qty is 1 for
+                weight-based packages like Sequilho's "500g" — prefixing
+                it would misread as "1 Sequilho") with the chosen
+                package's own label right below, instead of the generic
+                "{qty} {name}" title every other product uses. Same for a
+                `singleItem` product (Bolo de Cenoura) — qty is always 1
+                there too (one whole cake, not a count), so "1 Bolo de
+                Cenoura" would read just as oddly. */}
             <p className="font-display text-base text-brand-ink">
-              {it.qty} {it.name}
+              {it.packageLabel || it.singleItem ? it.name : `${it.qty} ${it.name}`}
             </p>
-            {!it.flavors && !it.options && <p className="text-xs mt-0.5 text-brand-muted">{it.unit}</p>}
+            {it.packageLabel && <p className="text-xs mt-0.5 text-brand-muted">{it.packageLabel}</p>}
+            {!it.flavors && !it.options && !it.packageLabel && <p className="text-xs mt-0.5 text-brand-muted">{it.unit}</p>}
             {it.flavors && (
               <ul className="text-xs mt-1.5 space-y-0.5 text-brand-inkSoft">
                 {it.flavors.map((f) => (
