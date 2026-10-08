@@ -141,7 +141,8 @@ export default function ProductDetailSheet({
               from every entry point (Search/Feed included), since it's
               tied to `whatsappInquiryMessage` further down replacing this
               product's entire purchase flow, not to the Dias de luta
-              Experience layer. Today only Biscoito Amanteigado sets it. */}
+              Experience layer. Set by Biscoito Amanteigado and Bolo de
+              Pote. */}
           {p.inquiryNote && <p className="text-xs mt-1.5 text-brand-muted">{p.inquiryNote}</p>}
 
           {/* A plain, secondary-weight aside — deliberately NOT
@@ -251,7 +252,7 @@ export default function ProductDetailSheet({
               style={{ backgroundColor: COLORS.caramelDark, color: "white" }}
             >
               <MessageCircle size={14} />
-              Quero ver as opções
+              {p.inquiryButtonLabel ?? "Quero ver as opções"}
             </a>
           ) : (
             <div className="mt-4">

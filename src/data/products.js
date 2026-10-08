@@ -734,11 +734,28 @@ export const PRODUCTS = [
     kind: "cake",
     tint: COLORS.caramelDark,
     moments: ["dia-dificil"],
-    badges: ["deserve", "freezer"],
+    // "freezer" badge removed: whether it can be frozen depends on the
+    // recheio chosen (sob consulta), not a fixed claim this product can
+    // make — see commercial review this round.
+    badges: ["deserve"],
+    // Sabores sob consulta pelo WhatsApp — no `flavors`/`optionGroups`
+    // exists to represent (not inventing one), so this routes straight to
+    // the same WhatsApp-only flow as Biscoito Amanteigado (whatsappInquiryMessage
+    // below) instead of a quantity stepper + "Eu quero". Never added to
+    // Minha Seleção, same as that product.
+    inquiryNote:
+      "Pensando em pedir vários potinhos do mesmo sabor? Me chama! Dependendo da quantidade, pode valer mais a pena fazer uma sobremesa inteira na forma de aproximadamente 27 × 23 cm — e sair mais em conta. 💛",
+    whatsappInquiryMessage:
+      "Oi! Quero saber mais sobre os sabores do Bolo de Pote — e também sobre a possibilidade de fazer uma sobremesa inteira na forma de aproximadamente 27 × 23 cm em vez de potinhos. 🍰",
+    // Overrides ProductDetailSheet's default WhatsApp-inquiry CTA label
+    // ("Quero ver as opções") — this product's conversation is specifically
+    // about sabores, not a general "options" browse.
+    inquiryButtonLabel: "Quero conversar sobre os sabores",
     experience: {
       teaser: "Colher na mão. Problemas em espera por alguns minutos.",
-      noteLabel: "Entre a gente:",
-      note: "Esse é pra sentar e comer feliz. E não, você não precisa dividir.",
+      // noteLabel/note deliberately absent: the old aside here ("Entre a
+      // gente: Esse é pra sentar e comer feliz...") is removed, not
+      // replaced, per this round's request.
       nextTemptation: { id: "chocobomb", line: "Mas já que hoje é dia de se agradar… você viu o Chocobomb?" },
     },
     photos: [REAL_PHOTOS.boloDePoteCamadas, REAL_PHOTOS.boloDePoteMorango, REAL_PHOTOS.boloDePoteVariedade],
@@ -753,9 +770,14 @@ export const PRODUCTS = [
   {
     id: "brownlito",
     name: "Brownlito",
-    unit: "",
-    price: "Sob consulta 💬",
-    sensory: "",
+    // Commercial review confirmed: $7 cada (unit price), no minimum
+    // confirmed yet — plain free stepper starting at 1, same pattern as
+    // Pirulito de Alfajor (unit price + no minimumQuantity). Recheio
+    // confirmed as Prestígio exclusively for now — no other recheio exists
+    // to offer, so no seletor/optionGroups here (would be a choice of one).
+    unit: "unidade",
+    price: "$7/un",
+    sensory: "Brownie recheado de Prestígio, no palito.",
     kind: "dipped",
     tint: COLORS.ink,
     moments: ["dia-dificil"],
