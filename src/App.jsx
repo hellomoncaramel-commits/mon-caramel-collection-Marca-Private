@@ -103,6 +103,7 @@ export default function App() {
             addToSelection={addToSelection}
             onOpenProduct={openProductDetail}
             onOpenSelection={onGoSelection}
+            onSelect={setScreen}
           />
         )}
 
