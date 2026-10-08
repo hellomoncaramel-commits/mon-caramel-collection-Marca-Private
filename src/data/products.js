@@ -787,8 +787,8 @@ export const PRODUCTS = [
     badges: ["hardTimes", "freezer"],
     experience: {
       teaser: "Dia difícil? Eu não faço perguntas. Só te apresento o Brownlito.",
-      noteLabel: "Amigo das horas difíceis:",
-      note: "Brownie recheado no palito. Preciso explicar mais? 😂",
+      // noteLabel/note deliberately removed per round-13 micro-adjustment —
+      // the main sensory description already covers it, no replacement.
       nextTemptation: { id: "chocobomb", line: "Agora, se você é do time chocolate sem limites, olha o Chocobomb também." },
     },
     // "dia-dificil" gets its own curated gallery — brownlitoEmbalado
