@@ -15,13 +15,17 @@ import Photo from "../shared/Photo";
 // identical combinações (briefing sections 2-4).
 //
 // Photos: real Mon Caramel photography only, reused from what's already
-// in the project — no new images, nothing AI-generated or stock.
-// Caixas/Bandejas reuse the exact same photos (and crops) already
-// approved for these two groups in PresenteEntryScreen.jsx. Festa uses
-// festaOptions[0] — an existing general "mesa de festa" shot (same
-// gallery already used for briganinho-personalizado), chosen because it
-// reads as "doces para festas" broadly rather than one single décor theme
-// (Minnie, Mario, etc.) the way the per-product festa photos do.
+// in the project — no new images, nothing AI-generated or stock, no photo
+// file ever edited. Caixas keeps the exact photo+crop already approved in
+// PresenteEntryScreen.jsx. Bandejas/Festa were swapped after visual review
+// (bandejaMario and festaOptions[0] read as too theme-specific) — both new
+// photos are themselves exactly 4:3, matching this card's own aspect-photo
+// ratio pixel-for-pixel, so a plain object-position crop is a no-op (cover
+// on equal ratios never overflows the box). `photoZoom` on these two is a
+// display-only `transform: scale()` around a chosen `transformOrigin` —
+// zooms toward that point, cropped by the wrapper's overflow-hidden —
+// instead of object-position, since these two sources don't have cover's
+// usual slack to pan in. Never touches the source file.
 const DISCOVERY_CARDS = [
   {
     id: "discover-caixas",
@@ -38,8 +42,11 @@ const DISCOVERY_CARDS = [
     title: "Cestas especiais",
     tagline: "Uma seleção de delícias para surpreender.",
     cta: "Explorar cestas →",
-    photo: REAL_PHOTOS.bandejaMario,
-    photoPosition: "object-[38%_35%]",
+    // bandeja-formatura.jpg — doces (cake pops, donuts, trufas) em foco;
+    // o zoom recorta a faixa de parabéns no topo e a tira de ícones no
+    // rodapé, centrando na faixa de doces do meio.
+    photo: REAL_PHOTOS.bandejaFormatura,
+    photoZoom: { scale: 3.3, origin: "45% 82%" },
   },
   {
     id: "discover-festa",
@@ -47,7 +54,11 @@ const DISCOVERY_CARDS = [
     title: "Doces para festas",
     tagline: "Pequenos detalhes para grandes comemorações.",
     cta: "Explorar festas →",
-    photo: REAL_PHOTOS.festaOptions[0],
+    // mini-donut-festa-torre.jpg — a torre de mini donuts em si; o zoom
+    // recorta as margens cremes das laterais (a foto fonte já tem esse
+    // espaço vazio embutido) e a placa "GOO!" do topo.
+    photo: REAL_PHOTOS.miniDonutFesta[0],
+    photoZoom: { scale: 1.75, origin: "50% 51%" },
   },
 ];
 
@@ -60,14 +71,33 @@ const SCRIM = `linear-gradient(to top, ${COLORS.ink}CC 0%, ${COLORS.ink}4D 50%, 
 function DiscoveryCard({ card, onSelect }) {
   return (
     <button onClick={() => onSelect(card.screen)} className="relative overflow-hidden rounded-2xl aspect-photo w-full text-left group">
-      <Photo
-        src={card.photo}
-        alt=""
-        className={`absolute inset-0 w-full h-full object-cover transition-transform duration-300 lg:group-hover:scale-[1.03]${
-          card.photoPosition ? ` ${card.photoPosition}` : ""
-        }`}
-        loading="lazy"
-      />
+      {/* photoZoom cards get their own crop viewport (absolute +
+          overflow-hidden) so the img's own static `transform: scale()`
+          stays clipped to the card's rounded corners — the group-hover
+          "breathing" scale moves to this wrapper instead of the img itself
+          so the two transforms never collide on the same element.
+          photoPosition cards (object-fit crop only, no resize) don't need
+          any of this and keep the simpler original markup. */}
+      {card.photoZoom ? (
+        <div className="absolute inset-0 overflow-hidden transition-transform duration-300 lg:group-hover:scale-[1.03]">
+          <Photo
+            src={card.photo}
+            alt=""
+            className="w-full h-full object-cover"
+            style={{ transform: `scale(${card.photoZoom.scale})`, transformOrigin: card.photoZoom.origin }}
+            loading="lazy"
+          />
+        </div>
+      ) : (
+        <Photo
+          src={card.photo}
+          alt=""
+          className={`absolute inset-0 w-full h-full object-cover transition-transform duration-300 lg:group-hover:scale-[1.03]${
+            card.photoPosition ? ` ${card.photoPosition}` : ""
+          }`}
+          loading="lazy"
+        />
+      )}
       <div className="absolute inset-0 pointer-events-none" style={{ background: SCRIM }} />
       <div className="absolute left-4 right-4 bottom-3.5">
         <p className="font-display text-lg text-white leading-tight">{card.title}</p>
