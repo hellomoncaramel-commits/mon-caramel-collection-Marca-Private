@@ -100,7 +100,6 @@ export default function App() {
           <CatalogScreen
             onBack={() => setScreen(null)}
             selection={selection}
-            addToSelection={addToSelection}
             onOpenProduct={openProductDetail}
             onOpenSelection={onGoSelection}
             onSelect={setScreen}

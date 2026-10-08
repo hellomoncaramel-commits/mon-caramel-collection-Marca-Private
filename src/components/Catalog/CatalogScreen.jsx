@@ -81,23 +81,20 @@ function DiscoveryCard({ card, onSelect }) {
 // Photo+name together sit inside one real <button> (opens the Detail,
 // same as FeedCard.jsx's own name button) rather than wrapping the whole
 // row in a div[role=button] — keeps the markup to real, non-nested
-// interactive elements. Visually this still reads as "the whole card" set
-// apart from only the small heart affordance, since the button spans the
-// full photo+text area. Favorites heart is a separate, smaller, quieter
-// control next to it — same dual-action logic the old single circle had
-// (customizable → open Detail to choose options; simple products → quick
-// add), just restyled down from a bold bordered circle to a plain icon.
-function ProductRow({ p, added, onOpenProduct, addToSelection }) {
+// interactive elements. Favorites heart is a separate, smaller, quieter
+// control next to it — but it ALWAYS opens the Detail too, exactly like
+// the photo/name button, never a direct addToSelection shortcut. A prior
+// version of this heart quick-added non-customizable products straight to
+// Minha Seleção with qty hardcoded to 1 — silently skipping a real
+// minimumQuantity (e.g. Pão de Mel, mín. 4) for any product not flagged
+// `customizable`, and incorrectly adding Bolo de Pote (a whatsappInquiry-
+// only product, never meant to reach Minha Seleção at all) as a normal
+// cart entry. The Detail sheet is the one place that already knows each
+// product's real flow — configurator, stepper with its real minimum, or
+// the WhatsApp-only CTA — so every entry point here routes through it
+// instead of re-implementing (and risking re-breaking) that logic.
+function ProductRow({ p, added, onOpenProduct }) {
   const photo = defaultPhotos(p)?.[0];
-
-  const handleHeart = (e) => {
-    e.stopPropagation();
-    if (p.customizable) {
-      onOpenProduct?.(p);
-    } else {
-      addToSelection({ kind: "product", productId: p.id, name: p.name, unit: p.unit, qty: 1, flavors: null });
-    }
-  };
 
   return (
     <div
@@ -126,14 +123,8 @@ function ProductRow({ p, added, onOpenProduct, addToSelection }) {
       </button>
       <div className="flex items-center pr-2.5 shrink-0">
         <button
-          onClick={handleHeart}
-          aria-label={
-            p.customizable
-              ? `Ver sabores e opções de ${p.name}`
-              : added
-              ? `${p.name} já está na seleção`
-              : `Adicionar ${p.name} à seleção`
-          }
+          onClick={() => onOpenProduct?.(p)}
+          aria-label={added ? `${p.name} já está na seleção — ver detalhes` : `Ver detalhes de ${p.name}`}
           className="w-9 h-9 rounded-full flex items-center justify-center transition-transform active:scale-90"
         >
           <Heart size={16} strokeWidth={2} color={added ? COLORS.caramelDark : COLORS.muted} fill={added ? COLORS.caramelDark : "none"} />
@@ -149,7 +140,7 @@ function ProductRow({ p, added, onOpenProduct, addToSelection }) {
 // instead of appearing one by one — everything else (including products
 // that are ALSO sold for festas, like Cones Trufados or Chocobomb) keeps
 // its own row exactly as before.
-export default function CatalogScreen({ onBack, selection, addToSelection, onOpenProduct, onOpenSelection, onSelect }) {
+export default function CatalogScreen({ onBack, selection, onOpenProduct, onOpenSelection, onSelect }) {
   const inSelection = (id) => selection.some((it) => it.productId === id);
 
   // "Festa-only" = moments is exactly ["festa"], nothing else — these
@@ -189,7 +180,7 @@ export default function CatalogScreen({ onBack, selection, addToSelection, onOpe
       <div className="space-y-3">
         {rendered.map((item) =>
           item.type === "product" ? (
-            <ProductRow key={item.product.id} p={item.product} added={inSelection(item.product.id)} onOpenProduct={onOpenProduct} addToSelection={addToSelection} />
+            <ProductRow key={item.product.id} p={item.product} added={inSelection(item.product.id)} onOpenProduct={onOpenProduct} />
           ) : (
             <DiscoveryCard key={item.card.id} card={item.card} onSelect={onSelect} />
           )
