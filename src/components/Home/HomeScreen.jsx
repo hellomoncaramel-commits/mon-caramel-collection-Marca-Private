@@ -218,14 +218,9 @@ export default function HomeScreen({ onSelect, onOpenProduct, selection }) {
             products/photos/prices, ProductDetail on tap (same
             openProductDetail App.jsx already uses everywhere else). */}
         <div className="mt-7">
-          <div className="flex items-center justify-between mb-3.5 gap-2">
-            <h2 className="font-display font-medium text-brand-ink whitespace-nowrap" style={{ fontSize: 26 }}>
-              Nossos doces favoritos&nbsp;💛
-            </h2>
-            <button onClick={() => onSelect("catalogo")} className="text-xs font-medium shrink-0" style={{ color: COLORS.caramelDark }}>
-              Ver todos →
-            </button>
-          </div>
+          <h2 className="font-display font-medium text-brand-ink whitespace-nowrap mb-3.5" style={{ fontSize: 26 }}>
+            Nossos doces favoritos&nbsp;💛
+          </h2>
           <div
             ref={dragScroll.ref}
             onPointerDown={dragScroll.onPointerDown}
@@ -245,6 +240,22 @@ export default function HomeScreen({ onSelect, onOpenProduct, selection }) {
               />
             ))}
           </div>
+
+          {/* Moved below the photo strip (was a small top-right text link
+              next to the heading) — that placement left this section's own
+              bottom edge reading as dead space before Footer's own mt-16
+              clearance (App.jsx), since nothing actually sat down here.
+              Centered pill button, same caramel outline language the rest
+              of the app already uses for a secondary (non-primary-CTA)
+              action, now fills that same space on purpose instead of
+              shrinking it artificially. */}
+          <button
+            onClick={() => onSelect("catalogo")}
+            className="mx-auto mt-5 flex items-center justify-center gap-1.5 rounded-full border text-sm font-medium px-6 min-h-11 transition-transform active:scale-95"
+            style={{ borderColor: COLORS.caramelDark, color: COLORS.caramelDark }}
+          >
+            Ver todos os doces →
+          </button>
         </div>
       </div>
 
@@ -314,14 +325,9 @@ export default function HomeScreen({ onSelect, onOpenProduct, selection }) {
           this round beyond reusing the same FavoriteProductCard/
           favoriteProducts the mobile strip above now also uses. */}
       <div className="hidden lg:block" style={{ marginTop: 48 }}>
-        <div className="flex items-end justify-between mb-5">
-          <h2 className="font-display font-medium text-brand-ink" style={{ fontSize: 34 }}>
-            Nossos doces favoritos&nbsp;💛
-          </h2>
-          <button onClick={() => onSelect("catalogo")} className="text-sm font-medium shrink-0" style={{ color: COLORS.caramelDark }}>
-            Ver todos os doces →
-          </button>
-        </div>
+        <h2 className="font-display font-medium text-brand-ink mb-5" style={{ fontSize: 34 }}>
+          Nossos doces favoritos&nbsp;💛
+        </h2>
         <div className="grid grid-cols-4 gap-5">
           {favoriteProducts.map((p) => (
             <button key={p.id} onClick={() => onOpenProduct?.(p)} className="text-left group">
@@ -335,6 +341,19 @@ export default function HomeScreen({ onSelect, onOpenProduct, selection }) {
             </button>
           ))}
         </div>
+
+        {/* Moved below the photo grid (was a small top-right text link next
+            to the heading) — same root cause/fix as the mobile strip above:
+            this placement now occupies the gap that used to sit empty
+            before Footer's own mt-24 clearance (App.jsx), instead of
+            leaving it dead and the link stranded at the top. */}
+        <button
+          onClick={() => onSelect("catalogo")}
+          className="mx-auto mt-8 flex items-center justify-center gap-1.5 rounded-full border text-sm font-medium px-7 min-h-11 transition-transform lg:hover:bg-brand-caramelDark lg:hover:text-white active:scale-95"
+          style={{ borderColor: COLORS.caramelDark, color: COLORS.caramelDark }}
+        >
+          Ver todos os doces →
+        </button>
       </div>
     </div>
   );
