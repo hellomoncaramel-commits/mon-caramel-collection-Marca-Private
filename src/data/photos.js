@@ -113,6 +113,13 @@ export const REAL_PHOTOS = {
   brownlitoInteiro: `${BASE}/brownlito-inteiro.jpg`,
   brownlitoRecheio: `${BASE}/brownlito-recheio.jpg`,
   brownlitoEmbalado: `${BASE}/brownlito-embalado.jpg`,
+  // Pequenos Mimos carousel (Presente → Mimos) — real photos, round 2026-10.
+  // presentinhoDonutsPersonalizado already existed on disk (previously only
+  // referenced by its raw path in data/inspirationGalleries.js); the other
+  // two are new real Mon Caramel photos sent for this round.
+  presentinhoDonutsPersonalizado: `${BASE}/presentinho-donuts-personalizado.jpg`,
+  casadinhoPresente: `${BASE}/casadinho-presente.jpg`,
+  oreoChocobombPersonalizado: `${BASE}/oreo-chocobomb-personalizado.jpg`,
   // Festa-specific contextual galleries (photosByMoment.festa in
   // data/products.js) — decorated/personalized presentations, distinct from
   // each product's day-to-day general photo. Portrait phone photos, fit onto

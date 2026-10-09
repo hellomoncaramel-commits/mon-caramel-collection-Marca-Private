@@ -190,3 +190,79 @@ export const MIMO_INSPIRATIONS = [
     alt: "Mini donuts de chocolate com granulado e etiqueta personalizada.",
   },
 ];
+
+// Pequenos Mimos — the 7 approved inspirations shown by MimosScreen's
+// carousel (round 2026-10), in the exact approved order/text, each a thin
+// pointer to its real product (`productId`, into PRODUCTS) plus its own
+// `name`/`description` kept LOCAL to this carousel on purpose: several of
+// these products are also shown elsewhere (Casadinhos is in Home's
+// favorites strip; Pirulito de Alfajor rotates through the desktop hero),
+// so their shared `name`/`sensory` in data/products.js stay exactly as
+// approved there and are never touched by this round — only Maçã
+// Personalizada's own record was renamed (it had no other surface). Same
+// for `photo`: a couple of entries here point at a different real photo
+// than that product's own `photos[0]` (Casadinhos/Pirulito de Alfajor show
+// a more "mimo gift" presentation shot here), which only changes what
+// this carousel displays, never the product's photo used anywhere else.
+// Clicking a card opens that product's real Detail sheet (MimosScreen
+// passes onOpenProduct) — Brownlito/Casadinhos keep their real prices and
+// normal add-to-selection there; every personalized/no-fixed-price entry
+// already carries `whatsappInquiryMessage` on its product record, so the
+// sheet routes to WhatsApp instead, same mechanism as the rest of the site.
+export const MIMO_SHOWCASE = [
+  {
+    id: "brownlito",
+    productId: "brownlito",
+    name: "Brownlito",
+    description: "Brownie recheado de Prestígio, no palito.",
+    photo: "/images/products/brownlito-inteiro.jpg",
+  },
+  {
+    id: "brownlito-personalizado",
+    productId: "brownlito-personalizado",
+    name: "Brownlito Personalizado",
+    description: "Nosso brownie recheado em uma embalagem especial para cada ocasião.",
+    photo: "/images/products/brownlito-embalado.jpg",
+  },
+  {
+    id: "maca-personalizada",
+    productId: "presentinho-macas",
+    name: "Maçã Personalizada",
+    description: "Uma embalagem criativa recheada de mini maçãs de Fondelle (pasta de leite em pó). Uma doce surpresa!",
+    photo: "/images/products/presentinho-macas.jpg",
+  },
+  {
+    id: "mini-donuts-personalizados",
+    productId: "mini-donuts-personalizados",
+    name: "Mini Donuts Personalizados",
+    description: "Mini donuts em embalagem personalizada pra impressionar.",
+    photo: "/images/products/presentinho-donuts-personalizado.jpg",
+  },
+  {
+    id: "pirulito-de-alfajor",
+    productId: "pirulito-alfajor",
+    name: "Pirulito de Alfajor",
+    description: "Alfajor no palito, coberto com chocolate. Um mimo irresistível!",
+    // Real photo sent for this round — a pirulito-de-alfajor presentation
+    // (round, on a stick) distinct from the product's own everyday photo
+    // (pirulito-alfajor-1.jpg), already on disk before this round.
+    photo: "/images/products/presentinho-folha-laco-vermelho.jpg",
+  },
+  {
+    id: "casadinhos",
+    productId: "casadinho",
+    name: "Casadinhos",
+    description: "Uma sugestão deliciosa pra mimar alguém especial.",
+    // New real photo sent for this round — a gift-bag presentation,
+    // distinct from the product's own everyday photo (casadinho-goiabada.jpg,
+    // unpackaged on a tray) used everywhere else, including Home.
+    photo: "/images/products/casadinho-presente.jpg",
+  },
+  {
+    id: "oreo-chocobomb-personalizado",
+    productId: "oreo-chocobomb-personalizado",
+    name: "Oreo Chocobomb Personalizado",
+    description: "Oreo Chocobomb decorado para qualquer ocasião. Feito pra surpreender!",
+    photo: "/images/products/oreo-chocobomb-personalizado.jpg",
+  },
+];

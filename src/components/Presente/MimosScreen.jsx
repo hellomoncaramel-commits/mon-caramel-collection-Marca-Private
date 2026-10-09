@@ -1,94 +1,105 @@
 import { useMemo } from "react";
-import { Heart, MessageCircle } from "lucide-react";
-import { COLORS } from "../../styles/colors";
+import { ChevronLeft, ChevronRight, Heart } from "lucide-react";
 import { PRODUCTS } from "../../data/products";
-import { defaultPhotos, initialQuantity } from "../../utils/products";
+import { MIMO_SHOWCASE } from "../../data/inspirationGalleries";
+import { useDragScroll } from "../../hooks/useDragScroll";
 import SiteHeader from "../shared/SiteHeader";
 import Photo from "../shared/Photo";
 
-// Same number ProductDetailSheet.jsx/Footer.jsx/SendModal.jsx already link
-// to — each file keeps its own local copy per that established convention.
-const WHATSAPP_DIGITS = "16473768064";
-
-// A single, compact card — photo, name, short line, price, CTA. No
-// quantity/flavor picker (these are "combinação personalizada" items, one
-// of each), no border/shadow (same photo-forward finish as the rest of
-// this round's polish pass).
-//
-// Most Pequenos Mimos are "Sob consulta" (price/composition set in
-// conversation, not a fixed SKU) and carry `whatsappInquiryMessage` — for
-// those, the CTA opens WhatsApp directly, never addToSelection. A prior
-// version called onAdd unconditionally for every card here regardless of
-// this flag, which silently added Sob-consulta mimos as qty-1/no-price
-// entries to Minha Seleção — exactly the bug this round fixes. But this
-// group also has real, fixed-price products (e.g. Brownlito, also tagged
-// presenteGroup: "mimos") — those keep the original quick-add button,
-// using `initialQuantity` so a real minimumQuantity (if one is ever set)
-// is respected instead of a hardcoded qty 1.
-function MimoCard({ p, added, onAdd }) {
-  const photo = defaultPhotos(p)?.[0];
-  const isInquiry = !!p.whatsappInquiryMessage;
-
+// One slide — photo as protagonist, name + short approved description
+// below, no price/button on the card itself (briefing: "evitar repetição
+// de botões, preços e textos comerciais na apresentação inicial"). The
+// whole card is the tap target, same "whole row/card opens Detail" ethos
+// CatalogScreen's ProductRow already uses — clicking opens that mimo's
+// real product in the standard Detail sheet, which already knows whether
+// to show the WhatsApp inquiry CTA or the normal add-to-selection flow
+// (via whatsappInquiryMessage on the product record), so this component
+// never needs its own routing logic.
+function MimoSlide({ item, product, onOpen, widthClassName }) {
+  if (!product) return null;
   return (
-    <div className="flex flex-col">
+    <button
+      onClick={() => onOpen(product)}
+      className={`text-left shrink-0 snap-start transition-transform duration-200 lg:hover:scale-[1.02] active:scale-[0.98] ${widthClassName}`}
+    >
       <div className="relative aspect-photo rounded-3xl overflow-hidden bg-brand-subtle">
-        {photo && <Photo src={photo} alt={p.name} className="w-full h-full object-cover" loading="lazy" />}
+        <Photo src={item.photo} alt={item.name} className="w-full h-full object-cover" loading="lazy" />
       </div>
-      <div className="pt-3 flex flex-col flex-1">
-        <h3 className="font-display text-base text-brand-ink leading-tight">{p.name}</h3>
-        <p className="text-xs mt-1 leading-relaxed text-brand-inkSoft flex-1">{p.sensory}</p>
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5 mt-2.5">
-          <span className="text-xs font-medium text-brand-caramelDark">{p.price}</span>
-          {isInquiry ? (
-            <a
-              href={`https://wa.me/${WHATSAPP_DIGITS}?text=${encodeURIComponent(p.whatsappInquiryMessage)}`}
-              target="_blank"
-              rel="noreferrer"
-              className="shrink-0 text-xs font-medium rounded-full px-3 min-h-11 inline-flex items-center gap-1.5 transition-transform active:scale-95"
-              style={{ backgroundColor: `${COLORS.caramelDark}15`, color: COLORS.caramelDark }}
-            >
-              <MessageCircle size={12} />
-              Perguntar no WhatsApp
-            </a>
-          ) : (
-            <button
-              onClick={() => onAdd(p)}
-              className="shrink-0 text-xs font-medium rounded-full px-3 min-h-11 inline-flex items-center gap-1.5 transition-transform active:scale-95"
-              style={{
-                backgroundColor: added ? COLORS.caramelDark : `${COLORS.caramelDark}15`,
-                color: added ? "white" : COLORS.caramelDark,
-              }}
-            >
-              <Heart size={12} fill={added ? "white" : "none"} />
-              {added ? "Adicionado ✓" : "Quero esse"}
-            </button>
-          )}
-        </div>
-      </div>
-    </div>
+      <p className="font-display text-base text-brand-ink leading-tight mt-3">{item.name}</p>
+      <p className="text-xs mt-1 leading-relaxed text-brand-inkSoft">{item.description}</p>
+    </button>
   );
 }
 
-// Pequenos Mimos are real products (see presenteGroup: "mimos" in
-// data/products.js) — unlike Caixas/Bandejas, there's no custom wizard
-// here, so this reads closer to a small catalog than to the "inspiration
-// as protagonist" carousel those two use.
-export default function MimosScreen({ onBack, selection, addToSelection, onGoSelection }) {
-  const products = useMemo(() => PRODUCTS.filter((p) => p.presenteGroup === "mimos"), []);
+// Pequenos Mimos — a horizontal carousel of inspirations (7 approved
+// items, round 2026-10), replacing the old grid-of-cards-with-buttons.
+// Mobile: native horizontal snap-scroll, next card peeking at the edge.
+// Desktop: same scroll-strip mechanism (so all 7 stay reachable, unlike a
+// static grid that would just wrap to a second row and stop being a
+// carousel), widened cards + click-and-drag via useDragScroll (same
+// pattern as Home's "Nossos doces favoritos" strip) plus small chevron
+// buttons borrowed from InspirationCarousel's own for discoverability —
+// reusing both of the site's existing carousel mechanics rather than
+// inventing a third visual style.
+export default function MimosScreen({ onBack, onOpenProduct, onGoSelection, selection }) {
+  const productsById = useMemo(() => new Map(PRODUCTS.map((p) => [p.id, p])), []);
+  const dragScroll = useDragScroll();
 
-  const isAdded = (p) => selection.some((it) => it.kind === "product" && it.productId === p.id);
-  const add = (p) => addToSelection({ kind: "product", productId: p.id, name: p.name, unit: p.unit, qty: initialQuantity(p), flavors: null });
+  const scrollBy = (dir) => {
+    const el = dragScroll.ref.current;
+    if (!el) return;
+    const card = el.querySelector(":scope > button");
+    const step = card ? card.offsetWidth + 16 : 300;
+    el.scrollBy({ left: dir * step, behavior: window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+  };
 
   return (
-    <div className="max-w-xl md:max-w-3xl lg:max-w-5xl xl:max-w-6xl mx-auto px-gutter lg:px-8 xl:px-12 pt-2 pb-10 fade-up">
+    <div className="max-w-xl md:max-w-3xl lg:max-w-6xl mx-auto px-gutter lg:px-8 xl:px-12 pt-2 pb-10 fade-up">
       <SiteHeader onBack={onBack} />
       <h1 className="mc-page-title">Pequenos mimos 💛</h1>
-      <p className="mc-page-subtitle">Um jeitinho pequeno de fazer alguém sorrir.</p>
+      <p className="mc-page-subtitle">Um jeitinho pequeno de fazer alguém sorrir — toque numa ideia pra consultar ou escolher.</p>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mt-6">
-        {products.map((p) => (
-          <MimoCard key={p.id} p={p} added={isAdded(p)} onAdd={add} />
-        ))}
+      <div className="relative mt-6">
+        <div
+          ref={dragScroll.ref}
+          onPointerDown={dragScroll.onPointerDown}
+          onPointerMove={dragScroll.onPointerMove}
+          onPointerUp={dragScroll.onPointerUp}
+          onPointerLeave={dragScroll.onPointerLeave}
+          onClickCapture={dragScroll.onClickCapture}
+          role="region"
+          aria-label="Inspirações de Pequenos Mimos"
+          className={`flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory -mx-gutter px-gutter lg:mx-0 lg:px-0 ${dragScroll.className}`}
+        >
+          {MIMO_SHOWCASE.map((item) => (
+            <MimoSlide
+              key={item.id}
+              item={item}
+              product={productsById.get(item.productId)}
+              onOpen={(p) => onOpenProduct(p)}
+              widthClassName="w-[78vw] max-w-[320px] lg:w-[280px]"
+            />
+          ))}
+        </div>
+
+        {/* Desktop-only chevrons — same small floating-button treatment as
+            InspirationCarousel's own prev/next, just not disabled-aware
+            (this is a free-scroll strip, not a snap-to-index carousel with
+            a fixed slide count to clamp against). */}
+        <button
+          onClick={() => scrollBy(-1)}
+          aria-label="Ver mimos anteriores"
+          className="hidden lg:flex absolute top-[calc(50%-20px)] -translate-y-1/2 -left-5 w-11 h-11 rounded-full bg-white shadow-md items-center justify-center"
+        >
+          <ChevronLeft size={18} className="text-brand-ink" />
+        </button>
+        <button
+          onClick={() => scrollBy(1)}
+          aria-label="Ver mais mimos"
+          className="hidden lg:flex absolute top-[calc(50%-20px)] -translate-y-1/2 -right-5 w-11 h-11 rounded-full bg-white shadow-md items-center justify-center"
+        >
+          <ChevronRight size={18} className="text-brand-ink" />
+        </button>
       </div>
 
       {selection.length > 0 && (
