@@ -77,7 +77,20 @@ function EntryCard({ it, product, onRemove }) {
                 ))}
               </ul>
             )}
-            {price != null && <p className="text-xs mt-1 font-medium text-brand-caramelDark">${price.toFixed(2)}</p>}
+            {/* A null price here never means "free" or "not loaded yet" —
+                it means this entry's price was never resolved (either the
+                live product is genuinely "Sob consulta", or this is a
+                legacy entry saved to localStorage before that product's
+                commercial data existed). Label it explicitly instead of
+                silently showing nothing, so it never reads as a settled
+                $0 item — same spirit as computeSubtotal's own `complete`
+                flag (pricing.js), just surfaced per-line instead of as a
+                grand total (which this screen doesn't show at all). */}
+            {price != null ? (
+              <p className="text-xs mt-1 font-medium text-brand-caramelDark">${price.toFixed(2)}</p>
+            ) : (
+              <p className="text-xs mt-1 font-medium text-brand-caramelDark">{product?.price || "Sob consulta 💬"}</p>
+            )}
           </>
         )}
 
@@ -178,7 +191,7 @@ export default function SelectionScreen({ selection, removeFromSelection, onBack
             <p className="text-sm text-brand-inkSoft mb-3.5">Chama a gente no WhatsApp pra finalizar — a gente cuida do resto daqui.</p>
             <div className="flex flex-col gap-2">
               <button
-                onClick={() => onSend(buildSelectionMessage(selection))}
+                onClick={() => onSend(buildSelectionMessage(selection, productsById))}
                 className="w-full text-sm font-medium text-white bg-brand-caramelDark rounded-full py-3 flex items-center justify-center gap-2 transition-transform active:scale-95"
               >
                 <MessageCircle size={15} />

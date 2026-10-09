@@ -1,6 +1,10 @@
+import { parsePrice } from "./pricing";
+
 // One line (or small block) of the WhatsApp message per selection entry —
-// shape depends on entry.kind (see utils/selectionKey.js).
-function describeEntry(it) {
+// shape depends on entry.kind (see utils/selectionKey.js). `productsById`
+// is the live PRODUCTS lookup (Map), passed down from buildSelectionMessage
+// — used only to flag entries whose price was never resolved.
+function describeEntry(it, productsById) {
   if (!it.kind || it.kind === "product") {
     // Package-priced products (Brigadeiro, Casadinho, Sequilho) describe
     // themselves by their chosen package label ("24 brigadeiros", "500g")
@@ -14,15 +18,27 @@ function describeEntry(it) {
       : it.singleItem
       ? `${it.name}${it.unit ? ` (${it.unit})` : ""}`
       : `${it.qty ? it.qty + " " : ""}${it.name}${it.unit ? ` (${it.unit})` : ""}`;
+
+    // A package entry already carries its own confirmed price (packageLabel/
+    // packagePrice), never "Sob consulta" regardless of the live product's
+    // own (stale/unused) `price` field. Everything else is flagged when the
+    // live product's price isn't a clean, resolved number — covers both a
+    // genuinely "Sob consulta" product and a legacy entry saved to
+    // localStorage before that product had real commercial data — so the
+    // message never implies a fixed total for an item that still needs a
+    // price conversation.
+    const needsConsult = !it.packageLabel && parsePrice(productsById?.get(it.productId)?.price) == null;
+    const headLine = needsConsult ? `${head} — Sob consulta 💬` : head;
+
     if (it.flavors && it.flavors.length > 0) {
       const sub = it.flavors.map((f) => `   • ${f.qty} ${f.name}`).join("\n");
-      return `${head}\n${sub}`;
+      return `${headLine}\n${sub}`;
     }
     if (it.options && it.options.length > 0) {
       const sub = it.options.map((o) => `   • ${o.label}: ${o.value}`).join("\n");
-      return `${head}\n${sub}`;
+      return `${headLine}\n${sub}`;
     }
-    return head;
+    return headLine;
   }
   if (it.kind === "inspiration") {
     return `📌 Referência que gostei: ${it.title}`;
@@ -45,8 +61,10 @@ function describeEntry(it) {
 
 // Builds the WhatsApp message from the shared "Minha Seleção", used by
 // every screen (catálogo, cada momento, presentes, tela de seleção).
-export function buildSelectionMessage(selection) {
-  const lines = selection.map(describeEntry);
+// `productsById` (Map, productId -> product) is optional but should always
+// be passed by real callers — see describeEntry's own comment on why.
+export function buildSelectionMessage(selection, productsById) {
+  const lines = selection.map((it) => describeEntry(it, productsById));
   return `Oi! Essa é minha seleção pela Mon Caramel Collection ✨\n\n${lines.join(
     "\n\n"
   )}\n\nPodem confirmar disponibilidade, personalização e valores?`;
