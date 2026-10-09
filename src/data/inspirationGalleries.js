@@ -209,6 +209,14 @@ export const MIMO_INSPIRATIONS = [
 // normal add-to-selection there; every personalized/no-fixed-price entry
 // already carries `whatsappInquiryMessage` on its product record, so the
 // sheet routes to WhatsApp instead, same mechanism as the rest of the site.
+//
+// `objectPosition` (optional, CSS `object-position` value) — every one of
+// these source photos is a real, vertically-shot phone photo (portrait)
+// being fit into the carousel's landscape 4:3 card frame via object-cover;
+// a plain center crop clips the ribbon or the treat's own face on several
+// of them (visually verified during the 2026-10 review round). Set only on
+// the entries where the default center crop actually cuts something that
+// matters — every other card already reads fine at the default.
 export const MIMO_SHOWCASE = [
   {
     id: "brownlito",
@@ -216,6 +224,11 @@ export const MIMO_SHOWCASE = [
     name: "Brownlito",
     description: "Brownie recheado de Prestígio, no palito.",
     photo: "/images/products/brownlito-inteiro.jpg",
+    // Default center crop clipped the ribbon bow at the very top and the
+    // front brownlito's own tip at the bottom; shifted down to keep the
+    // whole front treat in frame (the clear protagonist) while still
+    // showing the ribbon above it.
+    objectPosition: "center 65%",
   },
   {
     id: "brownlito-personalizado",
@@ -223,6 +236,10 @@ export const MIMO_SHOWCASE = [
     name: "Brownlito Personalizado",
     description: "Nosso brownie recheado em uma embalagem especial para cada ocasião.",
     photo: "/images/products/brownlito-embalado.jpg",
+    // Default center crop cut the gold ribbon bows off at the bottom edge —
+    // shifted down to reveal them fully, trimming empty table at the top
+    // instead.
+    objectPosition: "center 75%",
   },
   {
     id: "maca-personalizada",
@@ -247,6 +264,10 @@ export const MIMO_SHOWCASE = [
     // (round, on a stick) distinct from the product's own everyday photo
     // (pirulito-alfajor-1.jpg), already on disk before this round.
     photo: "/images/products/presentinho-folha-laco-vermelho.jpg",
+    // Default center crop showed the ribbon bow but cut off the treat's own
+    // face (the maple-leaf decoration — the whole point of this photo) at
+    // the bottom edge. Shifted down to keep both in frame.
+    objectPosition: "center 72%",
   },
   {
     id: "casadinhos",
@@ -255,14 +276,28 @@ export const MIMO_SHOWCASE = [
     description: "Uma sugestão deliciosa pra mimar alguém especial.",
     // New real photo sent for this round — a gift-bag presentation,
     // distinct from the product's own everyday photo (casadinho-goiabada.jpg,
-    // unpackaged on a tray) used everywhere else, including Home.
+    // unpackaged on a tray) used everywhere else, including Home. Was
+    // rotated 90° in its generated .webp (EXIF orientation lost during
+    // conversion) — fixed at the source (both .jpg and .webp now carry the
+    // correct pixel orientation, no crop/quality change).
     photo: "/images/products/casadinho-presente.jpg",
+    // Default center crop cut the "MON CARAMEL" sticker off at the bottom —
+    // shifted down to reveal it fully.
+    objectPosition: "center 65%",
   },
   {
     id: "oreo-chocobomb-personalizado",
     productId: "oreo-chocobomb-personalizado",
     name: "Oreo Chocobomb Personalizado",
     description: "Oreo Chocobomb decorado para qualquer ocasião. Feito pra surpreender!",
-    photo: "/images/products/oreo-chocobomb-personalizado.jpg",
+    // Corrected mapping (2026-10 review): the photo previously used here
+    // (oreo-chocobomb-personalizado.jpg, a back-to-school themed cone) turned
+    // out to show a rectangular bar-shaped treat, not a round Oreo
+    // Chocobomb — wrong product shape. Replaced with a real, already-on-disk
+    // photo of an actual round Chocobomb (from the Chocobomb festa gallery,
+    // decorated for Valentine's) — same file products.js now points
+    // oreo-chocobomb-personalizado's own `photos` at, so the carousel card
+    // and its Detail sheet show the same correct photo.
+    photo: "/images/products/chocobomb-festa-coracao-par.jpg",
   },
 ];

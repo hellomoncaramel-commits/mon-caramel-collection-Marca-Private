@@ -119,7 +119,15 @@ export const REAL_PHOTOS = {
   // two are new real Mon Caramel photos sent for this round.
   presentinhoDonutsPersonalizado: `${BASE}/presentinho-donuts-personalizado.jpg`,
   casadinhoPresente: `${BASE}/casadinho-presente.jpg`,
+  // oreo-chocobomb-personalizado.jpg (the back-to-school themed photo) turned
+  // out to show a rectangular bar-shaped treat, not a round Oreo Chocobomb —
+  // wrong product shape entirely (caught in the 2026-10 visual review). Kept
+  // on disk (real photo, may be useful for a different mimo later) but no
+  // longer referenced — chocobombFestaCoracaoPar below replaces it as the
+  // real Oreo Chocobomb Personalizado photo (round shape confirmed, already
+  // an existing real photo, reused from the Chocobomb festa gallery).
   oreoChocobombPersonalizado: `${BASE}/oreo-chocobomb-personalizado.jpg`,
+  chocobombFestaCoracaoPar: `${BASE}/chocobomb-festa-coracao-par.jpg`,
   // Festa-specific contextual galleries (photosByMoment.festa in
   // data/products.js) — decorated/personalized presentations, distinct from
   // each product's day-to-day general photo. Portrait phone photos, fit onto

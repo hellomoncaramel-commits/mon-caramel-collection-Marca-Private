@@ -1090,7 +1090,10 @@ export const PRODUCTS = [
     tint: COLORS.caramelLight,
     moments: ["presente"],
     presenteGroup: "mimos",
-    photos: [REAL_PHOTOS.oreoChocobombPersonalizado],
+    // Real round Chocobomb shape (reused from the Chocobomb festa gallery —
+    // see photos.js's comment on REAL_PHOTOS.oreoChocobombPersonalizado for
+    // why that one isn't used here: wrong product shape, caught in review).
+    photos: [REAL_PHOTOS.chocobombFestaCoracaoPar],
   },
   {
     id: "presentinho-variedade",

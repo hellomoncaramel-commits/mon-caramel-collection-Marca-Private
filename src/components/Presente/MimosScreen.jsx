@@ -23,7 +23,13 @@ function MimoSlide({ item, product, onOpen, widthClassName }) {
       className={`text-left shrink-0 snap-start transition-transform duration-200 lg:hover:scale-[1.02] active:scale-[0.98] ${widthClassName}`}
     >
       <div className="relative aspect-photo rounded-3xl overflow-hidden bg-brand-subtle">
-        <Photo src={item.photo} alt={item.name} className="w-full h-full object-cover" loading="lazy" />
+        <Photo
+          src={item.photo}
+          alt={item.name}
+          className="w-full h-full object-cover"
+          style={item.objectPosition ? { objectPosition: item.objectPosition } : undefined}
+          loading="lazy"
+        />
       </div>
       <p className="font-display text-base text-brand-ink leading-tight mt-3">{item.name}</p>
       <p className="text-xs mt-1 leading-relaxed text-brand-inkSoft">{item.description}</p>
@@ -57,7 +63,7 @@ export default function MimosScreen({ onBack, onOpenProduct, onGoSelection, sele
     <div className="max-w-xl md:max-w-3xl lg:max-w-6xl mx-auto px-gutter lg:px-8 xl:px-12 pt-2 pb-10 fade-up">
       <SiteHeader onBack={onBack} />
       <h1 className="mc-page-title">Pequenos mimos 💛</h1>
-      <p className="mc-page-subtitle">Um jeitinho pequeno de fazer alguém sorrir — toque numa ideia pra consultar ou escolher.</p>
+      <p className="mc-page-subtitle">Pequenos detalhes que transformam qualquer ocasião em um momento especial.</p>
 
       <div className="relative mt-6">
         <div
