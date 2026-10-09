@@ -17,15 +17,16 @@ import Photo from "../shared/Photo";
 // Photos: real Mon Caramel photography only, reused from what's already
 // in the project — no new images, nothing AI-generated or stock, no photo
 // file ever edited. Caixas keeps the exact photo+crop already approved in
-// PresenteEntryScreen.jsx. Bandejas/Festa were swapped after visual review
-// (bandejaMario and festaOptions[0] read as too theme-specific) — both new
-// photos are themselves exactly 4:3, matching this card's own aspect-photo
-// ratio pixel-for-pixel, so a plain object-position crop is a no-op (cover
-// on equal ratios never overflows the box). `photoZoom` on these two is a
-// display-only `transform: scale()` around a chosen `transformOrigin` —
-// zooms toward that point, cropped by the wrapper's overflow-hidden —
-// instead of object-position, since these two sources don't have cover's
-// usual slack to pan in. Never touches the source file.
+// PresenteEntryScreen.jsx. Bandejas is back to bandejaMario (see its own
+// comment below). Festa was swapped after visual review (festaOptions[0]
+// read as too generic/didn't convey "comemoração") — miniDonutFesta[0] is
+// itself exactly 4:3, matching this card's own aspect-photo ratio pixel-
+// for-pixel, so a plain object-position crop is a no-op (cover on equal
+// ratios never overflows the box). Its `photoZoom` is a display-only
+// `transform: scale()` around a chosen `transformOrigin` — zooms toward
+// that point, cropped by the wrapper's overflow-hidden — instead of
+// object-position, since that source doesn't have cover's usual slack to
+// pan in. Never touches the source file.
 const DISCOVERY_CARDS = [
   {
     id: "discover-caixas",
@@ -42,11 +43,14 @@ const DISCOVERY_CARDS = [
     title: "Cestas especiais",
     tagline: "Uma seleção de delícias para surpreender.",
     cta: "Explorar cestas →",
-    // bandeja-formatura.jpg — doces (cake pops, donuts, trufas) em foco;
-    // o zoom recorta a faixa de parabéns no topo e a tira de ícones no
-    // rodapé, centrando na faixa de doces do meio.
-    photo: REAL_PHOTOS.bandejaFormatura,
-    photoZoom: { scale: 3.3, origin: "45% 82%" },
+    // bandeja-mario.jpg, de volta — a troca anterior para bandeja-
+    // formatura.jpg (com zoom pesado pra recortar a faixa de texto) saiu
+    // desfocada e mostrava só um detalhe ampliado, não a cesta como um
+    // todo. Esta foto já é exatamente 4:3, igual à proporção do card
+    // (aspect-photo), então object-fit:cover nela é um no-op — nenhum
+    // recorte, a composição inteira (balões, cartão, docinhos) aparece
+    // sem zoom e na resolução original.
+    photo: REAL_PHOTOS.bandejaMario,
   },
   {
     id: "discover-festa",

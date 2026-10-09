@@ -9,14 +9,18 @@ import ProductArt from "../shared/ProductArt";
 // product detail sheet (progressive disclosure, per the brief). "+" is a
 // one-tap quick add for products that don't need any configuring —
 // customizable ones open the detail sheet instead, since they need a
-// flavor choice before they can be added.
+// flavor choice before they can be added. Same for any "Sob consulta"
+// product (whatsappInquiryMessage set): it has no real price/qty to quick-
+// add, so this also routes to the Detail sheet, which already knows to
+// show the WhatsApp-only CTA instead of a stepper — never addToSelection
+// with qty 1 and an undefined price.
 export default function FeedCard({ product, isAdded, onQuickAdd, onOpen }) {
   const photos = defaultPhotos(product);
-  const isCustomizable = product.customizable === true;
+  const needsDetail = product.customizable === true || !!product.whatsappInquiryMessage;
 
   const handleQuickAdd = (e) => {
     e.stopPropagation();
-    if (isCustomizable) {
+    if (needsDetail) {
       onOpen(product);
       return;
     }

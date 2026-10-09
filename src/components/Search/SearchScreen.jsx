@@ -64,7 +64,11 @@ function matchesQuery(product, queryWords) {
 // the row to open the product, tap the circle to quick-add.
 function ResultRow({ p, isAdded, onQuickAdd, onOpen }) {
   const photo = defaultPhotos(p)?.[0];
-  const isCustomizable = p.customizable === true;
+  // Same "Sob consulta" guard as FeedCard.jsx: a product with
+  // whatsappInquiryMessage has no real price/qty to quick-add, so the "+"
+  // routes to Detail too, which shows the WhatsApp-only CTA instead of a
+  // stepper — never addToSelection with qty 1 and an undefined price.
+  const needsDetail = p.customizable === true || !!p.whatsappInquiryMessage;
 
   return (
     <div
@@ -91,7 +95,7 @@ function ResultRow({ p, isAdded, onQuickAdd, onOpen }) {
         type="button"
         onClick={(e) => {
           e.stopPropagation();
-          if (isCustomizable) onOpen(p);
+          if (needsDetail) onOpen(p);
           else onQuickAdd(p, initialQuantity(p));
         }}
         aria-label={isAdded ? `${p.name} já está na seleção` : `Adicionar ${p.name} à seleção`}

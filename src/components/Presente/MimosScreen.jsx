@@ -1,17 +1,33 @@
 import { useMemo } from "react";
-import { Heart } from "lucide-react";
+import { Heart, MessageCircle } from "lucide-react";
 import { COLORS } from "../../styles/colors";
 import { PRODUCTS } from "../../data/products";
-import { defaultPhotos } from "../../utils/products";
+import { defaultPhotos, initialQuantity } from "../../utils/products";
 import SiteHeader from "../shared/SiteHeader";
 import Photo from "../shared/Photo";
 
-// A single, compact card — photo, name, short line, price, quick-add. No
+// Same number ProductDetailSheet.jsx/Footer.jsx/SendModal.jsx already link
+// to — each file keeps its own local copy per that established convention.
+const WHATSAPP_DIGITS = "16473768064";
+
+// A single, compact card — photo, name, short line, price, CTA. No
 // quantity/flavor picker (these are "combinação personalizada" items, one
 // of each), no border/shadow (same photo-forward finish as the rest of
 // this round's polish pass).
+//
+// Most Pequenos Mimos are "Sob consulta" (price/composition set in
+// conversation, not a fixed SKU) and carry `whatsappInquiryMessage` — for
+// those, the CTA opens WhatsApp directly, never addToSelection. A prior
+// version called onAdd unconditionally for every card here regardless of
+// this flag, which silently added Sob-consulta mimos as qty-1/no-price
+// entries to Minha Seleção — exactly the bug this round fixes. But this
+// group also has real, fixed-price products (e.g. Brownlito, also tagged
+// presenteGroup: "mimos") — those keep the original quick-add button,
+// using `initialQuantity` so a real minimumQuantity (if one is ever set)
+// is respected instead of a hardcoded qty 1.
 function MimoCard({ p, added, onAdd }) {
   const photo = defaultPhotos(p)?.[0];
+  const isInquiry = !!p.whatsappInquiryMessage;
 
   return (
     <div className="flex flex-col">
@@ -23,32 +39,45 @@ function MimoCard({ p, added, onAdd }) {
         <p className="text-xs mt-1 leading-relaxed text-brand-inkSoft flex-1">{p.sensory}</p>
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5 mt-2.5">
           <span className="text-xs font-medium text-brand-caramelDark">{p.price}</span>
-          <button
-            onClick={() => onAdd(p)}
-            className="shrink-0 text-xs font-medium rounded-full px-3 min-h-11 inline-flex items-center gap-1.5 transition-transform active:scale-95"
-            style={{
-              backgroundColor: added ? COLORS.caramelDark : `${COLORS.caramelDark}15`,
-              color: added ? "white" : COLORS.caramelDark,
-            }}
-          >
-            <Heart size={12} fill={added ? "white" : "none"} />
-            {added ? "Adicionado ✓" : "Quero esse"}
-          </button>
+          {isInquiry ? (
+            <a
+              href={`https://wa.me/${WHATSAPP_DIGITS}?text=${encodeURIComponent(p.whatsappInquiryMessage)}`}
+              target="_blank"
+              rel="noreferrer"
+              className="shrink-0 text-xs font-medium rounded-full px-3 min-h-11 inline-flex items-center gap-1.5 transition-transform active:scale-95"
+              style={{ backgroundColor: `${COLORS.caramelDark}15`, color: COLORS.caramelDark }}
+            >
+              <MessageCircle size={12} />
+              Perguntar no WhatsApp
+            </a>
+          ) : (
+            <button
+              onClick={() => onAdd(p)}
+              className="shrink-0 text-xs font-medium rounded-full px-3 min-h-11 inline-flex items-center gap-1.5 transition-transform active:scale-95"
+              style={{
+                backgroundColor: added ? COLORS.caramelDark : `${COLORS.caramelDark}15`,
+                color: added ? "white" : COLORS.caramelDark,
+              }}
+            >
+              <Heart size={12} fill={added ? "white" : "none"} />
+              {added ? "Adicionado ✓" : "Quero esse"}
+            </button>
+          )}
         </div>
       </div>
     </div>
   );
 }
 
-// Pequenos Mimos are real, individually-selectable products (see
-// presenteGroup: "mimos" in data/products.js) — unlike Caixas/Bandejas,
-// there's no custom wizard here, so this reads closer to a small catalog
-// than to the "inspiration as protagonist" carousel those two use.
+// Pequenos Mimos are real products (see presenteGroup: "mimos" in
+// data/products.js) — unlike Caixas/Bandejas, there's no custom wizard
+// here, so this reads closer to a small catalog than to the "inspiration
+// as protagonist" carousel those two use.
 export default function MimosScreen({ onBack, selection, addToSelection, onGoSelection }) {
   const products = useMemo(() => PRODUCTS.filter((p) => p.presenteGroup === "mimos"), []);
 
   const isAdded = (p) => selection.some((it) => it.kind === "product" && it.productId === p.id);
-  const add = (p) => addToSelection({ kind: "product", productId: p.id, name: p.name, unit: p.unit, qty: 1, flavors: null });
+  const add = (p) => addToSelection({ kind: "product", productId: p.id, name: p.name, unit: p.unit, qty: initialQuantity(p), flavors: null });
 
   return (
     <div className="max-w-xl md:max-w-3xl lg:max-w-5xl xl:max-w-6xl mx-auto px-gutter lg:px-8 xl:px-12 pt-2 pb-10 fade-up">
