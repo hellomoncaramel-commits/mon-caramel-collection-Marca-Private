@@ -130,7 +130,7 @@ export default function App() {
           <MimosScreen
             onBack={() => setScreen("presente")}
             selection={selection}
-            addToSelection={addToSelection}
+            onOpenProduct={openProductDetail}
             onGoSelection={onGoSelection}
           />
         )}

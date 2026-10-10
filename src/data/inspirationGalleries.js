@@ -190,3 +190,114 @@ export const MIMO_INSPIRATIONS = [
     alt: "Mini donuts de chocolate com granulado e etiqueta personalizada.",
   },
 ];
+
+// Pequenos Mimos — the 7 approved inspirations shown by MimosScreen's
+// carousel (round 2026-10), in the exact approved order/text, each a thin
+// pointer to its real product (`productId`, into PRODUCTS) plus its own
+// `name`/`description` kept LOCAL to this carousel on purpose: several of
+// these products are also shown elsewhere (Casadinhos is in Home's
+// favorites strip; Pirulito de Alfajor rotates through the desktop hero),
+// so their shared `name`/`sensory` in data/products.js stay exactly as
+// approved there and are never touched by this round — only Maçã
+// Personalizada's own record was renamed (it had no other surface). Same
+// for `photo`: a couple of entries here point at a different real photo
+// than that product's own `photos[0]` (Casadinhos/Pirulito de Alfajor show
+// a more "mimo gift" presentation shot here), which only changes what
+// this carousel displays, never the product's photo used anywhere else.
+// Clicking a card opens that product's real Detail sheet (MimosScreen
+// passes onOpenProduct) — Brownlito/Casadinhos keep their real prices and
+// normal add-to-selection there; every personalized/no-fixed-price entry
+// already carries `whatsappInquiryMessage` on its product record, so the
+// sheet routes to WhatsApp instead, same mechanism as the rest of the site.
+//
+// `objectPosition` (optional, CSS `object-position` value) — every one of
+// these source photos is a real, vertically-shot phone photo (portrait)
+// being fit into the carousel's landscape 4:3 card frame via object-cover;
+// a plain center crop clips the ribbon or the treat's own face on several
+// of them (visually verified during the 2026-10 review round). Set only on
+// the entries where the default center crop actually cuts something that
+// matters — every other card already reads fine at the default.
+export const MIMO_SHOWCASE = [
+  {
+    id: "brownlito",
+    productId: "brownlito",
+    name: "Brownlito",
+    description: "Brownie recheado de Prestígio, no palito.",
+    photo: "/images/products/brownlito-inteiro.jpg",
+    // Default center crop clipped the ribbon bow at the very top and the
+    // front brownlito's own tip at the bottom; shifted down to keep the
+    // whole front treat in frame (the clear protagonist) while still
+    // showing the ribbon above it.
+    objectPosition: "center 65%",
+  },
+  {
+    id: "brownlito-personalizado",
+    productId: "brownlito-personalizado",
+    name: "Brownlito Personalizado",
+    description: "Nosso brownie recheado em uma embalagem especial para cada ocasião.",
+    photo: "/images/products/brownlito-embalado.jpg",
+    // Default center crop cut the gold ribbon bows off at the bottom edge —
+    // shifted down to reveal them fully, trimming empty table at the top
+    // instead.
+    objectPosition: "center 75%",
+  },
+  {
+    id: "maca-personalizada",
+    productId: "presentinho-macas",
+    name: "Maçã Personalizada",
+    description: "Uma embalagem criativa recheada de mini maçãs de Fondelle (pasta de leite em pó). Uma doce surpresa!",
+    photo: "/images/products/presentinho-macas.jpg",
+  },
+  {
+    id: "mini-donuts-personalizados",
+    productId: "mini-donuts-personalizados",
+    name: "Mini Donuts Personalizados",
+    description: "Mini donuts em embalagem personalizada pra impressionar.",
+    photo: "/images/products/presentinho-donuts-personalizado.jpg",
+  },
+  {
+    id: "pirulito-de-alfajor",
+    productId: "pirulito-alfajor",
+    name: "Pirulito de Alfajor",
+    description: "Alfajor no palito, coberto com chocolate. Um mimo irresistível!",
+    // Real photo sent for this round — a pirulito-de-alfajor presentation
+    // (round, on a stick) distinct from the product's own everyday photo
+    // (pirulito-alfajor-1.jpg), already on disk before this round.
+    photo: "/images/products/presentinho-folha-laco-vermelho.jpg",
+    // Default center crop showed the ribbon bow but cut off the treat's own
+    // face (the maple-leaf decoration — the whole point of this photo) at
+    // the bottom edge. Shifted down to keep both in frame.
+    objectPosition: "center 72%",
+  },
+  {
+    id: "casadinhos",
+    productId: "casadinho",
+    name: "Casadinhos",
+    description: "Uma sugestão deliciosa pra mimar alguém especial.",
+    // New real photo sent for this round — a gift-bag presentation,
+    // distinct from the product's own everyday photo (casadinho-goiabada.jpg,
+    // unpackaged on a tray) used everywhere else, including Home. Was
+    // rotated 90° in its generated .webp (EXIF orientation lost during
+    // conversion) — fixed at the source (both .jpg and .webp now carry the
+    // correct pixel orientation, no crop/quality change).
+    photo: "/images/products/casadinho-presente.jpg",
+    // Default center crop cut the "MON CARAMEL" sticker off at the bottom —
+    // shifted down to reveal it fully.
+    objectPosition: "center 65%",
+  },
+  {
+    id: "oreo-chocobomb-personalizado",
+    productId: "oreo-chocobomb-personalizado",
+    name: "Oreo Chocobomb Personalizado",
+    description: "Oreo Chocobomb decorado para qualquer ocasião. Feito pra surpreender!",
+    // Corrected mapping (2026-10 review): the photo previously used here
+    // (oreo-chocobomb-personalizado.jpg, a back-to-school themed cone) turned
+    // out to show a rectangular bar-shaped treat, not a round Oreo
+    // Chocobomb — wrong product shape. Replaced with a real, already-on-disk
+    // photo of an actual round Chocobomb (from the Chocobomb festa gallery,
+    // decorated for Valentine's) — same file products.js now points
+    // oreo-chocobomb-personalizado's own `photos` at, so the carousel card
+    // and its Detail sheet show the same correct photo.
+    photo: "/images/products/chocobomb-festa-coracao-par.jpg",
+  },
+];

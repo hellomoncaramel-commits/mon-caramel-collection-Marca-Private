@@ -382,6 +382,10 @@ export const PRODUCTS = [
     kind: "cake",
     tint: COLORS.ink,
     moments: [],
+    // Also one of the 7 Pequenos Mimos carousel inspirations (its approved
+    // short text/photo live locally in MIMO_SHOWCASE, not here — see
+    // data/inspirationGalleries.js) — name/sensory/price untouched.
+    presenteGroup: "mimos",
     photos: [REAL_PHOTOS.pirulitoAlfajor],
   },
   {
@@ -587,6 +591,11 @@ export const PRODUCTS = [
     kind: "sandwich",
     tint: COLORS.caramelLight,
     moments: ["dia-dificil"],
+    // Also one of the 7 Pequenos Mimos carousel inspirations (its approved
+    // short text/photo live locally in MIMO_SHOWCASE, not here — see
+    // data/inspirationGalleries.js) — name/sensory/price/packageOptions
+    // untouched (this product is also in Home's favorites strip).
+    presenteGroup: "mimos",
     badges: ["coffee", "deserve"],
     customizable: true,
     packageOptions: [
@@ -992,15 +1001,19 @@ export const PRODUCTS = [
     photos: [REAL_PHOTOS.bandejaCidadania],
   },
 
-  // --- Mimos que Encantam — mimos pequenos pra qualquer ocasião (professora,
+  // --- Maçã Personalizada — mimo pequeno pra qualquer ocasião (professora,
   // colega de trabalho, agradecimento). Inspiração, preço sob consulta.
+  // Renamed from "Mimos que Encantam" per the Pequenos Mimos carousel round
+  // (2026-10) — this is its one real record (id unchanged), not a
+  // duplicate, so the new approved name/text apply everywhere it's used,
+  // not just inside Mimos.
   {
     id: "presentinho-macas",
-    name: "Mimos que Encantam",
+    name: "Maçã Personalizada",
     unit: "combinação personalizada",
     price: "Sob consulta 💬",
-    whatsappInquiryMessage: "Oi! Quero saber mais sobre: Mimos que Encantam 💬",
-    sensory: "Docinho embalado em formatinho de maçã, com nome personalizado — perfeito pra presentear professoras.",
+    whatsappInquiryMessage: "Oi! Quero saber mais sobre: Maçã Personalizada 💬",
+    sensory: "Uma embalagem criativa recheada de mini maçãs de Fondelle (pasta de leite em pó). Uma doce surpresa!",
     kind: "candy",
     tint: COLORS.caramelDark,
     moments: ["presente"],
@@ -1032,6 +1045,55 @@ export const PRODUCTS = [
     moments: ["presente"],
     presenteGroup: "mimos",
     photos: [REAL_PHOTOS.presentinhoPirulito],
+  },
+
+  // --- 3 new records for the Pequenos Mimos carousel round (2026-10) —
+  // personalized/themed presentations with no fixed SKU elsewhere on the
+  // site, so each needs its own record (not a duplicate of an existing
+  // product). All three: Sob consulta, WhatsApp inquiry, real photos sent
+  // for this round (see MIMO_SHOWCASE in data/inspirationGalleries.js for
+  // the carousel's own curated order/copy).
+  {
+    id: "brownlito-personalizado",
+    name: "Brownlito Personalizado",
+    unit: "combinação personalizada",
+    price: "Sob consulta 💬",
+    whatsappInquiryMessage: "Oi! Quero saber mais sobre: Brownlito Personalizado 💬",
+    sensory: "Nosso brownie recheado em uma embalagem especial para cada ocasião.",
+    kind: "dipped",
+    tint: COLORS.ink,
+    moments: ["presente"],
+    presenteGroup: "mimos",
+    photos: [REAL_PHOTOS.brownlitoEmbalado],
+  },
+  {
+    id: "mini-donuts-personalizados",
+    name: "Mini Donuts Personalizados",
+    unit: "combinação personalizada",
+    price: "Sob consulta 💬",
+    whatsappInquiryMessage: "Oi! Quero saber mais sobre: Mini Donuts Personalizados 💬",
+    sensory: "Mini donuts em embalagem personalizada pra impressionar.",
+    kind: "cake",
+    tint: COLORS.caramelLight,
+    moments: ["presente"],
+    presenteGroup: "mimos",
+    photos: [REAL_PHOTOS.presentinhoDonutsPersonalizado],
+  },
+  {
+    id: "oreo-chocobomb-personalizado",
+    name: "Oreo Chocobomb Personalizado",
+    unit: "combinação personalizada",
+    price: "Sob consulta 💬",
+    whatsappInquiryMessage: "Oi! Quero saber mais sobre: Oreo Chocobomb Personalizado 💬",
+    sensory: "Oreo Chocobomb decorado para qualquer ocasião. Feito pra surpreender!",
+    kind: "dipped",
+    tint: COLORS.caramelLight,
+    moments: ["presente"],
+    presenteGroup: "mimos",
+    // Real round Chocobomb shape (reused from the Chocobomb festa gallery —
+    // see photos.js's comment on REAL_PHOTOS.oreoChocobombPersonalizado for
+    // why that one isn't used here: wrong product shape, caught in review).
+    photos: [REAL_PHOTOS.chocobombFestaCoracaoPar],
   },
   {
     id: "presentinho-variedade",
