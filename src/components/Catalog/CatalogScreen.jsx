@@ -127,8 +127,25 @@ function DiscoveryCard({ card, onSelect }) {
 // product's real flow — configurator, stepper with its real minimum, or
 // the WhatsApp-only CTA — so every entry point here routes through it
 // instead of re-implementing (and risking re-breaking) that logic.
+// A product sold in fixed commercial packages (Brigadeiros, Casadinhos
+// Goiabada, Sequilhos) has no single real price in its legacy `unit`/
+// `price` fields — those are superseded by `packageOptions` in the Detail
+// (see each product's own comment in data/products.js) and were going
+// stale here on the card (e.g. Brigadeiros showing "A partir de $14" when
+// the real cheapest package is $10). Computed live from `packageOptions`
+// itself, so the card can never drift from the Detail's real prices again.
+function cardPriceLine(p) {
+  if (Array.isArray(p.packageOptions) && p.packageOptions.length > 0) {
+    const from = Math.min(...p.packageOptions.map((opt) => opt.price));
+    return `A partir de $${from}`;
+  }
+  if (p.unit && p.price) return `${p.unit} · ${p.price}`;
+  return p.unit || p.price || null;
+}
+
 function ProductRow({ p, added, onOpenProduct }) {
   const photo = defaultPhotos(p)?.[0];
+  const priceLine = cardPriceLine(p);
 
   return (
     <div
@@ -145,14 +162,12 @@ function ProductRow({ p, added, onOpenProduct }) {
         </div>
         <div className="py-3 pr-1 flex-1 min-w-0 flex flex-col justify-center">
           <h3 className="font-display text-base text-brand-ink leading-tight">{p.name}</h3>
-          {/* Both unit and price preserved exactly as the data defines them
-              (no commercial rule touched) — only the separator is now
-              conditional, so a product with a blank `unit` (package-priced
-              products' legacy field, "Sob consulta" items, etc.) doesn't
-              show a stray leading " · ". */}
-          {(p.unit || p.price) && (
-            <p className="text-xs text-brand-muted mt-0.5">{p.unit && p.price ? `${p.unit} · ${p.price}` : p.unit || p.price}</p>
-          )}
+          {/* Microfrase — card-only, name > microfrase > price in visual
+              weight (text-brand-inkSoft, same secondary treatment already
+              used for a product's blurb in SearchScreen's own result row,
+              not a new style). No truncation: longer ones just wrap. */}
+          {p.catalogTeaser && <p className="text-xs text-brand-inkSoft leading-snug mt-0.5">{p.catalogTeaser}</p>}
+          {priceLine && <p className="text-xs text-brand-muted mt-0.5">{priceLine}</p>}
         </div>
       </button>
       <div className="flex items-center pr-2.5 shrink-0">

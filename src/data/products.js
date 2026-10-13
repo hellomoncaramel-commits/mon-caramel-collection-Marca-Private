@@ -61,6 +61,10 @@ export const PRODUCTS = [
     // multiplied by quantity (6 ≠ 12 × half, etc.) — see packageOptions.
     unit: "6, 12 ou 24 unidades",
     price: "A partir de $14",
+    // Card-only microfrase (Coleção completa), shown between name and
+    // price/status — distinct from `experience.teaser` below (used by
+    // ProductCard.jsx on Dias de luta), never reused automatically there.
+    catalogTeaser: "O clássico que sempre faz feliz.",
     sensory: "Um clássico que vai bem, literalmente, a qualquer hora.",
     kind: "bites",
     tint: COLORS.ink,
@@ -96,13 +100,14 @@ export const PRODUCTS = [
       detailAside: "É sempre bom pedir alguns a mais e ter brigadeiro congelado para emergências. 😉",
       nextTemptation: { id: "chocobomb", line: "Agora… se você gosta de chocolate, deixa eu te apresentar o Chocobomb." },
     },
-    // "dia-dificil" now carries its own real photo plus the ones
-    // previously shown only under the (now-removed) "cafe" and "freezer"
-    // moments — see src/data/moments.js: all consolidated into this
-    // single id, so nothing that used to live under those two is lost.
-    photosByMoment: {
-      "dia-dificil": [REAL_PHOTOS.brigadeiroDiaDificil, REAL_PHOTOS.cafe, REAL_PHOTOS.freezer],
-    },
+    // Single real product photo. Used to also carry the old "cafe"/
+    // "freezer" moment-cover photos (REAL_PHOTOS.cafe/freezer, still
+    // defined in data/photos.js — not deleted, just no longer referenced
+    // here) via photosByMoment["dia-dificil"] — removed from the gallery
+    // per commercial review: both were context shots (one brigadeiro next
+    // to a coffee mug; brigadeiros in a freezer container), not photos
+    // meant to sell the product, and neither is used by any other product.
+    photos: [REAL_PHOTOS.brigadeiroDiaDificil],
   },
   {
     id: "mini-donut-simples",
@@ -112,6 +117,7 @@ export const PRODUCTS = [
     unit: "unidade (mín. 12)",
     minimumQuantity: 12,
     price: "$1.50/un",
+    catalogTeaser: "Fofinhos, assados e doces na medida.",
     sensory:
       "Assados, fofinhos e macios, com poucos ingredientes e pouca adição de açúcar. Uma opção prática para a lancheira ou para aquele snack das crianças ao longo do dia.",
     kind: "cake",
@@ -171,6 +177,7 @@ export const PRODUCTS = [
     name: "Brigadeiros Personalizados",
     unit: "mín. 25 un",
     price: "$2.50/un",
+    catalogTeaser: "O brigadeiro de sempre, com a cara da sua comemoração.",
     sensory: "Decorados com apliques artesanais em pasta de leite em pó, feitos sob medida pro tema da festa.",
     kind: "bites",
     tint: COLORS.caramelDark,
@@ -190,6 +197,7 @@ export const PRODUCTS = [
     unit: "unidade (mín. 12)",
     minimumQuantity: 12,
     price: "$2.50/un",
+    catalogTeaser: "Fofinhos por dentro, chocolate por fora.",
     // NOTE: this `sensory` string also feeds Festa's own flat-grid card
     // (ProductCard.jsx's isFesta branch reads p.sensory directly, since
     // this product is cross-tagged to both moments) — there is no
@@ -254,6 +262,7 @@ export const PRODUCTS = [
     unit: "unidade (mín. 2)",
     minimumQuantity: 2,
     price: "$8/un",
+    catalogTeaser: "Casquinha crocante com muito recheio cremoso.",
     // Gluten-free version confirmed available at the same price (no
     // surcharge). Not restated in `sensory` (kept to describing the
     // product itself) — communicated instead via the glutenFreeOption
@@ -334,6 +343,7 @@ export const PRODUCTS = [
     unit: "~60g bala de coco por unidade",
     price: "Sob consulta 💬",
     whatsappInquiryMessage: "Oi! Quero saber mais sobre: Lembrancinhas Pirâmide 💬",
+    catalogTeaser: "Uma lembrancinha linda, recheada de bala de coco.",
     sensory: "Bala de coco caseira que derrete na boca, dentro de uma pirâmide personalizada no tema da sua festa.",
     kind: "candy",
     tint: COLORS.caramelDark,
@@ -352,6 +362,7 @@ export const PRODUCTS = [
     unit: "unidade (mín. 3)",
     minimumQuantity: 3,
     price: "$3/un",
+    catalogTeaser: "Biscoito, doce de leite e aquela combinação que não tem erro.",
     sensory:
       "Receita macia original, com toque de mel e limão, recheado com doce de leite condensado cozido. Pode ser coberto ou não por chocolate.",
     kind: "sandwich",
@@ -369,13 +380,22 @@ export const PRODUCTS = [
       // replaced — same treatment as Pão de Mel/Cone Trufado earlier.
       nextTemptation: { id: "pao-de-mel", line: "Se você gosta de doce de leite, já provou nosso Pão de Mel?" },
     },
-    photos: [REAL_PHOTOS.alfajorCoco],
+    // No photo assigned on purpose: the only confirmed commercial options
+    // are "Sem cobertura" / "Com cobertura de chocolate" (see optionGroups
+    // above) — no coco version exists. REAL_PHOTOS.alfajorCoco shows a
+    // coconut-coated alfajor, which isn't one of the two real options, so
+    // it was removed rather than left to misrepresent the product (falls
+    // back to the existing illustrated <ProductArt/> placeholder). No
+    // other real photo in the project unambiguously shows just "sem
+    // cobertura"/"com cobertura de chocolate" — flagged in the PR as
+    // needing a new real photo from Naia, not guessed at here.
   },
   {
     id: "pirulito-alfajor",
     name: "Pirulito de Alfajor",
     unit: "unidade",
     price: "$5/un",
+    catalogTeaser: "Alfajor no palito, coberto com chocolate.",
     sensory:
       "Alfajor no palito, coberto de chocolate — ideal pra lembrancinha de última hora, dar pra professores, alunos ou colegas de trabalho.",
     kind: "cake",
@@ -404,6 +424,7 @@ export const PRODUCTS = [
     unit: "unidade (mín. 4)",
     minimumQuantity: 4,
     price: "$5/un",
+    catalogTeaser: "Recheado com doce de leite e coberto com chocolate.",
     // Trimmed "Pão de mel" off the front — the name right above it already
     // says that; starting with "Macio..." avoids restating it immediately.
     sensory: "Macio, recheado com doce de leite feito com leite condensado cozido e coberto com chocolate meio amargo.",
@@ -438,6 +459,7 @@ export const PRODUCTS = [
     // like every other migrated product's unit text.
     unit: "forma aprox. 27 × 23 cm",
     price: "$30",
+    catalogTeaser: "Bolo de cenoura daqueles com cheiro de casa.",
     sensory: "Bolo de cenoura caseiro, fofinho e feito para dividir — ou não. 😉",
     kind: "cake",
     tint: COLORS.caramelLight,
@@ -475,6 +497,7 @@ export const PRODUCTS = [
     // instead of the normal qty/"Eu quero" flow).
     unit: "",
     price: "Sob consulta 💬",
+    catalogTeaser: "Crocante, amanteigado e doce na medida.",
     sensory: "Crocante, doce na medida certa. Escolha seu favorito e seja feliz.",
     // Short, practical explainer — not an editorial aside (unlike
     // experience.detailAside elsewhere), so it's rendered unconditionally
@@ -522,10 +545,15 @@ export const PRODUCTS = [
     // of the UNBAKED, sold-frozen product, not this (baked, ready-to-eat)
     // one — moved to its own product, "butter-cookies-congelado", right
     // below.
+    // REAL_PHOTOS.alfajorClassico (still defined in data/photos.js, not
+    // deleted) removed from both galleries below per commercial review:
+    // that photo appears to show Alfajor, not Biscoito Amanteigado, and
+    // isn't referenced by any other product — kept on disk in case a real
+    // match for it turns up later, just not shown here.
     photosByMoment: {
-      "dia-dificil": [REAL_PHOTOS.biscoitoAmanteigadoCafe, REAL_PHOTOS.biscoitoVariedade, REAL_PHOTOS.alfajorClassico],
+      "dia-dificil": [REAL_PHOTOS.biscoitoAmanteigadoCafe, REAL_PHOTOS.biscoitoVariedade],
     },
-    photos: [REAL_PHOTOS.biscoitoVariedade, REAL_PHOTOS.alfajorClassico],
+    photos: [REAL_PHOTOS.biscoitoVariedade],
   },
   {
     id: "butter-cookies-congelado",
@@ -541,6 +569,7 @@ export const PRODUCTS = [
     // mínimo" line restating what the chips already say.
     unit: "",
     price: "$1/un",
+    catalogTeaser: "Do freezer direto pro forno — e a casa fica cheirando a biscoito.",
     sensory:
       "Feitos com apenas 3 ingredientes e 2g de açúcar. Uma opção prática para ter no freezer e assar quando quiser — perfeita para o snack ou a lancheira das crianças.",
     kind: "sandwich",
@@ -587,6 +616,7 @@ export const PRODUCTS = [
     // per-unit price × qty).
     unit: "6 unidades",
     price: "Sob consulta 💬",
+    catalogTeaser: "Amanteigados com goiabada no meio. Difícil comer um só.",
     // Trimmed the "— outros sabores? É só chamar a gente" clause: this
     // product is goiabada only, no other flavor/filling exists to offer
     // (see explicit scope below) — not inventing a new sentence, just
@@ -622,6 +652,7 @@ export const PRODUCTS = [
     // own comment on this same convention.
     unit: "250g",
     price: "Sob consulta 💬",
+    catalogTeaser: "Leves, delicados e daqueles que derretem na boca.",
     sensory: "Leve, delicado e daquele tipo que desmancha na boca.",
     kind: "bites",
     tint: COLORS.creamYellow,
@@ -657,6 +688,7 @@ export const PRODUCTS = [
     unit: "unidade (mín. 4)",
     minimumQuantity: 4,
     price: "$4/un",
+    catalogTeaser: "Chocolate por fora, recheio cremoso por dentro.",
     // Gluten-free version confirmed available at the same price — same
     // treatment as Cone Trufado: not restated in `sensory`, communicated
     // via the glutenFreeOption badge + the discreet "mesmo preço" note
@@ -714,6 +746,7 @@ export const PRODUCTS = [
     name: "Bala de Coco",
     unit: "150g",
     price: "$10",
+    catalogTeaser: "Macia, delicada e daquelas que derretem na boca.",
     // Detail's main description — replaces the old "Docinho de coco que
     // derrete na boca — sem glúten, sem lactose..." (redundant with the
     // teaser below and with the glutenFree badge now on the card).
@@ -747,7 +780,9 @@ export const PRODUCTS = [
     name: "Bolo de Pote",
     unit: "",
     price: "Sob consulta 💬",
-    sensory: "",
+    catalogTeaser: "Camadas de bolo fofinho e recheio cremoso.",
+    sensory:
+      "Camadas de bolo fofinho e recheio cremoso, montadas no potinho. Os sabores variam — me conta o que você está procurando e eu te passo as opções disponíveis.",
     kind: "cake",
     tint: COLORS.caramelDark,
     moments: ["dia-dificil"],
@@ -794,6 +829,7 @@ export const PRODUCTS = [
     // to offer, so no seletor/optionGroups here (would be a choice of one).
     unit: "unidade",
     price: "$7/un",
+    catalogTeaser: "Brownie de Prestígio no palito, coberto com chocolate.",
     sensory: "Brownie recheado de Prestígio, no palito.",
     kind: "dipped",
     tint: COLORS.ink,
@@ -1017,6 +1053,7 @@ export const PRODUCTS = [
     unit: "combinação personalizada",
     price: "Sob consulta 💬",
     whatsappInquiryMessage: "Oi! Quero saber mais sobre: Maçã Personalizada 💬",
+    catalogTeaser: "Uma doce surpresa escondida dentro da maçã.",
     sensory: "Uma embalagem criativa recheada de mini maçãs de Fondelle (pasta de leite em pó). Uma doce surpresa!",
     kind: "candy",
     tint: COLORS.caramelDark,
@@ -1030,6 +1067,7 @@ export const PRODUCTS = [
     unit: "combinação personalizada",
     price: "Sob consulta 💬",
     whatsappInquiryMessage: "Oi! Quero saber mais sobre: Cone Obrigada 💬",
+    catalogTeaser: "Um jeitinho gostoso de dizer \"obrigada\".",
     sensory: "Docinhos num coninho com cartão de agradecimento — ideal pra dar um obrigada especial.",
     kind: "cake",
     tint: COLORS.caramelLight,
@@ -1043,6 +1081,7 @@ export const PRODUCTS = [
     unit: "combinação personalizada",
     price: "Sob consulta 💬",
     whatsappInquiryMessage: "Oi! Quero saber mais sobre: Pirulito de Chocolate com Laço 💬",
+    catalogTeaser: "Chocolate no palito, pronto para presentear.",
     sensory: "Chocolate no palito, laço de cetim — simples, bonito e rápido de entregar.",
     kind: "cake",
     tint: COLORS.ink,
@@ -1063,6 +1102,7 @@ export const PRODUCTS = [
     unit: "combinação personalizada",
     price: "Sob consulta 💬",
     whatsappInquiryMessage: "Oi! Quero saber mais sobre: Brownlito Personalizado 💬",
+    catalogTeaser: "Nosso Brownlito em uma embalagem feita para a ocasião.",
     sensory: "Nosso brownie recheado em uma embalagem especial para cada ocasião.",
     kind: "dipped",
     tint: COLORS.ink,
@@ -1076,6 +1116,7 @@ export const PRODUCTS = [
     unit: "combinação personalizada",
     price: "Sob consulta 💬",
     whatsappInquiryMessage: "Oi! Quero saber mais sobre: Mini Donuts Personalizados 💬",
+    catalogTeaser: "Mini donuts em uma embalagem feita para surpreender.",
     sensory: "Mini donuts em embalagem personalizada pra impressionar.",
     kind: "cake",
     tint: COLORS.caramelLight,
@@ -1089,6 +1130,7 @@ export const PRODUCTS = [
     unit: "combinação personalizada",
     price: "Sob consulta 💬",
     whatsappInquiryMessage: "Oi! Quero saber mais sobre: Oreo Chocobomb Personalizado 💬",
+    catalogTeaser: "Oreo Chocobomb decorado para deixar o mimo ainda mais especial.",
     sensory: "Oreo Chocobomb decorado para qualquer ocasião. Feito pra surpreender!",
     kind: "dipped",
     tint: COLORS.caramelLight,
