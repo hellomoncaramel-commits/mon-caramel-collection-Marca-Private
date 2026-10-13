@@ -25,7 +25,7 @@ const OPTIONS = [
   {
     id: "presente-bandejas",
     emoji: "🎈",
-    title: "Bandejas",
+    title: "Cestas especiais",
     description: "Para transformar qualquer dia em uma comemoração.",
     cta: "Quero ver ideias →",
     photo: REAL_PHOTOS.bandejaMario,

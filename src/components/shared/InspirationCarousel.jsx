@@ -38,7 +38,7 @@ import InspirationImage from "./InspirationImage";
 // else to wire up. Shared by every "para inspirar" carousel (Caixas,
 // Bandejas, and whatever comes next) — ariaLabel is the one thing each
 // caller sets for itself (screen-reader context, e.g. "Fotos de caixas"
-// vs. "Fotos de bandejas"); everything else here is identical across all
+// vs. "Fotos de cestas especiais"); everything else here is identical across all
 // of them on purpose, so they read as one consistent system.
 export default function InspirationCarousel({ items, ariaLabel }) {
   const trackRef = useRef(null);

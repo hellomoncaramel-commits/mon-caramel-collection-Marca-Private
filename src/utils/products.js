@@ -49,6 +49,12 @@ export function photosForMoment(product, momentId) {
 // data/products.js) stays browsable: `presenteGroup` only means "also
 // featured in Presentes," not "exclusive to Presentes."
 export function isBrowsable(product) {
+  // `browsable: true` is an explicit override for a product that has its
+  // own real, individually-priced SKU (and belongs in Busca/feed like any
+  // other) despite being tagged with a `presenteGroup` and no `moments` —
+  // the two signals the heuristic below otherwise reads as "presente-only
+  // inspiration, not a real catalog item" (see Pirulito de Alfajor).
+  if (product.browsable) return true;
   const hasRealMoment = product.moments.some((m) => m !== "presente" && m !== "festa");
   if (product.presenteGroup && !hasRealMoment) return false;
   if (product.moments.length === 1 && product.moments[0] === "festa") return false;
