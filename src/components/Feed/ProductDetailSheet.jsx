@@ -260,7 +260,19 @@ export default function ProductDetailSheet({
               <div className="flex items-center justify-between gap-3">
                 <QuantityStepper value={qty} onChange={setQty} min={minQty} />
                 <button
-                  onClick={() => (existing ? removeFromSelection(existing) : add())}
+                  onClick={() => {
+                    // Same standard as the configurator's onConfirm above:
+                    // close the sheet right after a successful add. Removing
+                    // (toggling an already-added item off) keeps the sheet
+                    // open — she's still looking at this same product, there's
+                    // nothing new to confirm by closing it.
+                    if (existing) {
+                      removeFromSelection(existing);
+                    } else {
+                      add();
+                      onClose();
+                    }
+                  }}
                   className="flex-1 text-sm font-medium rounded-full py-3 min-h-11 flex items-center justify-center gap-2 transition-transform active:scale-95"
                   style={{ backgroundColor: COLORS.caramelDark, color: "white" }}
                 >

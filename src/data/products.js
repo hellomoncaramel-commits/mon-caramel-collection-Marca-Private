@@ -18,12 +18,11 @@ import { REAL_PHOTOS } from "./photos";
 //
 // "freezer" survives as a co-tag in `moments` on a few products below (see
 // e.g. brigadeiro, butter-cookies) purely to feed ProductDetailSheet.jsx's
-// "Pode congelar" list item and the Feed's "Pode congelar" filter
-// (Feed/FeedScreen.jsx), both still keyed off `moments.includes("freezer")`.
+// "Pode congelar" list item, still keyed off `moments.includes("freezer")`.
 // It is NOT a navigable destination any more — "freezer" was removed from
 // MOMENTS (data/moments.js), so nothing ever renders a MomentScreen for it.
 // Don't read its presence here as "Freezer is still a journey"; it's just
-// today's data source for those two spots.
+// today's data source for that one spot.
 //
 // The Dias de luta card (ProductCard.jsx) no longer reads this tag: it now
 // renders the `badges` field below (data/badges.js) instead — a manually
@@ -386,6 +385,11 @@ export const PRODUCTS = [
     // short text/photo live locally in MIMO_SHOWCASE, not here — see
     // data/inspirationGalleries.js) — name/sensory/price untouched.
     presenteGroup: "mimos",
+    // Real, individually-priced SKU ($5/un) despite having no `moments` —
+    // without this, isBrowsable() (utils/products.js) reads the
+    // presenteGroup + empty moments combination as "presente-only
+    // inspiration" and hid it from Busca entirely.
+    browsable: true,
     photos: [REAL_PHOTOS.pirulitoAlfajor],
   },
   {

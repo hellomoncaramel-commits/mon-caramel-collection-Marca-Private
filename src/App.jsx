@@ -9,7 +9,6 @@ import PresenteEntryScreen from "./components/Presente/PresenteEntryScreen";
 import CaixasScreen from "./components/Presente/CaixasScreen";
 import BandejasScreen from "./components/Presente/BandejasScreen";
 import MimosScreen from "./components/Presente/MimosScreen";
-import FeedScreen from "./components/Feed/FeedScreen";
 import ProductDetailSheet from "./components/Feed/ProductDetailSheet";
 import SearchScreen from "./components/Search/SearchScreen";
 import SelectionScreen from "./components/Selection/SelectionScreen";
@@ -27,7 +26,6 @@ const LEGACY_MOMENT_REDIRECTS = { cafe: "dia-dificil", freezer: "dia-dificil" };
 const BOTTOM_NAV_SCREENS = ["busca", "selecao"];
 const NON_MOMENT_SCREENS = [
   "momentos",
-  "feed",
   "busca",
   "catalogo",
   "selecao",
@@ -44,7 +42,7 @@ export default function App() {
   // Which journey opened the product detail sheet — only Dias de luta ever
   // sets this (to "dia-dificil"), which is what turns on the Mon Caramel
   // Experience layer inside ProductDetailSheet (badges/note/cross-sell).
-  // Feed/Search never pass a context, so the sheet renders exactly as it
+  // Catalog/Search never pass a context, so the sheet renders exactly as it
   // always has for them.
   const [openProductContext, setOpenProductContext] = useState(null);
   const { selection, addToSelection, removeFromSelection } = useSelection();
@@ -75,15 +73,6 @@ export default function App() {
         )}
 
         {screen === "momentos" && <MomentPicker onBack={() => setScreen(null)} onSelectMoment={setScreen} />}
-
-        {screen === "feed" && (
-          <FeedScreen
-            onBack={() => setScreen(null)}
-            selection={selection}
-            addToSelection={addToSelection}
-            onOpenProduct={openProductDetail}
-          />
-        )}
 
         {screen === "busca" && (
           <SearchScreen

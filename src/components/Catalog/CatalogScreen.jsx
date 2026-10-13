@@ -112,9 +112,9 @@ function DiscoveryCard({ card, onSelect }) {
   );
 }
 
-// Photo+name together sit inside one real <button> (opens the Detail,
-// same as FeedCard.jsx's own name button) rather than wrapping the whole
-// row in a div[role=button] — keeps the markup to real, non-nested
+// Photo+name together sit inside one real <button> (opens the Detail)
+// rather than wrapping the whole row in a div[role=button] — keeps the
+// markup to real, non-nested
 // interactive elements. Favorites heart is a separate, smaller, quieter
 // control next to it — but it ALWAYS opens the Detail too, exactly like
 // the photo/name button, never a direct addToSelection shortcut. A prior

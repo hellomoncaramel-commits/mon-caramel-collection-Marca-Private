@@ -95,6 +95,7 @@ export default function GiftIdeaWizard({ onBack, groupKey, groupLabel, title, oc
   const [unsure, setUnsure] = useState(false);
   const [budget, setBudget] = useState(null);
   const [added, setAdded] = useState(false);
+  const [showEmptyWarning, setShowEmptyWarning] = useState(false);
 
   const ideaId = useMemo(() => `${groupKey}-idea-${Math.random().toString(36).slice(2, 9)}`, [groupKey]);
 
@@ -117,6 +118,19 @@ export default function GiftIdeaWizard({ onBack, groupKey, groupLabel, title, oc
   const canAdvance =
     stepId === "occasion" ? !!occasion : stepId === "items" ? selectedItems.length > 0 || true : true;
 
+  // Every step is individually optional (briefing: she can skip any of
+  // them), but a fully empty idea has nothing to tell Naia about — this is
+  // the one real choice gate, checked only when she tries to finish.
+  const hasAnyChoice =
+    !!occasion ||
+    selectedItems.length > 0 ||
+    name.trim() !== "" ||
+    colors.trim() !== "" ||
+    theme.trim() !== "" ||
+    message.trim() !== "" ||
+    unsure ||
+    !!budget;
+
   const submit = () => {
     onAdd({
       kind: "gift-idea",
@@ -129,6 +143,18 @@ export default function GiftIdeaWizard({ onBack, groupKey, groupLabel, title, oc
       budget,
     });
     setAdded(true);
+  };
+
+  const handlePrimary = () => {
+    if (!isLast) {
+      next();
+      return;
+    }
+    if (!hasAnyChoice) {
+      setShowEmptyWarning(true);
+      return;
+    }
+    submit();
   };
 
   return (
@@ -240,8 +266,14 @@ export default function GiftIdeaWizard({ onBack, groupKey, groupLabel, title, oc
         </div>
       )}
 
+      {isLast && showEmptyWarning && !hasAnyChoice && (
+        <p className="text-xs text-center mb-2" style={{ color: COLORS.caramelDark }}>
+          Escolha pelo menos uma opção para montar sua ideia 💛
+        </p>
+      )}
+
       <button
-        onClick={isLast ? submit : next}
+        onClick={handlePrimary}
         disabled={!canAdvance}
         className="w-full text-sm font-medium text-white rounded-full py-3.5 min-h-11 flex items-center justify-center gap-2 disabled:opacity-40"
         style={{ backgroundColor: COLORS.caramelDark }}

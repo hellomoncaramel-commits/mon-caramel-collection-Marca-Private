@@ -9,7 +9,7 @@ import Logo from "./Logo";
 // two are real, working links, just without an active indicator yet.
 const PRIMARY_ITEMS = [
   { id: "home", label: "Início" },
-  { id: "feed", label: "Nossos doces" },
+  { id: "catalogo", label: "Nossos doces" },
   { id: "presente", label: "Presentes" },
 ];
 

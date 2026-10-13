@@ -18,8 +18,8 @@ export default function BandejasScreen({ onBack, addToSelection }) {
       <GiftIdeaWizard
         onBack={() => setShowWizard(false)}
         groupKey="bandejas"
-        groupLabel="Bandeja"
-        title="Monte sua bandeja"
+        groupLabel="Cesta especial"
+        title="Monte sua cesta especial"
         occasionStep={{ question: "Qual é a ocasião?", options: BANDEJA_OCCASIONS }}
         itemsStep={{ question: "O que você gostaria de incluir?", options: BANDEJA_CONTENTS }}
         onAdd={addToSelection}
@@ -30,7 +30,7 @@ export default function BandejasScreen({ onBack, addToSelection }) {
   return (
     <div className="max-w-xl md:max-w-3xl lg:max-w-5xl xl:max-w-6xl mx-auto px-gutter lg:px-8 xl:px-12 pt-2 pb-10 fade-up">
       <SiteHeader onBack={onBack} />
-      <h1 className="mc-page-title">Bandejas para inspirar</h1>
+      <h1 className="mc-page-title">Cestas especiais para inspirar</h1>
       <p className="mc-page-subtitle">
         Para comemorar, presentear ou simplesmente deixar o dia mais especial.
       </p>
@@ -39,7 +39,7 @@ export default function BandejasScreen({ onBack, addToSelection }) {
           treatment and its reasoning. Below lg: plain block, unchanged. */}
       <div className="lg:grid lg:grid-cols-12 lg:gap-10 xl:gap-14 lg:items-center">
         <div className="lg:col-span-7">
-          <InspirationCarousel items={TRAY_INSPIRATIONS} ariaLabel="Fotos de bandejas" />
+          <InspirationCarousel items={TRAY_INSPIRATIONS} ariaLabel="Fotos de cestas especiais" />
         </div>
         <div className="lg:col-span-5">
           <PresenteCTA onAction={() => setShowWizard(true)} />
