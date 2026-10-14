@@ -1,8 +1,7 @@
 import { Heart } from "lucide-react";
-import { PRODUCTS } from "../../data/products";
 import { COLORS } from "../../styles/colors";
 import { REAL_PHOTOS } from "../../data/photos";
-import { defaultPhotos } from "../../utils/products";
+import { defaultPhotos, getColecaoCompletaProducts, cardPriceLine } from "../../utils/products";
 import SiteHeader from "../shared/SiteHeader";
 import ProductArt from "../shared/ProductArt";
 import Photo from "../shared/Photo";
@@ -127,22 +126,6 @@ function DiscoveryCard({ card, onSelect }) {
 // product's real flow — configurator, stepper with its real minimum, or
 // the WhatsApp-only CTA — so every entry point here routes through it
 // instead of re-implementing (and risking re-breaking) that logic.
-// A product sold in fixed commercial packages (Brigadeiros, Casadinhos
-// Goiabada, Sequilhos) has no single real price in its legacy `unit`/
-// `price` fields — those are superseded by `packageOptions` in the Detail
-// (see each product's own comment in data/products.js) and were going
-// stale here on the card (e.g. Brigadeiros showing "A partir de $14" when
-// the real cheapest package is $10). Computed live from `packageOptions`
-// itself, so the card can never drift from the Detail's real prices again.
-function cardPriceLine(p) {
-  if (Array.isArray(p.packageOptions) && p.packageOptions.length > 0) {
-    const from = Math.min(...p.packageOptions.map((opt) => opt.price));
-    return `A partir de $${from}`;
-  }
-  if (p.unit && p.price) return `${p.unit} · ${p.price}`;
-  return p.unit || p.price || null;
-}
-
 function ProductRow({ p, added, onOpenProduct }) {
   const photo = defaultPhotos(p)?.[0];
   const priceLine = cardPriceLine(p);
@@ -192,14 +175,11 @@ function ProductRow({ p, added, onOpenProduct }) {
 export default function CatalogScreen({ onBack, selection, onOpenProduct, onOpenSelection, onSelect }) {
   const inSelection = (id) => selection.some((it) => it.productId === id);
 
-  // "Festa-only" = moments is exactly ["festa"], nothing else — these
-  // never show up outside the Festa journey, so they fold into the
-  // "Doces para festas" card. A product tagged festa AND something else
-  // (dia-dificil, etc.) is sold day-to-day too and stays in the main list,
-  // same as the explicit brigadeiros/pão de mel/cones trufados examples.
-  const isFestaOnly = (p) => p.moments?.length === 1 && p.moments[0] === "festa";
-
-  const individualProducts = PRODUCTS.filter((p) => p.presenteGroup !== "caixas" && p.presenteGroup !== "bandejas" && !isFestaOnly(p));
+  // The exact same 24 products a /doces/[slug] page gets generated for
+  // (see utils/products.js getColecaoCompletaProducts) — one definition,
+  // read from both places, so a product can't be listed here without
+  // also being indexable, or vice versa.
+  const individualProducts = getColecaoCompletaProducts();
 
   // Spread the three discovery cards through the list at even intervals —
   // never clustered together, never a separate section (briefing section

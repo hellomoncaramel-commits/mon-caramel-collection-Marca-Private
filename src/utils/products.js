@@ -1,5 +1,10 @@
-import { PRODUCTS } from "../data/products";
-import { MOMENT_ORDER } from "../data/moments";
+// Explicit .js extensions on these two: this file is imported both by
+// Vite (which resolves extensionless specifiers) and, directly, by
+// scripts/generate-static-pages.mjs under plain Node ESM (which doesn't)
+// — so the static-page build script can read the exact same PRODUCTS data
+// the live app renders, instead of a duplicated copy.
+import { PRODUCTS } from "../data/products.js";
+import { MOMENT_ORDER } from "../data/moments.js";
 
 export function pickForMoment(momentId) {
   const matched = PRODUCTS.filter((p) => p.moments.includes(momentId));
@@ -139,4 +144,52 @@ export function splitEvenly(total, count) {
   const base = Math.floor(total / count);
   const remainder = total % count;
   return Array.from({ length: count }, (_, i) => base + (i < remainder ? 1 : 0));
+}
+
+// "Festa-only" = moments is exactly ["festa"] — these never show up
+// outside the Festa journey. Local to this file: the one place that needs
+// it is getColecaoCompletaProducts below.
+function isFestaOnly(p) {
+  return p.moments?.length === 1 && p.moments[0] === "festa";
+}
+
+// The 24 individually-priced products shown in Coleção completa — exactly
+// CatalogScreen.jsx's own list (excludes Caixas/Bandejas inspiration cards
+// and festa-only products), lifted here so it has exactly one definition.
+// Both the live screen and scripts/generate-static-pages.mjs (the build
+// script that writes a static /doces/[slug] page per product) read from
+// this same function — a product can never be indexable in one place and
+// missing from the other.
+export function getColecaoCompletaProducts() {
+  return PRODUCTS.filter((p) => p.presenteGroup !== "caixas" && p.presenteGroup !== "bandejas" && !isFestaOnly(p));
+}
+
+// A product sold in fixed commercial packages (Brigadeiros, Casadinhos
+// Goiabada, Sequilhos) has no single real price in its legacy `unit`/
+// `price` fields — those are superseded by `packageOptions` (see each
+// product's own comment in data/products.js). Computed live from
+// `packageOptions` itself (never a hand-typed string) so this can't drift
+// from the Detail's real prices — moved here (from CatalogScreen.jsx) so
+// the static product-page build script reads the exact same logic.
+export function cardPriceLine(p) {
+  if (Array.isArray(p.packageOptions) && p.packageOptions.length > 0) {
+    const from = Math.min(...p.packageOptions.map((opt) => opt.price));
+    return `A partir de $${from}`;
+  }
+  if (p.unit && p.price) return `${p.unit} · ${p.price}`;
+  return p.unit || p.price || null;
+}
+
+// One real, factual sentence for a product — used as the meta description
+// and og:description of its /doces/[slug] page (see scripts/
+// generate-static-pages.mjs) and, client-side, kept in sync on the same
+// page while browsing in-app (see utils/meta.js). Built only from fields
+// already approved and shown elsewhere in the app (`sensory`, the same
+// price line the card shows) — never invents price, flavor, availability
+// or allergen text. "Sob consulta 💬" passes through unchanged, exactly as
+// already shown everywhere else, so a not-yet-priced product is never
+// made to look like it has a fixed price.
+export function productDescription(p) {
+  const price = cardPriceLine(p) || p.price || "";
+  return [p.sensory, price].filter(Boolean).join(" — ");
 }

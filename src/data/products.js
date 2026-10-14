@@ -1,5 +1,8 @@
-import { COLORS } from "../styles/colors";
-import { REAL_PHOTOS } from "./photos";
+// Explicit .js extensions: this file is also imported directly (via
+// utils/products.js) by scripts/generate-static-pages.mjs under plain
+// Node ESM, which — unlike Vite — requires them on relative specifiers.
+import { COLORS } from "../styles/colors.js";
+import { REAL_PHOTOS } from "./photos.js";
 
 // ===========================================================================
 // PRODUCTS — real catalog, cross-tagged to multiple emotional "moments".
@@ -52,6 +55,13 @@ import { REAL_PHOTOS } from "./photos";
 export const PRODUCTS = [
   {
     id: "brigadeiro",
+    // Public URL slug (/doces/[slug]) — deliberately its own field, not
+    // derived from `id`: decouples the shareable link from the internal
+    // id used by selection/cart logic, so a future rename of either never
+    // breaks the other. Chosen once, by hand, from the approved product
+    // name — never auto-slugified at runtime (see utils/products.js
+    // getColecaoCompletaProducts, scripts/generate-static-pages.mjs).
+    slug: "brigadeiros",
     name: "Brigadeiros",
     // unit/price are superseded by `packageOptions` below for commercial
     // display (ProductDetailSheet suppresses its own price block for any
@@ -111,6 +121,7 @@ export const PRODUCTS = [
   },
   {
     id: "mini-donut-simples",
+    slug: "mini-cake-donuts",
     name: "Mini Cake Donuts",
     // Commercial review confirmed: $1.50 cada (unit price), pedido mínimo
     // 12 unidades — same convention as every other migrated product.
@@ -174,6 +185,7 @@ export const PRODUCTS = [
   },
   {
     id: "brigadeiro-personalizado",
+    slug: "brigadeiros-personalizados",
     name: "Brigadeiros Personalizados",
     unit: "mín. 25 un",
     price: "$2.50/un",
@@ -189,6 +201,7 @@ export const PRODUCTS = [
   },
   {
     id: "mini-donut-decorado",
+    slug: "mini-cake-donuts-cobertos-com-chocolate",
     name: "Mini Cake Donuts Cobertos com Chocolate",
     // Commercial review confirmed: $2.50 cada (unit price), pedido mínimo
     // 12 unidades — same explicit-field convention as every other migrated
@@ -249,6 +262,7 @@ export const PRODUCTS = [
   },
   {
     id: "cone-trufado",
+    slug: "cones-trufados",
     name: "Cones Trufados",
     // Commercial review confirmed: $8 cada (unit price, not a bundle),
     // pedido mínimo 2 unidades. `unit` carries the minimum as display copy
@@ -339,6 +353,7 @@ export const PRODUCTS = [
   },
   {
     id: "piramide",
+    slug: "lembrancinhas-piramide",
     name: "Lembrancinhas Pirâmide",
     unit: "~60g bala de coco por unidade",
     price: "Sob consulta 💬",
@@ -355,6 +370,7 @@ export const PRODUCTS = [
   },
   {
     id: "alfajor",
+    slug: "alfajor",
     name: "Alfajor",
     // Commercial review confirmed: $3 cada (unit price), pedido mínimo 3
     // unidades — same explicit-field convention as every other migrated
@@ -389,6 +405,7 @@ export const PRODUCTS = [
   },
   {
     id: "pirulito-alfajor",
+    slug: "pirulito-de-alfajor",
     name: "Pirulito de Alfajor",
     unit: "unidade",
     price: "$5/un",
@@ -411,6 +428,7 @@ export const PRODUCTS = [
   },
   {
     id: "pao-de-mel",
+    slug: "pao-de-mel",
     name: "Pão de Mel",
     // Commercial review confirmed: $5 cada (unit price), pedido mínimo 4
     // unidades — the old "3 unidades" read as a fixed pack size, which is
@@ -447,6 +465,7 @@ export const PRODUCTS = [
   },
   {
     id: "bolo-cenoura",
+    slug: "bolo-de-cenoura",
     name: "Bolo de Cenoura",
     // Commercial review confirmed: ONE whole cake form (not sold by the
     // slice), $30 flat — same price whatever cobertura is chosen. `unit`
@@ -484,6 +503,7 @@ export const PRODUCTS = [
   },
   {
     id: "butter-cookies",
+    slug: "biscoito-amanteigado",
     name: "Biscoito Amanteigado",
     // Genuinely open-ended — many flavor/filling/shape combinations exist,
     // not a fixed catalog pack, so `unit` stays blank rather than
@@ -554,6 +574,7 @@ export const PRODUCTS = [
   },
   {
     id: "butter-cookies-congelado",
+    slug: "biscoito-amanteigado-congelado-para-assar",
     name: "Biscoito Amanteigado — congelado para assar",
     // Commercial review confirmed: $1 por biscoito, vendido somente nos
     // lotes abaixo (quantityOptions) — same "explicit field, never
@@ -606,6 +627,7 @@ export const PRODUCTS = [
   },
   {
     id: "casadinho",
+    slug: "casadinhos-goiabada",
     name: "Casadinhos Goiabada",
     // unit/price superseded by `packageOptions` below — see Brigadeiro's
     // own comment on this same convention (never read once packageOptions
@@ -644,6 +666,7 @@ export const PRODUCTS = [
   },
   {
     id: "melties",
+    slug: "sequilhos",
     name: "Sequilhos",
     // unit/price superseded by `packageOptions` below — see Brigadeiro's
     // own comment on this same convention.
@@ -676,6 +699,7 @@ export const PRODUCTS = [
   },
   {
     id: "chocobomb",
+    slug: "chocobomb",
     name: "Chocobomb",
     // Commercial review confirmed: $4 cada — the price of ONE Chocobomb,
     // not a box of 4 — pedido mínimo 4 unidades. `unit` carries the
@@ -740,6 +764,7 @@ export const PRODUCTS = [
   },
   {
     id: "bala-de-coco",
+    slug: "bala-de-coco",
     name: "Bala de Coco",
     unit: "150g",
     price: "$10",
@@ -774,6 +799,7 @@ export const PRODUCTS = [
   // app already shows for "sob consulta" items.
   {
     id: "bolo-de-pote",
+    slug: "bolo-de-pote",
     name: "Bolo de Pote",
     unit: "",
     price: "Sob consulta 💬",
@@ -818,6 +844,7 @@ export const PRODUCTS = [
   // tag, which pickForMoment() already supports without change.
   {
     id: "brownlito",
+    slug: "brownlito",
     name: "Brownlito",
     // Commercial review confirmed: $7 cada (unit price), no minimum
     // confirmed yet — plain free stepper starting at 1, same pattern as
@@ -1048,6 +1075,7 @@ export const PRODUCTS = [
   // not just inside Mimos.
   {
     id: "presentinho-macas",
+    slug: "maca-personalizada",
     name: "Maçã Personalizada",
     unit: "combinação personalizada",
     price: "Sob consulta 💬",
@@ -1062,6 +1090,7 @@ export const PRODUCTS = [
   },
   {
     id: "presentinho-obrigada",
+    slug: "cone-obrigada",
     name: "Cone Obrigada",
     unit: "combinação personalizada",
     price: "Sob consulta 💬",
@@ -1076,6 +1105,7 @@ export const PRODUCTS = [
   },
   {
     id: "presentinho-pirulito",
+    slug: "pirulito-de-chocolate-com-laco",
     name: "Pirulito de Chocolate com Laço",
     unit: "combinação personalizada",
     price: "Sob consulta 💬",
@@ -1097,6 +1127,7 @@ export const PRODUCTS = [
   // the carousel's own curated order/copy).
   {
     id: "brownlito-personalizado",
+    slug: "brownlito-personalizado",
     name: "Brownlito Personalizado",
     unit: "combinação personalizada",
     price: "Sob consulta 💬",
@@ -1111,6 +1142,7 @@ export const PRODUCTS = [
   },
   {
     id: "mini-donuts-personalizados",
+    slug: "mini-donuts-personalizados",
     name: "Mini Donuts Personalizados",
     unit: "combinação personalizada",
     price: "Sob consulta 💬",
@@ -1125,6 +1157,7 @@ export const PRODUCTS = [
   },
   {
     id: "oreo-chocobomb-personalizado",
+    slug: "oreo-chocobomb-personalizado",
     name: "Oreo Chocobomb Personalizado",
     unit: "combinação personalizada",
     price: "Sob consulta 💬",

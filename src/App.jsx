@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Heart } from "lucide-react";
 import { useSelection } from "./hooks/useSelection";
+import { useProductRoute } from "./hooks/useProductRoute";
 import HomeScreen from "./components/Home/HomeScreen";
 import MomentPicker from "./components/Home/MomentPicker";
 import CatalogScreen from "./components/Catalog/CatalogScreen";
@@ -38,26 +39,28 @@ const NON_MOMENT_SCREENS = [
 export default function App() {
   const [screen, setScreen] = useState(null);
   const [pendingMessage, setPendingMessage] = useState(null);
-  const [openProduct, setOpenProduct] = useState(null);
   // Which journey opened the product detail sheet — only Dias de luta ever
   // sets this (to "dia-dificil"), which is what turns on the Mon Caramel
   // Experience layer inside ProductDetailSheet (badges/note/cross-sell).
   // Catalog/Search never pass a context, so the sheet renders exactly as it
-  // always has for them.
-  const [openProductContext, setOpenProductContext] = useState(null);
+  // always has for them. Product open/close state itself now lives in
+  // useProductRoute (native History API — see that file): it also keeps
+  // the URL in sync for the 24 Coleção completa products (/doces/[slug]),
+  // while every other product (no `slug`) opens/closes exactly as before.
+  const { openProduct, openProductContext, openProductDetail, closeProductDetail, setOnDirectOpen } = useProductRoute();
   const { selection, addToSelection, removeFromSelection } = useSelection();
+
+  // A page load that lands directly on /doces/[slug] (e.g. a shared link)
+  // has no "origin screen" to return to when the Detail closes — this
+  // makes that case land on Coleção completa instead of Home. Plain
+  // synchronous ref assignment (not an effect): useProductRoute's own
+  // mount effect, which may call this, runs after render completes, so
+  // the ref is already set by then.
+  setOnDirectOpen(() => setScreen("catalogo"));
 
   const onGoSelection = () => setScreen("selecao");
   const onNavigate = (id) => setScreen(id === "home" ? null : id);
   const activeNav = screen === null ? "home" : BOTTOM_NAV_SCREENS.includes(screen) ? screen : undefined;
-  const openProductDetail = (product, context = null) => {
-    setOpenProduct(product);
-    setOpenProductContext(context);
-  };
-  const closeProductDetail = () => {
-    setOpenProduct(null);
-    setOpenProductContext(null);
-  };
 
   return (
     <div className="min-h-screen bg-brand-beige font-body">

@@ -66,7 +66,14 @@ export default function ProductDetailSheet({
   };
 
   const share = async () => {
-    const shareData = { title: p.name, text: `${p.name} — Mon Caramel Collection`, url: window.location.href };
+    // Built from the product's own slug, not window.location.href: the
+    // Detail sheet is shared global UI, so location.href would just be
+    // whatever screen/product currently sits in the URL — not necessarily
+    // this product. Falls back to the plain current URL for products
+    // outside Coleção completa (no `slug`, e.g. Caixas/Bandejas), same as
+    // before this round.
+    const url = p.slug ? `${window.location.origin}/doces/${p.slug}` : window.location.href;
+    const shareData = { title: p.name, text: `${p.name} — Mon Caramel Collection`, url };
     try {
       if (navigator.share) await navigator.share(shareData);
       else await navigator.clipboard.writeText(shareData.url);
