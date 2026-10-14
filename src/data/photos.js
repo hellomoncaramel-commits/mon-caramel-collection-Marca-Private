@@ -17,6 +17,11 @@ export const REAL_PHOTOS = {
   coneTrufadoNovo: `${BASE}/cone-trufado-novo.jpg`,
   alfajorCoco: `${BASE}/alfajor-coco.jpg`,
   alfajorClassico: `${BASE}/alfajor-classico.jpg`,
+  // Real photo sent by Naia (2026-10) specifically for the "Sem cobertura"
+  // option — replaces alfajorCoco (coconut, not a real commercial option)
+  // as the Alfajor product's own photo. alfajorCoco/alfajorClassico stay
+  // defined here, just unreferenced by any product.
+  alfajorSemCobertura: `${BASE}/alfajor-sem-cobertura.jpg`,
   casadinhoGoiabada: `${BASE}/casadinho-goiabada.jpg`,
   boloCenouraTray: `${BASE}/bolo-cenoura-tray.jpg`,
   boloCenouraFatias: `${BASE}/bolo-cenoura-fatias.jpg`,

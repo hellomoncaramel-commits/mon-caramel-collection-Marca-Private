@@ -380,15 +380,12 @@ export const PRODUCTS = [
       // replaced — same treatment as Pão de Mel/Cone Trufado earlier.
       nextTemptation: { id: "pao-de-mel", line: "Se você gosta de doce de leite, já provou nosso Pão de Mel?" },
     },
-    // No photo assigned on purpose: the only confirmed commercial options
-    // are "Sem cobertura" / "Com cobertura de chocolate" (see optionGroups
-    // above) — no coco version exists. REAL_PHOTOS.alfajorCoco shows a
-    // coconut-coated alfajor, which isn't one of the two real options, so
-    // it was removed rather than left to misrepresent the product (falls
-    // back to the existing illustrated <ProductArt/> placeholder). No
-    // other real photo in the project unambiguously shows just "sem
-    // cobertura"/"com cobertura de chocolate" — flagged in the PR as
-    // needing a new real photo from Naia, not guessed at here.
+    // Real photo sent by Naia specifically for this product, showing the
+    // "Sem cobertura" option — replaces the earlier gap (no photo, see PR
+    // history) left after REAL_PHOTOS.alfajorCoco (coconut, not a real
+    // commercial option) was removed. No coco option exists; this photo
+    // doesn't show one either.
+    photos: [REAL_PHOTOS.alfajorSemCobertura],
   },
   {
     id: "pirulito-alfajor",
@@ -846,15 +843,17 @@ export const PRODUCTS = [
     },
     // "dia-dificil" gets its own curated gallery — brownlitoEmbalado
     // (individually wrapped, coconut on top) in, brownlitoInteiro (the
-    // green-ribbon photo) out, at Naia's request; `photos` below stays
-    // unchanged as the general fallback (Feed/Search/ProductDetailSheet —
-    // see utils/products.js defaultPhotos), and the Mimos inspiration
+    // green-ribbon photo) out, at Naia's request; the Mimos inspiration
     // carousel (MIMO_INSPIRATIONS, src/data/inspirationGalleries.js) is a
     // separate data source entirely, untouched by either.
     photosByMoment: {
       "dia-dificil": [REAL_PHOTOS.brownlitoEmbalado, REAL_PHOTOS.brownlitoRecheio],
     },
-    photos: [REAL_PHOTOS.brownlitoInteiro, REAL_PHOTOS.brownlitoRecheio],
+    // `photos` below is the general fallback (Coleção completa/Busca —
+    // see utils/products.js defaultPhotos) — brownlitoRecheio (cut open,
+    // showing the Prestígio filling and morango) leads per Naia's request,
+    // brownlitoInteiro (whole, green-ribbon) second.
+    photos: [REAL_PHOTOS.brownlitoRecheio, REAL_PHOTOS.brownlitoInteiro],
   },
 
   // --- Caixas Personalizadas — fotos reais de caixas já montadas, aqui como
