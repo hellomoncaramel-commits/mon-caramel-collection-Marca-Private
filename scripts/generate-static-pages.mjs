@@ -80,6 +80,26 @@ function buildProductHtml(template, p) {
     `<meta property="og:image" content="${imageUrl}" />`,
     "og:image"
   );
+  // Twitter/X Card — same already-computed title/description/imageUrl as
+  // the og: tags just above, never a separately hand-written value.
+  html = replaceOne(
+    html,
+    /<meta name="twitter:title" content=".*?" \/>/s,
+    `<meta name="twitter:title" content="${escapeHtml(title)}" />`,
+    "twitter:title"
+  );
+  html = replaceOne(
+    html,
+    /<meta name="twitter:description" content=".*?" \/>/s,
+    `<meta name="twitter:description" content="${escapeHtml(description)}" />`,
+    "twitter:description"
+  );
+  html = replaceOne(
+    html,
+    /<meta name="twitter:image" content=".*?" \/>/s,
+    `<meta name="twitter:image" content="${imageUrl}" />`,
+    "twitter:image"
+  );
 
   // Real, indexable content — no width/height on the <img> (several real
   // photos have different native dimensions; this block only ever has to

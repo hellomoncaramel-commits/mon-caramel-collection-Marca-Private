@@ -21,6 +21,7 @@ export const DEFAULT_OG_TITLE = "Mon Caramel — Not your average sweets";
 export const DEFAULT_OG_DESCRIPTION =
   "Doces artesanais feitos em pequenos lotes, para matar a vontade, presentear e comemorar. Feitos em Oshawa. 🤎";
 export const DEFAULT_OG_IMAGE = `${SITE_URL}/images/products/bolo-de-pote-camadas.jpg`;
+// Twitter/X Card mirrors the same og: facts above — never a separate copy.
 
 function setNamedMeta(name, content) {
   const el = document.head.querySelector(`meta[name="${name}"]`);
@@ -54,7 +55,13 @@ export function applyProductMeta(product, photoPath) {
   setPropertyMeta("og:title", title);
   setPropertyMeta("og:description", description);
   setPropertyMeta("og:url", url);
-  if (photoPath) setPropertyMeta("og:image", `${SITE_URL}${photoPath}`);
+  setNamedMeta("twitter:title", title);
+  setNamedMeta("twitter:description", description);
+  if (photoPath) {
+    const imageUrl = `${SITE_URL}${photoPath}`;
+    setPropertyMeta("og:image", imageUrl);
+    setNamedMeta("twitter:image", imageUrl);
+  }
 }
 
 // Called on close (back to Home/Catálogo/wherever) and on mount when the
@@ -68,4 +75,7 @@ export function resetMeta() {
   setPropertyMeta("og:description", DEFAULT_OG_DESCRIPTION);
   setPropertyMeta("og:url", `${SITE_URL}/`);
   setPropertyMeta("og:image", DEFAULT_OG_IMAGE);
+  setNamedMeta("twitter:title", DEFAULT_OG_TITLE);
+  setNamedMeta("twitter:description", DEFAULT_OG_DESCRIPTION);
+  setNamedMeta("twitter:image", DEFAULT_OG_IMAGE);
 }

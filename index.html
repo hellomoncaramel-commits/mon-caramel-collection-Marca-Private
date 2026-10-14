@@ -3,6 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#AB6233" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
     <title>Mon Caramel | Doces artesanais em Oshawa</title>
     <meta name="description" content="Doces artesanais por encomenda em Oshawa e Durham Region. Brigadeiros, presentes, lembrancinhas e muito mais. Escolha o seu e fale comigo." />
@@ -14,6 +17,36 @@
     <meta property="og:url" content="https://moncaramel.ca/" />
     <meta property="og:image" content="https://moncaramel.ca/images/products/bolo-de-pote-camadas.jpg" />
     <meta property="og:locale" content="pt_BR" />
+    <!-- Twitter/X Card — same facts as Open Graph above, never a separate
+         copy: Home's values are hand-set here once; each generated
+         /doces/[slug] page (scripts/generate-static-pages.mjs) overwrites
+         all four with that exact product's own already-computed
+         title/description/image, the same variables its own og: tags use. -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Mon Caramel — Not your average sweets" />
+    <meta name="twitter:description" content="Doces artesanais feitos em pequenos lotes, para matar a vontade, presentear e comemorar. Feitos em Oshawa. 🤎" />
+    <meta name="twitter:image" content="https://moncaramel.ca/images/products/bolo-de-pote-camadas.jpg" />
+    <!-- Schema.org — LocalBusiness only (no Product/Offer: see PR
+         description for why). Only confirmed, public facts: no address,
+         phone, hours, priceRange or geo — see the PR description for the
+         full list of deliberately omitted properties. Shared verbatim by
+         every page (Home and all 24 product pages), since it describes
+         the business, not any one product. -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "LocalBusiness",
+        "name": "Mon Caramel",
+        "url": "https://moncaramel.ca/",
+        "description": "Doces artesanais por encomenda em Oshawa e Durham Region. Brigadeiros, presentes, lembrancinhas e muito mais.",
+        "image": "https://moncaramel.ca/images/products/bolo-de-pote-camadas.jpg",
+        "areaServed": [
+          { "@type": "AdministrativeArea", "name": "Oshawa, Ontario, Canada" },
+          { "@type": "AdministrativeArea", "name": "Durham Region, Ontario, Canada" }
+        ],
+        "sameAs": ["https://instagram.com/by_moncaramel"]
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
