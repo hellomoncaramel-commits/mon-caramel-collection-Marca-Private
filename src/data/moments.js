@@ -9,8 +9,13 @@ export const MOMENTS = [
   {
     id: "dia-dificil",
     emoji: "💛",
-    label: "Dias de luta. Doces de glória.",
-    titleLines: ["Dias de luta.", "Doces de glória."],
+    // Reads as the person's own answer to the page's own opening question
+    // ("Como você está hoje?" → "Hoje eu só quero um docinho.") — replaces
+    // the old "Dias de luta. Doces de glória.", which read as an ad slogan
+    // rather than something a real person would say about their own day
+    // (editorial audit, 2026-10).
+    label: "Hoje eu só quero um docinho.",
+    titleLines: ["Hoje eu só quero", "um docinho."],
   },
   {
     id: "presente",

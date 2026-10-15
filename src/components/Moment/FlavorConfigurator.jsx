@@ -284,6 +284,16 @@ const STEP_INTRO = {
 // (multi-select), with a live, auto-split breakdown of quantity per flavor.
 // Kept as an elegant inline expansion rather than a separate modal/drawer —
 // the product stays visible the whole time.
+//
+// No product in the current catalog has a bare `flavors` list without
+// `packageOptions`/`optionGroups` (see products.js), so this component is
+// currently unreachable — kept ready for the day one does. Its own confirm
+// buttons were brought in line with PackageConfigurator/
+// OptionGroupsConfigurator's "Eu quero" (editorial audit, 2026-10) for the
+// same reason those two already use it: this is a real product being
+// confirmed into Minha Seleção, not an idea in the Presentes wizard (where
+// "Adicionar à minha seleção"/"Atualizar na minha seleção" stays correct —
+// see GiftIdeaWizard.jsx).
 function FlavorSplitConfigurator({ product, existing, onConfirm }) {
   const qtyOptions = useMemo(() => parseQuantityOptions(product.unit), [product.unit]);
   const [qty, setQty] = useState(existing?.qty ?? qtyOptions[0]);
@@ -349,7 +359,7 @@ function FlavorSplitConfigurator({ product, existing, onConfirm }) {
             style={{ backgroundColor: COLORS.caramelDark, color: "white" }}
           >
             <Heart size={12} fill="white" />
-            Adicionar à minha seleção
+            Eu quero
           </button>
         </>
       ) : (
@@ -396,7 +406,7 @@ function FlavorSplitConfigurator({ product, existing, onConfirm }) {
             }}
           >
             <Heart size={12} fill={selectedFlavors.length === 0 ? "none" : "white"} />
-            Adicionar à minha seleção
+            Eu quero
           </button>
         </>
       )}

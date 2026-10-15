@@ -37,148 +37,63 @@ const MOMENT_PHOTO_STYLE = {
 // places below — the peek padding on the track and the arrow offsets
 // both need to know it too, so it can't be simplified away.
 
-// Visual-correction pass: the previous gradient used a warm tan sampled as
-// its own one-off color, covering roughly the bottom half of the card — it
-// read as a colored wash over the photo rather than a shadow. Replaced with
-// an ink-based scrim (same COLORS.ink token and "to bottom, transparent to
-// dark" logic PresenteEntryScreen.jsx already uses for photo-overlay text).
-//
-// Second correction pass: the first ink-based attempt was still too gentle
-// — it topped out under 90% opacity over a long, gradual ramp, which read
-// as barely different from the old peach wash at a glance. Pushed it to a
-// short, fast ramp reaching ~97% opacity — but that overshot: at ~97% the
-// bottom of the card goes nearly solid black, the photo stops reading as a
-// photo there at all. Too heavy, not "a shadow," which is exactly the
-// "não filtro, não cobrir metade da foto" the brief asked to avoid in the
-// first place, just in the opposite direction.
-//
-// Third correction pass: capped the max opacity at the same ~80% ceiling
-// PresenteEntryScreen's own approved scrim uses (`${COLORS.ink}CC` there)
-// — this was always the reference being matched, and 80% is where it
-// actually tops out, not ~97%. The photo now stays faintly visible even at
-// the very bottom edge (a shadow, not a block), while the ramp itself
-// stays short and fast so the darkening still reads as deliberate, not
-// gradual mush.
-//
-// Fourth correction pass: side-by-side against the reference mockup's own
-// "Dias de luta" card showed the 80% ceiling wasn't dark enough for every
-// photo — this card's real photo has light-colored cookies right behind
-// the text, and at 80% they still fight the white title for attention
-// (the reference's own photo happens to be dark there, so its 80%-ish
-// scrim reads fine; the ceiling itself needed to go a bit higher to work
-// across different real photos, not just the one in the mockup). Bumped to
-// an ~88% ceiling and nudged the ramp to start a touch earlier — still a
-// shadow with a hint of photo showing through, not a block, just dark
-// enough to hold up against a bright background too. Text below is
-// white/cream (see MomentCard's h3/p).
-//
-// Fifth correction pass: the mockup's own caption calls for a "scrim
-// marrom sutil" (subtle brown scrim) — COLORS.ink (#3D2418) is technically
-// brown, but it's dark enough that at ~85-90% opacity it reads as plain
-// black, not warm chocolate. Swapped the base token to
-// COLORS.caramelDarker (#7A4524 — the same rich caramel already used on
-// the "Quero isso" button), which visibly reads as warm brown rather than
-// crushing to black.
-//
-// Sixth correction pass: that swap under-corrected — caramelDarker's RGB
-// (122, 69, 36) is noticeably lighter/more luminant than ink's (61, 36,
-// 24), so holding the same opacity stops as before made the whole scrim
-// visibly weaker, not just warmer. The photo went back to fighting the
-// white text (the exact problem the fourth pass had already fixed, just
-// with the wrong base color). Pushed the opacity stops higher (~52% /
-// ~85% / ~95%, up from ~40% / ~74% / ~88%) so caramelDarker reaches
-// comparable darkness at the bottom edge to what ink had — warm brown
-// identity, same holding power for the text on top. Result (Naia's
-// words): "parece um borrão" — a solid muddy patch, not a photo treatment.
-//
-// Seventh correction pass: reset based on a precise reference target (a
-// mockup crop annotated with an explicit opacity curve by %-of-card-height:
-// ~0% through 55-60% (photo untouched), 60-70% (almost imperceptible
-// transition begins), 70-85% (progressive darkening to hold the text),
-// 85-100% (more contrast but still translucent — never a solid block).
-// Two changes from the sixth pass: back to COLORS.ink as the base (neutral
-// "shadow" warmth, not a flat brown wash — caramelDarker is what made the
-// previous pass read as a smudge), and a much longer, gentler ramp that
-// starts later and never exceeds the same ~80% ceiling the third pass
-// already established as PresenteEntryScreen's own approved max. The
-// photo's own real darkness (chocolate/cookie tones already dark where the
-// text sits) does most of the contrast work — the scrim only needs to tip
-// the balance, not carry it alone.
-// Eleventh correction pass (micro-adjustment): structure/contrast/legibility
-// all approved ("Presentes e Festa estão aprovados em estrutura, contraste e
-// direção visual"). The one remaining note — the final ~15-20% of the card
-// still reads a touch more brown/dark than the reference target — is scoped
-// to only the LAST stop (100%) of both this gradient and the content scrim
-// below, left untouched everywhere else: start point (56-58%) and every
-// intermediate stop (70/72%, 85/86%) that the approved legibility actually
-// depends on stay exactly as they were. Eased ~12% (CC → B3), which only
-// moves the tail end of the 85→100% interpolation — the subtitle, which
-// sits above the 85/86% stop, is unaffected (confirmed: <1pp difference at
-// its lower edge).
-const TEXT_PANEL_GRADIENT_DESKTOP = `linear-gradient(to bottom, ${COLORS.ink}00 0%, ${COLORS.ink}00 56%, ${COLORS.ink}26 70%, ${COLORS.ink}99 85%, ${COLORS.ink}B3 100%)`;
-const TEXT_PANEL_GRADIENT_MOBILE = `linear-gradient(to bottom, ${COLORS.ink}00 0%, ${COLORS.ink}00 58%, ${COLORS.ink}26 72%, ${COLORS.ink}99 86%, ${COLORS.ink}B3 100%)`;
+// Visual rework, 2026-10 (second pass). The first pass's "one gradient,
+// per-moment stops" attempt still read as a flat brown panel: a short ramp
+// (16 points) held flat at ~88-97% alpha of the brand's own warm ink token
+// is, visually, a painted band dropped over the photo's lower half — the
+// exact "véu marrom" complaint, just with the two old layers merged into
+// one. Two things actually caused that, not just the stop positions:
+//   1. The color itself — COLORS.ink (#3D2418) is a saturated warm brown.
+//      At high alpha it doesn't read as "the photo got darker," it reads
+//      as "a brown film sits on top of the photo." A real photographic
+//      shadow lowers luminosity without tinting the hue — so this uses a
+//      near-neutral, barely-warm near-black (CARD_SHADOW below) instead.
+//   2. The shape — a 2-stop ramp (transparent → peak) over a short span
+//      has a visually locatable "elbow," however many intermediate stops
+//      get inserted later. This instead uses a long, many-stop curve that
+//      eases in very gently (near-zero until past the card's midpoint,
+//      only a handful of % points of visible darkening through most of
+//      the following third) and only firms up close to the bottom edge,
+//      so there's no point a viewer's eye can land on and say "here the
+//      gradient starts." The peak itself is also much lower (well under
+//      the old 88-97%) — enough to hold AA contrast locally, not enough
+//      to read as a solid fill; real pixel-contrast measurement (see the
+//      PR notes), not visual judgment, confirmed each curve clears 4.5:1
+//      at the title/tagline/CTA band specifically.
+// Per-moment curves (not one shared default) because the three photos
+// aren't equally bright in the region under the text — festa's is the
+// busiest/lightest (pastel cupcakes, grass) and needs a visibly earlier,
+// deeper curve than dia-dificil's to hold the same contrast; the shape
+// (long ease-in, moderate peak, same neutral color) stays identical across
+// all three, only the curve's own start/depth differs.
+const CARD_SHADOW_RGB = "17, 15, 13"; // low-saturation near-black — darkens, doesn't tint brown
 
-// Eighth correction pass: the seventh pass's photo treatment itself was
-// approved ("a direção da FOTO agora está muito melhor") but legibility
-// suffered — the tagline especially ("Café, TPM, lanche ou só vontade de
-// um docinho.") got hard to read over light-colored cookies. The brief was
-// explicit: don't darken the whole card again, add a second, localized
-// scrim that only strengthens the band where title/tagline/button actually
-// sit, stacked on top of the existing full-card gradient above (which
-// keeps the top of every photo untouched). Alpha compositing of the two
-// semi-transparent ink layers means the extra darkening only shows up
-// where both overlap — near the bottom — not higher up where the first
-// gradient is still close to 0. A flat two-stop ramp (0 straight to a
-// single peak at 100%) put most of its own strength right at the card's
-// bottom edge — exactly where the button's own solid pill already has
-// contrast — while the tagline, which sits noticeably higher than the
-// very bottom, was still barely helped. Confirmed too weak: the tagline
-// was "ainda se perde claramente sobre a fotografia."
-//
-// Ninth correction pass: traced the actual content layout (title ~58-71%
-// of card height, tagline ~74-83%, button ~86-95%, from the mobile card's
-// own flex spacing) and re-shaped the local scrim to put its own strongest
-// rise across the tagline's band specifically, easing back slightly toward
-// 100% so the very bottom (combined with the base gradient, which is
-// already at its own ~80% there) never climbs into "solid" territory —
-// capped so base+content together stay at/under ~85-88% at the bottom
-// edge, the same ceiling already proven to still look translucent rather
-// than blocked. Also, per explicit instruction, no single blind opacity
-// for all three: festa's photo is brighter/more colorful overall (pastel
-// cupcakes, grass, flowers) and needed a visibly stronger version of the
-// same curve, not just the shared default, to hold the title/tagline —
-// dia-dificil and presente share one curve, festa gets its own (same
-// shape, stronger stops).
-// Eleventh correction pass (micro-adjustment): only the `tail` (100% stop)
-// of each entry eased ~12%, same reasoning as the base gradient above —
-// the mid/peak stops that hold title+tagline contrast are untouched, so
-// legibility right up to the subtitle's own lower edge (~83%, well above
-// the 100% point this affects) stays effectively identical.
-const CONTENT_SCRIM_STOPS = {
-  default: { mid: "4D", peak: "8C", tail: "38" }, // ≈30% / 55% / 22% (tail was 25%)
-  // Tenth correction pass: legibility on festa was approved as-is, but
-  // Naia flagged the scrim itself as too visible — "uma mancha marrom/
-  // escura subindo pelo centro inferior da fotografia," reading as an
-  // applied wash rather than a shadow, against this photo's busier,
-  // more colorful content (pastel cupcakes, grass, flowers). Same shape,
-  // same stop positions (not touched) — only the three alpha values eased
-  // down a notch (~12-15% relative) to soften how visible the scrim itself
-  // is while staying dark enough to hold the same title/tagline contrast.
-  festa: { mid: "59", peak: "8F", tail: "3E" }, // ≈35% / 56% / 24% (tail was 28%)
+const CARD_SCRIM_CURVES = {
+  "dia-dificil": [
+    [0, 0], [58, 0], [68, 0.05], [78, 0.14], [88, 0.3], [100, 0.46],
+  ],
+  presente: [
+    [0, 0], [50, 0], [62, 0.07], [74, 0.2], [86, 0.4], [100, 0.58],
+  ],
+  festa: [
+    [0, 0], [44, 0], [58, 0.09], [72, 0.25], [86, 0.48], [100, 0.66],
+  ],
 };
 
-function contentScrimGradient(momentId, startStop) {
-  const { mid, peak, tail } = CONTENT_SCRIM_STOPS[momentId] ?? CONTENT_SCRIM_STOPS.default;
-  return `linear-gradient(to bottom, ${COLORS.ink}00 0%, ${COLORS.ink}00 ${startStop}, ${COLORS.ink}${mid} 66%, ${COLORS.ink}${peak} 80%, ${COLORS.ink}${tail} 100%)`;
+function cardScrimGradient(momentId) {
+  const curve = CARD_SCRIM_CURVES[momentId] ?? CARD_SCRIM_CURVES["dia-dificil"];
+  const stops = curve.map(([pct, alpha]) => `rgba(${CARD_SHADOW_RGB}, ${alpha}) ${pct}%`).join(", ");
+  return `linear-gradient(to bottom, ${stops})`;
 }
 
 function MomentCard({ moment, photoSrc, eager, featured, onSelect }) {
   const lines = moment.titleLines ?? [moment.label];
   const photoStyle = MOMENT_PHOTO_STYLE[moment.id];
-  // Subtle text-shadow — support only, not the main fix (the brief was
-  // explicit: no glow/outline, the localized scrim above does the real
-  // work). Soft, small, ink-colored rather than pure black.
-  const textShadow = `0 1px 2px ${COLORS.ink}59`; // ≈ 35%
+  // Subtle text-shadow — support only, never the main source of contrast
+  // (the gradient above does that work). Same neutral near-black as the
+  // gradient, not brand ink/brown, and low alpha — soft lift, not an
+  // outline.
+  const textShadow = `0 1px 2px rgba(${CARD_SHADOW_RGB}, 0.4)`;
   return (
     // rounded-3xl: same "primary photo card" radius as ProductCard, FeedCard
     // and the Presente inspiration frames — was a one-off inline 20px before.
@@ -190,10 +105,7 @@ function MomentCard({ moment, photoSrc, eager, featured, onSelect }) {
         style={photoStyle}
         loading={eager ? "eager" : "lazy"}
       />
-      <div className="absolute inset-0 md:hidden" style={{ background: TEXT_PANEL_GRADIENT_MOBILE }} />
-      <div className="absolute inset-0 hidden md:block" style={{ background: TEXT_PANEL_GRADIENT_DESKTOP }} />
-      <div className="absolute inset-0 md:hidden" style={{ background: contentScrimGradient(moment.id, "50%") }} />
-      <div className="absolute inset-0 hidden md:block" style={{ background: contentScrimGradient(moment.id, "48%") }} />
+      <div className="absolute inset-0" style={{ background: cardScrimGradient(moment.id) }} />
 
       <div className="absolute left-6 right-6 bottom-[22px] md:left-5 md:right-5 md:bottom-5 flex flex-col items-start">
         {/* Text-treatment pass (correction): an earlier round pulled this
@@ -237,20 +149,24 @@ function MomentCard({ moment, photoSrc, eager, featured, onSelect }) {
         >
           {MOMENT_TAGLINE[moment.id]}
         </p>
-        {/* Visual-correction pass: a touch more compact (was h-11/px-[18px])
-            now that it sits on a tighter, darker scrim — reads as refined,
-            not a default-sized button dropped onto the card.
-            Alignment pass: Naia flagged the layout directly against the
-            reference card (title/tagline/button all sharing one left
-            column, button included) — removed self-end so the button
-            inherits the parent's items-start and lines up under the
-            tagline instead of floating at the card's right edge. */}
+        {/* Visual audit, 2026-10: a solid, fully-opaque caramelDarker pill
+            was its own "bloco pesado" sitting on top of an already-darkened
+            photo — two heavy layers stacked. Swapped to a near-opaque
+            cream pill (same rgba(255,252,245,…) token the carousel's own
+            prev/next arrow buttons already use below, so this isn't a new
+            visual language) with dark ink text/icon — reads as light and
+            integrated against the photo, while its own near-white fill
+            (not the scrim behind it) is what actually carries the text
+            contrast, so it stays legible regardless of which photo/scrim
+            is behind it. h-11 (44px) for a comfortable touch target — the
+            old h-10 was borderline. */}
         <button
           onClick={onSelect}
-          className="mt-4 md:mt-3 shrink-0 font-semibold md:font-medium h-10 md:h-10 px-4 text-[13.5px]"
-          style={{ backgroundColor: COLORS.caramelDarker, color: COLORS.beige, borderRadius: 999 }}
+          className="mt-4 md:mt-3 shrink-0 inline-flex items-center gap-1 font-semibold md:font-medium h-11 md:h-10 pl-4 pr-3.5 text-[13.5px] transition-transform active:scale-95"
+          style={{ backgroundColor: "rgba(255,252,245,0.92)", color: COLORS.ink, borderRadius: 999, boxShadow: "0 2px 8px rgba(61,36,24,0.18)" }}
         >
-          Quero isso →
+          Ver minhas opções
+          <ChevronRight size={15} strokeWidth={2.5} />
         </button>
       </div>
     </div>
