@@ -58,7 +58,14 @@ function HeroActionCard({ a, onSelect, height, radius, iconSize, emojiSize, titl
         <span className="block text-brand-beige font-semibold leading-snug" style={{ fontSize: titleSize }}>
           {a.title}
         </span>
-        <span className="block text-brand-beige/80 mt-0.5 leading-snug" style={{ fontSize: subtitleSize }}>
+        {/* text-brand-beige, not /80: the desktop journey cards (below,
+            no `bg` override) sit on the lighter default COLORS.caramelDark,
+            where beige/80 blended to only 3.51:1 — under AA's 4.5:1
+            (Lighthouse desktop audit). Full-opacity beige is the same token
+            already used by the title span just above; it clears 4.53:1 here
+            and, on the mobile cards (bg=caramelDarker, a darker shade),
+            only brightens an already-passing subtitle further. */}
+        <span className="block text-brand-beige mt-0.5 leading-snug" style={{ fontSize: subtitleSize }}>
           {a.subtitle}
         </span>
       </span>
