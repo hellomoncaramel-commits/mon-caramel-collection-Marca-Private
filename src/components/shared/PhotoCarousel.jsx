@@ -44,6 +44,14 @@ export default function PhotoCarousel({ photos, alt, aspectClassName = "aspect-p
   // read, so a swipe here doesn't fight the page's own scroll.
   const onPointerDown = (e) => {
     if (photos.length <= 1) return;
+    // A press starting on the prev/next button is a click, not a drag —
+    // skip capturing the pointer here so the click reaches the button's
+    // own onClick normally. setPointerCapture() on this container
+    // retargets the subsequent pointerup (and the mouse click derived from
+    // it) to the container itself, which silently swallowed clicks on the
+    // nested arrow buttons — they only ever advanced via auto-rotate or a
+    // real drag. Swipe (which never starts on a button) is untouched.
+    if (e.target.closest("button")) return;
     drag.current = { down: true, startX: e.clientX, moved: false };
     e.currentTarget.setPointerCapture?.(e.pointerId);
   };

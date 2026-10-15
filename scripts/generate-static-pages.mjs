@@ -45,6 +45,16 @@ function replaceOne(html, regex, replacement, label) {
 }
 
 function buildProductHtml(template, p) {
+  // Deliberately the .jpg from defaultPhotos(), not its .webp sibling
+  // (every product photo has one, see generate-webp.mjs): WebP support for
+  // og:image/twitter:image specifically (as opposed to in-browser <img>,
+  // where it's universally fine) has a long, well-documented history of
+  // being unreliable on Facebook/WhatsApp's crawler (Meta's shared
+  // infrastructure) — the exact channel this business actually gets
+  // shared through. A broken/missing preview on the one platform that
+  // matters most here is a worse outcome than a few hundred KB of extra
+  // transfer on a link preview fetch. Revisit only if that compatibility
+  // story changes.
   const photo = defaultPhotos(p)?.[0];
   const imageUrl = photo ? `${SITE_URL}${photo}` : FALLBACK_IMAGE;
   const pageUrl = `${SITE_URL}/doces/${p.slug}`;
@@ -79,6 +89,26 @@ function buildProductHtml(template, p) {
     /<meta property="og:image" content=".*?" \/>/s,
     `<meta property="og:image" content="${imageUrl}" />`,
     "og:image"
+  );
+  // Twitter/X Card — same already-computed title/description/imageUrl as
+  // the og: tags just above, never a separately hand-written value.
+  html = replaceOne(
+    html,
+    /<meta name="twitter:title" content=".*?" \/>/s,
+    `<meta name="twitter:title" content="${escapeHtml(title)}" />`,
+    "twitter:title"
+  );
+  html = replaceOne(
+    html,
+    /<meta name="twitter:description" content=".*?" \/>/s,
+    `<meta name="twitter:description" content="${escapeHtml(description)}" />`,
+    "twitter:description"
+  );
+  html = replaceOne(
+    html,
+    /<meta name="twitter:image" content=".*?" \/>/s,
+    `<meta name="twitter:image" content="${imageUrl}" />`,
+    "twitter:image"
   );
 
   // Real, indexable content — no width/height on the <img> (several real

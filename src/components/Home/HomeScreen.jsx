@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { ChevronRight, Search, ShoppingBag } from "lucide-react";
 import { REAL_PHOTOS } from "../../data/photos";
 import { PRODUCTS } from "../../data/products";
-import { defaultPhotos } from "../../utils/products";
+import { defaultPhotos, cardPriceLine } from "../../utils/products";
 import { COLORS } from "../../styles/colors";
 import Logo from "../shared/Logo";
 import Photo from "../shared/Photo";
@@ -23,10 +23,7 @@ const HERO_ACTIONS = [
 ];
 
 // Four real, strongly-photographed products for the "Nossos doces
-// favoritos" strip — same PRODUCTS data/photos/price convention as every
-// other card in the app (ProductCard, FeedCard, SearchScreen all just
-// render `p.price` raw, including "Sob consulta 💬" — Brownlito here
-// follows that same existing pattern, not a new one).
+// favoritos" strip.
 const FAVORITE_PRODUCT_IDS = ["chocobomb", "cone-trufado", "brownlito", "casadinho"];
 
 // Mobile hero overlay — a dark scrim, not a wash: just enough contrast
@@ -61,7 +58,14 @@ function HeroActionCard({ a, onSelect, height, radius, iconSize, emojiSize, titl
         <span className="block text-brand-beige font-semibold leading-snug" style={{ fontSize: titleSize }}>
           {a.title}
         </span>
-        <span className="block text-brand-beige/80 mt-0.5 leading-snug" style={{ fontSize: subtitleSize }}>
+        {/* text-brand-beige, not /80: the desktop journey cards (below,
+            no `bg` override) sit on the lighter default COLORS.caramelDark,
+            where beige/80 blended to only 3.51:1 — under AA's 4.5:1
+            (Lighthouse desktop audit). Full-opacity beige is the same token
+            already used by the title span just above; it clears 4.53:1 here
+            and, on the mobile cards (bg=caramelDarker, a darker shade),
+            only brightens an already-passing subtitle further. */}
+        <span className="block text-brand-beige mt-0.5 leading-snug" style={{ fontSize: subtitleSize }}>
           {a.subtitle}
         </span>
       </span>
@@ -78,8 +82,14 @@ function FavoriteProductCard({ p, onOpen, className, style }) {
         <Photo src={photo} alt="" className="w-full h-full object-cover" loading="lazy" />
       </div>
       <p className="mt-2 text-xs font-display text-brand-ink leading-tight truncate">{p.name}</p>
+      {/* cardPriceLine(p), not p.price: the same single source of truth
+          CatalogScreen.jsx and the static /doces/[slug] pages already use —
+          p.price is a legacy field superseded by packageOptions for
+          Brigadeiros/Casadinhos/Sequilhos (see data/products.js), and
+          showing it directly here used to contradict the real price shown
+          everywhere else for Casadinhos (this card's own 4th favorite). */}
       <p className="text-3xs font-medium mt-0.5" style={{ color: COLORS.caramelDark }}>
-        {p.price}
+        {cardPriceLine(p)}
       </p>
     </button>
   );
@@ -299,9 +309,14 @@ export default function HomeScreen({ onSelect, onOpenProduct, selection }) {
         <div className="absolute inset-0 pointer-events-none" style={{ background: HERO_GRADIENT }} />
 
         <div className="absolute" style={{ left: 64, top: 84, maxWidth: 560 }}>
-          <h1 className="font-display font-semibold text-brand-ink" style={{ fontSize: 80, lineHeight: 0.97 }}>
+          {/* Same headline as the mobile hero's own <h1> above — kept as a
+              <p> here (not a second <h1>) since only one of the two is
+              ever actually visible at a time (CSS display:none on the
+              other via lg:hidden/hidden lg:block); a page should only ever
+              have one H1. Visual weight (size/weight/color) unchanged. */}
+          <p className="font-display font-semibold text-brand-ink" style={{ fontSize: 80, lineHeight: 0.97 }}>
             O que a gente vai adoçar hoje?&nbsp;💛
-          </h1>
+          </p>
           <p className="text-brand-inkSoft" style={{ fontSize: 19, lineHeight: 1.45, maxWidth: 430, marginTop: 20 }}>
             Me conta o que você precisa. A gente acha um doce pra isso.
           </p>
@@ -321,9 +336,9 @@ export default function HomeScreen({ onSelect, onOpenProduct, selection }) {
           ProductDetail on click (same openProductDetail App.jsx already
           uses everywhere else). First row is allowed to run past the fold
           at 900px tall — that's the point, it signals there's more page
-          below (same as the reference). APPROVED (PR #96) — not touched
-          this round beyond reusing the same FavoriteProductCard/
-          favoriteProducts the mobile strip above now also uses. */}
+          below (same as the reference). APPROVED (PR #96) — own markup
+          (not FavoriteProductCard), sharing only the favoriteProducts data
+          array with the mobile strip above. */}
       <div className="hidden lg:block" style={{ marginTop: 48 }}>
         <h2 className="font-display font-medium text-brand-ink mb-5" style={{ fontSize: 34 }}>
           Nossos doces favoritos&nbsp;💛
@@ -335,8 +350,12 @@ export default function HomeScreen({ onSelect, onOpenProduct, selection }) {
                 <Photo src={defaultPhotos(p)?.[0]} alt="" className="w-full h-full object-cover" loading="lazy" />
               </div>
               <p className="mt-2.5 text-base font-display text-brand-ink leading-tight">{p.name}</p>
+              {/* cardPriceLine(p), not p.price — same fix as the mobile
+                  FavoriteProductCard above; this desktop block renders its
+                  own markup rather than reusing that component, so it needed
+                  the same price-source correction applied separately. */}
               <p className="text-sm font-medium mt-0.5" style={{ color: COLORS.caramelDark }}>
-                {p.price}
+                {cardPriceLine(p)}
               </p>
             </button>
           ))}

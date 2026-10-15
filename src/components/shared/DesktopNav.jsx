@@ -57,7 +57,15 @@ export default function DesktopNav({ active, onNavigate, selectionCount }) {
           style={{ backgroundColor: COLORS.subtle, border: `1px solid ${COLORS.border}`, boxShadow: "0 1px 3px rgba(61,36,24,0.06)" }}
         >
           <Search size={17} className="text-brand-muted shrink-0" />
-          <span className="text-sm text-brand-muted truncate">Buscar doces, sabores...</span>
+          {/* text-brand-inkSoft, not text-brand-muted: muted (#7A6A57) was
+              tuned for AA against the lighter beige page background, not
+              against this pill's own subtle (#F4EBDA) fill — at 4.41:1 here,
+              just under AA's 4.5:1 (Lighthouse desktop audit). inkSoft
+              (#5B4A3D) is the same warm-brown family, already an existing
+              brand token, and clears 7.1:1 against subtle. Icon left as
+              muted — axe's color-contrast rule only flags text, and the
+              icon alone already matched the audit's own finding. */}
+          <span className="text-sm text-brand-inkSoft truncate">Buscar doces, sabores...</span>
         </button>
 
         <button onClick={() => onNavigate("selecao")} className="flex flex-col items-center gap-0.5 shrink-0" aria-current={active === "selecao" ? "page" : undefined}>
