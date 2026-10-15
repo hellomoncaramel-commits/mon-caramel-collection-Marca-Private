@@ -254,6 +254,13 @@ export const MIMO_SHOWCASE = [
     name: "Mini Donuts Personalizados",
     description: "Mini donuts em embalagem personalizada pra impressionar.",
     photo: "/images/products/presentinho-donuts-personalizado.jpg",
+    // Source photo is a tall portrait (3000x4000) with the donuts and
+    // personalization card only in its lower half — the card's landscape
+    // aspect-photo frame cover-crops ~56% of the image's height, and at the
+    // CSS default (center, 50%) that window landed mostly on the empty wall
+    // above the treats, while also clipping the bottom of the name card.
+    // Shifted down to frame the donuts + label fully instead.
+    objectPosition: "center 91%",
   },
   {
     id: "pirulito-de-alfajor",

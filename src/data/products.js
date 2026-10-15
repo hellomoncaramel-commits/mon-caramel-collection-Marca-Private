@@ -910,11 +910,15 @@ export const PRODUCTS = [
     photosByMoment: {
       "dia-dificil": [REAL_PHOTOS.brownlitoEmbalado, REAL_PHOTOS.brownlitoRecheio],
     },
-    // `photos` below is the general fallback (Coleção completa/Busca —
-    // see utils/products.js defaultPhotos) — brownlitoRecheio (cut open,
-    // showing the Prestígio filling and morango) leads per Naia's request,
-    // brownlitoInteiro (whole, green-ribbon) second.
-    photos: [REAL_PHOTOS.brownlitoRecheio, REAL_PHOTOS.brownlitoInteiro],
+    // `photos` below is the general fallback (Coleção completa/Busca,
+    // Detail, and any other card reusing the product outside the
+    // dia-dificil moment context — see utils/products.js defaultPhotos).
+    // Polish round, 2026-10: down to a single photo — brownlitoInteiro
+    // (whole, green-ribbon) only. Supersedes the earlier two-photo order
+    // from the previous round (brownlitoRecheio leading); that round's
+    // "per Naia's request" no longer applies per this one's explicit
+    // instruction to keep only the green-ribbon photo.
+    photos: [REAL_PHOTOS.brownlitoInteiro],
   },
 
   // --- Caixas Personalizadas — fotos reais de caixas já montadas, aqui como

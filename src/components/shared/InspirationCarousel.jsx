@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { COLORS } from "../../styles/colors";
+import { useSnapCarousel } from "../../hooks/useSnapCarousel";
 import InspirationImage from "./InspirationImage";
 
 // Slide width: "min(84vw,460px)" — same technique as MomentPicker, scales
@@ -41,57 +41,7 @@ import InspirationImage from "./InspirationImage";
 // vs. "Fotos de cestas especiais"); everything else here is identical across all
 // of them on purpose, so they read as one consistent system.
 export default function InspirationCarousel({ items, ariaLabel }) {
-  const trackRef = useRef(null);
-  const [index, setIndex] = useState(0);
-
-  useEffect(() => {
-    const el = trackRef.current;
-    if (!el) return;
-    let raf;
-    const onScroll = () => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => {
-        const children = Array.from(el.children);
-        if (!children.length) return;
-        let closest = 0;
-        let closestDist = Infinity;
-        children.forEach((c, i) => {
-          const dist = Math.abs(c.offsetLeft + c.offsetWidth / 2 - (el.scrollLeft + el.clientWidth / 2));
-          if (dist < closestDist) {
-            closestDist = dist;
-            closest = i;
-          }
-        });
-        setIndex(closest);
-      });
-    };
-    el.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      el.removeEventListener("scroll", onScroll);
-      cancelAnimationFrame(raf);
-    };
-  }, []);
-
-  const goTo = (i) => {
-    const el = trackRef.current;
-    if (!el) return;
-    const clamped = Math.max(0, Math.min(items.length - 1, i));
-    const child = el.children[clamped];
-    if (!child) return;
-    const target = child.offsetLeft - (el.clientWidth - child.offsetWidth) / 2;
-    const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-    el.scrollTo({ left: target, behavior: reduceMotion ? "auto" : "smooth" });
-  };
-
-  const onTrackKeyDown = (e) => {
-    if (e.key === "ArrowRight") {
-      e.preventDefault();
-      goTo(index + 1);
-    } else if (e.key === "ArrowLeft") {
-      e.preventDefault();
-      goTo(index - 1);
-    }
-  };
+  const { trackRef, index, goTo, onTrackKeyDown } = useSnapCarousel(items.length);
 
   if (items.length === 0) return null;
 

@@ -36,7 +36,7 @@ const OPTIONS = [
   {
     id: "presente-mimos",
     emoji: "✨",
-    title: "Pequenos mimos",
+    title: "Doces mimos",
     description: "Um jeitinho pequeno de fazer alguém sorrir.",
     cta: "Quero ver produtos →",
     photo: REAL_PHOTOS.presentinhoTrufas,
