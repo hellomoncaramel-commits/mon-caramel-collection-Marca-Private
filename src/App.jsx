@@ -67,79 +67,86 @@ export default function App() {
       <DesktopNav active={activeNav} onNavigate={onNavigate} selectionCount={selection.length} />
 
       <div className="pb-24 md:pb-0">
-        {!screen && (
-          <HomeScreen
-            onSelect={setScreen}
-            onOpenProduct={openProductDetail}
-            selection={selection}
-          />
-        )}
-
-        {screen === "momentos" && <MomentPicker onBack={() => setScreen(null)} onSelectMoment={setScreen} />}
-
-        {screen === "busca" && (
-          <SearchScreen
-            onBack={() => setScreen(null)}
-            onGoCatalog={() => setScreen("catalogo")}
-            selection={selection}
-            addToSelection={addToSelection}
-            onOpenProduct={openProductDetail}
-            onSend={setPendingMessage}
-          />
-        )}
-
-        {screen === "catalogo" && (
-          <CatalogScreen
-            onBack={() => setScreen(null)}
-            selection={selection}
-            onOpenProduct={openProductDetail}
-            onOpenSelection={onGoSelection}
-            onSelect={setScreen}
-          />
-        )}
-
-        {screen === "selecao" && (
-          <SelectionScreen
-            selection={selection}
-            removeFromSelection={removeFromSelection}
-            addToSelection={addToSelection}
-            onBack={() => setScreen(null)}
-            onSend={setPendingMessage}
-          />
-        )}
-
-        {screen === "presente" && <PresenteEntryScreen onBack={() => setScreen(null)} onSelect={setScreen} />}
-
-        {screen === "presente-caixas" && (
-          <CaixasScreen onBack={() => setScreen("presente")} addToSelection={addToSelection} />
-        )}
-
-        {screen === "presente-bandejas" && (
-          <BandejasScreen onBack={() => setScreen("presente")} addToSelection={addToSelection} />
-        )}
-
-        {screen === "presente-mimos" && (
-          <MimosScreen
-            onBack={() => setScreen("presente")}
-            selection={selection}
-            onOpenProduct={openProductDetail}
-            onGoSelection={onGoSelection}
-          />
-        )}
-
-        {screen && !NON_MOMENT_SCREENS.includes(screen) && (
-          <MomentScreen
-            momentId={LEGACY_MOMENT_REDIRECTS[screen] || screen}
-            onBack={() => setScreen(null)}
-            onGoCatalog={() => setScreen("catalogo")}
-            onSend={setPendingMessage}
-            onOpenProduct={openProductDetail}
-            selection={selection}
-            addToSelection={addToSelection}
-            removeFromSelection={removeFromSelection}
-            onOpenSelection={onGoSelection}
-          />
-        )}
+        {/* Single <main> landmark for whichever screen is current — Footer
+            stays a sibling, not nested inside (it's already its own
+            <footer> landmark, see Footer.jsx), and ProductDetailSheet/
+            SendModal are separate fixed overlays below, outside this div
+            entirely. */}
+        <main>
+          {!screen && (
+            <HomeScreen
+              onSelect={setScreen}
+              onOpenProduct={openProductDetail}
+              selection={selection}
+            />
+          )}
+  
+          {screen === "momentos" && <MomentPicker onBack={() => setScreen(null)} onSelectMoment={setScreen} />}
+  
+          {screen === "busca" && (
+            <SearchScreen
+              onBack={() => setScreen(null)}
+              onGoCatalog={() => setScreen("catalogo")}
+              selection={selection}
+              addToSelection={addToSelection}
+              onOpenProduct={openProductDetail}
+              onSend={setPendingMessage}
+            />
+          )}
+  
+          {screen === "catalogo" && (
+            <CatalogScreen
+              onBack={() => setScreen(null)}
+              selection={selection}
+              onOpenProduct={openProductDetail}
+              onOpenSelection={onGoSelection}
+              onSelect={setScreen}
+            />
+          )}
+  
+          {screen === "selecao" && (
+            <SelectionScreen
+              selection={selection}
+              removeFromSelection={removeFromSelection}
+              addToSelection={addToSelection}
+              onBack={() => setScreen(null)}
+              onSend={setPendingMessage}
+            />
+          )}
+  
+          {screen === "presente" && <PresenteEntryScreen onBack={() => setScreen(null)} onSelect={setScreen} />}
+  
+          {screen === "presente-caixas" && (
+            <CaixasScreen onBack={() => setScreen("presente")} addToSelection={addToSelection} />
+          )}
+  
+          {screen === "presente-bandejas" && (
+            <BandejasScreen onBack={() => setScreen("presente")} addToSelection={addToSelection} />
+          )}
+  
+          {screen === "presente-mimos" && (
+            <MimosScreen
+              onBack={() => setScreen("presente")}
+              selection={selection}
+              onOpenProduct={openProductDetail}
+              onGoSelection={onGoSelection}
+            />
+          )}
+  
+          {screen && !NON_MOMENT_SCREENS.includes(screen) && (
+            <MomentScreen
+              momentId={LEGACY_MOMENT_REDIRECTS[screen] || screen}
+              onBack={() => setScreen(null)}
+              onGoCatalog={() => setScreen("catalogo")}
+              onSend={setPendingMessage}
+              onOpenProduct={openProductDetail}
+              selection={selection}
+              addToSelection={addToSelection}
+              removeFromSelection={removeFromSelection}
+              onOpenSelection={onGoSelection}
+            />
+          )}
+        </main>
 
         {/* One global footer, rendered once here — not per-screen, not
             inside ProductDetailSheet/SendModal (those are separate `fixed`

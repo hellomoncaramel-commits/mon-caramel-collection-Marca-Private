@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { Search, Plus, Check, MessageCircle, X } from "lucide-react";
 import { PRODUCTS } from "../../data/products";
-import { isBrowsable, defaultPhotos, initialQuantity } from "../../utils/products";
+import { isBrowsable, defaultPhotos, initialQuantity, cardPriceLine } from "../../utils/products";
 import { COLORS } from "../../styles/colors";
 import SiteHeader from "../shared/SiteHeader";
 import ProductArt from "../shared/ProductArt";
@@ -89,7 +89,11 @@ function ResultRow({ p, isAdded, onQuickAdd, onOpen }) {
       <div className="min-w-0 flex-1">
         <h3 className="text-base lg:text-lg font-display text-brand-ink leading-tight truncate">{p.name}</h3>
         <p className="text-xs lg:text-sm text-brand-inkSoft leading-snug line-clamp-1">{p.sensory}</p>
-        <p className="text-sm lg:text-base font-medium mt-0.5 text-brand-caramelDark">{p.price}</p>
+        {/* cardPriceLine(p), not p.price: same single source of truth as
+            CatalogScreen.jsx/the static product pages — p.price is a
+            legacy field superseded by packageOptions for Brigadeiros/
+            Casadinhos/Sequilhos (see data/products.js). */}
+        <p className="text-sm lg:text-base font-medium mt-0.5 text-brand-caramelDark">{cardPriceLine(p)}</p>
       </div>
       <button
         type="button"

@@ -45,6 +45,16 @@ function replaceOne(html, regex, replacement, label) {
 }
 
 function buildProductHtml(template, p) {
+  // Deliberately the .jpg from defaultPhotos(), not its .webp sibling
+  // (every product photo has one, see generate-webp.mjs): WebP support for
+  // og:image/twitter:image specifically (as opposed to in-browser <img>,
+  // where it's universally fine) has a long, well-documented history of
+  // being unreliable on Facebook/WhatsApp's crawler (Meta's shared
+  // infrastructure) — the exact channel this business actually gets
+  // shared through. A broken/missing preview on the one platform that
+  // matters most here is a worse outcome than a few hundred KB of extra
+  // transfer on a link preview fetch. Revisit only if that compatibility
+  // story changes.
   const photo = defaultPhotos(p)?.[0];
   const imageUrl = photo ? `${SITE_URL}${photo}` : FALLBACK_IMAGE;
   const pageUrl = `${SITE_URL}/doces/${p.slug}`;

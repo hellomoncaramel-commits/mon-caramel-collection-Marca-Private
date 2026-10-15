@@ -53,7 +53,11 @@ function ContactLink({ contact, align = "left" }) {
         <Icon size={16} className="text-brand-beige" />
       </span>
       <span className="min-w-0">
-        <span className="block text-3xs uppercase tracking-wide text-brand-beige/60">{label}</span>
+        {/* /80, not the original /60 — at this background (caramelDarker)
+            /60 blends to ~3.87:1, below WCAG AA's 4.5:1 minimum for normal
+            text (confirmed via Lighthouse). /80 blends to ~5.5:1, with
+            margin, using the same beige token — no new color. */}
+        <span className="block text-3xs uppercase tracking-wide text-brand-beige/80">{label}</span>
         <span className="block text-sm font-medium text-brand-beige truncate">{value}</span>
       </span>
     </a>
@@ -80,7 +84,7 @@ export default function Footer() {
           <p className="font-display font-semibold text-brand-beige" style={{ fontSize: 22, letterSpacing: "0.04em" }}>
             MON CARAMEL
           </p>
-          <p className="text-xs text-brand-beige/60 mt-1 font-display italic">Not your average sweet.</p>
+          <p className="text-xs text-brand-beige/80 mt-1 font-display italic">Not your average sweet.</p>
 
           <div className="mt-6 pt-1 border-t" style={{ borderColor: "rgba(255,252,245,0.14)" }}>
             {CONTACTS.map((c) => (
@@ -94,11 +98,11 @@ export default function Footer() {
             <p className="font-display font-semibold text-brand-beige" style={{ fontSize: 26, letterSpacing: "0.04em" }}>
               MON CARAMEL
             </p>
-            <p className="text-sm text-brand-beige/60 mt-1.5 font-display italic">Not your average sweet.</p>
+            <p className="text-sm text-brand-beige/80 mt-1.5 font-display italic">Not your average sweet.</p>
           </div>
 
           <div style={{ minWidth: 280 }}>
-            <p className="text-xs uppercase tracking-wide text-brand-beige/60 mb-1">Vamos conversar</p>
+            <p className="text-xs uppercase tracking-wide text-brand-beige/80 mb-1">Vamos conversar</p>
             <div className="flex flex-col">
               {CONTACTS.map((c) => (
                 <ContactLink key={c.id} contact={c} />

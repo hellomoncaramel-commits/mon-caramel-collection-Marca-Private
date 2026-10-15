@@ -139,12 +139,13 @@ export default function SelectionScreen({ selection, removeFromSelection, onBack
   const productsById = useMemo(() => new Map(PRODUCTS.map((p) => [p.id, p])), []);
 
   return (
-    // Minha Seleção is a pre-WhatsApp summary, not a marketplace checkout —
-    // lg:max-w-4xl (896px) read as too wide for a short list of compact
-    // rows. Narrowed to ~820px, well within the 760–850px the brief asks
-    // for; the WhatsApp CTA stays full-width of THIS container, so it
-    // naturally stops being a 1200px-wide bar too.
-    <div className="max-w-2xl lg:max-w-[820px] mx-auto px-gutter lg:px-8 pt-2 pb-10 fade-up">
+    // Minha Seleção is a pre-WhatsApp summary, not a marketplace checkout.
+    // lg:max-w-5xl (1024px) replaces the old lg:max-w-[820px] single-column
+    // cap now that desktop has a real two-area composition below (produtos
+    // + painel de resumo/ação) — a plain narrow column was reading as a
+    // mobile list stranded in empty space; the extra width now goes to a
+    // second deliberate area, not to stretching the list itself.
+    <div className="max-w-2xl lg:max-w-5xl mx-auto px-gutter lg:px-8 pt-2 pb-10 fade-up">
       <SiteHeader onBack={onBack} />
       <h2 className="mc-page-title">♡ Minha Seleção</h2>
       <p className="mc-page-subtitle">
@@ -156,13 +157,18 @@ export default function SelectionScreen({ selection, removeFromSelection, onBack
       {selection.length === 0 ? (
         <button
           onClick={onBack}
-          className="w-full text-sm font-medium rounded-full py-3 border border-brand-caramelDark text-brand-caramelDark"
+          className="w-full lg:w-auto text-sm font-medium rounded-full py-3 px-8 border border-brand-caramelDark text-brand-caramelDark"
         >
           Explorar a coleção
         </button>
       ) : (
-        <>
-          <div className="mb-6 divide-y divide-brand-border">
+        // Desktop (lg+): duas áreas lado a lado — produtos à esquerda
+        // (mesma lista/EntryCard de sempre), resumo/ação à direita, fixo
+        // ao rolar (mesma informação e o único CTA real que já existiam —
+        // nenhum subtotal, frete ou checkout inventado). Mobile continua a
+        // mesma pilha única de sempre.
+        <div className="lg:grid lg:grid-cols-[1fr_340px] lg:gap-10 lg:items-start">
+          <div className="mb-6 lg:mb-0 divide-y divide-brand-border">
             {selection.map((it) => (
               <EntryCard
                 key={entryKey(it)}
@@ -184,7 +190,7 @@ export default function SelectionScreen({ selection, removeFromSelection, onBack
               same voice, not new invented copy. WhatsApp is still the one
               real action inside it; no subtotal/checkout language added. */}
           <div
-            className="rounded-3xl p-4 lg:p-5 text-center"
+            className="rounded-3xl p-4 lg:p-5 text-center lg:sticky lg:top-8"
             style={{ background: `linear-gradient(150deg, ${COLORS.caramelDark}1F, ${COLORS.caramelLight}12)` }}
           >
             <p className="font-display text-lg text-brand-ink mb-1">Pronto pra conversar?</p>
@@ -202,7 +208,7 @@ export default function SelectionScreen({ selection, removeFromSelection, onBack
               </button>
             </div>
           </div>
-        </>
+        </div>
       )}
     </div>
   );

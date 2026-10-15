@@ -126,6 +126,54 @@ function DiscoveryCard({ card, onSelect }) {
 // product's real flow — configurator, stepper with its real minimum, or
 // the WhatsApp-only CTA — so every entry point here routes through it
 // instead of re-implementing (and risking re-breaking) that logic.
+// Desktop-only (lg+) — a vertical, photo-led card instead of ProductRow's
+// horizontal mobile-list row, laid out in a real grid (see CatalogScreen's
+// own lg:grid block below) so the Coleção uses the width a desktop
+// viewport actually has, instead of the same narrow list just centered in
+// empty space. Same data, same price source (cardPriceLine), same
+// catalogTeaser, same "whole card opens Detail, heart is a separate quiet
+// control" behavior as ProductRow — a different composition of the exact
+// same information, not a new interaction model. Heart badge reuses the
+// white/90 circle-over-photo language ProductDetailSheet's own X/share
+// buttons and PhotoCarousel's arrows already use, so it reads as the same
+// design system, not an invented new control.
+function ProductCardDesktop({ p, added, onOpenProduct }) {
+  const photo = defaultPhotos(p)?.[0];
+  const priceLine = cardPriceLine(p);
+
+  return (
+    <div
+      className="relative rounded-2xl border bg-white overflow-hidden flex flex-col transition-transform duration-200 lg:hover:-translate-y-0.5"
+      style={{ borderColor: added ? COLORS.caramelDark : COLORS.border, borderWidth: added ? "2px" : "1px" }}
+    >
+      <button onClick={() => onOpenProduct?.(p)} className="relative aspect-photo w-full overflow-hidden text-left group">
+        {photo ? (
+          <Photo
+            src={photo}
+            alt=""
+            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+            loading="lazy"
+          />
+        ) : (
+          <ProductArt kind={p.kind} tint={p.tint} />
+        )}
+      </button>
+      <button
+        onClick={() => onOpenProduct?.(p)}
+        aria-label={added ? `${p.name} já está na seleção — ver detalhes` : `Ver detalhes de ${p.name}`}
+        className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 flex items-center justify-center transition-transform active:scale-90"
+      >
+        <Heart size={16} strokeWidth={2} color={added ? COLORS.caramelDark : COLORS.muted} fill={added ? COLORS.caramelDark : "none"} />
+      </button>
+      <button onClick={() => onOpenProduct?.(p)} className="flex-1 text-left p-4 flex flex-col">
+        <h3 className="font-display text-lg text-brand-ink leading-tight">{p.name}</h3>
+        {p.catalogTeaser && <p className="text-sm text-brand-inkSoft leading-snug mt-1.5">{p.catalogTeaser}</p>}
+        {priceLine && <p className="text-sm text-brand-muted mt-auto pt-2.5">{priceLine}</p>}
+      </button>
+    </div>
+  );
+}
+
 function ProductRow({ p, added, onOpenProduct }) {
   const photo = defaultPhotos(p)?.[0];
   const priceLine = cardPriceLine(p);
@@ -201,12 +249,13 @@ export default function CatalogScreen({ onBack, selection, onOpenProduct, onOpen
   }
 
   return (
-    <div className="max-w-2xl lg:max-w-4xl mx-auto px-gutter pt-2 pb-10 fade-up">
+    <div className="max-w-2xl lg:max-w-6xl mx-auto px-gutter pt-2 pb-10 fade-up">
       <SiteHeader onBack={onBack} />
       <h2 className="mc-page-title">Coleção completa</h2>
       <p className="mc-page-subtitle">Todos os produtos, num lugar só.</p>
 
-      <div className="space-y-3">
+      {/* Mobile/tablet (<lg): a lista compacta original, intocada. */}
+      <div className="space-y-3 lg:hidden">
         {rendered.map((item) =>
           item.type === "product" ? (
             <ProductRow key={item.product.id} p={item.product} added={inSelection(item.product.id)} onOpenProduct={onOpenProduct} />
@@ -216,8 +265,22 @@ export default function CatalogScreen({ onBack, selection, onOpenProduct, onOpen
         )}
       </div>
 
+      {/* Desktop (lg+): grid de cards verticais com foto em destaque — uma
+          composição própria pro espaço disponível, não a lista mobile
+          esticada. 2 colunas até xl, 3 a partir daí, mesmos dados/
+          comportamento da lista mobile. */}
+      <div className="hidden lg:grid lg:grid-cols-2 xl:grid-cols-3 gap-6">
+        {rendered.map((item) =>
+          item.type === "product" ? (
+            <ProductCardDesktop key={item.product.id} p={item.product} added={inSelection(item.product.id)} onOpenProduct={onOpenProduct} />
+          ) : (
+            <DiscoveryCard key={item.card.id} card={item.card} onSelect={onSelect} />
+          )
+        )}
+      </div>
+
       {selection.length > 0 && (
-        <div className="mt-6 rounded-2xl border border-brand-caramelDark p-4 bg-white/95 backdrop-blur">
+        <div className="mt-6 lg:mt-8 lg:max-w-sm rounded-2xl border border-brand-caramelDark p-4 bg-white/95 backdrop-blur">
           <p className="text-xs uppercase tracking-wide mb-2 text-brand-muted">Você escolheu ({selection.length})</p>
           <button
             onClick={onOpenSelection}
