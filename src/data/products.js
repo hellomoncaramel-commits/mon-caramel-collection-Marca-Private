@@ -129,8 +129,11 @@ export const PRODUCTS = [
     minimumQuantity: 12,
     price: "$1.50/un",
     catalogTeaser: "Fofinhos, assados e doces na medida.",
-    sensory:
-      "Assados, fofinhos e macios, com poucos ingredientes e pouca adição de açúcar. Uma opção prática para a lancheira ou para aquele snack das crianças ao longo do dia.",
+    // Detail copy no longer leads with ingredient/sugar-content claims
+    // (editorial audit, 2026-10) — those facts aren't deleted from the
+    // business, just not used as the sales argument; "unidade (mín. 12)"
+    // below already carries the real commercial facts unchanged.
+    sensory: "Assados, fofinhos e macios — uma opção prática pra lancheira ou pro snack das crianças ao longo do dia.",
     kind: "cake",
     tint: COLORS.caramelLight,
     moments: ["dia-dificil", "freezer"],
@@ -156,7 +159,10 @@ export const PRODUCTS = [
     // no longer what drives the quantity control itself.
     quantityOptions: [12, 18, 24, 36, 50, 75, 100],
     experience: {
-      teaser: "Poucos ingredientes, pouca adição de açúcar e tamanho perfeito para os pequenos.",
+      // Synced to the same catalogTeaser direction above (editorial audit,
+      // 2026-10) — both fields now describe the same product the same
+      // way instead of this card leading with ingredient/sugar claims.
+      teaser: "Fofinhos, assados e doces na medida.",
       // Short, discreet freezer tip — plain secondary-weight text right
       // under the description (see ProductDetailSheet.jsx), deliberately
       // NOT routed through MonCaramelNote: that component's box/quote/
@@ -390,7 +396,12 @@ export const PRODUCTS = [
     customizable: true,
     optionGroups: [{ key: "versao", label: "Versão", choices: ["Sem cobertura", "Com cobertura de chocolate"] }],
     experience: {
-      teaser: "Não sei o que dizer. Só apreciar.",
+      // Replaces the old "Não sei o que dizer. Só apreciar." (spirited but
+      // said nothing concrete about the product) — editorial audit,
+      // 2026-10. Deliberately shorter than catalogTeaser's own "Biscoito,
+      // doce de leite e aquela combinação que não tem erro." (not a
+      // literal duplicate, different screen) per the approved direction.
+      teaser: "Biscoito, doce de leite e chocolate — não tem erro.",
       // noteLabel/note deliberately absent: the old aside here ("Eu
       // adoro esse: É macio, tem doce de leite…") is removed, not
       // replaced — same treatment as Pão de Mel/Cone Trufado earlier.
@@ -588,8 +599,11 @@ export const PRODUCTS = [
     unit: "",
     price: "$1/un",
     catalogTeaser: "Do freezer direto pro forno — e a casa fica cheirando a biscoito.",
-    sensory:
-      "Feitos com apenas 3 ingredientes e 2g de açúcar. Uma opção prática para ter no freezer e assar quando quiser — perfeita para o snack ou a lancheira das crianças.",
+    // Detail copy no longer leads with ingredient/sugar-content claims
+    // (editorial audit, 2026-10) — those facts aren't deleted from the
+    // business, just not used as the sales argument; the $1/un price and
+    // quantityOptions below carry the real commercial facts unchanged.
+    sensory: "Prático pra ter sempre no freezer — assa quando quiser, e a casa fica cheirando a biscoito quentinho.",
     kind: "sandwich",
     tint: COLORS.creamYellow,
     moments: ["dia-dificil", "freezer"],
@@ -611,7 +625,10 @@ export const PRODUCTS = [
     quantityOptions: [24, 50, 75, 100],
     quantityUnitWord: "biscoitos",
     experience: {
-      teaser: "3 ingredientes, 2g de açúcar e um freezer feliz.",
+      // Synced to the same catalogTeaser direction above (editorial audit,
+      // 2026-10) — both fields now describe the same product the same
+      // way instead of this card leading with ingredient/sugar claims.
+      teaser: "Do freezer direto pro forno — e a casa fica cheirando a biscoito.",
       // noteLabel/note deliberately absent: the old aside here ("Esse é
       // esperto: Você deixa no freezer e assa quando quiser...") is
       // removed, not replaced — the main description already covers the
@@ -768,7 +785,10 @@ export const PRODUCTS = [
     name: "Bala de Coco",
     unit: "150g",
     price: "$10",
-    catalogTeaser: "Macia, delicada e daquelas que derretem na boca.",
+    // Memória afetiva direction, approved editorial audit 2026-10 — Detail's
+    // own sensory line (below) already does texture + desire without
+    // repeating this card's own "infância" framing, so it's left untouched.
+    catalogTeaser: "Sabor de infância que derrete na boca.",
     // Detail's main description — replaces the old "Docinho de coco que
     // derrete na boca — sem glúten, sem lactose..." (redundant with the
     // teaser below and with the glutenFree badge now on the card).
@@ -799,13 +819,27 @@ export const PRODUCTS = [
   // app already shows for "sob consulta" items.
   {
     id: "bolo-de-pote",
+    // id/slug/URL deliberately untouched (editorial audit, 2026-10): only
+    // the customer-facing display name changed below, from "Bolo de Pote"
+    // to "Bolo no Pote" (how Naia and the brand's own everyday
+    // communication actually say it). `name` is the single source for
+    // title/og/twitter/h1/card/Detail/Search/Minha Seleção everywhere
+    // (see utils/meta.js, scripts/generate-static-pages.mjs) — changing
+    // it here is enough; the one other place this name appeared as a
+    // separate literal string was the whatsappInquiryMessage below, synced
+    // by hand. /doces/bolo-de-pote, the sitemap entry and every image
+    // filename stay exactly as they were — none of those are
+    // customer-visible text.
     slug: "bolo-de-pote",
-    name: "Bolo de Pote",
+    name: "Bolo no Pote",
     unit: "",
     price: "Sob consulta 💬",
     catalogTeaser: "Camadas de bolo fofinho e recheio cremoso.",
+    // Detail no longer opens with the exact same sentence as the card
+    // (editorial audit, 2026-10) — same facts (sabores sob consulta via
+    // WhatsApp), just not a literal repeat of catalogTeaser above.
     sensory:
-      "Camadas de bolo fofinho e recheio cremoso, montadas no potinho. Os sabores variam — me conta o que você está procurando e eu te passo as opções disponíveis.",
+      "Montado em camadas, no potinho. Os sabores variam — me conta o que você está procurando e eu te passo as opções disponíveis.",
     kind: "cake",
     tint: COLORS.caramelDark,
     moments: ["dia-dificil"],
@@ -821,7 +855,7 @@ export const PRODUCTS = [
     inquiryNote:
       "Pensando em pedir vários potinhos do mesmo sabor? Me chama! Dependendo da quantidade, pode valer mais a pena fazer uma sobremesa inteira na forma de aproximadamente 27 × 23 cm — e sair mais em conta. 💛",
     whatsappInquiryMessage:
-      "Oi! Quero saber mais sobre os sabores do Bolo de Pote — e também sobre a possibilidade de fazer uma sobremesa inteira na forma de aproximadamente 27 × 23 cm em vez de potinhos. 🍰",
+      "Oi! Quero saber mais sobre os sabores do Bolo no Pote — e também sobre a possibilidade de fazer uma sobremesa inteira na forma de aproximadamente 27 × 23 cm em vez de potinhos. 🍰",
     // Overrides ProductDetailSheet's default WhatsApp-inquiry CTA label
     // ("Quero ver as opções") — this product's conversation is specifically
     // about sabores, not a general "options" browse.
