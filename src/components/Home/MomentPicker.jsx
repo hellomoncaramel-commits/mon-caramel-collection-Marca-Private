@@ -37,57 +37,63 @@ const MOMENT_PHOTO_STYLE = {
 // places below — the peek padding on the track and the arrow offsets
 // both need to know it too, so it can't be simplified away.
 
-// Visual audit, 2026-10: replaces the two independently-tuned ink-alpha
-// gradients this file used to stack (a full-card "text panel" layer plus a
-// second, localized "content scrim" layer on top of it). Stacking two
-// semi-transparent layers compounds their opacity anywhere they overlap —
-// that compounding, not any single layer's own numbers, is what made
-// roughly the bottom half of every card read as a "véu marrom" no matter
-// how many times the individual stops got re-tuned. One gradient instead:
-// flat/transparent until well past the card's midpoint (the photo's own
-// top and center stay completely clean — no scrim touches them at all),
-// then a single ramp covering only the band where title/tagline/button
-// actually sit (title starts ~58% of the card's height, tagline ~74%,
-// button ~86-95% — see MomentCard's own flex layout below). Per-moment
-// start/peak (not one shared curve) because the three photos aren't
-// equally bright: festa's is the busiest/lightest (pastel cupcakes, grass,
-// flowers) and needs its ramp to start sooner and land deeper to hold the
-// same text contrast the other two get from a gentler curve.
-// First pass measured real contrast (screenshot pixel sampling, not just a
-// visual check) against the white title/tagline text: a straight ramp from
-// `start` to 100% wasn't dark enough yet at the tagline's own height
-// (~74-83% of the card) — it was still climbing toward its peak there, not
-// holding it. Fixed by reaching the peak quickly (within ~16 percentage
-// points of `start`) and holding it flat the rest of the way down, so the
-// title/tagline/button band all sit on the same, already-dark floor
-// instead of a still-ramping gradient.
-// Second pass (real pixel-contrast measurement, not visual judgment): the
-// photos aren't uniformly dark across their own lower half either — real
-// per-card measurement showed "presente" and "festa" both have lighter
-// patches (ribbon/table, grass) sitting right where the tagline lands,
-// needing a visibly stronger floor than "dia-dificil" to hold the same
-// 4.5:1 — hence three separate entries, not one shared default, per the
-// explicit instruction not to force one curve across all three.
-const CARD_SCRIM_STOPS = {
-  "dia-dificil": { start: "52%", peak: "E0" }, // ≈88% ink once the ramp finishes
-  presente: { start: "40%", peak: "F2" }, // ≈95% — lighter ribbon/table tones under the tagline
-  festa: { start: "38%", peak: "F8" }, // ≈97% — brightest/busiest of the three (grass, pastel cupcakes)
+// Visual rework, 2026-10 (second pass). The first pass's "one gradient,
+// per-moment stops" attempt still read as a flat brown panel: a short ramp
+// (16 points) held flat at ~88-97% alpha of the brand's own warm ink token
+// is, visually, a painted band dropped over the photo's lower half — the
+// exact "véu marrom" complaint, just with the two old layers merged into
+// one. Two things actually caused that, not just the stop positions:
+//   1. The color itself — COLORS.ink (#3D2418) is a saturated warm brown.
+//      At high alpha it doesn't read as "the photo got darker," it reads
+//      as "a brown film sits on top of the photo." A real photographic
+//      shadow lowers luminosity without tinting the hue — so this uses a
+//      near-neutral, barely-warm near-black (CARD_SHADOW below) instead.
+//   2. The shape — a 2-stop ramp (transparent → peak) over a short span
+//      has a visually locatable "elbow," however many intermediate stops
+//      get inserted later. This instead uses a long, many-stop curve that
+//      eases in very gently (near-zero until past the card's midpoint,
+//      only a handful of % points of visible darkening through most of
+//      the following third) and only firms up close to the bottom edge,
+//      so there's no point a viewer's eye can land on and say "here the
+//      gradient starts." The peak itself is also much lower (well under
+//      the old 88-97%) — enough to hold AA contrast locally, not enough
+//      to read as a solid fill; real pixel-contrast measurement (see the
+//      PR notes), not visual judgment, confirmed each curve clears 4.5:1
+//      at the title/tagline/CTA band specifically.
+// Per-moment curves (not one shared default) because the three photos
+// aren't equally bright in the region under the text — festa's is the
+// busiest/lightest (pastel cupcakes, grass) and needs a visibly earlier,
+// deeper curve than dia-dificil's to hold the same contrast; the shape
+// (long ease-in, moderate peak, same neutral color) stays identical across
+// all three, only the curve's own start/depth differs.
+const CARD_SHADOW_RGB = "17, 15, 13"; // low-saturation near-black — darkens, doesn't tint brown
+
+const CARD_SCRIM_CURVES = {
+  "dia-dificil": [
+    [0, 0], [58, 0], [68, 0.05], [78, 0.14], [88, 0.3], [100, 0.46],
+  ],
+  presente: [
+    [0, 0], [50, 0], [62, 0.07], [74, 0.2], [86, 0.4], [100, 0.58],
+  ],
+  festa: [
+    [0, 0], [44, 0], [58, 0.09], [72, 0.25], [86, 0.48], [100, 0.66],
+  ],
 };
 
 function cardScrimGradient(momentId) {
-  const { start, peak } = CARD_SCRIM_STOPS[momentId] ?? CARD_SCRIM_STOPS["dia-dificil"];
-  const startPct = parseFloat(start);
-  const holdFrom = `${Math.min(startPct + 16, 100)}%`;
-  return `linear-gradient(to bottom, ${COLORS.ink}00 0%, ${COLORS.ink}00 ${start}, ${COLORS.ink}${peak} ${holdFrom}, ${COLORS.ink}${peak} 100%)`;
+  const curve = CARD_SCRIM_CURVES[momentId] ?? CARD_SCRIM_CURVES["dia-dificil"];
+  const stops = curve.map(([pct, alpha]) => `rgba(${CARD_SHADOW_RGB}, ${alpha}) ${pct}%`).join(", ");
+  return `linear-gradient(to bottom, ${stops})`;
 }
 
 function MomentCard({ moment, photoSrc, eager, featured, onSelect }) {
   const lines = moment.titleLines ?? [moment.label];
   const photoStyle = MOMENT_PHOTO_STYLE[moment.id];
-  // Subtle text-shadow — support only, not the main fix (the brief was
-  // explicit: no glow/outline, the localized scrim above does the real
-  // work). Soft, small, ink-colored rather than pure black.
-  const textShadow = `0 1px 2px ${COLORS.ink}59`; // ≈ 35%
+  // Subtle text-shadow — support only, never the main source of contrast
+  // (the gradient above does that work). Same neutral near-black as the
+  // gradient, not brand ink/brown, and low alpha — soft lift, not an
+  // outline.
+  const textShadow = `0 1px 2px rgba(${CARD_SHADOW_RGB}, 0.4)`;
   return (
     // rounded-3xl: same "primary photo card" radius as ProductCard, FeedCard
     // and the Presente inspiration frames — was a one-off inline 20px before.
