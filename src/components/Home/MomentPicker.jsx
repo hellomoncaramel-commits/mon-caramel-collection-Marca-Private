@@ -18,164 +18,91 @@ const MOMENT_PHOTO = {
   festa: REAL_PHOTOS.naoVaiTerFesta,
 };
 
+// Final CTA copy, approved after the UX/UI audit — one distinct verb per
+// card, matching what each destination actually is (dia-dificil: a real
+// product grid; presente: a router into 3 inspiration formats; festa: a
+// real order-building screen with quantity + budget request, not a passive
+// gallery — "Quero planejar" was chosen over "Ver galeria" specifically
+// because the destination isn't passive).
+const MOMENT_CTA = {
+  "dia-dificil": "Quero escolher",
+  presente: "Ver inspirações",
+  festa: "Quero planejar",
+};
+
+// Structural redesign, 2026-10 (post-UX/UI-audit round): text-over-photo is
+// abandoned entirely — three prior rounds of gradient calibration (see git
+// history on this file) kept the "painel"/legibility complaint alive
+// because the problem was never really contrast, it was the format itself.
+// Every card is now two physically separate zones stacked in a flex
+// column: a clean photo (no gradient, no scrim, no text-shadow — nothing
+// sits on it) and a solid-background content zone below it, same "photo
+// mounted on a card" language ProductCard's dia-dificil treatment and
+// InspirationCarousel already use elsewhere on the site. Contrast is
+// guaranteed by construction (ink text on a solid subtle-beige surface),
+// not by per-photo calibration — nothing left to recalibrate if a photo
+// changes later.
+//
 // Per-moment photo framing override — only set where the source photo's
-// framing needs a nudge so the card's tall crop keeps the right subject
-// in frame; anything absent here just uses plain object-fit: cover at
-// the CSS default position (50% 50%).
-// "festa": the source photo is landscape and the card is portrait, so
-// object-position alone can only slide the crop window sideways — every
-// tested value still showed mostly backdrop wall and swapped which flower
-// arrangement was visible, never the table. A scale() zoom on top of
-// cover, anchored on the green "E" party favors and the nearer cupcake
-// stand (bottom-left of frame), actually crops the wall out instead of
-// just repositioning it.
+// framing needs a nudge so the (now shorter, photo-zone-only) crop keeps
+// the right subject in frame; anything absent just uses object-fit: cover
+// at the CSS default position (50% 50%). Re-tuned for the new, shorter
+// photo zone (was tuned for the old full-card-height crop window).
+// "festa": the source photo is landscape; the zone is still taller than
+// wide, so object-position alone can only slide sideways — a scale() zoom
+// anchored near the green "E" party favors crops the backdrop wall out.
 const MOMENT_PHOTO_STYLE = {
-  festa: { objectPosition: "0% center", transform: "scale(1.9)", transformOrigin: "62% 100%" },
+  festa: { objectPosition: "0% 38%", transform: "scale(1.65)", transformOrigin: "58% 30%" },
+  presente: { objectPosition: "50% 38%" },
 };
 
-// The card's own width on mobile (min(82vw, 330px)) recurs in a few
-// places below — the peek padding on the track and the arrow offsets
-// both need to know it too, so it can't be simplified away.
-
-// Visual rework, 2026-10 (second pass). The first pass's "one gradient,
-// per-moment stops" attempt still read as a flat brown panel: a short ramp
-// (16 points) held flat at ~88-97% alpha of the brand's own warm ink token
-// is, visually, a painted band dropped over the photo's lower half — the
-// exact "véu marrom" complaint, just with the two old layers merged into
-// one. Two things actually caused that, not just the stop positions:
-//   1. The color itself — COLORS.ink (#3D2418) is a saturated warm brown.
-//      At high alpha it doesn't read as "the photo got darker," it reads
-//      as "a brown film sits on top of the photo." A real photographic
-//      shadow lowers luminosity without tinting the hue — so this uses a
-//      near-neutral, barely-warm near-black (CARD_SHADOW below) instead.
-//   2. The shape — a 2-stop ramp (transparent → peak) over a short span
-//      has a visually locatable "elbow," however many intermediate stops
-//      get inserted later. This instead uses a long, many-stop curve that
-//      eases in very gently (near-zero until past the card's midpoint,
-//      only a handful of % points of visible darkening through most of
-//      the following third) and only firms up close to the bottom edge,
-//      so there's no point a viewer's eye can land on and say "here the
-//      gradient starts." The peak itself is also much lower (well under
-//      the old 88-97%) — enough to hold AA contrast locally, not enough
-//      to read as a solid fill; real pixel-contrast measurement (see the
-//      PR notes), not visual judgment, confirmed each curve clears 4.5:1
-//      at the title/tagline/CTA band specifically.
-// Per-moment curves (not one shared default) because the three photos
-// aren't equally bright in the region under the text — festa's is the
-// busiest/lightest (pastel cupcakes, grass) and needs a visibly earlier,
-// deeper curve than dia-dificil's to hold the same contrast; the shape
-// (long ease-in, moderate peak, same neutral color) stays identical across
-// all three, only the curve's own start/depth differs.
-const CARD_SHADOW_RGB = "17, 15, 13"; // low-saturation near-black — darkens, doesn't tint brown
-
-// dia-dificil correction, 2026-10 (third pass): the curve above read fine on
-// the card as a whole, but "dias-de-luta.jpg"'s own bottom third happens to
-// be its brightest region (sprinkle-covered and powdered-sugar cookies),
-// right where the tagline sits — a sitewide-average contrast number passed,
-// but the actual local patch under that specific line of text didn't. Fix
-// is local to this one curve: starts a little earlier and builds a little
-// more through the title/tagline band specifically (still a long, gentle
-// ease — one extra stop, not a steeper elbow), rather than any new flat
-// panel or a stronger photo-wide darkening. presente/festa are untouched —
-// their own curves already clear their photos' brighter regions.
-const CARD_SCRIM_CURVES = {
-  "dia-dificil": [
-    [0, 0], [50, 0], [62, 0.08], [72, 0.2], [82, 0.34], [92, 0.46], [100, 0.52],
-  ],
-  presente: [
-    [0, 0], [50, 0], [62, 0.07], [74, 0.2], [86, 0.4], [100, 0.58],
-  ],
-  festa: [
-    [0, 0], [44, 0], [58, 0.09], [72, 0.25], [86, 0.48], [100, 0.66],
-  ],
-};
-
-function cardScrimGradient(momentId) {
-  const curve = CARD_SCRIM_CURVES[momentId] ?? CARD_SCRIM_CURVES["dia-dificil"];
-  const stops = curve.map(([pct, alpha]) => `rgba(${CARD_SHADOW_RGB}, ${alpha}) ${pct}%`).join(", ");
-  return `linear-gradient(to bottom, ${stops})`;
-}
-
-function MomentCard({ moment, photoSrc, eager, featured, onSelect }) {
+function MomentCard({ moment, photoSrc, eager, onSelect }) {
   const lines = moment.titleLines ?? [moment.label];
   const photoStyle = MOMENT_PHOTO_STYLE[moment.id];
-  // Subtle text-shadow — support only, never the main source of contrast
-  // (the gradient above does that work). Same neutral near-black as the
-  // gradient, not brand ink/brown, and low alpha — soft lift, not an
-  // outline.
-  const textShadow = `0 1px 2px rgba(${CARD_SHADOW_RGB}, 0.4)`;
   return (
-    // rounded-3xl: same "primary photo card" radius as ProductCard, FeedCard
-    // and the Presente inspiration frames — was a one-off inline 20px before.
-    <div className="relative w-full h-full overflow-hidden rounded-3xl">
-      <Photo
-        src={photoSrc}
-        alt=""
-        className="absolute inset-0 w-full h-full object-cover"
-        style={photoStyle}
-        loading={eager ? "eager" : "lazy"}
-      />
-      <div className="absolute inset-0" style={{ background: cardScrimGradient(moment.id) }} />
+    <div className="relative w-full h-full overflow-hidden rounded-3xl flex flex-col">
+      {/* Zone 1 — photo. Clean, full stop: no gradient, no scrim, no
+          overlay, no text-shadow (nothing renders on top of it to need
+          one). ~62% of card height on mobile/tablet, ~67% on desktop —
+          the photo stays the larger, dominant element either way. */}
+      <div className="relative w-full h-[62%] lg:h-[67%] shrink-0">
+        <Photo
+          src={photoSrc}
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover"
+          style={photoStyle}
+          loading={eager ? "eager" : "lazy"}
+        />
+      </div>
 
-      <div className="absolute left-6 right-6 bottom-[22px] md:left-5 md:right-5 md:bottom-5 flex flex-col items-start">
-        {/* Text-treatment pass (correction): an earlier round pulled this
-            back from semibold to medium, reading the reference as more
-            delicate than it is. Side-by-side with the reference's own card
-            at matching scale showed the opposite — its title strokes are
-            visibly thicker than this at medium weight. Restored
-            semibold. */}
+      {/* Zone 2 — content. Solid surface (COLORS.subtle — the same warm
+          beige "card content" surface ProductCard's dia-dificil treatment
+          already uses), title/tagline/CTA entirely off the photograph.
+          No emoji before the title in this composition (approved
+          direction) — the photo itself already communicates the moment. */}
+      <div
+        className="relative flex-1 min-h-0 flex flex-col justify-center px-5 lg:px-6 py-4 lg:py-5"
+        style={{ backgroundColor: COLORS.subtle }}
+      >
         <h3
-          className={`font-display font-semibold text-white max-w-[230px] md:max-w-none text-[clamp(26px,7vw,31px)] md:text-[25px] leading-[0.98] md:leading-[1.08] tracking-[-0.02em] md:tracking-normal ${
-            // Dias de luta gets a discreet lg+ size bump over the other two
-            // journeys — same card, same clarity, just a touch more weight
-            // since it's the site's primary, highest-traffic path. Equal
-            // everywhere below lg (no mobile/tablet change).
-            featured ? "lg:text-[29px]" : "lg:text-[25px]"
-          }`}
-          style={{ textShadow }}
+          className="font-display font-semibold text-brand-ink text-[clamp(21px,5.5vw,24px)] lg:text-[22px] leading-[1.05] tracking-[-0.01em]"
           aria-label={moment.label}
         >
-          {/* Mobile: editorial, explicitly-broken lines, no emoji in the
-              flow (the photo already communicates the moment). Desktop:
-              untouched — same running text with the leading emoji as
-              before this round. */}
-          <span aria-hidden="true" className="md:hidden">
-            {lines.map((line, i) => (
-              <span key={i} className="block">
-                {line}
-              </span>
-            ))}
-          </span>
-          <span aria-hidden="true" className="hidden md:inline">
-            <span className="inline-block align-baseline" style={{ fontSize: "0.7em" }}>
-              {moment.emoji}
-            </span>{" "}
-            {moment.label}
-          </span>
+          {lines.map((line, i) => (
+            <span key={i} className="block">
+              {line}
+            </span>
+          ))}
         </h3>
-        <p
-          className="text-white/85 mt-3.5 md:mt-1.5 max-w-[210px] md:max-w-none text-[15px] md:text-[13px] leading-[1.3] md:leading-[1.35]"
-          style={{ textShadow }}
-        >
+        <p className="text-brand-inkSoft mt-2 lg:mt-1.5 text-[14px] lg:text-[13px] leading-[1.35]">
           {MOMENT_TAGLINE[moment.id]}
         </p>
-        {/* Visual audit, 2026-10: a solid, fully-opaque caramelDarker pill
-            was its own "bloco pesado" sitting on top of an already-darkened
-            photo — two heavy layers stacked. Swapped to a near-opaque
-            cream pill (same rgba(255,252,245,…) token the carousel's own
-            prev/next arrow buttons already use below, so this isn't a new
-            visual language) with dark ink text/icon — reads as light and
-            integrated against the photo, while its own near-white fill
-            (not the scrim behind it) is what actually carries the text
-            contrast, so it stays legible regardless of which photo/scrim
-            is behind it. h-11 (44px) for a comfortable touch target — the
-            old h-10 was borderline. */}
         <button
           onClick={onSelect}
-          className="mt-4 md:mt-3 shrink-0 inline-flex items-center gap-1 font-semibold md:font-medium h-11 md:h-10 pl-4 pr-3.5 text-[13.5px] transition-transform active:scale-95"
-          style={{ backgroundColor: "rgba(255,252,245,0.92)", color: COLORS.ink, borderRadius: 999, boxShadow: "0 2px 8px rgba(61,36,24,0.18)" }}
+          className="mt-3.5 lg:mt-3 self-start shrink-0 inline-flex items-center gap-1 font-medium h-11 lg:h-10 pl-4 pr-3.5 text-[13.5px] text-white transition-transform active:scale-95"
+          style={{ backgroundColor: COLORS.caramelDark, borderRadius: 999, boxShadow: "0 2px 8px rgba(61,36,24,0.14)" }}
         >
-          Ver minhas opções
+          {MOMENT_CTA[moment.id]}
           <ChevronRight size={15} strokeWidth={2.5} />
         </button>
       </div>
@@ -311,7 +238,7 @@ export default function MomentPicker({ onBack, onSelectMoment }) {
           disabled={index === 0}
           aria-label="Momento anterior"
           className="absolute flex items-center justify-center disabled:opacity-0 disabled:pointer-events-none transition-opacity left-[calc((100%-min(82vw,330px))/2+4px)] md:left-1 w-[42px] h-[42px] md:w-9 md:h-9"
-          style={{ top: "50%", transform: "translateY(-50%)" }}
+          style={{ top: "31%", transform: "translateY(-50%)" }}
         >
           <span
             className="flex items-center justify-center rounded-full w-8 h-8 md:w-9 md:h-9"
@@ -325,7 +252,7 @@ export default function MomentPicker({ onBack, onSelectMoment }) {
           disabled={index === MOMENTS.length - 1}
           aria-label="Próximo momento"
           className="absolute flex items-center justify-center disabled:opacity-0 disabled:pointer-events-none transition-opacity right-[calc((100%-min(82vw,330px))/2+4px)] md:right-1 w-[42px] h-[42px] md:w-9 md:h-9"
-          style={{ top: "50%", transform: "translateY(-50%)" }}
+          style={{ top: "31%", transform: "translateY(-50%)" }}
         >
           <span
             className="flex items-center justify-center rounded-full w-8 h-8 md:w-9 md:h-9"
@@ -366,13 +293,7 @@ export default function MomentPicker({ onBack, onSelectMoment }) {
       <div className="hidden lg:grid lg:grid-cols-3 lg:gap-8 lg:mt-10">
         {MOMENTS.map((m, i) => (
           <div key={m.id} className="aspect-[3/4]">
-            <MomentCard
-              moment={m}
-              photoSrc={MOMENT_PHOTO[m.id]}
-              eager={i === 0}
-              featured={m.id === "dia-dificil"}
-              onSelect={() => onSelectMoment(m.id)}
-            />
+            <MomentCard moment={m} photoSrc={MOMENT_PHOTO[m.id]} eager={i === 0} onSelect={() => onSelectMoment(m.id)} />
           </div>
         ))}
       </div>

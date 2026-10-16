@@ -15,7 +15,7 @@ const OPTIONS = [
     id: "presente-caixas",
     emoji: "🎁",
     title: "Caixas",
-    description: "Um presente montado do jeitinho que quem vai receber merece.",
+    description: "Um presente personalizado para fazer alguém se sentir especial.",
     cta: "Quero ver ideias →",
     photo: REAL_PHOTOS.presenteRosas,
     // Positioned toward the top-left to keep the ribbon knot and the rosas
@@ -26,7 +26,7 @@ const OPTIONS = [
     id: "presente-bandejas",
     emoji: "🎈",
     title: "Cestas especiais",
-    description: "Para transformar qualquer dia em uma comemoração.",
+    description: "Uma seleção dos nossos doces, montada e personalizada pra ocasião.",
     cta: "Quero ver ideias →",
     photo: REAL_PHOTOS.bandejaMario,
     // Positioned to keep the balloons, the cake and the treats box in
@@ -37,8 +37,8 @@ const OPTIONS = [
     id: "presente-mimos",
     emoji: "✨",
     title: "Doces mimos",
-    description: "Um jeitinho pequeno de fazer alguém sorrir.",
-    cta: "Quero ver produtos →",
+    description: "Um jeitinho doce de lembrar alguém.",
+    cta: "Quero ver ideias →",
     photo: REAL_PHOTOS.presentinhoTrufas,
     // Visual-correction pass: this tile moved from photo-above/text-below
     // to text overlaid on the photo (see below), which needs the photo to
@@ -69,9 +69,14 @@ export default function PresenteEntryScreen({ onBack, onSelect }) {
           the shared mc-page-title default — same size every other
           catalog-style screen uses, consistent rather than one more
           variation. */}
-      <h1 className="mc-page-title">É só uma lembrancinha.</h1>
+      <h1 className="mc-page-title">É só uma lembrancinha</h1>
+      {/* Deliberately a different thought from the Home tagline
+          (MOMENT_TAGLINE.presente, moments.js) — post-UX/UI-audit, the two
+          used to restate the same idea in different words; this one is
+          concrete about what "lembrancinha" can mean instead of repeating
+          "nunca é pequena." */}
       <p className="mc-page-subtitle">
-        Pra gente, é muito mais que isso. Cada presente é único, pensado pra quem vai receber se sentir especial.
+        Pode ser um obrigada, um parabéns, um carinho ou simplesmente um "lembrei de você". A gente cuida do doce e dos detalhes.
       </p>
 
       {/* Visual-correction pass: title/description/CTA moved from a

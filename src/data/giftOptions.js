@@ -11,9 +11,19 @@ import { PRODUCTS } from "./products";
 // Naia roughly what the customer has in mind.
 export const BUDGET_RANGES = ["Até $30", "$30–50", "$50–75", "$75+", "Ainda não sei"];
 
-export const BANDEJA_OCCASIONS = ["Aniversário", "Café da manhã", "Parabéns", "Agradecimento", "Só porque sim", "Outra"];
+// Post-UX/UI-audit final decision (2026-10): exactly these 5 + "Outra" —
+// "Café da manhã" dropped, "Parabéns" merged into "Parabéns / conquista".
+export const CESTA_OCCASIONS = ["Aniversário", "Agradecimento", "Parabéns / conquista", "Só porque sim", "Outra"];
 
-export const BANDEJA_CONTENTS = ["Doces", "Bolo", "Cookies", "Bebida", "Balão", "Mensagem"];
+// Etapa 1 ("O que não pode faltar?") of the Cesta wizard — replaces the old
+// generic category chips (Doces/Bolo/Cookies/Bebida/Balão/Mensagem, none of
+// them a real SKU) with the exact 7-product allow-list from the final
+// post-audit decision: real products.js entries only, so the step can show
+// a real photo per choice, same pattern as CAIXA_MUST_HAVE_PRODUCTS below.
+// "Mini Cake Donuts" and any other catalog item not on this list is
+// deliberately excluded — not every product belongs in a cesta.
+const CESTA_DOCES_IDS = ["brigadeiro", "pao-de-mel", "alfajor", "casadinho", "butter-cookies", "brownlito", "bala-de-coco"];
+export const CESTA_DOCES_PRODUCTS = PRODUCTS.filter((p) => CESTA_DOCES_IDS.includes(p.id));
 
 // "O que não pode faltar" options for the Caixa builder — every day-to-day
 // treat, i.e. real, cataloged products (with real photos, so the step can

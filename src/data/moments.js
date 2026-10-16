@@ -20,8 +20,10 @@ export const MOMENTS = [
   {
     id: "presente",
     emoji: "🎁",
-    label: "É só uma lembrancinha.",
-    titleLines: ["É só uma", "lembrancinha."],
+    // No period — approved direction post-UX/UI-audit: an open phrase, not
+    // a closed statement, consistent across every customer-facing surface.
+    label: "É só uma lembrancinha",
+    titleLines: ["É só uma", "lembrancinha"],
   },
   {
     id: "festa",
@@ -43,7 +45,11 @@ export const MOMENT_INTRO = {
 // full text above still shows up inside each moment's own screen.
 export const MOMENT_TAGLINE = {
   "dia-dificil": "Café, TPM, lanche ou só vontade de um docinho.",
-  presente: "Presentes feitos para alguém especial.",
+  // Post-UX/UI-audit: replaces the generic "Presentes feitos para alguém
+  // especial." — communicates the actual idea (mimo nunca é pequeno),
+  // distinct from the internal page's own subtitle below so the two never
+  // repeat the same thought (see PresenteEntryScreen.jsx).
+  presente: "Pra gente, nunca é só uma lembrancinha. Toda ocasião merece ser celebrada com um pouco de doçura.",
   festa: "A gente conhece essa história — foi assim que muita festa começou.",
 };
 
