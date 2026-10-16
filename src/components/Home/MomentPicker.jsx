@@ -68,9 +68,19 @@ const MOMENT_PHOTO_STYLE = {
 // all three, only the curve's own start/depth differs.
 const CARD_SHADOW_RGB = "17, 15, 13"; // low-saturation near-black — darkens, doesn't tint brown
 
+// dia-dificil correction, 2026-10 (third pass): the curve above read fine on
+// the card as a whole, but "dias-de-luta.jpg"'s own bottom third happens to
+// be its brightest region (sprinkle-covered and powdered-sugar cookies),
+// right where the tagline sits — a sitewide-average contrast number passed,
+// but the actual local patch under that specific line of text didn't. Fix
+// is local to this one curve: starts a little earlier and builds a little
+// more through the title/tagline band specifically (still a long, gentle
+// ease — one extra stop, not a steeper elbow), rather than any new flat
+// panel or a stronger photo-wide darkening. presente/festa are untouched —
+// their own curves already clear their photos' brighter regions.
 const CARD_SCRIM_CURVES = {
   "dia-dificil": [
-    [0, 0], [58, 0], [68, 0.05], [78, 0.14], [88, 0.3], [100, 0.46],
+    [0, 0], [50, 0], [62, 0.08], [72, 0.2], [82, 0.34], [92, 0.46], [100, 0.52],
   ],
   presente: [
     [0, 0], [50, 0], [62, 0.07], [74, 0.2], [86, 0.4], [100, 0.58],

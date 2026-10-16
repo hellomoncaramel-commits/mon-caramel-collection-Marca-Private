@@ -44,7 +44,7 @@ export const MOMENT_INTRO = {
 export const MOMENT_TAGLINE = {
   "dia-dificil": "Café, TPM, lanche ou só vontade de um docinho.",
   presente: "Presentes feitos para alguém especial.",
-  festa: "A gente conhece essa história...",
+  festa: "A gente conhece essa história — foi assim que muita festa começou.",
 };
 
 // One or two words per moment — for tight spots (quick-shortcut rows,

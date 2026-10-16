@@ -17,7 +17,7 @@ import { productDescription } from "./products";
 export const DEFAULT_TITLE = "Mon Caramel | Doces artesanais em Oshawa";
 export const DEFAULT_DESCRIPTION =
   "Doces artesanais por encomenda em Oshawa e Durham Region. Brigadeiros, presentes, lembrancinhas e muito mais. Escolha o seu e fale comigo.";
-export const DEFAULT_OG_TITLE = "Mon Caramel — Not your average sweets";
+export const DEFAULT_OG_TITLE = "Mon Caramel — Not your average sweet.";
 export const DEFAULT_OG_DESCRIPTION =
   "Doces artesanais feitos em pequenos lotes, para matar a vontade, presentear e comemorar. Feitos em Oshawa. 🤎";
 export const DEFAULT_OG_IMAGE = `${SITE_URL}/images/products/bolo-de-pote-camadas.jpg`;

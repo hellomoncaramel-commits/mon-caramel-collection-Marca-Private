@@ -1,6 +1,6 @@
 import { Heart } from "lucide-react";
 import { COLORS } from "../../styles/colors";
-import { REAL_PHOTOS } from "../../data/photos";
+import { REAL_PHOTOS, PHOTO_OBJECT_POSITION } from "../../data/photos";
 import { defaultPhotos, getColecaoCompletaProducts, cardPriceLine } from "../../utils/products";
 import SiteHeader from "../shared/SiteHeader";
 import ProductArt from "../shared/ProductArt";
@@ -152,6 +152,7 @@ function ProductCardDesktop({ p, added, onOpenProduct }) {
             src={photo}
             alt=""
             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+            style={PHOTO_OBJECT_POSITION[photo] ? { objectPosition: PHOTO_OBJECT_POSITION[photo] } : undefined}
             loading="lazy"
           />
         ) : (
@@ -186,7 +187,14 @@ function ProductRow({ p, added, onOpenProduct }) {
       <button onClick={() => onOpenProduct?.(p)} className="flex flex-1 min-w-0 gap-3 text-left">
         <div className="w-28 h-28 shrink-0">
           {photo ? (
-            <Photo src={photo} alt="" pictureClassName="block w-28 h-28" className="w-full h-full object-cover" loading="lazy" />
+            <Photo
+              src={photo}
+              alt=""
+              pictureClassName="block w-28 h-28"
+              className="w-full h-full object-cover"
+              style={PHOTO_OBJECT_POSITION[photo] ? { objectPosition: PHOTO_OBJECT_POSITION[photo] } : undefined}
+              loading="lazy"
+            />
           ) : (
             <ProductArt kind={p.kind} tint={p.tint} h="h-28" />
           )}

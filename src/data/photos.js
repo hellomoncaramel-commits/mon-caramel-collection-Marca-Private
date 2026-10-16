@@ -171,3 +171,22 @@ export const REAL_PHOTOS = {
     `${BASE}/docinho-personalizado-jardim.jpg`,
   ],
 };
+
+// Per-photo object-position override, keyed by the photo's own src (one of
+// the values above) — for the rare photo whose subject sits badly inside a
+// fixed-aspect card frame at the CSS default (center). Opt-in and additive:
+// `PRODUCTS[*].photos` stays a plain array of src strings everywhere
+// (`defaultPhotos(p)?.[0]` is still a raw string for SEO/meta/Selection/
+// cross-sell/Search/Home — none of that changes), and only the few
+// components that actually render a full-size framed photo (PhotoCarousel,
+// CatalogScreen's card thumbnail) look a src up here before falling back to
+// the CSS default. Empty for every photo except the one below, so no other
+// product's framing is affected.
+//
+// presentinhoDonutsPersonalizado: tall portrait source (3000x4000) with the
+// donuts + personalization card only in the lower half — the default
+// center crop in a 4:3 frame showed mostly empty wall above them and cut
+// the card off at the bottom (2026-10 visual review, polish round 2).
+export const PHOTO_OBJECT_POSITION = {
+  [`${BASE}/presentinho-donuts-personalizado.jpg`]: "center 91%",
+};
