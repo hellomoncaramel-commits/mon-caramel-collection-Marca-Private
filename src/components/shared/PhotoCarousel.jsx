@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { PHOTO_OBJECT_POSITION } from "../../data/photos";
 import Photo from "./Photo";
 
 // Rotates automatically every ~3s (briefing section 7 — many customers don't
@@ -99,7 +100,13 @@ export default function PhotoCarousel({ photos, alt, aspectClassName = "aspect-p
           (reached via arrows or the auto-rotate timer) stays lazy, since
           those loads are already deferred until the user/timer asks for
           them. */}
-      <Photo src={photos[i]} alt={alt} className="w-full h-full object-cover" loading={i === 0 ? "eager" : "lazy"} />
+      <Photo
+        src={photos[i]}
+        alt={alt}
+        className="w-full h-full object-cover"
+        style={PHOTO_OBJECT_POSITION[photos[i]] ? { objectPosition: PHOTO_OBJECT_POSITION[photos[i]] } : undefined}
+        loading={i === 0 ? "eager" : "lazy"}
+      />
       {photos.length > 1 && (
         <>
           <button
