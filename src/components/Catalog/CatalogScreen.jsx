@@ -26,13 +26,22 @@ import Photo from "../shared/Photo";
 // that point, cropped by the wrapper's overflow-hidden — instead of
 // object-position, since that source doesn't have cover's usual slack to
 // pan in. Never touches the source file.
+// Copy aligned with the canonical "Entrada de Presentes"/Home experiences
+// (post-UX/UI-audit, 2026-10) rather than independently invented —
+// title/tagline/CTA reuse the exact canonical text wherever it already
+// fits a card this size, so there's no drift between what a shortcut
+// promises here and what the destination screen actually delivers. Not a
+// verbatim copy of the full Presentes page everywhere (not required), but
+// never a different promise than the canonical one either.
 const DISCOVERY_CARDS = [
   {
     id: "discover-caixas",
     screen: "presente-caixas",
-    title: "Caixas para presentear",
-    tagline: "Um presente doce para alguém especial.",
-    cta: "Explorar caixas →",
+    title: "Caixas",
+    // Canonical copy (PresenteEntryScreen.jsx) — Caixas = presente
+    // personalizado.
+    tagline: "Um presente personalizado para fazer alguém se sentir especial.",
+    cta: "Quero ver ideias →",
     photo: REAL_PHOTOS.presenteRosas,
     photoPosition: "object-[20%_25%]",
   },
@@ -40,8 +49,10 @@ const DISCOVERY_CARDS = [
     id: "discover-bandejas",
     screen: "presente-bandejas",
     title: "Cestas especiais",
-    tagline: "Uma seleção de delícias para surpreender.",
-    cta: "Explorar cestas →",
+    // Canonical copy (PresenteEntryScreen.jsx) — Cestas = composição de
+    // produtos Mon Caramel, não "surpresa" genérica.
+    tagline: "Uma seleção dos nossos doces, montada e personalizada pra ocasião.",
+    cta: "Quero ver ideias →",
     // bandeja-mario.jpg, de volta — a troca anterior para bandeja-
     // formatura.jpg (com zoom pesado pra recortar a faixa de texto) saiu
     // desfocada e mostrava só um detalhe ampliado, não a cesta como um
@@ -54,9 +65,12 @@ const DISCOVERY_CARDS = [
   {
     id: "discover-festa",
     screen: "festa",
-    title: "Doces para festas",
-    tagline: "Pequenos detalhes para grandes comemorações.",
-    cta: "Explorar festas →",
+    title: "Festas",
+    // Aligned with Festa's canonical promise (moments.js MOMENT_TAGLINE/
+    // MOMENT_INTRO: planejar os doces junto, personalizados pro tema) —
+    // "Pequenos detalhes para grandes comemorações" dropped per the audit.
+    tagline: "Doces personalizados para celebrar junto.",
+    cta: "Quero planejar →",
     // mini-donut-festa-torre.jpg — a torre de mini donuts em si; o zoom
     // recorta as margens cremes das laterais (a foto fonte já tem esse
     // espaço vazio embutido) e a placa "GOO!" do topo.

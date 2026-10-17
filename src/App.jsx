@@ -121,16 +121,11 @@ export default function App() {
           )}
   
           {screen === "presente-bandejas" && (
-            <BandejasScreen onBack={() => setScreen("presente")} addToSelection={addToSelection} />
+            <BandejasScreen onBack={() => setScreen("presente")} addToSelection={addToSelection} onSend={setPendingMessage} />
           )}
   
           {screen === "presente-mimos" && (
-            <MimosScreen
-              onBack={() => setScreen("presente")}
-              selection={selection}
-              onOpenProduct={openProductDetail}
-              onGoSelection={onGoSelection}
-            />
+            <MimosScreen onBack={() => setScreen("presente")} onSend={setPendingMessage} />
           )}
   
           {screen && !NON_MOMENT_SCREENS.includes(screen) && (

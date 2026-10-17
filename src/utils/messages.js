@@ -70,6 +70,44 @@ export function buildSelectionMessage(selection, productsById) {
   )}\n\nPodem confirmar disponibilidade, personalização e valores?`;
 }
 
+function joinNatural(items) {
+  if (!items || items.length === 0) return "";
+  const lower = items.map((i) => i.charAt(0).toLowerCase() + i.slice(1));
+  if (lower.length === 1) return lower[0];
+  return `${lower.slice(0, -1).join(", ")} e ${lower[lower.length - 1]}`;
+}
+
+// Builds the "Conversar pelo WhatsApp" message for the Cesta wizard's
+// Resumo step — always assembled from whatever the customer actually
+// picked (never the fixed example text from the brief), so an idea with
+// fewer/different choices still reads as one natural message instead of
+// leaving blank lines. "Ainda não sei" is a real budget option but reads
+// oddly as "orçamento de Ainda não sei", so it's left out of the sentence
+// rather than forced in.
+export function buildCestaIdeaMessage({ items, occasion, personalization, budget }) {
+  const lines = ["Oi! Montei uma ideia de cesta pelo site 😊"];
+  if (items?.length) lines.push(`Gostaria de incluir ${joinNatural(items)}.`);
+
+  const budgetKnown = budget && budget !== "Ainda não sei";
+  if (occasion && budgetKnown) {
+    lines.push(`É para ${occasion.toLowerCase()} e pensei em um orçamento de ${budget}.`);
+  } else if (occasion) {
+    lines.push(`É para ${occasion.toLowerCase()}.`);
+  } else if (budgetKnown) {
+    lines.push(`Pensei em um orçamento de ${budget}.`);
+  }
+
+  const details = [];
+  if (personalization?.name) details.push(`nome: ${personalization.name}`);
+  if (personalization?.colors) details.push(`cores: ${personalization.colors}`);
+  if (personalization?.theme) details.push(`tema: ${personalization.theme}`);
+  if (personalization?.message) details.push(`mensagem: ${personalization.message}`);
+  if (details.length) lines.push(`Detalhes: ${details.join(", ")}.`);
+
+  lines.push("Podemos montar algo?");
+  return lines.join("\n");
+}
+
 // Builds the WhatsApp budget-request message from "Minha Festa" — always a
 // separate flow from "Minha Seleção", never priced (briefing section 5).
 export function buildPartyMessage({ items, theme, notes }) {

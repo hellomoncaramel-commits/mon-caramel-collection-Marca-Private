@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { BANDEJA_OCCASIONS, BANDEJA_CONTENTS } from "../../data/giftOptions";
+import { CESTA_OCCASIONS, CESTA_DOCES_PRODUCTS } from "../../data/giftOptions";
 import { TRAY_INSPIRATIONS } from "../../data/inspirationGalleries";
+import { buildCestaIdeaMessage } from "../../utils/messages";
 import SiteHeader from "../shared/SiteHeader";
 import InspirationCarousel from "../shared/InspirationCarousel";
 import PresenteCTA from "./PresenteCTA";
@@ -10,19 +11,31 @@ import GiftIdeaWizard from "./GiftIdeaWizard";
 // InspirationCarousel.jsx) — one photo at a time, no per-photo save/title,
 // "Quero montar o meu" always starts the wizard fresh, never tied to
 // whichever photo was on screen.
-export default function BandejasScreen({ onBack, addToSelection }) {
+export default function BandejasScreen({ onBack, addToSelection, onSend }) {
   const [showWizard, setShowWizard] = useState(false);
 
   if (showWizard) {
     return (
       <GiftIdeaWizard
         onBack={() => setShowWizard(false)}
-        groupKey="bandejas"
+        groupKey="cestas"
         groupLabel="Cesta especial"
-        title="Monte sua cesta especial"
-        occasionStep={{ question: "Qual é a ocasião?", options: BANDEJA_OCCASIONS }}
-        itemsStep={{ question: "O que você gostaria de incluir?", options: BANDEJA_CONTENTS }}
+        title="Vamos montar uma cesta?"
+        occasionStep={{ question: "Qual é a ocasião?", options: CESTA_OCCASIONS }}
+        fuseDetails
+        detailsIntro="Se quiser, me conta mais sobre o presente."
+        itemsStep={{
+          question: "O que não pode faltar?",
+          subtext: "Escolha os doces que você gostaria de incluir. Pode marcar mais de um.",
+          products: CESTA_DOCES_PRODUCTS,
+          // Cesta-only gate: she's assembling a cesta of real products, so
+          // "Continuar" stays disabled until at least one doce is chosen.
+          required: true,
+        }}
+        budgetIntro="Com base nos doces que você escolheu, eu monto a melhor combinação dentro do seu orçamento."
         onAdd={addToSelection}
+        onSend={onSend}
+        buildMessage={buildCestaIdeaMessage}
       />
     );
   }
