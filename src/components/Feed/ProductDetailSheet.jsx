@@ -2,7 +2,7 @@ import { useState } from "react";
 import { X, Heart, Share2, MessageCircle } from "lucide-react";
 import { COLORS } from "../../styles/colors";
 import { PRODUCTS } from "../../data/products";
-import { defaultPhotos, initialQuantity, displayPriceCada } from "../../utils/products";
+import { defaultPhotos, photosForMoment, initialQuantity, displayPriceCada } from "../../utils/products";
 import PhotoCarousel from "../shared/PhotoCarousel";
 import ProductArt from "../shared/ProductArt";
 import Photo from "../shared/Photo";
@@ -42,7 +42,18 @@ export default function ProductDetailSheet({
 
   const isCustomizable = p.customizable === true;
   const existing = selection.find((it) => it.kind === "product" && it.productId === p.id);
-  const photos = defaultPhotos(p);
+  // Same source the card already used to open this sheet — photosForMoment
+  // prioritizes a moment-specific gallery (photosByMoment[momentId]) when
+  // one exists, falling back to the product's own default `photos`
+  // otherwise. Post-audit fix (2026-10): the card could show a richer,
+  // moment-contextual photo (e.g. a real filling/context shot) that then
+  // silently disappeared the instant this sheet opened, because it always
+  // read defaultPhotos(p) regardless of momentId. Each photosByMoment set
+  // is still curated per product in products.js — this never shows a
+  // photo that wasn't already reviewed for that exact context (see e.g.
+  // Brownlito's own photosByMoment comment, where an incompatible filling
+  // photo was deliberately kept OUT rather than surfaced here).
+  const photos = photosForMoment(p, momentId);
   const showExperience = momentId === "dia-dificil";
 
   // Both the starting quantity and the stepper's floor come from the same

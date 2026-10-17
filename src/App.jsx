@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Heart } from "lucide-react";
 import { useSelection } from "./hooks/useSelection";
 import { useProductRoute } from "./hooks/useProductRoute";
+import Toast from "./components/shared/Toast";
 import HomeScreen from "./components/Home/HomeScreen";
 import MomentPicker from "./components/Home/MomentPicker";
 import CatalogScreen from "./components/Catalog/CatalogScreen";
@@ -39,6 +40,23 @@ const NON_MOMENT_SCREENS = [
 export default function App() {
   const [screen, setScreen] = useState(null);
   const [pendingMessage, setPendingMessage] = useState(null);
+
+  // Shared, app-wide toast (today only "Me tenta"'s direct-add feedback
+  // uses it — see MeTenta.jsx) — a plain auto-dismissing message, not a
+  // blocking modal, reusing Toast.jsx exactly as Minha Festa already does.
+  // `id` (not just the text) forces the dismiss timer to restart even if
+  // the same message fires again right after the previous one cleared.
+  const [toast, setToast] = useState(null);
+  const toastTimerRef = useRef(null);
+  const showToast = (text) => {
+    clearTimeout(toastTimerRef.current);
+    setToast({ id: Date.now(), text });
+  };
+  useEffect(() => {
+    if (!toast) return;
+    toastTimerRef.current = setTimeout(() => setToast(null), 2600);
+    return () => clearTimeout(toastTimerRef.current);
+  }, [toast]);
   // Which journey opened the product detail sheet — only Dias de luta ever
   // sets this (to "dia-dificil"), which is what turns on the Mon Caramel
   // Experience layer inside ProductDetailSheet (badges/note/cross-sell).
@@ -78,6 +96,8 @@ export default function App() {
               onSelect={setScreen}
               onOpenProduct={openProductDetail}
               selection={selection}
+              addToSelection={addToSelection}
+              onShowToast={showToast}
             />
           )}
   
@@ -111,6 +131,7 @@ export default function App() {
               addToSelection={addToSelection}
               onBack={() => setScreen(null)}
               onSend={setPendingMessage}
+              onOpenProduct={openProductDetail}
             />
           )}
   
@@ -193,6 +214,8 @@ export default function App() {
       )}
 
       {pendingMessage && <SendModal message={pendingMessage} onClose={() => setPendingMessage(null)} />}
+
+      <Toast message={toast?.text} />
     </div>
   );
 }

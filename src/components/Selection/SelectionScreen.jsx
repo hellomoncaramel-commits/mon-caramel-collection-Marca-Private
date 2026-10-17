@@ -8,6 +8,7 @@ import { defaultPhotos } from "../../utils/products";
 import { entryPrice } from "../../utils/pricing";
 import Photo from "../shared/Photo";
 import SiteHeader from "../shared/SiteHeader";
+import NextTemptation from "../shared/NextTemptation";
 
 function Thumb({ photo, fallbackIcon }) {
   return (
@@ -135,8 +136,25 @@ function EntryCard({ it, product, onRemove }) {
 // Shared "Minha Seleção" — not a checkout cart. Its job is to help build an
 // idea of an order before talking to Naia; the finish line is one organized
 // WhatsApp message, not a purchase.
-export default function SelectionScreen({ selection, removeFromSelection, onBack, onSend }) {
+export default function SelectionScreen({ selection, removeFromSelection, onBack, onSend, onOpenProduct }) {
   const productsById = useMemo(() => new Map(PRODUCTS.map((p) => [p.id, p])), []);
+
+  // At most ONE contextual suggestion (post-audit "Desejo + Venda
+  // Inteligente", seção 12) — never a generic "related products" block,
+  // always the same hand-curated experience.nextTemptation data Product
+  // Detail's Dias de luta cross-sell already uses (NextTemptation.jsx
+  // reused pointwise here, its own dia-dificil gate in ProductDetailSheet
+  // left untouched — see that component's own comment). Sourced from the
+  // last real product entry added to the selection; silently shows nothing
+  // when any condition fails (no empty state, per the brief).
+  const lastProductEntry = [...selection].reverse().find((it) => !it.kind || it.kind === "product");
+  const lastProduct = lastProductEntry ? productsById.get(lastProductEntry.productId) : null;
+  const temptation = lastProduct?.experience?.nextTemptation;
+  const temptationProduct = temptation ? PRODUCTS.find((x) => x.id === temptation.id) : null;
+  const temptationAlreadySelected = temptationProduct
+    ? selection.some((it) => (!it.kind || it.kind === "product") && it.productId === temptationProduct.id)
+    : false;
+  const showTemptation = Boolean(temptation?.line && temptationProduct && !temptationAlreadySelected);
 
   return (
     // Minha Seleção is a pre-WhatsApp summary, not a marketplace checkout.
@@ -149,9 +167,7 @@ export default function SelectionScreen({ selection, removeFromSelection, onBack
       <SiteHeader onBack={onBack} />
       <h2 className="mc-page-title">♡ Minha Seleção</h2>
       <p className="mc-page-subtitle">
-        {selection.length === 0
-          ? "Ainda vazia — volte e escolha o que combinar com o momento."
-          : "Confira tudo antes de conversar com a gente."}
+        {selection.length === 0 ? "Ainda vazia — volte e escolha o que combinar com o momento." : "Sua seleção está ficando boa 👀"}
       </p>
 
       {selection.length === 0 ? (
@@ -168,15 +184,26 @@ export default function SelectionScreen({ selection, removeFromSelection, onBack
         // nenhum subtotal, frete ou checkout inventado). Mobile continua a
         // mesma pilha única de sempre.
         <div className="lg:grid lg:grid-cols-[1fr_340px] lg:gap-10 lg:items-start">
-          <div className="mb-6 lg:mb-0 divide-y divide-brand-border">
-            {selection.map((it) => (
-              <EntryCard
-                key={entryKey(it)}
-                it={it}
-                product={it.productId ? productsById.get(it.productId) : null}
-                onRemove={removeFromSelection}
+          <div className="mb-6 lg:mb-0">
+            <div className="divide-y divide-brand-border">
+              {selection.map((it) => (
+                <EntryCard
+                  key={entryKey(it)}
+                  it={it}
+                  product={it.productId ? productsById.get(it.productId) : null}
+                  onRemove={removeFromSelection}
+                />
+              ))}
+            </div>
+            {showTemptation && (
+              <NextTemptation
+                label="Já que você tá por aqui... 👀"
+                line={temptation.line}
+                product={temptationProduct}
+                photo={defaultPhotos(temptationProduct)?.[0]}
+                onOpen={(product) => onOpenProduct?.(product)}
               />
-            ))}
+            )}
           </div>
 
           {/* Closing moment — the same warm gradient panel "Minha Festa"

@@ -907,8 +907,18 @@ export const PRODUCTS = [
     // green-ribbon photo) out, at Naia's request; the Mimos inspiration
     // carousel (MIMO_INSPIRATIONS, src/data/inspirationGalleries.js) is a
     // separate data source entirely, untouched by either.
+    //
+    // brownlitoRecheio removed here (post-audit validation, 2026-10): visual
+    // inspection confirmed it shows a DIFFERENT product — a cut, cube-shaped
+    // treat with a white cream filling and a strawberry slice, not the
+    // coconut-topped Prestígio bar this product actually is (no cut/filling
+    // shot of the real Prestígio exists yet). Keeping it here would have
+    // shown an incompatible filling right where a customer decides to buy —
+    // worse than showing one fewer photo. REAL_PHOTOS.brownlitoRecheio stays
+    // defined in photos.js (real photo, just not of this product) in case a
+    // real match for it turns up later.
     photosByMoment: {
-      "dia-dificil": [REAL_PHOTOS.brownlitoEmbalado, REAL_PHOTOS.brownlitoRecheio],
+      "dia-dificil": [REAL_PHOTOS.brownlitoEmbalado],
     },
     // `photos` below is the general fallback (Coleção completa/Busca,
     // Detail, and any other card reusing the product outside the

@@ -10,12 +10,18 @@ import Photo from "./Photo";
 // (square thumbnail, not a bigger rectangular card) under a quiet "Próxima
 // tentação" label, not its own featured block. Visual-correction pass:
 // reverted from a taller shadowed mini-card back to this tighter row.
-export default function NextTemptation({ line, product, photo, onOpen }) {
+//
+// `label` is opt-in (defaults to the original "Próxima tentação", so the
+// Product Detail / Dias de luta usage above is byte-for-byte unchanged) —
+// added so Minha Seleção can reuse this exact component/data pointwise with
+// its own heading ("Já que você tá por aqui... 👀") without a second,
+// parallel cross-sell component or a new gate on the Dias de luta one.
+export default function NextTemptation({ line, product, photo, onOpen, label = "Próxima tentação" }) {
   if (!product || !line) return null;
 
   return (
     <div className="mt-4">
-      <p className="text-3xs uppercase tracking-wide font-medium text-brand-muted mb-1.5">Próxima tentação</p>
+      <p className="text-3xs uppercase tracking-wide font-medium text-brand-muted mb-1.5">{label}</p>
       <button onClick={() => onOpen(product)} className="w-full flex items-center gap-2.5 text-left">
         <div className="w-14 h-14 shrink-0 rounded-xl overflow-hidden bg-brand-subtle">
           {photo && <Photo src={photo} alt={product.name} className="w-full h-full object-cover" loading="lazy" />}
