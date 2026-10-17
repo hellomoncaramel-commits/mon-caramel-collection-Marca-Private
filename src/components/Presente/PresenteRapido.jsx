@@ -71,7 +71,7 @@ export default function PresenteRapido({ onBack, onSelect, addToSelection, onOpe
     <div className="max-w-xl md:max-w-2xl mx-auto px-gutter lg:px-8 pt-2 pb-10 fade-up">
       <SiteHeader onBack={onBack} />
       <h1 className="mc-page-title">Precisa de uma ideia rapidinho?</h1>
-      <p className="mc-page-subtitle">Me diz seu orçamento — eu já separo 2 ou 3 ideias boas.</p>
+      <p className="mc-page-subtitle">Me diz seu orçamento — eu separo algumas ideias pra você.</p>
 
       <div className="flex flex-wrap gap-2 mt-4">
         {GIFT_BUDGET_TIERS.map((tier) => {
