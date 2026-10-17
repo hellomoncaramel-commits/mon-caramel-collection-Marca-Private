@@ -21,6 +21,15 @@
 // real nos dados; entrar aqui prometeria uma escolha que não existe no
 // momento em que a cliente decide comprar. Também fora: qualquer produto
 // "Sob consulta" (sem preço real pra ancorar uma sugestão honesta).
+//
+// Também deliberadamente fora (revisão pós-ChatGPT, rodada 2): Biscoito
+// Amanteigado congelado. Cabe matematicamente em $30-50/$50+, mas é
+// posicionado comercialmente como massa pra guardar no freezer e assar
+// quando quiser — não é uma recomendação forte pra "preciso dar um
+// presente". giftQuickPicks.js existe exatamente pra curadoria comercial
+// vencer a matemática, não o contrário. Não substituído por outro produto
+// só pra manter 3 cards — ver nota em "30-50"/"50-mais" abaixo: 2 (ou, em
+// "50-mais", 1) ideias boas valem mais que 3 fracas.
 export const GIFT_QUICK_PICKS = {
   "ate-15": [
     // Pirulito de Alfajor já é vendido com copy própria de "lembrancinha
@@ -34,14 +43,26 @@ export const GIFT_QUICK_PICKS = {
     { productId: "casadinho", packageLabel: "12 casadinhos" },
     { productId: "bolo-cenoura" },
   ],
+  // Só 2 ideias — de propósito. Sem o Biscoito congelado (ver nota acima),
+  // Casadinhos 24un e Brigadeiro 24un já são, cada um por si, um presente
+  // honesto nessa faixa; nenhum terceiro produto real e "sob medida" pra
+  // essa faixa que não fosse ou "Personalizado" sem config (achado P1) ou
+  // Sob consulta.
   "30-50": [
     { productId: "casadinho", packageLabel: "24 casadinhos" },
     { productId: "brigadeiro", packageLabel: "24 brigadeiros" },
-    { productId: "butter-cookies-congelado", qty: 50 },
   ],
-  "50-mais": [
-    { productId: "brigadeiro", packageLabel: "50 brigadeiros" },
-    { productId: "butter-cookies-congelado", qty: 75 },
-    { productId: "brigadeiro", packageLabel: "100 brigadeiros" },
-  ],
+  // Só 1 ideia. Avaliação comercial: Brigadeiro 100un ($130) foi
+  // descartado junto com o Biscoito congelado — um pacote de 100
+  // brigadeiros lê como encomenda de evento/catering, não como "presente"
+  // pra uma pessoa ou ocasião; incluí-lo soaria como "você tem mais
+  // orçamento, então compre uma quantidade enorme do mesmo doce", exatamente
+  // o que a revisão pediu pra evitar. Brigadeiro 50un ($75) fica: na
+  // própria posição comercial do produto (packageOptions existe
+  // justamente pra presentear/agradar um grupo), 50 unidades ainda lê como
+  // um presente generoso, não uma encomenda de festa. A faixa termina
+  // numa única ideia + a saída editorial "Quer algo mais montado?" com
+  // mais destaque (ver PresenteRapido.jsx) — curadoria honesta em vez de
+  // forçar um 2º ou 3º card.
+  "50-mais": [{ productId: "brigadeiro", packageLabel: "50 brigadeiros" }],
 };

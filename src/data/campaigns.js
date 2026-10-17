@@ -21,13 +21,16 @@
 //   photo        REAL_PHOTOS.x — uma foto real já existente no catálogo,
 //                nunca uma nova/stock/gerada.
 //   line         string curta — a única frase visível na faixa.
-//   destination  { type: "screen", screen: "<screen id>" }
+//   destination  { type: "screen", screen: "<id em ALLOWED_CAMPAIGN_SCREENS>" }
 //                | { type: "product", productId: "<id real em products.js>" }
 //                | { type: "whatsapp", message: "<mensagem pronta>" }
 //                Validado em utils/campaigns.js (getActiveCampaign) antes
 //                de aparecer — uma campanha com destino inválido (screen
-//                vazio, productId que não existe, mensagem vazia) nunca
-//                chega a renderizar, pra nunca criar um CTA quebrado.
+//                fora da allowlist, productId que não existe, mensagem
+//                vazia) nunca chega a renderizar, pra nunca criar um CTA
+//                quebrado. `screen` aceita só os ids comerciais reais
+//                listados em ALLOWED_CAMPAIGN_SCREENS (utils/campaigns.js)
+//                — nunca qualquer screen que o app reconheça.
 //
 // Nunca inferido por calendário (dezembro não vira "Natal" sozinho), nunca
 // com produto/preço/desconto/estoque/urgência inventados.

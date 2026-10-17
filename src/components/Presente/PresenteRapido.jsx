@@ -96,7 +96,20 @@ export default function PresenteRapido({ onBack, onSelect, addToSelection, onOpe
       {tierKey && picks.length > 0 && (
         <div className="mt-6 fade-up">
           <p className="font-display text-xl text-brand-ink mb-4">Com esse orçamento, eu iria por aqui 👀</p>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {/* O grid se adapta à quantidade real de ideias (1, 2 ou 3) — uma
+              faixa com só 1 ou 2 ideias boas (curadoria honesta, ver
+              data/giftQuickPicks.js) nunca tenta simular 3 colunas com
+              espaço vazio ao lado. 1 ideia: card único, largura contida,
+              não esticado nem "perdido" num grid de 3 colunas. */}
+          <div
+            className={
+              picks.length === 1
+                ? "max-w-sm"
+                : picks.length === 2
+                  ? "grid gap-4 sm:grid-cols-2 max-w-2xl"
+                  : "grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+            }
+          >
             {picks.map((pick) => (
               <ResultCard key={`${pick.product.id}-${pick.packageLabel ?? pick.qty}`} pick={pick} onWantIt={handleWantIt} />
             ))}

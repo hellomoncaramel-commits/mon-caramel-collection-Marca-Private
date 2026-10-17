@@ -8,7 +8,7 @@ import Logo from "../shared/Logo";
 import Photo from "../shared/Photo";
 import HeroMedia from "../shared/HeroMedia";
 import MeTenta from "./MeTenta";
-import CampaignStrip from "./CampaignStrip";
+import SeasonalFeature from "./SeasonalFeature";
 import { useDragScroll } from "../../hooks/useDragScroll";
 
 // The Home's two real decisions — same ids/handler (onSelect(id) →
@@ -229,9 +229,9 @@ export default function HomeScreen({ onSelect, onOpenProduct, selection, addToSe
         {/* Destaque sazonal (Fase 2) — renderiza nada (sem DOM, sem imagem)
             quando não há campanha ativa, que é o único estado deste PR
             (CAMPAIGNS vazio). Sempre entre o Hero e o Me Tenta, nunca
-            competindo com nenhum dos dois — ver CampaignStrip.jsx. */}
+            competindo com nenhum dos dois — ver SeasonalFeature.jsx. */}
         <div className="mt-4">
-          <CampaignStrip onSelect={onSelect} onOpenProduct={onOpenProduct} onSend={onSend} />
+          <SeasonalFeature onSelect={onSelect} onOpenProduct={onOpenProduct} onSend={onSend} />
         </div>
 
         {/* "Me tenta" — ponto de entrada próprio, visualmente distinto dos
@@ -352,10 +352,10 @@ export default function HomeScreen({ onSelect, onOpenProduct, selection, addToSe
       </div>
 
       {/* Destaque sazonal (Fase 2) — mesmo componente/condição da versão
-          mobile acima; CampaignStrip.jsx já se adapta sozinho, nenhuma
+          mobile acima; SeasonalFeature.jsx já se adapta sozinho, nenhuma
           variante desktop própria é necessária. */}
       <div className="hidden lg:block" style={{ marginTop: 24, maxWidth: 820 }}>
-        <CampaignStrip onSelect={onSelect} onOpenProduct={onOpenProduct} onSend={onSend} />
+        <SeasonalFeature onSelect={onSelect} onOpenProduct={onOpenProduct} onSend={onSend} />
       </div>
 
       {/* "Me tenta" — mesmo componente da versão mobile; o próprio

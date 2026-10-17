@@ -22,17 +22,38 @@ export function isCampaignActive(campaign, todayStr) {
   return Boolean(campaign?.startDate && campaign?.endDate && campaign.startDate <= todayStr && todayStr <= campaign.endDate);
 }
 
+// Explicit allowlist, not every screen id App.jsx happens to recognize
+// (NON_MOMENT_SCREENS there also includes "busca" and "selecao" — utility
+// screens with no commercial content of their own to feature, never a
+// sensible campaign destination). Each of these is a real id from
+// App.jsx's screen state (src/App.jsx) or a real moment id (src/data/
+// moments.js) that leads somewhere a seasonal campaign could honestly
+// point a customer: an entry point, a format, or a moment — verified
+// against both files, not guessed. Kept here (not imported from App.jsx)
+// on purpose: this list is a deliberate commercial decision about what a
+// campaign may feature, not a mechanical copy of every screen that exists.
+const ALLOWED_CAMPAIGN_SCREENS = [
+  "presente", // "É só uma lembrancinha" — entrada de Presentes
+  "presente-rapido", // Fase 2 — produto real com preço
+  "presente-caixas",
+  "presente-bandejas",
+  "presente-mimos",
+  "catalogo", // Coleção completa
+  "dia-dificil", // momento real (src/data/moments.js)
+  "festa", // momento real (src/data/moments.js)
+];
+
 // A campaign whose destination can't actually be followed is treated as if
 // it weren't configured at all — never rendered, never a dead CTA (brief
-// item 13). `screen`/`message` are only checked for being a real,
-// non-empty string (the destination screens/whatsapp flow are plain
-// strings the caller already trusts, same as every other `onSelect`/
-// `onSend` call in this app); `product` is checked against the real
-// catalog, since a typo'd or since-removed productId is the one failure
-// mode this can actually catch.
+// item 13). `screen` must be one of ALLOWED_CAMPAIGN_SCREENS above (a
+// non-empty string alone isn't enough — "banana" would otherwise pass);
+// `product` is checked against the real catalog, since a typo'd or
+// since-removed productId is the one failure mode that check can actually
+// catch; `message` just needs to be a real, non-empty string (same as
+// every other `onSend`/SendModal call in this app).
 export function isValidCampaignDestination(destination) {
   if (!destination || typeof destination !== "object") return false;
-  if (destination.type === "screen") return typeof destination.screen === "string" && destination.screen.length > 0;
+  if (destination.type === "screen") return ALLOWED_CAMPAIGN_SCREENS.includes(destination.screen);
   if (destination.type === "product") return PRODUCTS.some((p) => p.id === destination.productId);
   if (destination.type === "whatsapp") return typeof destination.message === "string" && destination.message.length > 0;
   return false;
