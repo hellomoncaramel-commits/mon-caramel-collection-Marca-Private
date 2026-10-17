@@ -26,11 +26,3 @@ export function pickMeTentaCandidate(pool, { lastShownId = null, selectedIds = [
 
   return candidates[Math.floor(Math.random() * candidates.length)];
 }
-
-// A mesma marcação que ProductDetailSheet já usa para decidir entre o
-// stepper simples ("Eu quero") e o FlavorConfigurator (packageOptions/
-// optionGroups/singleItem) — nunca uma heurística nova: um produto só
-// exige configuração quando `customizable` está explicitamente marcado.
-export function needsConfiguration(product) {
-  return product?.customizable === true;
-}

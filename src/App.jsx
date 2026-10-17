@@ -8,6 +8,7 @@ import MomentPicker from "./components/Home/MomentPicker";
 import CatalogScreen from "./components/Catalog/CatalogScreen";
 import MomentScreen from "./components/Moment/MomentScreen";
 import PresenteEntryScreen from "./components/Presente/PresenteEntryScreen";
+import PresenteRapido from "./components/Presente/PresenteRapido";
 import CaixasScreen from "./components/Presente/CaixasScreen";
 import BandejasScreen from "./components/Presente/BandejasScreen";
 import MimosScreen from "./components/Presente/MimosScreen";
@@ -32,6 +33,7 @@ const NON_MOMENT_SCREENS = [
   "catalogo",
   "selecao",
   "presente",
+  "presente-rapido",
   "presente-caixas",
   "presente-bandejas",
   "presente-mimos",
@@ -68,6 +70,22 @@ export default function App() {
   const { openProduct, openProductContext, openProductDetail, closeProductDetail, setOnDirectOpen } = useProductRoute();
   const { selection, addToSelection, removeFromSelection } = useSelection();
 
+  // Presente Rápido (Fase 2): the quantity/package it suggested for a
+  // configurable product, carried through to the Product Detail sheet that
+  // opens right after — see ProductDetailSheet.jsx's own comment on how it
+  // merges this with a real already-selected entry. Cleared whenever the
+  // sheet closes so it can never leak into some later, unrelated open of
+  // the same product.
+  const [pendingGiftIntent, setPendingGiftIntent] = useState(null);
+  const openProductWithIntent = (product, intent) => {
+    setPendingGiftIntent(intent);
+    openProductDetail(product);
+  };
+  const closeProductDetailAndClearIntent = () => {
+    setPendingGiftIntent(null);
+    closeProductDetail();
+  };
+
   // A page load that lands directly on /doces/[slug] (e.g. a shared link)
   // has no "origin screen" to return to when the Detail closes — this
   // makes that case land on Coleção completa instead of Home. Plain
@@ -98,6 +116,7 @@ export default function App() {
               selection={selection}
               addToSelection={addToSelection}
               onShowToast={showToast}
+              onSend={setPendingMessage}
             />
           )}
   
@@ -136,6 +155,16 @@ export default function App() {
           )}
   
           {screen === "presente" && <PresenteEntryScreen onBack={() => setScreen(null)} onSelect={setScreen} />}
+
+          {screen === "presente-rapido" && (
+            <PresenteRapido
+              onBack={() => setScreen("presente")}
+              onSelect={setScreen}
+              addToSelection={addToSelection}
+              onOpenProductWithIntent={openProductWithIntent}
+              onShowToast={showToast}
+            />
+          )}
   
           {screen === "presente-caixas" && (
             <CaixasScreen onBack={() => setScreen("presente")} addToSelection={addToSelection} />
@@ -204,12 +233,13 @@ export default function App() {
           // product was open before.
           key={openProduct.id}
           product={openProduct}
-          onClose={closeProductDetail}
+          onClose={closeProductDetailAndClearIntent}
           momentId={openProductContext}
           onOpenProduct={openProductDetail}
           selection={selection}
           addToSelection={addToSelection}
           removeFromSelection={removeFromSelection}
+          pendingIntent={pendingGiftIntent}
         />
       )}
 

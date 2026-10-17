@@ -180,6 +180,18 @@ export function cardPriceLine(p) {
   return p.unit || p.price || null;
 }
 
+// The same flag ProductDetailSheet.jsx already reads internally
+// (`p.customizable === true`) to decide between the plain qty-stepper/"Eu
+// quero" flow and FlavorConfigurator (packageOptions/optionGroups/
+// singleItem — all gated behind this one boolean). Moved here from
+// utils/meTenta.js (Fase 2, Presente Rápido) now that a second feature
+// needs the exact same "does this product require a choice before it can
+// be added?" signal — same function, same behavior, just no longer
+// private to one feature.
+export function needsConfiguration(product) {
+  return product?.customizable === true;
+}
+
 // One real, factual sentence for a product — used as the meta description
 // and og:description of its /doces/[slug] page (see scripts/
 // generate-static-pages.mjs) and, client-side, kept in sync on the same
