@@ -1,38 +1,30 @@
-// "Me tenta" — motor de sugestão local, determinístico, sem LLM/API/rede e
-// sem Math.random() puro sobre o catálogo inteiro (auditoria "Desejo + Venda
-// Inteligente", seção 4). Regras explicáveis sobre um pool já curado
-// (data/meTentaPool.js):
-//   - nunca sai do pool recebido;
-//   - nunca repete o último produto mostrado (salvo se o pool tiver só 1);
-//   - um produto já presente em Minha Seleção não é excluído, só recebe
-//     peso menor — "evitar priorizar", não "nunca mostrar" (briefing
-//     explícito nesse sentido);
-//   - entre os elegíveis, sorteio ponderado — variedade sem ser puramente
-//     aleatório sobre tudo.
+// "Me tenta" — motor de sugestão local sobre um pool já curado
+// (data/meTentaPool.js), sem LLM/API/rede (auditoria "Desejo + Venda
+// Inteligente", seção 4). Math.random() É usado aqui — o que a auditoria
+// proibia era Math.random() puro/livre sobre o catálogo inteiro. Neste
+// motor, o sorteio só acontece DEPOIS de filtrar os candidatos pelas regras
+// abaixo, nessa ordem de prioridade:
+//   1. não é o último produto mostrado (lastShownId) — salvo se isso
+//      zerar os candidatos (pool com 1 produto só);
+//   2. ainda não está em Minha Seleção — salvo se isso zerar os
+//      candidatos (todo o pool já foi escolhido pela cliente);
+//   3. pertence ao pool curado recebido (garantido: é o próprio parâmetro).
+// Com um pool de só 4 produtos, um scoring ponderado era complexidade
+// desnecessária para o V1 — um produto já selecionado simplesmente não
+// participa do sorteio enquanto houver qualquer outro candidato elegível.
 // Não inventa disponibilidade, popularidade, sazonalidade ou preferência:
-// os únicos sinais usados são o pool e o estado real já existente
-// (seleção atual, último item mostrado).
-const SELECTED_WEIGHT = 0.35;
-const DEFAULT_WEIGHT = 1;
-
+// os únicos sinais usados são o pool e o estado real já existente (seleção
+// atual, último item mostrado).
 export function pickMeTentaCandidate(pool, { lastShownId = null, selectedIds = [] } = {}) {
   if (!pool || pool.length === 0) return null;
 
   const notLast = pool.filter((p) => p.id !== lastShownId);
-  const candidates = notLast.length > 0 ? notLast : pool;
+  const base = notLast.length > 0 ? notLast : pool;
 
-  const weighted = candidates.map((product) => ({
-    product,
-    weight: selectedIds.includes(product.id) ? SELECTED_WEIGHT : DEFAULT_WEIGHT,
-  }));
+  const notSelected = base.filter((p) => !selectedIds.includes(p.id));
+  const candidates = notSelected.length > 0 ? notSelected : base;
 
-  const total = weighted.reduce((sum, w) => sum + w.weight, 0);
-  let r = Math.random() * total;
-  for (const w of weighted) {
-    r -= w.weight;
-    if (r <= 0) return w.product;
-  }
-  return weighted[weighted.length - 1].product;
+  return candidates[Math.floor(Math.random() * candidates.length)];
 }
 
 // A mesma marcação que ProductDetailSheet já usa para decidir entre o

@@ -27,16 +27,10 @@ export default function MeTenta({ selection, addToSelection, onOpenProduct, onSh
 
   const pick = () => pickMeTentaCandidate(ME_TENTA_PRODUCTS, { lastShownId: lastShownId.current, selectedIds });
 
-  const reveal = () => {
-    const next = pick();
-    if (!next) return;
-    lastShownId.current = next.id;
-    setCurrent(next);
-    setRevealed(true);
-  };
-
-  const tryAgain = () => {
-    const next = pick();
+  // Troca para `next` com a mesma transição curta em todo lugar — usada
+  // tanto por "Me tenta de novo" quanto, depois de um add direto, para
+  // avançar sozinho para outra sugestão (sem precisar de um segundo toque).
+  const swapTo = (next) => {
     if (!next) return;
     if (reducedMotion()) {
       lastShownId.current = next.id;
@@ -50,6 +44,16 @@ export default function MeTenta({ selection, addToSelection, onOpenProduct, onSh
       setSwapping(false);
     }, SWAP_MS);
   };
+
+  const reveal = () => {
+    const next = pick();
+    if (!next) return;
+    lastShownId.current = next.id;
+    setCurrent(next);
+    setRevealed(true);
+  };
+
+  const tryAgain = () => swapTo(pick());
 
   const handlePrimary = () => {
     if (!current) return;
@@ -66,6 +70,11 @@ export default function MeTenta({ selection, addToSelection, onOpenProduct, onSh
       flavors: null,
     });
     onShowToast("Boa escolha 🤎 Já guardei pra você.");
+    // Avança sozinho para outra sugestão elegível — nunca repete o que
+    // acabou de ser adicionado (lastShownId já aponta pra ele), sem
+    // navegar, sem rolar a página, reaproveitando a mesma transição de
+    // "Me tenta de novo".
+    swapTo(pick());
   };
 
   if (!revealed) {
