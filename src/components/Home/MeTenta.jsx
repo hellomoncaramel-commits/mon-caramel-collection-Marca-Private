@@ -2,8 +2,8 @@ import { useRef, useState } from "react";
 import { ChevronRight, Sparkles } from "lucide-react";
 import { COLORS } from "../../styles/colors";
 import { ME_TENTA_PRODUCTS } from "../../data/meTentaPool";
-import { pickMeTentaCandidate, needsConfiguration } from "../../utils/meTenta";
-import { defaultPhotos, initialQuantity, displayPriceCada } from "../../utils/products";
+import { pickMeTentaCandidate } from "../../utils/meTenta";
+import { defaultPhotos, initialQuantity, displayPriceCada, needsConfiguration } from "../../utils/products";
 import Photo from "../shared/Photo";
 
 const SWAP_MS = 150; // metade do orçamento de 200–300ms pedido — fade-out + fade-in

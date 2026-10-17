@@ -37,11 +37,22 @@ export default function ProductDetailSheet({
   removeFromSelection,
   momentId,
   onOpenProduct,
+  pendingIntent,
 }) {
   useModalLock(onClose);
 
   const isCustomizable = p.customizable === true;
   const existing = selection.find((it) => it.kind === "product" && it.productId === p.id);
+  // Presente Rápido (Fase 2) preserving its suggested quantity/package: a
+  // real `existing` entry (the product is already in Minha Seleção) always
+  // wins over a one-time suggestion. `pendingIntent` is shaped just like
+  // the subset of a selection entry FlavorConfigurator already reads to
+  // pre-fill itself (`qty`/`packageLabel`) — deliberately missing
+  // `options`, so no flavor/cobertura/versão chip is ever pre-selected,
+  // only the quantity/package dimension Presente Rápido actually decided.
+  // That configurator step still renders and still requires an explicit
+  // tap to confirm — nothing here skips it.
+  const effectiveExisting = existing ?? (pendingIntent?.productId === p.id ? pendingIntent : null);
   // Same source the card already used to open this sheet — photosForMoment
   // prioritizes a moment-specific gallery (photosByMoment[momentId]) when
   // one exists, falling back to the product's own default `photos`
@@ -227,7 +238,7 @@ export default function ProductDetailSheet({
               spaced, so it reads as the next step, not a separate card). */}
           {isCustomizable ? (
             <div className="mt-4 pt-3 border-t border-dashed border-brand-border">
-              <FlavorConfigurator product={p} existing={existing} onConfirm={({ qty: q, flavorBreakdown, options, packageLabel, packagePrice, singleItem }) => {
+              <FlavorConfigurator product={p} existing={effectiveExisting} onConfirm={({ qty: q, flavorBreakdown, options, packageLabel, packagePrice, singleItem }) => {
                 addToSelection({
                   kind: "product",
                   productId: p.id,

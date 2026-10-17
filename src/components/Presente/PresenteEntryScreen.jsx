@@ -1,3 +1,4 @@
+import { ChevronRight } from "lucide-react";
 import { COLORS } from "../../styles/colors";
 import { REAL_PHOTOS } from "../../data/photos";
 import SiteHeader from "../shared/SiteHeader";
@@ -78,6 +79,27 @@ export default function PresenteEntryScreen({ onBack, onSelect }) {
       <p className="mc-page-subtitle">
         Pode ser um obrigada, um parabéns, um carinho ou simplesmente um "lembrei de você". A gente cuida do doce e dos detalhes.
       </p>
+
+      {/* "Presente Rápido" (Fase 2) — um módulo discreto, não um 4º
+          cartão de peso igual aos três abaixo: eles são *formato*
+          (Caixas/Cestas/Mimos), isto é *velocidade* ("não quero escolher
+          entre formatos, só me diz uma ideia já"). Sem foto própria aqui
+          de propósito — nenhuma foto do Presente Rápido carrega até a
+          cliente escolher uma faixa de orçamento, na própria tela. */}
+      <button
+        onClick={() => onSelect("presente-rapido")}
+        className="w-full flex items-center justify-between gap-3 rounded-2xl px-5 py-4 text-left mb-4 transition-transform active:scale-[0.98] motion-reduce:transition-none"
+        style={{ backgroundColor: COLORS.subtle, border: `1px solid ${COLORS.border}` }}
+      >
+        <span className="font-display text-base text-brand-ink">Precisa de uma ideia rapidinho?</span>
+        <span
+          className="inline-flex items-center gap-1 shrink-0 text-sm font-medium rounded-full px-4 py-2.5"
+          style={{ color: COLORS.caramelDark, border: `1.5px solid ${COLORS.caramelDark}` }}
+        >
+          Me ajuda a decidir
+          <ChevronRight size={14} />
+        </span>
+      </button>
 
       {/* Visual-correction pass: title/description/CTA moved from a
           separate block under the photo to an overlay directly on it (per

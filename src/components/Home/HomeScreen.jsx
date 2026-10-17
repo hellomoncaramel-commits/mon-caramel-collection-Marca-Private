@@ -8,6 +8,7 @@ import Logo from "../shared/Logo";
 import Photo from "../shared/Photo";
 import HeroMedia from "../shared/HeroMedia";
 import MeTenta from "./MeTenta";
+import CampaignStrip from "./CampaignStrip";
 import { useDragScroll } from "../../hooks/useDragScroll";
 
 // The Home's two real decisions — same ids/handler (onSelect(id) →
@@ -102,7 +103,7 @@ function FavoriteProductCard({ p, onOpen, className, style }) {
 // photo + stacked cards + horizontal scroll strip; desktop: contained,
 // capped hero + a 4-column grid — see the `lg:hidden`/`hidden lg:block`
 // blocks below). No more two-button mobile overlay + separate headline.
-export default function HomeScreen({ onSelect, onOpenProduct, selection, addToSelection, onShowToast }) {
+export default function HomeScreen({ onSelect, onOpenProduct, selection, addToSelection, onShowToast, onSend }) {
   const favoriteProducts = FAVORITE_PRODUCT_IDS.map((id) => PRODUCTS.find((p) => p.id === id)).filter(Boolean);
   const selectionCount = selection?.length ?? 0;
   const dragScroll = useDragScroll();
@@ -225,6 +226,14 @@ export default function HomeScreen({ onSelect, onOpenProduct, selection, addToSe
           </div>
         </div>
 
+        {/* Destaque sazonal (Fase 2) — renderiza nada (sem DOM, sem imagem)
+            quando não há campanha ativa, que é o único estado deste PR
+            (CAMPAIGNS vazio). Sempre entre o Hero e o Me Tenta, nunca
+            competindo com nenhum dos dois — ver CampaignStrip.jsx. */}
+        <div className="mt-4">
+          <CampaignStrip onSelect={onSelect} onOpenProduct={onOpenProduct} onSend={onSend} />
+        </div>
+
         {/* "Me tenta" — ponto de entrada próprio, visualmente distinto dos
             dois HeroActionCard acima (fundo COLORS.subtle, não o
             caramelDark sólido deles) e do ProductCard do Catálogo (sem
@@ -340,6 +349,13 @@ export default function HomeScreen({ onSelect, onOpenProduct, selection, addToSe
             <HeroActionCard key={a.id} a={a} onSelect={onSelect} height={116} radius={18} iconSize={22} emojiSize={25} titleSize={17} subtitleSize={13} chevronSize={18} padding="18px 20px" />
           ))}
         </div>
+      </div>
+
+      {/* Destaque sazonal (Fase 2) — mesmo componente/condição da versão
+          mobile acima; CampaignStrip.jsx já se adapta sozinho, nenhuma
+          variante desktop própria é necessária. */}
+      <div className="hidden lg:block" style={{ marginTop: 24, maxWidth: 820 }}>
+        <CampaignStrip onSelect={onSelect} onOpenProduct={onOpenProduct} onSend={onSend} />
       </div>
 
       {/* "Me tenta" — mesmo componente da versão mobile; o próprio
