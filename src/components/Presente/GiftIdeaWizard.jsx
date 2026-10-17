@@ -170,8 +170,19 @@ export default function GiftIdeaWizard({
   const next = () => setStepIndex((i) => Math.min(steps.length - 1, i + 1));
   const back = () => (stepIndex === 0 ? onBack() : setStepIndex((i) => i - 1));
 
+  // itemsStep.required (Cesta only, see BandejasScreen) makes Etapa 1
+  // ("O que não pode faltar?") a real gate — she's assembling a cesta of
+  // Mon Caramel products, so zero doces isn't a valid idea. Caixa's own
+  // itemsStep never sets this, so "O que não pode faltar?" there stays
+  // skippable exactly as before (unchanged regression risk).
   const canAdvance =
-    stepId === "occasion" || stepId === "details" ? !!occasion : stepId === "items" ? selectedItems.length > 0 || true : true;
+    stepId === "occasion" || stepId === "details"
+      ? !!occasion
+      : stepId === "items"
+      ? itemsStep.required
+        ? selectedItems.length > 0
+        : true
+      : true;
 
   // Every step is individually optional (briefing: she can skip any of
   // them), but a fully empty idea has nothing to tell Naia about — this is

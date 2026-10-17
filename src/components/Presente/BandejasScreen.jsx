@@ -28,6 +28,9 @@ export default function BandejasScreen({ onBack, addToSelection, onSend }) {
           question: "O que não pode faltar?",
           subtext: "Escolha os doces que você gostaria de incluir. Pode marcar mais de um.",
           products: CESTA_DOCES_PRODUCTS,
+          // Cesta-only gate: she's assembling a cesta of real products, so
+          // "Continuar" stays disabled until at least one doce is chosen.
+          required: true,
         }}
         budgetIntro="Com base nos doces que você escolheu, eu monto a melhor combinação dentro do seu orçamento."
         onAdd={addToSelection}
