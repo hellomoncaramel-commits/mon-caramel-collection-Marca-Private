@@ -186,7 +186,19 @@ export default function MomentScreen({
             items={party.items}
             theme={party.theme}
             notes={party.notes}
-            onSubmit={() => onSend(buildPartyMessage({ items: party.items, theme: party.theme, notes: party.notes }))}
+            date={party.date}
+            guests={party.guests}
+            onSubmit={() =>
+              onSend(
+                buildPartyMessage({
+                  items: party.items,
+                  theme: party.theme,
+                  notes: party.notes,
+                  date: party.date,
+                  guests: party.guests,
+                })
+              )
+            }
             onRemoveItem={party.removeItem}
           />
         </div>
@@ -210,6 +222,8 @@ export default function MomentScreen({
           product={party.modalProduct}
           sharedTheme={party.theme}
           sharedNotes={party.notes}
+          sharedDate={party.date}
+          sharedGuests={party.guests}
           existingQty={party.items.find((it) => it.id === party.modalProduct.id)?.qty}
           onCancel={party.closeModal}
           onConfirm={party.confirmAdd}

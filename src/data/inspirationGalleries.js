@@ -143,7 +143,7 @@ export const MIMO_INSPIRATIONS = [
   {
     id: "presentinho-macas",
     src: "/images/products/presentinho-macas.jpg",
-    alt: "Docinho embalado em formatinho de maçã, com nome personalizado — perfeito pra presentear professoras.",
+    alt: "Docinho embalado em formato de maçã, com nome personalizado — uma lembrancinha pra presentear professoras.",
   },
   {
     id: "presentinho-obrigada",
@@ -205,26 +205,36 @@ export const MIMO_INSPIRATIONS = [
 // carries what the old `name`/`description` pair used to say, so nothing
 // is lost for screen readers — it just isn't rendered as visible card
 // copy anymore.
+// `reference` (Fase 3 fechamento, 2026-10): a short, natural, spoken-Portuguese
+// phrase for exactly one spot — the Mimos → WhatsApp message (MimosScreen.jsx)
+// now names whichever slide the customer was looking at when they tapped
+// "Falar sobre personalização", instead of always sending the same generic
+// line (audit finding P1-2). Never an id/slug, always something a real
+// person would actually type.
 export const MIMO_SHOWCASE = [
   {
     id: "brownlito",
     src: "/images/products/brownlito-inteiro.jpg",
     alt: "Brownlito — brownie recheado de Prestígio, no palito, com laço verde.",
+    reference: "o Brownlito",
   },
   {
     id: "brownlito-personalizado",
     src: "/images/products/brownlito-embalado.jpg",
     alt: "Brownlito Personalizado — embalado numa apresentação especial para a ocasião.",
-  },
-  {
-    id: "maca-personalizada",
-    src: "/images/products/presentinho-macas.jpg",
-    alt: "Maçã Personalizada — embalagem criativa recheada de mini maçãs de Fondelle.",
+    reference: "o Brownlito Personalizado",
   },
   {
     id: "mini-donuts-personalizados",
-    src: "/images/products/presentinho-donuts-personalizado.jpg",
-    alt: "Mini Donuts Personalizados — em embalagem feita para presentear.",
+    // Fase 3 fechamento: previous photo (presentinho-donuts-personalizado.jpg)
+    // showed a real former customer's name/event ("Gabrielly Sweet 16") —
+    // replaced with a real Mon Caramel photo of the same kind of
+    // personalized work that doesn't carry anyone's name (see photos.js
+    // miniDonutPersonalizadoDestaque / data/products.js for the same swap
+    // on this product's own card).
+    src: "/images/products/mini-donut-festa-fundo-do-mar.jpg",
+    alt: "Mini Donuts Personalizados — cobertos de chocolate com aplique de conchinhas, estrelas-do-mar e tartarugas em pasta.",
+    reference: "os Mini Donuts Personalizados",
   },
   {
     id: "pirulito-de-alfajor",
@@ -232,6 +242,7 @@ export const MIMO_SHOWCASE = [
     // everyday photo (pirulito-alfajor-1.jpg) used in the Catálogo/Detail.
     src: "/images/products/presentinho-folha-laco-vermelho.jpg",
     alt: "Pirulito de Alfajor — no palito, coberto de chocolate, em apresentação de mimo.",
+    reference: "o Pirulito de Alfajor",
   },
   {
     id: "casadinhos",
@@ -239,10 +250,12 @@ export const MIMO_SHOWCASE = [
     // photo (casadinho-goiabada.jpg) used in Home/Catálogo/Detail.
     src: "/images/products/casadinho-presente.jpg",
     alt: "Casadinhos — numa apresentação de presente, com laço e etiqueta Mon Caramel.",
+    reference: "os Casadinhos",
   },
   {
     id: "oreo-chocobomb-personalizado",
     src: "/images/products/chocobomb-festa-coracao-par.jpg",
     alt: "Oreo Chocobomb Personalizado — decorado para a ocasião.",
+    reference: "o Oreo Chocobomb Personalizado",
   },
 ];

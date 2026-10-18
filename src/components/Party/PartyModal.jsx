@@ -4,9 +4,10 @@ import { photosForMoment, initialQuantity } from "../../utils/products";
 import Photo from "../shared/Photo";
 import { useModalLock } from "../../hooks/useModalLock";
 
-// Quantity + optional theme/notes, shared across every product added to
-// "Minha Festa" (briefing section 5) — no pricing shown anywhere here.
-export default function PartyModal({ product, sharedTheme, sharedNotes, existingQty, onCancel, onConfirm }) {
+// Quantity + optional data da festa/convidados/theme/notes, shared across
+// every product added to "Minha Festa" (briefing section 5) — no pricing
+// shown anywhere here.
+export default function PartyModal({ product, sharedTheme, sharedNotes, sharedDate, sharedGuests, existingQty, onCancel, onConfirm }) {
   useModalLock(onCancel);
   // Only the product's own explicit commercial minimum is trusted as a
   // real floor — used to both default and clamp the quantity, instead of
@@ -15,12 +16,20 @@ export default function PartyModal({ product, sharedTheme, sharedNotes, existing
   // treated as a floor on its own (see initialQuantity/minimumQuantityOf).
   const minQty = initialQuantity(product);
   const [qty, setQty] = useState(existingQty ? String(existingQty) : String(minQty));
+  const [date, setDate] = useState(sharedDate || "");
+  const [guests, setGuests] = useState(sharedGuests || "");
   const [theme, setTheme] = useState(sharedTheme);
   const [notes, setNotes] = useState(sharedNotes);
   const photo = photosForMoment(product, "festa")?.[0];
 
   const confirm = () => {
-    onConfirm({ qty: Math.max(minQty, parseInt(qty, 10) || minQty), theme, notes });
+    // Same "never trust a plain typed number as-is" floor as qty above —
+    // a negative or zero guest count is nonsensical, so it's dropped back
+    // to empty (not sent) rather than clamped to some made-up minimum: 0
+    // convidados isn't a real answer, "didn't say" is.
+    const guestsNum = parseInt(guests, 10);
+    const cleanGuests = Number.isFinite(guestsNum) && guestsNum > 0 ? String(guestsNum) : "";
+    onConfirm({ qty: Math.max(minQty, parseInt(qty, 10) || minQty), theme, notes, date, guests: cleanGuests });
   };
 
   return (
@@ -51,6 +60,31 @@ export default function PartyModal({ product, sharedTheme, sharedNotes, existing
           onChange={(e) => setQty(e.target.value)}
           className="w-full rounded-xl border border-brand-border px-3 py-2 mb-4 text-sm bg-white"
         />
+
+        <div className="flex gap-3 mb-4">
+          <div className="flex-1">
+            <label htmlFor="party-date" className="text-xs font-medium block mb-1 text-brand-muted">Data da festa (opcional)</label>
+            <input
+              id="party-date"
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              className="w-full rounded-xl border border-brand-border px-3 py-2 text-sm bg-white"
+            />
+          </div>
+          <div className="flex-1">
+            <label htmlFor="party-guests" className="text-xs font-medium block mb-1 text-brand-muted">Convidados, aprox. (opcional)</label>
+            <input
+              id="party-guests"
+              type="number"
+              min={1}
+              value={guests}
+              onChange={(e) => setGuests(e.target.value)}
+              placeholder="Ex: 20"
+              className="w-full rounded-xl border border-brand-border px-3 py-2 text-sm bg-white"
+            />
+          </div>
+        </div>
 
         <label htmlFor="party-theme" className="text-xs font-medium block mb-1 text-brand-muted">Tema da festa (opcional)</label>
         <input

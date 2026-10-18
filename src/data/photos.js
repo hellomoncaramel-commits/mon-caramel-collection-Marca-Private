@@ -119,11 +119,18 @@ export const REAL_PHOTOS = {
   brownlitoRecheio: `${BASE}/brownlito-recheio.jpg`,
   brownlitoEmbalado: `${BASE}/brownlito-embalado.jpg`,
   // Pequenos Mimos carousel (Presente → Mimos) — real photos, round 2026-10.
-  // presentinhoDonutsPersonalizado already existed on disk (previously only
-  // referenced by its raw path in data/inspirationGalleries.js); the other
-  // two are new real Mon Caramel photos sent for this round.
-  presentinhoDonutsPersonalizado: `${BASE}/presentinho-donuts-personalizado.jpg`,
   casadinhoPresente: `${BASE}/casadinho-presente.jpg`,
+  // Fase 3 fechamento (2026-10): presentinho-donuts-personalizado.jpg showed
+  // a real former customer's name/event ("Gabrielly Sweet 16") in the main
+  // commercial photo for Mini Donuts Personalizados — not acceptable to
+  // keep publishing (see PR #142). presentinhoDonutsPersonalizado key
+  // removed; mini-donut-festa-fundo-do-mar.jpg (already an existing real
+  // Mon Caramel photo, previously only used inside Mini Donut Decorado's
+  // festa gallery below) is the replacement — real personalized-donut work,
+  // no name, no single-occasion theme, works as a generic "ask us to
+  // personalize yours" photo. Own key (not an array index into
+  // miniDonutFesta) so both uses stay independently readable/editable.
+  miniDonutPersonalizadoDestaque: `${BASE}/mini-donut-festa-fundo-do-mar.jpg`,
   // oreo-chocobomb-personalizado.jpg (the back-to-school themed photo) turned
   // out to show a rectangular bar-shaped treat, not a round Oreo Chocobomb —
   // wrong product shape entirely (caught in the 2026-10 visual review). Kept
@@ -183,10 +190,11 @@ export const REAL_PHOTOS = {
 // the CSS default. Empty for every photo except the one below, so no other
 // product's framing is affected.
 //
-// presentinhoDonutsPersonalizado: tall portrait source (3000x4000) with the
-// donuts + personalization card only in the lower half — the default
-// center crop in a 4:3 frame showed mostly empty wall above them and cut
-// the card off at the bottom (2026-10 visual review, polish round 2).
-export const PHOTO_OBJECT_POSITION = {
-  [`${BASE}/presentinho-donuts-personalizado.jpg`]: "center 91%",
-};
+// Empty for now — the one override this held (presentinho-donuts-
+// personalizado.jpg's portrait-crop fix) was removed in the Fase 3
+// fechamento round (PR #142) along with that photo's last live reference;
+// mini-donut-festa-fundo-do-mar.jpg (its replacement) is already a
+// standard 4:3 photo and needs no override. Kept as an empty export, not
+// deleted, since the mechanism stays available for a future photo that
+// needs it.
+export const PHOTO_OBJECT_POSITION = {};

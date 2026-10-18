@@ -425,7 +425,7 @@ export default function GiftIdeaWizard({
           className="w-full text-sm font-medium text-white rounded-full py-3.5 min-h-11 flex items-center justify-center gap-2 disabled:opacity-40"
           style={{ backgroundColor: COLORS.caramelDark }}
         >
-          {isLast ? (added ? "Atualizar na minha seleção" : "Adicionar à minha seleção") : "Continuar →"}
+          {isLast ? (added ? "Atualizar na minha seleção" : "Guardar na minha seleção") : "Continuar →"}
         </button>
       )}
     </div>

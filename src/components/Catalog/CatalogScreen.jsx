@@ -33,6 +33,57 @@ import Photo from "../shared/Photo";
 // promises here and what the destination screen actually delivers. Not a
 // verbatim copy of the full Presentes page everywhere (not required), but
 // never a different promise than the canonical one either.
+// Explicit display order for Coleção completa (Fase 3 fechamento, 2026-10
+// — audit finding: the list had no deliberate commercial order at all,
+// just raw PRODUCTS-array/data-entry order). Scoped to THIS screen only —
+// getColecaoCompletaProducts() itself (utils/products.js) is untouched, so
+// Busca, static /doces/[slug] pages and every other consumer of that list
+// keep their own existing order exactly as before. Balances: strong,
+// appetite-driving photos and popular everyday staples first (Alfajor, Pão
+// de Mel, Chocobomb); Brownlito pulled up from its old #18 despite a B
+// photo — it's the single most internally cross-sold product in the whole
+// catalog (4 other products' `experience.nextTemptation` point to it, see
+// data/products.js) yet had zero presence in Me Tenta or Presente Rápido
+// (audit finding P1-3) — this is the one surface that can give it real
+// exposure without touching either of those pools, which the brief
+// explicitly rules out doing directly; package/pacote items (Casadinhos,
+// Brigadeiro) and festa-tagged items (Chocobomb, Mini Donut Decorado, Cone
+// Trufado) deliberately spread apart rather than clustered; every
+// fixed/clean-priced product before every "Sob consulta" one, EXCEPT
+// Biscoito Amanteigado — Sob consulta but an A-grade photo and one of the
+// most universally popular everyday items, so pulled forward past several
+// priced products rather than applying one single rule mechanically (the
+// brief's own "não faça simplesmente best-sellers primeiro" instruction);
+// the 8 Sob-consulta items close the list, in roughly strongest-to-weakest
+// photo order, ending on Maçã Personalizada — the one item with no photo
+// at all right now (see its own comment in data/products.js).
+const CATALOG_DISPLAY_ORDER = [
+  "alfajor",
+  "pao-de-mel",
+  "chocobomb",
+  "brownlito",
+  "casadinho",
+  "mini-donut-decorado",
+  "bala-de-coco",
+  "pirulito-alfajor",
+  "cone-trufado",
+  "melties",
+  "brigadeiro-personalizado",
+  "butter-cookies",
+  "mini-donut-simples",
+  "bolo-cenoura",
+  "butter-cookies-congelado",
+  "brigadeiro",
+  "bolo-de-pote",
+  "piramide",
+  "presentinho-pirulito",
+  "presentinho-obrigada",
+  "oreo-chocobomb-personalizado",
+  "mini-donuts-personalizados",
+  "brownlito-personalizado",
+  "presentinho-macas",
+];
+
 const DISCOVERY_CARDS = [
   {
     id: "discover-caixas",
@@ -250,6 +301,21 @@ export default function CatalogScreen({ onBack, selection, onOpenProduct, onOpen
   // read from both places, so a product can't be listed here without
   // also being indexable, or vice versa.
   const individualProducts = getColecaoCompletaProducts();
+
+  // Reorder to the explicit curated display order above — getColecaoCompletaProducts()
+  // itself is untouched (still raw PRODUCTS order for every other consumer,
+  // see CATALOG_DISPLAY_ORDER's own comment). Same ia/ib fallback shape as
+  // pickForMoment()'s sort (utils/products.js) — a future product not yet
+  // added to CATALOG_DISPLAY_ORDER sorts after every listed one instead of
+  // throwing or silently vanishing.
+  individualProducts.sort((a, b) => {
+    const ia = CATALOG_DISPLAY_ORDER.indexOf(a.id);
+    const ib = CATALOG_DISPLAY_ORDER.indexOf(b.id);
+    if (ia === -1 && ib === -1) return 0;
+    if (ia === -1) return 1;
+    if (ib === -1) return -1;
+    return ia - ib;
+  });
 
   // Spread the three discovery cards through the list at even intervals —
   // never clustered together, never a separate section (briefing section

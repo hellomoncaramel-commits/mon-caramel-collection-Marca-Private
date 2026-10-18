@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { MIMO_SHOWCASE } from "../../data/inspirationGalleries";
 import SiteHeader from "../shared/SiteHeader";
 import InspirationCarousel from "../shared/InspirationCarousel";
@@ -14,8 +15,19 @@ import PresenteCTA from "./PresenteCTA";
 // always opens WhatsApp with a fixed, contextual message — never a
 // per-product one, since nothing here is a SKU to point at.
 export default function MimosScreen({ onBack, onSend }) {
+  // Which slide is on screen right now — InspirationCarousel reports this
+  // via onIndexChange (fires on mount too), so the very first tap of
+  // "Falar sobre personalização" already references slide 1, not a stale
+  // default (audit finding P1-2: the old message was always the same
+  // generic line, never saying which inspiration the customer actually
+  // saw — Naia had to ask every time).
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const current = MIMO_SHOWCASE[currentIndex] || MIMO_SHOWCASE[0];
+
   const talkAboutPersonalization = () =>
-    onSend("Oi! Vi os mimos e lembrancinhas no site da Mon Caramel e queria saber mais sobre as opções de personalização 😊");
+    onSend(
+      `Oi! Vi ${current.reference} no site da Mon Caramel e queria saber mais sobre as opções de personalização 😊`
+    );
 
   return (
     <div className="max-w-xl md:max-w-3xl lg:max-w-5xl xl:max-w-6xl mx-auto px-gutter lg:px-8 xl:px-12 pt-2 pb-10 fade-up">
@@ -27,7 +39,7 @@ export default function MimosScreen({ onBack, onSend }) {
           Cestas. Below lg: plain block, photo then CTA band below. */}
       <div className="lg:grid lg:grid-cols-12 lg:gap-10 xl:gap-14 lg:items-center">
         <div className="lg:col-span-7">
-          <InspirationCarousel items={MIMO_SHOWCASE} ariaLabel="Fotos de doces mimos" />
+          <InspirationCarousel items={MIMO_SHOWCASE} ariaLabel="Fotos de doces mimos" onIndexChange={setCurrentIndex} />
         </div>
         <div className="lg:col-span-5">
           <PresenteCTA
