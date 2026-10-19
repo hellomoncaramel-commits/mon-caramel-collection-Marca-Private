@@ -108,11 +108,26 @@ export function buildCestaIdeaMessage({ items, occasion, personalization, budget
   return lines.join("\n");
 }
 
+// "YYYY-MM-DD" (the raw value a native <input type="date"> gives) to a
+// plain Brazilian date for the message — a date only ever makes it this
+// far once the browser's own date picker already validated it, so this
+// doesn't need to handle anything but that one shape.
+export function formatPartyDate(iso) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || "");
+  if (!m) return "";
+  const [, y, mo, d] = m;
+  return `${d}/${mo}/${y}`;
+}
+
 // Builds the WhatsApp budget-request message from "Minha Festa" — always a
-// separate flow from "Minha Seleção", never priced (briefing section 5).
-export function buildPartyMessage({ items, theme, notes }) {
+// separate flow from "Minha Seleção", never priced. date/guests are left
+// out of the message entirely when unset, same as theme/notes.
+export function buildPartyMessage({ items, theme, notes, date, guests }) {
   const lines = items.map((it) => `• ${it.qty} ${it.name}`);
   let msg = `Olá! Gostaria de um orçamento para minha festa.\n\nItens selecionados:\n${lines.join("\n")}`;
+  const formattedDate = formatPartyDate(date);
+  if (formattedDate) msg += `\n\nData da festa: ${formattedDate}`;
+  if (guests) msg += `\n\nConvidados (aprox.): ${guests}`;
   if (theme.trim()) msg += `\n\nTema:\n${theme.trim()}`;
   if (notes.trim()) msg += `\n\nObservações:\n${notes.trim()}`;
   msg += `\n\nObrigado!`;

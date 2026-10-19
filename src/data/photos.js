@@ -119,11 +119,11 @@ export const REAL_PHOTOS = {
   brownlitoRecheio: `${BASE}/brownlito-recheio.jpg`,
   brownlitoEmbalado: `${BASE}/brownlito-embalado.jpg`,
   // Pequenos Mimos carousel (Presente → Mimos) — real photos, round 2026-10.
-  // presentinhoDonutsPersonalizado already existed on disk (previously only
-  // referenced by its raw path in data/inspirationGalleries.js); the other
-  // two are new real Mon Caramel photos sent for this round.
-  presentinhoDonutsPersonalizado: `${BASE}/presentinho-donuts-personalizado.jpg`,
   casadinhoPresente: `${BASE}/casadinho-presente.jpg`,
+  // Mini Donuts Personalizados' card photo — reuses a real photo already
+  // in Mini Donut Decorado's festa gallery below. Own key, not an array
+  // index, so both uses stay independently editable.
+  miniDonutPersonalizadoDestaque: `${BASE}/mini-donut-festa-fundo-do-mar.jpg`,
   // oreo-chocobomb-personalizado.jpg (the back-to-school themed photo) turned
   // out to show a rectangular bar-shaped treat, not a round Oreo Chocobomb —
   // wrong product shape entirely (caught in the 2026-10 visual review). Kept
@@ -183,10 +183,6 @@ export const REAL_PHOTOS = {
 // the CSS default. Empty for every photo except the one below, so no other
 // product's framing is affected.
 //
-// presentinhoDonutsPersonalizado: tall portrait source (3000x4000) with the
-// donuts + personalization card only in the lower half — the default
-// center crop in a 4:3 frame showed mostly empty wall above them and cut
-// the card off at the bottom (2026-10 visual review, polish round 2).
-export const PHOTO_OBJECT_POSITION = {
-  [`${BASE}/presentinho-donuts-personalizado.jpg`]: "center 91%",
-};
+// Empty for now — kept as an export so the mechanism stays available for
+// a future photo that needs a crop override.
+export const PHOTO_OBJECT_POSITION = {};

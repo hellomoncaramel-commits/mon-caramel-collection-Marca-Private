@@ -199,7 +199,7 @@ export default function MomentPicker({ onBack, onSelectMoment }) {
       </h1>
       <p className="text-brand-inkSoft text-center mt-1.5 shrink-0 text-[15px] md:text-mc-home-body lg:hidden leading-[1.35]">
         Deslize para ver os momentos
-        <br />e encontre o doce perfeito.
+        <br />e escolha o que combina com você.
       </p>
       <p className="text-brand-inkSoft text-center mt-2.5 shrink-0 hidden lg:block text-lg leading-[1.4]">
         Escolha o que combina com o que você precisa hoje.

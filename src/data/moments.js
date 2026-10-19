@@ -81,12 +81,13 @@ export const MOMENT_ORDER = {
     "butter-cookies",
     "butter-cookies-congelado",
   ],
-  // Festa is a deliberately curated menu — only products that make sense
-  // for a party/personalization occasion, in this exact order. Day-to-day
-  // staples (Pão de Mel, Casadinho, Bala de Coco, Brigadeiros
-  // Personalizados, Lembrancinhas Pirâmide) were removed from Festa's
-  // `moments` tag entirely (still browsable elsewhere in the catalog) so
-  // there's nothing left unlisted for pickForMoment() to append afterward.
+  // Festa's own curated menu — these 7, in this exact order, lead the
+  // Festa product list. Day-to-day staples (Pão de Mel, Casadinho, Bala de
+  // Coco) are deliberately NOT tagged `festa` and stay out of this screen
+  // entirely. Brigadeiros Personalizados and Lembrancinhas Pirâmide are
+  // tagged `festa` too (data/products.js) but left out of this list on
+  // purpose: pickForMoment() appends any festa-tagged product not listed
+  // here, in catalog order, after these 7, without reshuffling the menu.
   festa: [
     "bolo-palito",
     "pirulito-decorado",

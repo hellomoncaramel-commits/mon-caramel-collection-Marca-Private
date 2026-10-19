@@ -199,10 +199,12 @@ export const PRODUCTS = [
     sensory: "Decorados com apliques artesanais em pasta de leite em pó, feitos sob medida pro tema da festa.",
     kind: "bites",
     tint: COLORS.caramelDark,
-    // Removed from Festa's curated menu (kept in the general catalog —
-    // still browsable via Feed/Search) so Festa only surfaces the handful
-    // of products meant to lead there.
-    moments: [],
+    // Genuinely festa-only in moments, but `browsable: true` keeps it in
+    // Coleção completa/Busca too (same override Pirulito de Alfajor and
+    // Lembrancinhas Pirâmide use — see utils/products.js). Not in the
+    // curated MOMENT_ORDER.festa top-7 (data/moments.js) — appended after.
+    moments: ["festa"],
+    browsable: true,
     photos: REAL_PHOTOS.brigadeiroPersonalizado,
   },
   {
@@ -275,10 +277,7 @@ export const PRODUCTS = [
     // (same convention as Alfajor's "unidade (mín. 5)"); `minimumQuantity`
     // is the actual explicit, structured source the quantity logic reads
     // (see utils/products.js minimumQuantityOf) — never parsed from this
-    // string. No recheios/coberturas options exist in the data today (no
-    // `flavors`/`customizable` were ever set for this product) — nothing
-    // to preserve or migrate; flagged in the PR for Naia to confirm if any
-    // such options exist.
+    // string.
     unit: "unidade (mín. 2)",
     minimumQuantity: 2,
     price: "$8/un",
@@ -368,10 +367,12 @@ export const PRODUCTS = [
     sensory: "Bala de coco caseira que derrete na boca, dentro de uma pirâmide personalizada no tema da sua festa.",
     kind: "candy",
     tint: COLORS.caramelDark,
-    // Removed from Festa's curated menu (kept in the general catalog —
-    // still browsable via Feed/Search) so Festa only surfaces the handful
-    // of products meant to lead there.
-    moments: [],
+    // Genuinely festa-only in moments, but `browsable: true` keeps it in
+    // Coleção completa/Busca too (same override Pirulito de Alfajor uses —
+    // see utils/products.js isFestaOnly/isBrowsable). Not in the curated
+    // MOMENT_ORDER.festa top-7 (data/moments.js) — just appended after it.
+    moments: ["festa"],
+    browsable: true,
     photos: REAL_PHOTOS.piramide,
   },
   {
@@ -1134,7 +1135,9 @@ export const PRODUCTS = [
     tint: COLORS.caramelDark,
     moments: ["presente"],
     presenteGroup: "mimos",
-    photos: [REAL_PHOTOS.presentinhoMacas],
+    // No `photos` on purpose: the only photo on file shows another
+    // business's branded sticker in frame. Falls back to the illustrated
+    // <ProductArt /> placeholder until a clean real photo exists.
   },
   {
     id: "presentinho-obrigada",
@@ -1181,11 +1184,15 @@ export const PRODUCTS = [
     price: "Sob consulta 💬",
     whatsappInquiryMessage: "Oi! Quero saber mais sobre: Brownlito Personalizado 💬",
     catalogTeaser: "Nosso Brownlito em uma embalagem feita para a ocasião.",
-    sensory: "Nosso brownie recheado em uma embalagem especial para cada ocasião.",
+    sensory: "Nosso Brownlito, embalado do jeito que combinar com a ocasião — é só me contar cores ou tema.",
     kind: "dipped",
     tint: COLORS.ink,
     moments: ["presente"],
     presenteGroup: "mimos",
+    // Reuses the regular Brownlito's own photo — no photo on file actually
+    // shows personalized/themed wrapping (brownlitoRecheio is a different
+    // product, a strawberry-filled treat, not this brownie). Swap once a
+    // real personalized shot exists.
     photos: [REAL_PHOTOS.brownlitoEmbalado],
   },
   {
@@ -1201,7 +1208,9 @@ export const PRODUCTS = [
     tint: COLORS.caramelLight,
     moments: ["presente"],
     presenteGroup: "mimos",
-    photos: [REAL_PHOTOS.presentinhoDonutsPersonalizado],
+    // Sea-themed toppers, no customer name/occasion in frame — see
+    // photos.js for why the previous photo here was replaced.
+    photos: [REAL_PHOTOS.miniDonutPersonalizadoDestaque],
   },
   {
     id: "oreo-chocobomb-personalizado",
@@ -1210,7 +1219,7 @@ export const PRODUCTS = [
     unit: "combinação personalizada",
     price: "Sob consulta 💬",
     whatsappInquiryMessage: "Oi! Quero saber mais sobre: Oreo Chocobomb Personalizado 💬",
-    catalogTeaser: "Oreo Chocobomb decorado para deixar o mimo ainda mais especial.",
+    catalogTeaser: "Oreo Chocobomb decorado para combinar com a ocasião.",
     sensory: "Oreo Chocobomb decorado para qualquer ocasião. Feito pra surpreender!",
     kind: "dipped",
     tint: COLORS.caramelLight,

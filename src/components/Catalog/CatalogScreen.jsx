@@ -33,6 +33,37 @@ import Photo from "../shared/Photo";
 // promises here and what the destination screen actually delivers. Not a
 // verbatim copy of the full Presentes page everywhere (not required), but
 // never a different promise than the canonical one either.
+// Explicit, hand-picked commercial order for Coleção completa — scoped to
+// this screen only. getColecaoCompletaProducts() itself stays in its own
+// (unordered) shape, so Busca, the static /doces/[slug] pages and every
+// other consumer are unaffected.
+const CATALOG_DISPLAY_ORDER = [
+  "brigadeiro",
+  "pao-de-mel",
+  "brownlito",
+  "alfajor",
+  "casadinho",
+  "chocobomb",
+  "cone-trufado",
+  "mini-donut-decorado",
+  "bolo-cenoura",
+  "bala-de-coco",
+  "pirulito-alfajor",
+  "melties",
+  "mini-donut-simples",
+  "butter-cookies",
+  "butter-cookies-congelado",
+  "brigadeiro-personalizado",
+  "piramide",
+  "bolo-de-pote",
+  "mini-donuts-personalizados",
+  "brownlito-personalizado",
+  "oreo-chocobomb-personalizado",
+  "presentinho-pirulito",
+  "presentinho-obrigada",
+  "presentinho-macas",
+];
+
 const DISCOVERY_CARDS = [
   {
     id: "discover-caixas",
@@ -250,6 +281,18 @@ export default function CatalogScreen({ onBack, selection, onOpenProduct, onOpen
   // read from both places, so a product can't be listed here without
   // also being indexable, or vice versa.
   const individualProducts = getColecaoCompletaProducts();
+
+  // Same ia/ib fallback shape as pickForMoment()'s sort (utils/products.js)
+  // — a product not yet added to CATALOG_DISPLAY_ORDER sorts after every
+  // listed one instead of throwing or vanishing.
+  individualProducts.sort((a, b) => {
+    const ia = CATALOG_DISPLAY_ORDER.indexOf(a.id);
+    const ib = CATALOG_DISPLAY_ORDER.indexOf(b.id);
+    if (ia === -1 && ib === -1) return 0;
+    if (ia === -1) return 1;
+    if (ib === -1) return -1;
+    return ia - ib;
+  });
 
   // Spread the three discovery cards through the list at even intervals —
   // never clustered together, never a separate section (briefing section

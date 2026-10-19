@@ -1,10 +1,11 @@
 import { forwardRef } from "react";
 import { MessageCircle, X } from "lucide-react";
 import { COLORS } from "../../styles/colors";
+import { formatPartyDate } from "../../utils/messages";
 
 // Gradient planner panel, shown inline within the Festa moment screen. Copy
 // changes between empty and filled state (briefing section 5).
-const PartyPanel = forwardRef(function PartyPanel({ items, theme, notes, onSubmit, onRemoveItem }, ref) {
+const PartyPanel = forwardRef(function PartyPanel({ items, theme, notes, date, guests, onSubmit, onRemoveItem }, ref) {
   return (
     <div
       ref={ref}
@@ -38,6 +39,23 @@ const PartyPanel = forwardRef(function PartyPanel({ items, theme, notes, onSubmi
               </li>
             ))}
           </ul>
+          {/* Data/convidados before tema/observações — matches the order
+              they're edited in, in the modal. */}
+          {(formatPartyDate(date) || guests) && (
+            <p className="text-xs mb-1 text-brand-inkSoft">
+              {formatPartyDate(date) && (
+                <>
+                  <strong>Data:</strong> {formatPartyDate(date)}
+                </>
+              )}
+              {formatPartyDate(date) && guests && "  ·  "}
+              {guests && (
+                <>
+                  <strong>Convidados:</strong> ~{guests}
+                </>
+              )}
+            </p>
+          )}
           {theme.trim() && (
             <p className="text-xs mb-1 text-brand-inkSoft">
               <strong>Tema:</strong> {theme}

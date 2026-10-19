@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { COLORS } from "../../styles/colors";
 import { useSnapCarousel } from "../../hooks/useSnapCarousel";
@@ -40,8 +41,16 @@ import InspirationImage from "./InspirationImage";
 // caller sets for itself (screen-reader context, e.g. "Fotos de caixas"
 // vs. "Fotos de cestas especiais"); everything else here is identical across all
 // of them on purpose, so they read as one consistent system.
-export default function InspirationCarousel({ items, ariaLabel }) {
+// `onIndexChange`: optional — fires with the currently-visible slide's
+// index on change (and once on mount), for a caller that needs to know
+// which inspiration is on screen (see MimosScreen.jsx). Caixas/Bandejas
+// simply don't pass it.
+export default function InspirationCarousel({ items, ariaLabel, onIndexChange }) {
   const { trackRef, index, goTo, onTrackKeyDown } = useSnapCarousel(items.length);
+
+  useEffect(() => {
+    onIndexChange?.(index);
+  }, [index, onIndexChange]);
 
   if (items.length === 0) return null;
 
