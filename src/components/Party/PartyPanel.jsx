@@ -39,10 +39,8 @@ const PartyPanel = forwardRef(function PartyPanel({ items, theme, notes, date, g
               </li>
             ))}
           </ul>
-          {/* Essential facts about the party itself (when/how many people)
-              before tema/observações — same order as the modal where
-              they're actually edited (briefing section 3's recommended
-              "itens → informações essenciais → observações/tema" order). */}
+          {/* Data/convidados before tema/observações — matches the order
+              they're edited in, in the modal. */}
           {(formatPartyDate(date) || guests) && (
             <p className="text-xs mb-1 text-brand-inkSoft">
               {formatPartyDate(date) && (

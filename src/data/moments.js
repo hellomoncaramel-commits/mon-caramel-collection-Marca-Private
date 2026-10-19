@@ -84,13 +84,10 @@ export const MOMENT_ORDER = {
   // Festa's own curated menu — these 7, in this exact order, lead the
   // Festa product list. Day-to-day staples (Pão de Mel, Casadinho, Bala de
   // Coco) are deliberately NOT tagged `festa` and stay out of this screen
-  // entirely. Brigadeiros Personalizados and Lembrancinhas Pirâmide *are*
-  // tagged `festa` (data/products.js) as of the Fase 3 fechamento round —
-  // they're real party/personalization items with nowhere else to be
-  // discovered from (audit finding P1-4) — but deliberately left out of
-  // this list rather than inserted into it: pickForMoment() appends any
-  // festa-tagged product not listed here, in catalog order, after these 7,
-  // so they show up in Festa without reshuffling the curated menu itself.
+  // entirely. Brigadeiros Personalizados and Lembrancinhas Pirâmide are
+  // tagged `festa` too (data/products.js) but left out of this list on
+  // purpose: pickForMoment() appends any festa-tagged product not listed
+  // here, in catalog order, after these 7, without reshuffling the menu.
   festa: [
     "bolo-palito",
     "pirulito-decorado",

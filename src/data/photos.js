@@ -120,16 +120,9 @@ export const REAL_PHOTOS = {
   brownlitoEmbalado: `${BASE}/brownlito-embalado.jpg`,
   // Pequenos Mimos carousel (Presente → Mimos) — real photos, round 2026-10.
   casadinhoPresente: `${BASE}/casadinho-presente.jpg`,
-  // Fase 3 fechamento (2026-10): presentinho-donuts-personalizado.jpg showed
-  // a real former customer's name/event ("Gabrielly Sweet 16") in the main
-  // commercial photo for Mini Donuts Personalizados — not acceptable to
-  // keep publishing (see PR #142). presentinhoDonutsPersonalizado key
-  // removed; mini-donut-festa-fundo-do-mar.jpg (already an existing real
-  // Mon Caramel photo, previously only used inside Mini Donut Decorado's
-  // festa gallery below) is the replacement — real personalized-donut work,
-  // no name, no single-occasion theme, works as a generic "ask us to
-  // personalize yours" photo. Own key (not an array index into
-  // miniDonutFesta) so both uses stay independently readable/editable.
+  // Mini Donuts Personalizados' card photo — reuses a real photo already
+  // in Mini Donut Decorado's festa gallery below. Own key, not an array
+  // index, so both uses stay independently editable.
   miniDonutPersonalizadoDestaque: `${BASE}/mini-donut-festa-fundo-do-mar.jpg`,
   // oreo-chocobomb-personalizado.jpg (the back-to-school themed photo) turned
   // out to show a rectangular bar-shaped treat, not a round Oreo Chocobomb —
@@ -190,11 +183,6 @@ export const REAL_PHOTOS = {
 // the CSS default. Empty for every photo except the one below, so no other
 // product's framing is affected.
 //
-// Empty for now — the one override this held (presentinho-donuts-
-// personalizado.jpg's portrait-crop fix) was removed in the Fase 3
-// fechamento round (PR #142) along with that photo's last live reference;
-// mini-donut-festa-fundo-do-mar.jpg (its replacement) is already a
-// standard 4:3 photo and needs no override. Kept as an empty export, not
-// deleted, since the mechanism stays available for a future photo that
-// needs it.
+// Empty for now — kept as an export so the mechanism stays available for
+// a future photo that needs a crop override.
 export const PHOTO_OBJECT_POSITION = {};

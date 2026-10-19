@@ -3,14 +3,10 @@ import { useEffect, useState } from "react";
 const STORAGE_KEY = "mon-caramel:party";
 
 // Same lazy-load-once + try/catch pattern as useSelection.js — items,
-// theme and notes are all real planning work a customer can spend several
-// minutes on, so all three are persisted together.
-// `date`/`guests` (Fase 3 fechamento, 2026-10): both optional, both plain
-// strings like theme/notes (an empty string means "not set") — date is a
-// native <input type="date"> value ("YYYY-MM-DD" or ""), guests is whatever
-// digits the customer typed, already floor-clamped by PartyModal before it
-// ever reaches here. Same persistence/shared-across-the-whole-plan treatment
-// as theme/notes, not per item (briefing section 3).
+// theme, notes, date and guests are all real planning work a customer can
+// spend several minutes on, so all five are persisted together. date/guests
+// are plain strings, same as theme/notes — empty means "not set"; guests is
+// already floor-clamped by PartyModal before it reaches here.
 function loadInitialParty() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);

@@ -120,10 +120,8 @@ export function formatPartyDate(iso) {
 }
 
 // Builds the WhatsApp budget-request message from "Minha Festa" — always a
-// separate flow from "Minha Seleção", never priced (briefing section 5).
-// `date`/`guests` (Fase 3 fechamento, 2026-10): both optional, both left out
-// of the message entirely when unset — never a blank "Data: " / "Convidados:
-// " line (audit finding, briefing section 3).
+// separate flow from "Minha Seleção", never priced. date/guests are left
+// out of the message entirely when unset, same as theme/notes.
 export function buildPartyMessage({ items, theme, notes, date, guests }) {
   const lines = items.map((it) => `• ${it.qty} ${it.name}`);
   let msg = `Olá! Gostaria de um orçamento para minha festa.\n\nItens selecionados:\n${lines.join("\n")}`;

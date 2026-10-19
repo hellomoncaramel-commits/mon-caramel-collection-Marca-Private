@@ -45,7 +45,7 @@ export default function BandejasScreen({ onBack, addToSelection, onSend }) {
       <SiteHeader onBack={onBack} />
       <h1 className="mc-page-title">Cestas especiais para inspirar</h1>
       <p className="mc-page-subtitle">
-        Para comemorar, presentear ou só porque bateu vontade de caprichar na mesa.
+        Você escolhe os doces, e a gente monta uma cesta com a sua cara.
       </p>
 
       {/* lg+: carousel left, copy+CTA right — see CaixasScreen for the same

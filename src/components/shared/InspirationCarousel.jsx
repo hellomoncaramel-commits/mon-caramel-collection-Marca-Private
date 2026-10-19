@@ -41,12 +41,10 @@ import InspirationImage from "./InspirationImage";
 // caller sets for itself (screen-reader context, e.g. "Fotos de caixas"
 // vs. "Fotos de cestas especiais"); everything else here is identical across all
 // of them on purpose, so they read as one consistent system.
-// `onIndexChange` (Fase 3 fechamento, 2026-10): optional — fires with the
-// currently-visible slide's index whenever it changes (and once on mount),
-// so a caller that needs to know which specific inspiration is on screen
-// right now (Mimos' WhatsApp CTA, see MimosScreen.jsx) can, without this
-// component taking on any messaging/CTA logic of its own. Caixas/Bandejas
-// simply don't pass it and nothing changes for them.
+// `onIndexChange`: optional — fires with the currently-visible slide's
+// index on change (and once on mount), for a caller that needs to know
+// which inspiration is on screen (see MimosScreen.jsx). Caixas/Bandejas
+// simply don't pass it.
 export default function InspirationCarousel({ items, ariaLabel, onIndexChange }) {
   const { trackRef, index, goTo, onTrackKeyDown } = useSnapCarousel(items.length);
 

@@ -146,11 +146,13 @@ export function splitEvenly(total, count) {
   return Array.from({ length: count }, (_, i) => base + (i < remainder ? 1 : 0));
 }
 
-// "Festa-only" = moments is exactly ["festa"] — these never show up
-// outside the Festa journey. Local to this file: the one place that needs
-// it is getColecaoCompletaProducts below.
+// "Festa-only" = moments is exactly ["festa"], and not explicitly marked
+// `browsable` — same override isBrowsable() below already respects, so a
+// product can be genuinely festa-only in its moments while still getting
+// its own place in the general catalog (see Lembrancinhas Pirâmide/
+// Brigadeiros Personalizados).
 function isFestaOnly(p) {
-  return p.moments?.length === 1 && p.moments[0] === "festa";
+  return p.moments?.length === 1 && p.moments[0] === "festa" && !p.browsable;
 }
 
 // The 24 individually-priced products shown in Coleção completa — exactly

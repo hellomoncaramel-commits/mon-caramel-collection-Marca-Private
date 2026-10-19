@@ -205,12 +205,8 @@ export const MIMO_INSPIRATIONS = [
 // carries what the old `name`/`description` pair used to say, so nothing
 // is lost for screen readers — it just isn't rendered as visible card
 // copy anymore.
-// `reference` (Fase 3 fechamento, 2026-10): a short, natural, spoken-Portuguese
-// phrase for exactly one spot — the Mimos → WhatsApp message (MimosScreen.jsx)
-// now names whichever slide the customer was looking at when they tapped
-// "Falar sobre personalização", instead of always sending the same generic
-// line (audit finding P1-2). Never an id/slug, always something a real
-// person would actually type.
+// `reference`: a short, natural, spoken-Portuguese phrase for the Mimos →
+// WhatsApp message (MimosScreen.jsx) — never an id/slug.
 export const MIMO_SHOWCASE = [
   {
     id: "brownlito",
@@ -226,12 +222,8 @@ export const MIMO_SHOWCASE = [
   },
   {
     id: "mini-donuts-personalizados",
-    // Fase 3 fechamento: previous photo (presentinho-donuts-personalizado.jpg)
-    // showed a real former customer's name/event ("Gabrielly Sweet 16") —
-    // replaced with a real Mon Caramel photo of the same kind of
-    // personalized work that doesn't carry anyone's name (see photos.js
-    // miniDonutPersonalizadoDestaque / data/products.js for the same swap
-    // on this product's own card).
+    // Same swap as this product's own card (data/products.js) — no
+    // customer name/occasion in frame.
     src: "/images/products/mini-donut-festa-fundo-do-mar.jpg",
     alt: "Mini Donuts Personalizados — cobertos de chocolate com aplique de conchinhas, estrelas-do-mar e tartarugas em pasta.",
     reference: "os Mini Donuts Personalizados",

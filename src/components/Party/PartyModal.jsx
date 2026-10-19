@@ -23,10 +23,8 @@ export default function PartyModal({ product, sharedTheme, sharedNotes, sharedDa
   const photo = photosForMoment(product, "festa")?.[0];
 
   const confirm = () => {
-    // Same "never trust a plain typed number as-is" floor as qty above —
-    // a negative or zero guest count is nonsensical, so it's dropped back
-    // to empty (not sent) rather than clamped to some made-up minimum: 0
-    // convidados isn't a real answer, "didn't say" is.
+    // Negative/zero isn't a real guest count — drop back to empty (not
+    // sent) rather than clamp to a made-up minimum.
     const guestsNum = parseInt(guests, 10);
     const cleanGuests = Number.isFinite(guestsNum) && guestsNum > 0 ? String(guestsNum) : "";
     onConfirm({ qty: Math.max(minQty, parseInt(qty, 10) || minQty), theme, notes, date, guests: cleanGuests });

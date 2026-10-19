@@ -199,15 +199,12 @@ export const PRODUCTS = [
     sensory: "Decorados com apliques artesanais em pasta de leite em pó, feitos sob medida pro tema da festa.",
     kind: "bites",
     tint: COLORS.caramelDark,
-    // Fase 3 fechamento (2026-10): this product had zero presence on any
-    // curated discovery surface (audit finding P1-4) — same situation and
-    // same fix as Lembrancinhas Pirâmide just below in the catalog order,
-    // see that product's own comment for the full reasoning. Already has
-    // its own real price ($2.50/un), so this doesn't touch Festa's
-    // price-free framing — just makes it findable from Festa too, appended
-    // after the curated MOMENT_ORDER.festa top-7 (data/moments.js,
-    // untouched).
-    moments: ["presente", "festa"],
+    // Genuinely festa-only in moments, but `browsable: true` keeps it in
+    // Coleção completa/Busca too (same override Pirulito de Alfajor and
+    // Lembrancinhas Pirâmide use — see utils/products.js). Not in the
+    // curated MOMENT_ORDER.festa top-7 (data/moments.js) — appended after.
+    moments: ["festa"],
+    browsable: true,
     photos: REAL_PHOTOS.brigadeiroPersonalizado,
   },
   {
@@ -370,20 +367,12 @@ export const PRODUCTS = [
     sensory: "Bala de coco caseira que derrete na boca, dentro de uma pirâmide personalizada no tema da sua festa.",
     kind: "candy",
     tint: COLORS.caramelDark,
-    // Fase 3 fechamento (2026-10): this product had zero presence on any
-    // curated discovery surface (not Home, not Me Tenta, not Presente
-    // Rápido, not Festa, not Mimos) — only findable by scrolling the full
-    // Coleção completa or searching its exact name (audit finding P1-4).
-    // Its own copy already calls it "personalizada no tema da sua festa",
-    // so `festa` is the existing, semantically correct surface to add it
-    // to — NOT the curated MOMENT_ORDER.festa top-7 (data/moments.js,
-    // untouched), just appended after it like any other festa-tagged
-    // product not explicitly ordered. `presente` kept alongside so this
-    // stays a 2-moment product, same mechanism every other multi-surface
-    // product already uses (see utils/products.js isFestaOnly) — a lone
-    // `["festa"]` would have silently dropped it out of Coleção completa
-    // entirely, the opposite of the goal here.
-    moments: ["presente", "festa"],
+    // Genuinely festa-only in moments, but `browsable: true` keeps it in
+    // Coleção completa/Busca too (same override Pirulito de Alfajor uses —
+    // see utils/products.js isFestaOnly/isBrowsable). Not in the curated
+    // MOMENT_ORDER.festa top-7 (data/moments.js) — just appended after it.
+    moments: ["festa"],
+    browsable: true,
     photos: REAL_PHOTOS.piramide,
   },
   {
@@ -1146,16 +1135,9 @@ export const PRODUCTS = [
     tint: COLORS.caramelDark,
     moments: ["presente"],
     presenteGroup: "mimos",
-    // Fase 3 fechamento (2026-10): the only photo on file for this product
-    // (presentinho-macas.jpg) shows another business's own branded sticker
-    // ("@Innova3dgifts" + phone number) prominently in frame — not
-    // acceptable to keep publishing. No other real photo of this product
-    // exists in the repo (checked). No `photos` field here on purpose: the
-    // product stays fully in the catalog, searchable and orderable via
-    // WhatsApp exactly as before, just rendered with the existing
-    // illustrated <ProductArt /> placeholder (see utils/products.js
-    // defaultPhotos/ components/shared/ProductArt.jsx) until Naia takes a
-    // new real photo without a third party's branding in it.
+    // No `photos` on purpose: the only photo on file shows another
+    // business's branded sticker in frame. Falls back to the illustrated
+    // <ProductArt /> placeholder until a clean real photo exists.
   },
   {
     id: "presentinho-obrigada",
@@ -1207,18 +1189,10 @@ export const PRODUCTS = [
     tint: COLORS.ink,
     moments: ["presente"],
     presenteGroup: "mimos",
-    // Fase 3 fechamento (2026-10): checked every Brownlito-related photo on
-    // disk (brownlitoEmbalado, brownlitoInteiro, brownlitoRecheio) looking
-    // for one that actually shows a personalized/themed wrapping, distinct
-    // from the regular Brownlito's own photo. None does — brownlitoEmbalado
-    // is reused here unchanged (same file as the regular product's own
-    // dia-dificil photo), brownlitoInteiro is the regular product's own
-    // default photo, and brownlitoRecheio was already confirmed in an
-    // earlier round to show a different item entirely (a strawberry-filled
-    // treat, not this brownie) — re-verified visually this round, still
-    // wrong product. Keeping brownlitoEmbalado rather than inventing or
-    // substituting an unrelated photo; flagged for Naia to photograph the
-    // next personalized Brownlito she makes.
+    // Reuses the regular Brownlito's own photo — no photo on file actually
+    // shows personalized/themed wrapping (brownlitoRecheio is a different
+    // product, a strawberry-filled treat, not this brownie). Swap once a
+    // real personalized shot exists.
     photos: [REAL_PHOTOS.brownlitoEmbalado],
   },
   {
@@ -1234,13 +1208,8 @@ export const PRODUCTS = [
     tint: COLORS.caramelLight,
     moments: ["presente"],
     presenteGroup: "mimos",
-    // Fase 3 fechamento (2026-10): the previous photo here
-    // (presentinho-donuts-personalizado.jpg) showed a real former
-    // customer's name and event ("Gabrielly Sweet 16") in large print —
-    // replaced with a real Mon Caramel photo of the same kind of
-    // personalized work (sea-themed fondant toppers) that carries no
-    // name/occasion of its own, so it reads as "ask us to personalize
-    // yours" rather than someone else's party (see photos.js).
+    // Sea-themed toppers, no customer name/occasion in frame — see
+    // photos.js for why the previous photo here was replaced.
     photos: [REAL_PHOTOS.miniDonutPersonalizadoDestaque],
   },
   {
@@ -1250,7 +1219,7 @@ export const PRODUCTS = [
     unit: "combinação personalizada",
     price: "Sob consulta 💬",
     whatsappInquiryMessage: "Oi! Quero saber mais sobre: Oreo Chocobomb Personalizado 💬",
-    catalogTeaser: "Oreo Chocobomb decorado do jeitinho que você pedir.",
+    catalogTeaser: "Oreo Chocobomb decorado para combinar com a ocasião.",
     sensory: "Oreo Chocobomb decorado para qualquer ocasião. Feito pra surpreender!",
     kind: "dipped",
     tint: COLORS.caramelLight,

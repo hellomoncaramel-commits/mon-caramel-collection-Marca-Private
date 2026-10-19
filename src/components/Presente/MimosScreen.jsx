@@ -16,11 +16,8 @@ import PresenteCTA from "./PresenteCTA";
 // per-product one, since nothing here is a SKU to point at.
 export default function MimosScreen({ onBack, onSend }) {
   // Which slide is on screen right now — InspirationCarousel reports this
-  // via onIndexChange (fires on mount too), so the very first tap of
-  // "Falar sobre personalização" already references slide 1, not a stale
-  // default (audit finding P1-2: the old message was always the same
-  // generic line, never saying which inspiration the customer actually
-  // saw — Naia had to ask every time).
+  // via onIndexChange (fires on mount too), so the first tap of "Falar
+  // sobre personalização" already references the right slide.
   const [currentIndex, setCurrentIndex] = useState(0);
   const current = MIMO_SHOWCASE[currentIndex] || MIMO_SHOWCASE[0];
 
