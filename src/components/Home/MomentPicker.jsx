@@ -50,9 +50,12 @@ const MOMENT_CTA = {
 // photo zone (was tuned for the old full-card-height crop window).
 // "festa": the source photo is landscape; the zone is still taller than
 // wide, so object-position alone can only slide sideways — a scale() zoom
-// anchored near the green "E" party favors crops the backdrop wall out.
+// anchored near the party table crops the backdrop wall out. Re-validated
+// against 5 scale values (2.0–2.8): 2.2 is the smallest zoom that fully
+// clears the wall without cropping the bunny/bird decorations out of frame
+// — 1.65 still showed mostly wall, 2.8 over-cropped the decorations.
 const MOMENT_PHOTO_STYLE = {
-  festa: { objectPosition: "0% 38%", transform: "scale(1.65)", transformOrigin: "58% 30%" },
+  festa: { objectPosition: "15% 88%", transform: "scale(2.2)", transformOrigin: "15% 88%" },
   presente: { objectPosition: "50% 38%" },
 };
 
@@ -60,12 +63,22 @@ function MomentCard({ moment, photoSrc, eager, onSelect }) {
   const lines = moment.titleLines ?? [moment.label];
   const photoStyle = MOMENT_PHOTO_STYLE[moment.id];
   return (
-    <div className="relative w-full h-full overflow-hidden rounded-3xl flex flex-col">
+    // min-h-full, not h-full: the card still matches its carousel/grid
+    // slot's height (aspect-ratio or the tablet row's fixed height) in
+    // every case that's actually been measured, but isn't locked to it —
+    // if zone 2's own content (title+tagline+CTA, which varies per moment)
+    // ever needs more room than the slot provides, the card grows past it
+    // instead of silently clipping. Nothing above sets an explicit height
+    // on this slot, so a taller card here just pushes the pagination
+    // dots/grid row below it down, same as any ordinary flow content.
+    <div className="relative w-full min-h-full overflow-hidden rounded-3xl flex flex-col">
       {/* Zone 1 — photo. Clean, full stop: no gradient, no scrim, no
           overlay, no text-shadow (nothing renders on top of it to need
-          one). ~62% of card height on mobile/tablet, ~67% on desktop —
-          the photo stays the larger, dominant element either way. */}
-      <div className="relative w-full h-[62%] lg:h-[67%] shrink-0">
+          one). flex-1 (not a fixed %): absorbs whatever height zone 2
+          doesn't need, bounded below by min-h so it never gets crushed —
+          previously a fixed 62%/67% that didn't yield when zone 2's own
+          content needed more room than that left it (see min-h below). */}
+      <div className="relative w-full flex-1 min-h-[140px] lg:min-h-[220px]">
         <Photo
           src={photoSrc}
           alt=""
@@ -79,9 +92,14 @@ function MomentCard({ moment, photoSrc, eager, onSelect }) {
           beige "card content" surface ProductCard's dia-dificil treatment
           already uses), title/tagline/CTA entirely off the photograph.
           No emoji before the title in this composition (approved
-          direction) — the photo itself already communicates the moment. */}
+          direction) — the photo itself already communicates the moment.
+          shrink-0, not flex-1/justify-center: this zone is exactly as
+          tall as its own content needs, never centered within (and so
+          never symmetrically overflowing out of, both up into the photo
+          and down past the card) a space smaller than that content —
+          the title/description/CTA are never compressed or clipped. */}
       <div
-        className="relative flex-1 min-h-0 flex flex-col justify-center px-5 lg:px-6 py-4 lg:py-5"
+        className="relative shrink-0 flex flex-col px-5 lg:px-6 py-4 lg:py-5"
         style={{ backgroundColor: COLORS.subtle }}
       >
         <h3

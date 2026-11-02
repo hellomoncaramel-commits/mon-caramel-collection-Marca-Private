@@ -226,13 +226,14 @@ export default function HomeScreen({ onSelect, onOpenProduct, selection, addToSe
           </div>
         </div>
 
-        {/* Destaque sazonal (Fase 2) — renderiza nada (sem DOM, sem imagem)
-            quando não há campanha ativa, que é o único estado deste PR
-            (CAMPAIGNS vazio). Sempre entre o Hero e o Me Tenta, nunca
-            competindo com nenhum dos dois — ver SeasonalFeature.jsx. */}
-        <div className="mt-4">
-          <SeasonalFeature onSelect={onSelect} onOpenProduct={onOpenProduct} onSend={onSend} />
-        </div>
+        {/* Destaque sazonal (Fase 2) — renderiza nada (sem DOM, sem imagem,
+            sem espaço reservado) quando não há campanha ativa, que é o
+            único estado deste PR (CAMPAIGNS vazio) — o próprio
+            SeasonalFeature.jsx carrega sua margem (mt-4), não este
+            wrapper, exatamente para que nada sobre quando ele retorna
+            null. Sempre entre o Hero e o Me Tenta, nunca competindo com
+            nenhum dos dois. */}
+        <SeasonalFeature onSelect={onSelect} onOpenProduct={onOpenProduct} onSend={onSend} />
 
         {/* "Me tenta" — ponto de entrada próprio, visualmente distinto dos
             dois HeroActionCard acima (fundo COLORS.subtle, não o
@@ -352,9 +353,12 @@ export default function HomeScreen({ onSelect, onOpenProduct, selection, addToSe
       </div>
 
       {/* Destaque sazonal (Fase 2) — mesmo componente/condição da versão
-          mobile acima; SeasonalFeature.jsx já se adapta sozinho, nenhuma
-          variante desktop própria é necessária. */}
-      <div className="hidden lg:block" style={{ marginTop: 24, maxWidth: 820 }}>
+          mobile acima; SeasonalFeature.jsx já se adapta sozinho (inclusive
+          sua própria margem, lg:mt-6 == 24px), nenhuma variante desktop
+          própria é necessária. Este wrapper só existe pra width/visibility
+          (maxWidth, hidden lg:block) — nunca carrega margem, exatamente
+          pra não sobrar espaço aqui quando SeasonalFeature retorna null. */}
+      <div className="hidden lg:block" style={{ maxWidth: 820 }}>
         <SeasonalFeature onSelect={onSelect} onOpenProduct={onOpenProduct} onSend={onSend} />
       </div>
 
