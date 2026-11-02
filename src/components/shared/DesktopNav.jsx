@@ -13,8 +13,10 @@ const PRIMARY_ITEMS = [
   { id: "presente", label: "Presentes" },
 ];
 
-// Desktop-only top navigation (lg+) — BottomNav's own mobile/tablet
-// behavior (hidden from md up) is untouched. This is the ONE brand header
+// Desktop-only top navigation (lg+) — BottomNav now covers everything
+// below this same breakpoint (mobile and tablet alike, see BottomNav.jsx),
+// so the two never overlap and no width is ever left without a nav. This
+// is the ONE brand header
 // on desktop: logo, primary nav, a search entry point, and Seleção — every
 // screen's own SiteHeader hides its centered logo at lg+ (see
 // SiteHeader.jsx) so the brand mark only appears once per page. No
@@ -50,10 +52,21 @@ export default function DesktopNav({ active, onNavigate, selectionCount }) {
 
         <div className="flex-1" />
 
+        {/* w-[270px] is a target/preferred width, not a floor: shrink (was
+            shrink-0) lets this button give up width before Logo/nav links/
+            Seleção ever have to — those three stay fixed, this is the one
+            element designed to flex, same as the `truncate` on its own
+            label already assumes. min-w-[140px] stops it shrinking past a
+            usable size. Previously a hard shrink-0 270px: fine until the
+            row's natural width (which grows under a larger browser/OS
+            text-size setting, same as every rem-based gap/padding here)
+            exceeded the viewport — with every sibling also shrink-0, the
+            overflow always landed on the row's last item (Seleção), not
+            here, since nothing upstream of it could give. */}
         <button
           onClick={() => onNavigate("busca")}
           aria-label="Buscar doces, sabores"
-          className="flex items-center gap-2.5 w-[270px] h-[50px] rounded-full px-5 shrink-0"
+          className="flex items-center gap-2.5 w-[270px] min-w-[140px] h-[50px] rounded-full px-5 shrink"
           style={{ backgroundColor: COLORS.subtle, border: `1px solid ${COLORS.border}`, boxShadow: "0 1px 3px rgba(61,36,24,0.06)" }}
         >
           <Search size={17} className="text-brand-muted shrink-0" />

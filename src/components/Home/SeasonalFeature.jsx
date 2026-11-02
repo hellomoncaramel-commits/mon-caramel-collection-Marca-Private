@@ -14,7 +14,12 @@ import Photo from "../shared/Photo";
 // Renderiza nada — nenhum wrapper, nenhuma imagem pedida — quando não há
 // campanha ativa, que é o único estado que CAMPAIGNS (src/data/
 // campaigns.js) ships neste PR: zero DOM, zero espaço reservado, zero
-// bytes de imagem.
+// bytes de imagem. O espaçamento em relação ao Hero (mt-4 mobile / mt-6
+// == 24px desktop, mesmos valores que HomeScreen.jsx aplicava antes num
+// wrapper próprio) mora aqui, no <button> abaixo, exatamente pelo mesmo
+// motivo: só existe quando este componente de fato renderiza algo — um
+// wrapper externo sempre presente deixava a margem sozinha no DOM mesmo
+// sem campanha ativa.
 export default function SeasonalFeature({ onSelect, onOpenProduct, onSend }) {
   const campaign = getActiveCampaign();
   if (!campaign) return null;
@@ -34,7 +39,7 @@ export default function SeasonalFeature({ onSelect, onOpenProduct, onSend }) {
   return (
     <button
       onClick={handleClick}
-      className="w-full flex items-stretch overflow-hidden rounded-2xl text-left transition-transform active:scale-[0.99] motion-reduce:transition-none"
+      className="w-full mt-4 lg:mt-6 flex items-stretch overflow-hidden rounded-2xl text-left transition-transform active:scale-[0.99] motion-reduce:transition-none"
       style={{ backgroundColor: COLORS.subtle, border: `1px solid ${COLORS.border}` }}
     >
       {/* Foto com presença editorial real — não um ícone. Quadrada, cresce

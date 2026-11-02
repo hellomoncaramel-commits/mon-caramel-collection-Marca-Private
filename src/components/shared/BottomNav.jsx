@@ -7,15 +7,20 @@ const ITEMS = [
   { id: "selecao", Icon: ShoppingBag, label: "Seleção" },
 ];
 
-// Fixed, thumb-reachable bottom navigation — mobile only (desktop drops it,
-// see App.jsx). Labels sit under every icon so nothing here needs an
-// aria-label hack, and every tap target is a full 44px+ column.
+// Fixed, thumb-reachable bottom navigation — mobile AND tablet, up to the
+// same 1024px (lg) breakpoint DesktopNav starts at (App.jsx renders both,
+// CSS picks exactly one: never both, never neither). Previously hid at
+// 768px (md) while DesktopNav only appeared at 1024px (lg), leaving every
+// width in between — a real tablet range (iPad portrait, most Android
+// tablets) — with no persistent nav at all. Labels sit under every icon so
+// nothing here needs an aria-label hack, and every tap target is a full
+// 44px+ column.
 export default function BottomNav({ active, onNavigate, selectionCount }) {
   const badge = { selecao: selectionCount };
 
   return (
     <nav
-      className="fixed bottom-0 inset-x-0 z-30 bg-white/95 backdrop-blur border-t border-brand-border pb-safe md:hidden"
+      className="fixed bottom-0 inset-x-0 z-30 bg-white/95 backdrop-blur border-t border-brand-border pb-safe lg:hidden"
       aria-label="Navegação principal"
     >
       <div className="max-w-xl mx-auto grid grid-cols-3">

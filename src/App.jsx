@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { Heart } from "lucide-react";
 import { useSelection } from "./hooks/useSelection";
 import { useProductRoute } from "./hooks/useProductRoute";
 import Toast from "./components/shared/Toast";
@@ -102,7 +101,7 @@ export default function App() {
     <div className="min-h-screen bg-brand-beige font-body">
       <DesktopNav active={activeNav} onNavigate={onNavigate} selectionCount={selection.length} />
 
-      <div className="pb-24 md:pb-0">
+      <div className="pb-24 lg:pb-0">
         {/* Single <main> landmark for whichever screen is current — Footer
             stays a sibling, not nested inside (it's already its own
             <footer> landmark, see Footer.jsx), and ProductDetailSheet/
@@ -197,9 +196,10 @@ export default function App() {
             inside ProductDetailSheet/SendModal (those are separate `fixed`
             overlays below, outside this wrapper entirely, so the footer
             never shows through or duplicates behind them). Sits inside
-            this same pb-24 md:pb-0 wrapper every screen's own content
+            this same pb-24 lg:pb-0 wrapper every screen's own content
             already uses, so it inherits the exact clearance that already
-            keeps content clear of the fixed mobile BottomNav — no separate
+            keeps content clear of the fixed BottomNav (visible up to the
+            same lg breakpoint BottomNav itself hides at) — no separate
             padding hack needed. */}
         <Footer />
       </div>
@@ -209,21 +209,6 @@ export default function App() {
         onNavigate={onNavigate}
         selectionCount={selection.length}
       />
-
-      {/* Tablet-only fallback: BottomNav is hidden at md+, and DesktopNav
-          only takes over at lg+ (tablet keeps its existing, unredesigned
-          behavior per this round's scope) — so this covers the md–lg gap.
-          Hidden at lg+ since DesktopNav's own "Seleção" link/count makes it
-          redundant there. */}
-      {selection.length > 0 && screen !== "selecao" && (
-        <button
-          onClick={onGoSelection}
-          className="hidden md:flex lg:hidden fixed bottom-6 left-6 z-40 rounded-full px-5 py-3 text-sm font-medium text-white bg-brand-caramelDark items-center gap-2 shadow-lg"
-        >
-          <Heart size={15} fill="white" />
-          Minha seleção · {selection.length}
-        </button>
-      )}
 
       {openProduct && (
         <ProductDetailSheet
