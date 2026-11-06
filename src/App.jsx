@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useSelection } from "./hooks/useSelection";
-import { useProductRoute } from "./hooks/useProductRoute";
+import { useAppRoute } from "./hooks/useAppRoute";
+import { MOMENTS } from "./data/moments";
 import Toast from "./components/shared/Toast";
 import HomeScreen from "./components/Home/HomeScreen";
 import MomentPicker from "./components/Home/MomentPicker";
@@ -38,8 +39,15 @@ const NON_MOMENT_SCREENS = [
   "presente-mimos",
 ];
 
+// Every screen id a direct URL load or a browser back/forward is allowed
+// to resolve to — anything else falls back to Home instead of rendering a
+// broken page (see useAppRoute.js's screenFromPath). Real moment ids come
+// from data/moments.js itself, never hand-duplicated here, so a moment
+// added there is automatically a valid direct-loadable screen too.
+const KNOWN_SCREEN_IDS = new Set([...NON_MOMENT_SCREENS, ...MOMENTS.map((m) => m.id), ...Object.keys(LEGACY_MOMENT_REDIRECTS)]);
+const isValidScreen = (id) => KNOWN_SCREEN_IDS.has(id);
+
 export default function App() {
-  const [screen, setScreen] = useState(null);
   const [pendingMessage, setPendingMessage] = useState(null);
 
   // Shared, app-wide toast (today only "Me tenta"'s direct-add feedback
@@ -62,11 +70,12 @@ export default function App() {
   // sets this (to "dia-dificil"), which is what turns on the Mon Caramel
   // Experience layer inside ProductDetailSheet (badges/note/cross-sell).
   // Catalog/Search never pass a context, so the sheet renders exactly as it
-  // always has for them. Product open/close state itself now lives in
-  // useProductRoute (native History API — see that file): it also keeps
-  // the URL in sync for the 24 Coleção completa products (/doces/[slug]),
-  // while every other product (no `slug`) opens/closes exactly as before.
-  const { openProduct, openProductContext, openProductDetail, closeProductDetail, setOnDirectOpen } = useProductRoute();
+  // always has for them. Screen AND product open/close state both live in
+  // useAppRoute (native History API — see that file): every internal
+  // navigation (screens included, not just the 24 Coleção completa
+  // products at /doces/[slug]) now has a real history entry/URL, so the
+  // browser's own back/forward work everywhere, not just on product links.
+  const { screen, navigateToScreen, goBack, openProduct, openProductContext, openProductDetail, closeProductDetail } = useAppRoute(isValidScreen);
   const { selection, addToSelection, removeFromSelection } = useSelection();
 
   // Presente Rápido (Fase 2): the quantity/package it suggested for a
@@ -85,16 +94,8 @@ export default function App() {
     closeProductDetail();
   };
 
-  // A page load that lands directly on /doces/[slug] (e.g. a shared link)
-  // has no "origin screen" to return to when the Detail closes — this
-  // makes that case land on Coleção completa instead of Home. Plain
-  // synchronous ref assignment (not an effect): useProductRoute's own
-  // mount effect, which may call this, runs after render completes, so
-  // the ref is already set by then.
-  setOnDirectOpen(() => setScreen("catalogo"));
-
-  const onGoSelection = () => setScreen("selecao");
-  const onNavigate = (id) => setScreen(id === "home" ? null : id);
+  const onGoSelection = () => navigateToScreen("selecao");
+  const onNavigate = (id) => navigateToScreen(id === "home" ? null : id);
   const activeNav = screen === null ? "home" : BOTTOM_NAV_SCREENS.includes(screen) ? screen : undefined;
 
   return (
@@ -110,78 +111,75 @@ export default function App() {
         <main>
           {!screen && (
             <HomeScreen
-              onSelect={setScreen}
+              onSelect={navigateToScreen}
               onOpenProduct={openProductDetail}
               selection={selection}
-              addToSelection={addToSelection}
-              onShowToast={showToast}
               onSend={setPendingMessage}
             />
           )}
-  
-          {screen === "momentos" && <MomentPicker onBack={() => setScreen(null)} onSelectMoment={setScreen} />}
-  
+
+          {screen === "momentos" && <MomentPicker onBack={() => goBack(null)} onSelectMoment={navigateToScreen} />}
+
           {screen === "busca" && (
             <SearchScreen
-              onBack={() => setScreen(null)}
-              onGoCatalog={() => setScreen("catalogo")}
+              onBack={() => goBack(null)}
+              onGoCatalog={() => navigateToScreen("catalogo")}
               selection={selection}
               addToSelection={addToSelection}
               onOpenProduct={openProductDetail}
               onSend={setPendingMessage}
             />
           )}
-  
+
           {screen === "catalogo" && (
             <CatalogScreen
-              onBack={() => setScreen(null)}
+              onBack={() => goBack(null)}
               selection={selection}
               onOpenProduct={openProductDetail}
               onOpenSelection={onGoSelection}
-              onSelect={setScreen}
             />
           )}
-  
+
           {screen === "selecao" && (
             <SelectionScreen
               selection={selection}
               removeFromSelection={removeFromSelection}
               addToSelection={addToSelection}
-              onBack={() => setScreen(null)}
+              onBack={() => goBack(null)}
               onSend={setPendingMessage}
               onOpenProduct={openProductDetail}
             />
           )}
-  
-          {screen === "presente" && <PresenteEntryScreen onBack={() => setScreen(null)} onSelect={setScreen} />}
+
+          {screen === "presente" && <PresenteEntryScreen onBack={() => goBack(null)} onSelect={navigateToScreen} />}
 
           {screen === "presente-rapido" && (
             <PresenteRapido
-              onBack={() => setScreen("presente")}
-              onSelect={setScreen}
+              onBack={() => goBack("presente")}
+              onSelect={navigateToScreen}
               addToSelection={addToSelection}
               onOpenProductWithIntent={openProductWithIntent}
               onShowToast={showToast}
             />
           )}
-  
+
           {screen === "presente-caixas" && (
-            <CaixasScreen onBack={() => setScreen("presente")} addToSelection={addToSelection} />
+            <CaixasScreen onBack={() => goBack("presente")} addToSelection={addToSelection} />
           )}
-  
+
           {screen === "presente-bandejas" && (
-            <BandejasScreen onBack={() => setScreen("presente")} addToSelection={addToSelection} onSend={setPendingMessage} />
+            <BandejasScreen onBack={() => goBack("presente")} addToSelection={addToSelection} onSend={setPendingMessage} />
           )}
-  
+
           {screen === "presente-mimos" && (
-            <MimosScreen onBack={() => setScreen("presente")} onSend={setPendingMessage} />
+            <MimosScreen onBack={() => goBack("presente")} onSend={setPendingMessage} />
           )}
-  
+
           {screen && !NON_MOMENT_SCREENS.includes(screen) && (
             <MomentScreen
               momentId={LEGACY_MOMENT_REDIRECTS[screen] || screen}
-              onBack={() => setScreen(null)}
-              onGoCatalog={() => setScreen("catalogo")}
+              onBack={() => goBack(null)}
+              onGoCatalog={() => navigateToScreen("catalogo")}
               onSend={setPendingMessage}
               onOpenProduct={openProductDetail}
               selection={selection}

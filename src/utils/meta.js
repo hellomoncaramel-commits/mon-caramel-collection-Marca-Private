@@ -1,6 +1,6 @@
 // Client-side <head> sync for in-app ("soft") navigation: when someone
 // opens a product from Home/Catálogo/Busca without a full page load, the
-// URL changes (see hooks/useProductRoute.js) but the document the browser
+// URL changes (see hooks/useAppRoute.js) but the document the browser
 // already has is whatever page it actually loaded — this keeps
 // title/description/canonical/OG in sync with whatever product is open,
 // for the browser tab and for Google's own JS-rendered indexing pass.

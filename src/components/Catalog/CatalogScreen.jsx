@@ -1,38 +1,11 @@
 import { Heart } from "lucide-react";
 import { COLORS } from "../../styles/colors";
-import { REAL_PHOTOS, PHOTO_OBJECT_POSITION } from "../../data/photos";
+import { PHOTO_OBJECT_POSITION } from "../../data/photos";
 import { defaultPhotos, getColecaoCompletaListingProducts, cardPriceLine } from "../../utils/products";
 import SiteHeader from "../shared/SiteHeader";
 import ProductArt from "../shared/ProductArt";
 import Photo from "../shared/Photo";
 
-// Three "discovery" cards, intercalated through the individual-product
-// list below instead of listing every box/cesta/festa item one by one —
-// Home already offers dedicated paths for dia a dia/presentes/festas, so
-// this isn't a second category nav, just a shortcut into the existing
-// screens for the one part of the catalog that's naturally many near-
-// identical combinações (briefing sections 2-4).
-//
-// Photos: real Mon Caramel photography only, reused from what's already
-// in the project — no new images, nothing AI-generated or stock, no photo
-// file ever edited. Caixas keeps the exact photo+crop already approved in
-// PresenteEntryScreen.jsx. Bandejas is back to bandejaMario (see its own
-// comment below). Festa was swapped after visual review (festaOptions[0]
-// read as too generic/didn't convey "comemoração") — miniDonutFesta[0] is
-// itself exactly 4:3, matching this card's own aspect-photo ratio pixel-
-// for-pixel, so a plain object-position crop is a no-op (cover on equal
-// ratios never overflows the box). Its `photoZoom` is a display-only
-// `transform: scale()` around a chosen `transformOrigin` — zooms toward
-// that point, cropped by the wrapper's overflow-hidden — instead of
-// object-position, since that source doesn't have cover's usual slack to
-// pan in. Never touches the source file.
-// Copy aligned with the canonical "Entrada de Presentes"/Home experiences
-// (post-UX/UI-audit, 2026-10) rather than independently invented —
-// title/tagline/CTA reuse the exact canonical text wherever it already
-// fits a card this size, so there's no drift between what a shortcut
-// promises here and what the destination screen actually delivers. Not a
-// verbatim copy of the full Presentes page everywhere (not required), but
-// never a different promise than the canonical one either.
 // Explicit, hand-picked commercial order for Coleção completa — scoped to
 // this screen only. getColecaoCompletaProducts() itself stays in its own
 // (unordered) shape, so Busca, the static /doces/[slug] pages and every
@@ -54,118 +27,8 @@ const CATALOG_DISPLAY_ORDER = [
   "butter-cookies",
   "butter-cookies-congelado",
   "brigadeiro-personalizado",
-  "piramide",
   "bolo-de-pote",
-  "mini-donuts-personalizados",
-  "brownlito-personalizado",
-  "oreo-chocobomb-personalizado",
-  "presentinho-pirulito",
-  "presentinho-obrigada",
-  "presentinho-macas",
 ];
-
-const DISCOVERY_CARDS = [
-  {
-    id: "discover-caixas",
-    screen: "presente-caixas",
-    title: "Caixas",
-    // Canonical copy (PresenteEntryScreen.jsx) — Caixas = presente
-    // personalizado.
-    tagline: "Um presente personalizado para fazer alguém se sentir especial.",
-    cta: "Quero ver ideias →",
-    photo: REAL_PHOTOS.presenteRosas,
-    photoPosition: "object-[20%_25%]",
-  },
-  {
-    id: "discover-bandejas",
-    screen: "presente-bandejas",
-    title: "Cestas especiais",
-    // Canonical copy (PresenteEntryScreen.jsx) — Cestas = composição de
-    // produtos Mon Caramel, não "surpresa" genérica.
-    tagline: "Uma seleção dos nossos doces, montada e personalizada pra ocasião.",
-    cta: "Quero ver ideias →",
-    // bandeja-mario.jpg, de volta — a troca anterior para bandeja-
-    // formatura.jpg (com zoom pesado pra recortar a faixa de texto) saiu
-    // desfocada e mostrava só um detalhe ampliado, não a cesta como um
-    // todo. Esta foto já é exatamente 4:3, igual à proporção do card
-    // (aspect-photo), então object-fit:cover nela é um no-op — nenhum
-    // recorte, a composição inteira (balões, cartão, docinhos) aparece
-    // sem zoom e na resolução original.
-    photo: REAL_PHOTOS.bandejaMario,
-  },
-  {
-    id: "discover-festa",
-    screen: "festa",
-    title: "Festas",
-    // Aligned with Festa's canonical promise (moments.js MOMENT_TAGLINE/
-    // MOMENT_INTRO: planejar os doces junto, personalizados pro tema) —
-    // "Pequenos detalhes para grandes comemorações" dropped per the audit.
-    tagline: "Doces personalizados para celebrar junto.",
-    cta: "Quero planejar →",
-    // mini-donut-festa-torre.jpg — a torre de mini donuts em si; o zoom
-    // recorta as margens cremes das laterais (a foto fonte já tem esse
-    // espaço vazio embutido) e a placa "GOO!" do topo.
-    photo: REAL_PHOTOS.miniDonutFesta[0],
-    photoZoom: { scale: 1.75, origin: "50% 51%" },
-  },
-];
-
-// Same bottom-weighted scrim PresenteEntryScreen.jsx already uses for this
-// exact photo-led-tile pattern — reused, not reinvented, so these three
-// cards read as the same established "discovery tile" language instead of
-// a new visual device.
-const SCRIM = `linear-gradient(to top, ${COLORS.ink}CC 0%, ${COLORS.ink}4D 50%, ${COLORS.ink}00 78%)`;
-
-function DiscoveryCard({ card, onSelect }) {
-  return (
-    // aspect-photo only below lg: the mobile/tablet list (space-y-3) has no
-    // row to stretch to, so a fixed photo ratio is what keeps it consistent
-    // there. At lg+ this card sits in CatalogScreen's own grid alongside
-    // ProductCardDesktop, which is taller (its own aspect-photo photo PLUS
-    // a text block below) — aspect-photo here would keep this card locked
-    // to its own ratio instead of the row's real height, leaving a visible
-    // gap under it while its siblings reach the row's full height. Dropping
-    // aspect-photo at lg+ (lg:aspect-auto, lg:h-full) lets the grid's own
-    // default align-items:stretch do the work — same as how
-    // ProductCardDesktop, which also has no aspect-ratio override, is
-    // already sized today.
-    <button onClick={() => onSelect(card.screen)} className="relative overflow-hidden rounded-2xl aspect-photo lg:aspect-auto w-full lg:h-full text-left group">
-      {/* photoZoom cards get their own crop viewport (absolute +
-          overflow-hidden) so the img's own static `transform: scale()`
-          stays clipped to the card's rounded corners — the group-hover
-          "breathing" scale moves to this wrapper instead of the img itself
-          so the two transforms never collide on the same element.
-          photoPosition cards (object-fit crop only, no resize) don't need
-          any of this and keep the simpler original markup. */}
-      {card.photoZoom ? (
-        <div className="absolute inset-0 overflow-hidden transition-transform duration-300 lg:group-hover:scale-[1.03]">
-          <Photo
-            src={card.photo}
-            alt=""
-            className="w-full h-full object-cover"
-            style={{ transform: `scale(${card.photoZoom.scale})`, transformOrigin: card.photoZoom.origin }}
-            loading="lazy"
-          />
-        </div>
-      ) : (
-        <Photo
-          src={card.photo}
-          alt=""
-          className={`absolute inset-0 w-full h-full object-cover transition-transform duration-300 lg:group-hover:scale-[1.03]${
-            card.photoPosition ? ` ${card.photoPosition}` : ""
-          }`}
-          loading="lazy"
-        />
-      )}
-      <div className="absolute inset-0 pointer-events-none" style={{ background: SCRIM }} />
-      <div className="absolute left-4 right-4 bottom-3.5">
-        <p className="font-display text-lg text-white leading-tight">{card.title}</p>
-        <p className="text-xs leading-snug text-white/85 mt-0.5">{card.tagline}</p>
-        <span className="inline-flex items-center gap-1 mt-1.5 text-xs font-medium text-white">{card.cta}</span>
-      </div>
-    </button>
-  );
-}
 
 // Photo+name together sit inside one real <button> (opens the Detail)
 // rather than wrapping the whole row in a div[role=button] — keeps the
@@ -279,20 +142,23 @@ function ProductRow({ p, added, onOpenProduct }) {
 }
 
 // Discreet alternate path for customers who already know what they want —
-// no mood quiz, just the full list (briefing section 4). Caixas/Bandejas/
-// festa-only products are represented by the three DISCOVERY_CARDS above
-// instead of appearing one by one — everything else (including products
-// that are ALSO sold for festas, like Cones Trufados or Chocobomb) keeps
-// its own row exactly as before.
-export default function CatalogScreen({ onBack, selection, onOpenProduct, onOpenSelection, onSelect }) {
+// no mood quiz, just the full list (briefing section 4). No more
+// Caixas/Cestas/Festa discovery cards interleaved here (QA pós-
+// publicação, 2026-11) — those three already have their own, better
+// entry points (PresenteEntryScreen.jsx for Caixas/Cestas, the Festa
+// momento screen for Festas) and mixing a different-shaped editorial
+// tile into a grid of same-size product cards was itself a source of
+// row-height inconsistency. This screen is now exactly what its own
+// heading promises: every individual product, nothing else.
+export default function CatalogScreen({ onBack, selection, onOpenProduct, onOpenSelection }) {
   const inSelection = (id) => selection.some((it) => it.productId === id);
 
   // getColecaoCompletaListingProducts(), not getColecaoCompletaProducts()
-  // itself — this grid deliberately leaves out giftPresentationOnly items
-  // (gift-wrap presentations only reachable here before, now exclusive to
-  // Presentes), while /doces/[slug] routing and the static page generator
-  // still index every one of them via the unfiltered function (see
-  // utils/products.js for both).
+  // itself — this grid deliberately leaves out giftPresentationOnly and
+  // eventExclusive items (apresentações de presente/festa only reachable
+  // here before, now exclusive to Presentes/Festa), while /doces/[slug]
+  // routing and the static page generator still index every one of them
+  // via the unfiltered function (see utils/products.js for both).
   const individualProducts = getColecaoCompletaListingProducts();
 
   // Same ia/ib fallback shape as pickForMoment()'s sort (utils/products.js)
@@ -307,25 +173,6 @@ export default function CatalogScreen({ onBack, selection, onOpenProduct, onOpen
     return ia - ib;
   });
 
-  // Spread the three discovery cards through the list at even intervals —
-  // never clustered together, never a separate section (briefing section
-  // 5) — computed from the real list length rather than hand-picked
-  // indices, so it stays correct if products are added/removed later.
-  const rendered = [];
-  const slot = Math.max(1, Math.floor(individualProducts.length / (DISCOVERY_CARDS.length + 1)));
-  let cardIndex = 0;
-  individualProducts.forEach((p, i) => {
-    rendered.push({ type: "product", product: p });
-    if (cardIndex < DISCOVERY_CARDS.length && i + 1 === slot * (cardIndex + 1)) {
-      rendered.push({ type: "discovery", card: DISCOVERY_CARDS[cardIndex] });
-      cardIndex += 1;
-    }
-  });
-  while (cardIndex < DISCOVERY_CARDS.length) {
-    rendered.push({ type: "discovery", card: DISCOVERY_CARDS[cardIndex] });
-    cardIndex += 1;
-  }
-
   return (
     <div className="max-w-2xl lg:max-w-6xl mx-auto px-gutter pt-2 pb-10 fade-up">
       <SiteHeader onBack={onBack} />
@@ -334,27 +181,20 @@ export default function CatalogScreen({ onBack, selection, onOpenProduct, onOpen
 
       {/* Mobile/tablet (<lg): a lista compacta original, intocada. */}
       <div className="space-y-3 lg:hidden">
-        {rendered.map((item) =>
-          item.type === "product" ? (
-            <ProductRow key={item.product.id} p={item.product} added={inSelection(item.product.id)} onOpenProduct={onOpenProduct} />
-          ) : (
-            <DiscoveryCard key={item.card.id} card={item.card} onSelect={onSelect} />
-          )
-        )}
+        {individualProducts.map((p) => (
+          <ProductRow key={p.id} p={p} added={inSelection(p.id)} onOpenProduct={onOpenProduct} />
+        ))}
       </div>
 
       {/* Desktop (lg+): grid de cards verticais com foto em destaque — uma
           composição própria pro espaço disponível, não a lista mobile
-          esticada. 2 colunas até xl, 3 a partir daí, mesmos dados/
-          comportamento da lista mobile. */}
-      <div className="hidden lg:grid lg:grid-cols-2 xl:grid-cols-3 gap-6">
-        {rendered.map((item) =>
-          item.type === "product" ? (
-            <ProductCardDesktop key={item.product.id} p={item.product} added={inSelection(item.product.id)} onOpenProduct={onOpenProduct} />
-          ) : (
-            <DiscoveryCard key={item.card.id} card={item.card} onSelect={onSelect} />
-          )
-        )}
+          esticada. Sempre 3 colunas a partir de lg (1024px) — não mais
+          2 até xl — mesma largura/alinhamento de card em qualquer largura
+          desktop, sem a inconsistência de um breakpoint intermediário. */}
+      <div className="hidden lg:grid lg:grid-cols-3 gap-6">
+        {individualProducts.map((p) => (
+          <ProductCardDesktop key={p.id} p={p} added={inSelection(p.id)} onOpenProduct={onOpenProduct} />
+        ))}
       </div>
 
       {selection.length > 0 && (

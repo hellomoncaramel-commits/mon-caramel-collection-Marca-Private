@@ -176,14 +176,21 @@ export function getColecaoCompletaProducts() {
 // stay listed. `giftPresentationOnly` is a one-off, explicit marker set by
 // hand on data/products.js, so nothing is ever hidden by inference.
 //
-// Routing and indexing (useProductRoute.js's slug lookup,
+// Routing and indexing (useAppRoute.js's slug lookup,
 // scripts/generate-static-pages.mjs's static page generation) deliberately
 // keep calling getColecaoCompletaProducts() itself, unfiltered by this flag
 // — a giftPresentationOnly product still gets its /doces/[slug] static
 // page and still resolves by direct URL, it just doesn't render as a card
-// in this one grid.
+// in this one grid. `eventExclusive` is the same idea for an item
+// exclusive to an event journey (Festa) rather than to Presentes — see
+// Lembrancinhas Pirâmide in data/products.js. Deliberately two narrow,
+// explicit flags rather than one shared one, or a rule derived from
+// `moments`/`browsable`: each is set by hand on exactly the item it
+// applies to, so removing a FUTURE item from this listing is always a
+// one-line, reviewable data change, never a side effect of a broader
+// heuristic silently catching something it wasn't meant to.
 export function getColecaoCompletaListingProducts() {
-  return getColecaoCompletaProducts().filter((p) => !p.giftPresentationOnly);
+  return getColecaoCompletaProducts().filter((p) => !p.giftPresentationOnly && !p.eventExclusive);
 }
 
 // A product sold in fixed commercial packages (Brigadeiros, Casadinhos
