@@ -1,7 +1,7 @@
 import { Heart } from "lucide-react";
 import { COLORS } from "../../styles/colors";
 import { REAL_PHOTOS, PHOTO_OBJECT_POSITION } from "../../data/photos";
-import { defaultPhotos, getColecaoCompletaProducts, cardPriceLine } from "../../utils/products";
+import { defaultPhotos, getColecaoCompletaListingProducts, cardPriceLine } from "../../utils/products";
 import SiteHeader from "../shared/SiteHeader";
 import ProductArt from "../shared/ProductArt";
 import Photo from "../shared/Photo";
@@ -118,7 +118,18 @@ const SCRIM = `linear-gradient(to top, ${COLORS.ink}CC 0%, ${COLORS.ink}4D 50%, 
 
 function DiscoveryCard({ card, onSelect }) {
   return (
-    <button onClick={() => onSelect(card.screen)} className="relative overflow-hidden rounded-2xl aspect-photo w-full text-left group">
+    // aspect-photo only below lg: the mobile/tablet list (space-y-3) has no
+    // row to stretch to, so a fixed photo ratio is what keeps it consistent
+    // there. At lg+ this card sits in CatalogScreen's own grid alongside
+    // ProductCardDesktop, which is taller (its own aspect-photo photo PLUS
+    // a text block below) — aspect-photo here would keep this card locked
+    // to its own ratio instead of the row's real height, leaving a visible
+    // gap under it while its siblings reach the row's full height. Dropping
+    // aspect-photo at lg+ (lg:aspect-auto, lg:h-full) lets the grid's own
+    // default align-items:stretch do the work — same as how
+    // ProductCardDesktop, which also has no aspect-ratio override, is
+    // already sized today.
+    <button onClick={() => onSelect(card.screen)} className="relative overflow-hidden rounded-2xl aspect-photo lg:aspect-auto w-full lg:h-full text-left group">
       {/* photoZoom cards get their own crop viewport (absolute +
           overflow-hidden) so the img's own static `transform: scale()`
           stays clipped to the card's rounded corners — the group-hover
@@ -276,11 +287,13 @@ function ProductRow({ p, added, onOpenProduct }) {
 export default function CatalogScreen({ onBack, selection, onOpenProduct, onOpenSelection, onSelect }) {
   const inSelection = (id) => selection.some((it) => it.productId === id);
 
-  // The exact same 24 products a /doces/[slug] page gets generated for
-  // (see utils/products.js getColecaoCompletaProducts) — one definition,
-  // read from both places, so a product can't be listed here without
-  // also being indexable, or vice versa.
-  const individualProducts = getColecaoCompletaProducts();
+  // getColecaoCompletaListingProducts(), not getColecaoCompletaProducts()
+  // itself — this grid deliberately leaves out giftPresentationOnly items
+  // (gift-wrap presentations only reachable here before, now exclusive to
+  // Presentes), while /doces/[slug] routing and the static page generator
+  // still index every one of them via the unfiltered function (see
+  // utils/products.js for both).
+  const individualProducts = getColecaoCompletaListingProducts();
 
   // Same ia/ib fallback shape as pickForMoment()'s sort (utils/products.js)
   // — a product not yet added to CATALOG_DISPLAY_ORDER sorts after every

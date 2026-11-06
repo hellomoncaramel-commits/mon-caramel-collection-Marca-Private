@@ -1135,6 +1135,13 @@ export const PRODUCTS = [
     tint: COLORS.caramelDark,
     moments: ["presente"],
     presenteGroup: "mimos",
+    // Explicit marker (not inferred from moments/presenteGroup) — a gift
+    // presentation with no life outside the Presentes journey. Excluded
+    // from the Coleção completa LISTING by getColecaoCompletaListingProducts
+    // (utils/products.js); still indexed by getColecaoCompletaProducts
+    // itself, so /doces/maca-personalizada, its static page and any shared
+    // link keep working exactly as before.
+    giftPresentationOnly: true,
     // No `photos` on purpose: the only photo on file shows another
     // business's branded sticker in frame. Falls back to the illustrated
     // <ProductArt /> placeholder until a clean real photo exists.
@@ -1152,6 +1159,9 @@ export const PRODUCTS = [
     tint: COLORS.caramelLight,
     moments: ["presente"],
     presenteGroup: "mimos",
+    // See the comment on presentinho-macas above — same explicit marker,
+    // same reasoning.
+    giftPresentationOnly: true,
     photos: [REAL_PHOTOS.presentinhoObrigada],
   },
   {
@@ -1167,6 +1177,9 @@ export const PRODUCTS = [
     tint: COLORS.ink,
     moments: ["presente"],
     presenteGroup: "mimos",
+    // See the comment on presentinho-macas above — same explicit marker,
+    // same reasoning.
+    giftPresentationOnly: true,
     photos: [REAL_PHOTOS.presentinhoPirulito],
   },
 
@@ -1189,6 +1202,10 @@ export const PRODUCTS = [
     tint: COLORS.ink,
     moments: ["presente"],
     presenteGroup: "mimos",
+    // See the comment on presentinho-macas above — same explicit marker,
+    // same reasoning. Distinct from the plain "Brownlito" record (no
+    // giftPresentationOnly there — it's a real dia-dificil product too).
+    giftPresentationOnly: true,
     // Reuses the regular Brownlito's own photo — no photo on file actually
     // shows personalized/themed wrapping (brownlitoRecheio is a different
     // product, a strawberry-filled treat, not this brownie). Swap once a
@@ -1208,6 +1225,9 @@ export const PRODUCTS = [
     tint: COLORS.caramelLight,
     moments: ["presente"],
     presenteGroup: "mimos",
+    // See the comment on presentinho-macas above — same explicit marker,
+    // same reasoning.
+    giftPresentationOnly: true,
     // Sea-themed toppers, no customer name/occasion in frame — see
     // photos.js for why the previous photo here was replaced.
     photos: [REAL_PHOTOS.miniDonutPersonalizadoDestaque],
@@ -1225,6 +1245,9 @@ export const PRODUCTS = [
     tint: COLORS.caramelLight,
     moments: ["presente"],
     presenteGroup: "mimos",
+    // See the comment on presentinho-macas above — same explicit marker,
+    // same reasoning.
+    giftPresentationOnly: true,
     // Real round Chocobomb shape (reused from the Chocobomb festa gallery —
     // see photos.js's comment on REAL_PHOTOS.oreoChocobombPersonalizado for
     // why that one isn't used here: wrong product shape, caught in review).

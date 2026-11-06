@@ -166,6 +166,26 @@ export function getColecaoCompletaProducts() {
   return PRODUCTS.filter((p) => p.presenteGroup !== "caixas" && p.presenteGroup !== "bandejas" && !isFestaOnly(p));
 }
 
+// Coleção completa LISTING only (CatalogScreen's own grid) — everything
+// getColecaoCompletaProducts() returns, minus the explicit
+// `giftPresentationOnly` items (gift-wrap presentations like Maçã
+// Personalizada or Brownlito Personalizado, real products but with no life
+// outside the Presentes journey). Deliberately NOT a filter on `moments`
+// (e.g. "only moments: ['presente']") — that would silently drop any future
+// product whose only moment happens to be presente, even if it's meant to
+// stay listed. `giftPresentationOnly` is a one-off, explicit marker set by
+// hand on data/products.js, so nothing is ever hidden by inference.
+//
+// Routing and indexing (useProductRoute.js's slug lookup,
+// scripts/generate-static-pages.mjs's static page generation) deliberately
+// keep calling getColecaoCompletaProducts() itself, unfiltered by this flag
+// — a giftPresentationOnly product still gets its /doces/[slug] static
+// page and still resolves by direct URL, it just doesn't render as a card
+// in this one grid.
+export function getColecaoCompletaListingProducts() {
+  return getColecaoCompletaProducts().filter((p) => !p.giftPresentationOnly);
+}
+
 // A product sold in fixed commercial packages (Brigadeiros, Casadinhos
 // Goiabada, Sequilhos) has no single real price in its legacy `unit`/
 // `price` fields — those are superseded by `packageOptions` (see each

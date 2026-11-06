@@ -50,12 +50,18 @@ const MOMENT_CTA = {
 // photo zone (was tuned for the old full-card-height crop window).
 // "festa": the source photo is landscape; the zone is still taller than
 // wide, so object-position alone can only slide sideways — a scale() zoom
-// anchored near the party table crops the backdrop wall out. Re-validated
-// against 5 scale values (2.0–2.8): 2.2 is the smallest zoom that fully
-// clears the wall without cropping the bunny/bird decorations out of frame
-// — 1.65 still showed mostly wall, 2.8 over-cropped the decorations.
+// anchored near the party table crops the backdrop wall out. Re-tested
+// (QA pós-publicação round, screenshots at object-position 50%/35%/65% ×
+// scale 1.9/2.0/2.1, bottom-anchored) against the previous 15%/88% @ 2.2:
+// that older crop anchored tight on the bunny/flower corner, cropping out
+// the blue jay, the two cake stands and most of the right-side flowers —
+// the "muito ampliada" complaint. 50%/100% @ 2.1 clears the backdrop wall
+// just as fully (confirmed via pixel-level top-strip screenshots) at a
+// smaller scale, and keeps the wider, more representative slice of the
+// table (both cake stands, the blue jay, flowers on both sides) in frame
+// instead of a tight corner crop.
 const MOMENT_PHOTO_STYLE = {
-  festa: { objectPosition: "15% 88%", transform: "scale(2.2)", transformOrigin: "15% 88%" },
+  festa: { objectPosition: "50% 100%", transform: "scale(2.1)", transformOrigin: "50% 100%" },
   presente: { objectPosition: "50% 38%" },
 };
 
@@ -97,9 +103,21 @@ function MomentCard({ moment, photoSrc, eager, onSelect }) {
           tall as its own content needs, never centered within (and so
           never symmetrically overflowing out of, both up into the photo
           and down past the card) a space smaller than that content —
-          the title/description/CTA are never compressed or clipped. */}
+          the title/description/CTA are never compressed or clipped.
+          lg:min-h-[200px] — a shared FLOOR (not a fixed/max height) across
+          all 3 desktop cards, so zone 1 (flex-1, same total card height
+          via the grid's aspect-[3/4]) resolves to the same height on every
+          card instead of tracking each moment's own tagline length (46 to
+          97 chars — see MOMENT_TAGLINE in data/moments.js). Sized to the
+          longest real tagline at default zoom (≈197px measured) plus a
+          small buffer; a shorter tagline just leaves quiet space above its
+          CTA instead of a taller photo. At larger text sizes (zoom/OS
+          font scaling) content height still grows past this floor exactly
+          like before the fix — never clipped, never line-clamped — so
+          alignment is guaranteed at default size and nothing is ever cut
+          off at any size. */}
       <div
-        className="relative shrink-0 flex flex-col px-5 lg:px-6 py-4 lg:py-5"
+        className="relative shrink-0 flex flex-col px-5 lg:px-6 py-4 lg:py-5 lg:min-h-[200px]"
         style={{ backgroundColor: COLORS.subtle }}
       >
         <h3
