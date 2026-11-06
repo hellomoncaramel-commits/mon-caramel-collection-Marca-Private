@@ -7,7 +7,6 @@ import { COLORS } from "../../styles/colors";
 import Logo from "../shared/Logo";
 import Photo from "../shared/Photo";
 import HeroMedia from "../shared/HeroMedia";
-import MeTenta from "./MeTenta";
 import SeasonalFeature from "./SeasonalFeature";
 import { useDragScroll } from "../../hooks/useDragScroll";
 
@@ -103,7 +102,7 @@ function FavoriteProductCard({ p, onOpen, className, style }) {
 // photo + stacked cards + horizontal scroll strip; desktop: contained,
 // capped hero + a 4-column grid — see the `lg:hidden`/`hidden lg:block`
 // blocks below). No more two-button mobile overlay + separate headline.
-export default function HomeScreen({ onSelect, onOpenProduct, selection, addToSelection, onShowToast, onSend }) {
+export default function HomeScreen({ onSelect, onOpenProduct, selection, onSend }) {
   const favoriteProducts = FAVORITE_PRODUCT_IDS.map((id) => PRODUCTS.find((p) => p.id === id)).filter(Boolean);
   const selectionCount = selection?.length ?? 0;
   const dragScroll = useDragScroll();
@@ -235,15 +234,6 @@ export default function HomeScreen({ onSelect, onOpenProduct, selection, addToSe
             nenhum dos dois. */}
         <SeasonalFeature onSelect={onSelect} onOpenProduct={onOpenProduct} onSend={onSend} />
 
-        {/* "Me tenta" — ponto de entrada próprio, visualmente distinto dos
-            dois HeroActionCard acima (fundo COLORS.subtle, não o
-            caramelDark sólido deles) e do ProductCard do Catálogo (sem
-            borda/sombra de card de produto) — não é uma terceira jornada
-            "sei o que quero", é "não sei, me surpreenda". Ver MeTenta.jsx. */}
-        <div className="mt-6">
-          <MeTenta selection={selection} addToSelection={addToSelection} onOpenProduct={onOpenProduct} onShowToast={onShowToast} />
-        </div>
-
         {/* "Nossos doces favoritos" — horizontal scroll strip, real
             products/photos/prices, ProductDetail on tap (same
             openProductDetail App.jsx already uses everywhere else). */}
@@ -360,14 +350,6 @@ export default function HomeScreen({ onSelect, onOpenProduct, selection, addToSe
           pra não sobrar espaço aqui quando SeasonalFeature retorna null. */}
       <div className="hidden lg:block" style={{ maxWidth: 820 }}>
         <SeasonalFeature onSelect={onSelect} onOpenProduct={onOpenProduct} onSend={onSend} />
-      </div>
-
-      {/* "Me tenta" — mesmo componente da versão mobile; o próprio
-          MeTenta.jsx vira grid de 2 colunas (foto | conteúdo) em lg+ em vez
-          de esticar o layout mobile, então nenhuma variante própria é
-          necessária aqui. */}
-      <div className="hidden lg:block" style={{ marginTop: 32, maxWidth: 820 }}>
-        <MeTenta selection={selection} addToSelection={addToSelection} onOpenProduct={onOpenProduct} onShowToast={onShowToast} />
       </div>
 
       {/* "Nossos doces favoritos" — real products/photos/prices,

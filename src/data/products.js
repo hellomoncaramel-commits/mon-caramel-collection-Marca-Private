@@ -367,12 +367,24 @@ export const PRODUCTS = [
     sensory: "Bala de coco caseira que derrete na boca, dentro de uma pirâmide personalizada no tema da sua festa.",
     kind: "candy",
     tint: COLORS.caramelDark,
-    // Genuinely festa-only in moments, but `browsable: true` keeps it in
-    // Coleção completa/Busca too (same override Pirulito de Alfajor uses —
-    // see utils/products.js isFestaOnly/isBrowsable). Not in the curated
+    // Genuinely festa-only in moments; `browsable: true` keeps it in
+    // Busca too (same override Pirulito de Alfajor uses — see
+    // utils/products.js isFestaOnly/isBrowsable). Not in the curated
     // MOMENT_ORDER.festa top-7 (data/moments.js) — just appended after it.
     moments: ["festa"],
     browsable: true,
+    // Explicit marker (QA pós-publicação, 2026-11) — a festa-exclusive
+    // item (the pyramid packaging IS a party favor, not a day-to-day
+    // catalog candy) kept out of Coleção completa's own LISTING
+    // specifically (getColecaoCompletaListingProducts(), utils/
+    // products.js), same mechanism as giftPresentationOnly above but for
+    // "exclusive to an event journey" rather than "exclusive to a gift
+    // presentation." `browsable: true` above is untouched, so Busca and
+    // the Festa moment screen (MomentScreen, via MOMENT_ORDER.festa)
+    // keep showing it exactly as before, and getColecaoCompletaProducts()
+    // itself (routing, static page generator, sitemap) is untouched too —
+    // /doces/lembrancinhas-piramide keeps working.
+    eventExclusive: true,
     photos: REAL_PHOTOS.piramide,
   },
   {
