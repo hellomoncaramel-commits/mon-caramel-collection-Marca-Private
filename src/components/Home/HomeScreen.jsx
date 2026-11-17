@@ -19,8 +19,8 @@ import { useDragScroll } from "../../hooks/useDragScroll";
 // headline choices — it stays a real, reachable screen (see App.jsx), just
 // not offered here anymore.
 const HERO_ACTIONS = [
-  { id: "momentos", emoji: "💛", title: "Me ajuda a escolher", subtitle: "Quero descobrir o que combina comigo." },
-  { id: "busca", Icon: Search, title: "Já sei o que quero", subtitle: "Me leva direto pro doce." },
+  { id: "momentos", emoji: "💛", title: "Ainda não sei o que quero", subtitle: "Vou explorar as delícias." },
+  { id: "busca", Icon: Search, title: "Já sei o que quero", subtitle: "Me leva direto ao meu docinho." },
 ];
 
 // Four real, strongly-photographed products for the "Nossos doces
@@ -195,7 +195,7 @@ export default function HomeScreen({ onSelect, onOpenProduct, selection, onSend 
               O que a gente vai adoçar hoje?&nbsp;💛
             </h1>
             <p className="text-brand-beige/85" style={{ fontSize: 14, lineHeight: 1.3, maxWidth: 300, marginTop: 8 }}>
-              Me conta o que você precisa. A gente acha um doce pra isso.
+              Tem sempre um docinho que combina com o seu momento.
             </p>
           </div>
 
@@ -328,7 +328,7 @@ export default function HomeScreen({ onSelect, onOpenProduct, selection, onSend 
             O que a gente vai adoçar hoje?&nbsp;💛
           </p>
           <p className="text-brand-inkSoft" style={{ fontSize: 19, lineHeight: 1.45, maxWidth: 430, marginTop: 20 }}>
-            Me conta o que você precisa. A gente acha um doce pra isso.
+            Tem sempre um docinho que combina com o seu momento.
           </p>
         </div>
 

@@ -227,15 +227,13 @@ export default function MomentPicker({ onBack, onSelectMoment }) {
           treatment (italic is an accent now, not the default headline
           voice). lg+ gets its own larger size for more editorial presence
           (three full cards deserve a heavier anchor above them) and its
-          own copy: "Deslize" literally doesn't apply once there's nothing
-          to swipe through, so lg+ swaps it for a direct, non-gesture line
-          — mobile/tablet copy is untouched. */}
+          own copy, distinct from the mobile/tablet line below (QA
+          pós-publicação round, 2026-11 — approved copy swap). */}
       <h1 className="font-display font-medium text-brand-ink text-center shrink-0 text-[clamp(30px,8vw,36px)] md:text-[26px] lg:text-[38px] leading-[1.05]">
-        Como você está hoje?
+        O que o seu dia está pedindo?
       </h1>
       <p className="text-brand-inkSoft text-center mt-1.5 shrink-0 text-[15px] md:text-mc-home-body lg:hidden leading-[1.35]">
-        Deslize para ver os momentos
-        <br />e escolha o que combina com você.
+        Encontre as delícias perfeitas para hoje.
       </p>
       <p className="text-brand-inkSoft text-center mt-2.5 shrink-0 hidden lg:block text-lg leading-[1.4]">
         Escolha o que combina com o que você precisa hoje.
