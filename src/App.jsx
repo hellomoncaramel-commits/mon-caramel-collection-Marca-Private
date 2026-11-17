@@ -5,6 +5,8 @@ import { MOMENTS } from "./data/moments";
 import Toast from "./components/shared/Toast";
 import HomeScreen from "./components/Home/HomeScreen";
 import MomentPicker from "./components/Home/MomentPicker";
+import HomeHeroRedesign from "./components/HomeRedesign/HomeHeroRedesign";
+import MomentsEditorialRedesign from "./components/HomeRedesign/MomentsEditorialRedesign";
 import CatalogScreen from "./components/Catalog/CatalogScreen";
 import MomentScreen from "./components/Moment/MomentScreen";
 import PresenteEntryScreen from "./components/Presente/PresenteEntryScreen";
@@ -37,6 +39,13 @@ const NON_MOMENT_SCREENS = [
   "presente-caixas",
   "presente-bandejas",
   "presente-mimos",
+  // Protótipo de redesign visual (Fase 1, QA pós-publicação 2026-11) —
+  // não linkado em nenhuma navegação real (DesktopNav/BottomNav/
+  // HomeScreen), só alcançável por URL direta durante a revisão. Precisa
+  // estar aqui (não é um momento real) pra não cair no fallback de
+  // MomentScreen logo abaixo. Ver src/components/HomeRedesign/.
+  "proto-home",
+  "proto-momentos",
 ];
 
 // Every screen id a direct URL load or a browser back/forward is allowed
@@ -117,6 +126,21 @@ export default function App() {
               onSend={setPendingMessage}
             />
           )}
+
+          {/* Protótipo de redesign visual (Fase 1) — isolado, sem link em
+              nenhuma navegação real, só alcançável por URL direta
+              (/proto-home, /proto-momentos) durante a revisão. Ver
+              src/components/HomeRedesign/. */}
+          {screen === "proto-home" && (
+            <HomeHeroRedesign
+              onSelect={navigateToScreen}
+              onOpenProduct={openProductDetail}
+              selection={selection}
+              onExitPrototype={() => navigateToScreen(null)}
+            />
+          )}
+
+          {screen === "proto-momentos" && <MomentsEditorialRedesign onBack={() => goBack("proto-home")} onSelectMoment={navigateToScreen} />}
 
           {screen === "momentos" && <MomentPicker onBack={() => goBack(null)} onSelectMoment={navigateToScreen} />}
 
